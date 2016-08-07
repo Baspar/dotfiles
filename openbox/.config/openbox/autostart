@@ -1,0 +1,26 @@
+#
+# These things are run when an Openbox X Session is started.
+# You may place a similar script in $HOME/.config/openbox/autostart
+# to run user-specific things.
+#
+
+# If you want to use GNOME config tools...
+#
+#if test -x /usr/lib/openbox/gnome-settings-daemon >/dev/null; then
+#  /usr/lib/openbox/gnome-settings-daemon &
+#elif which gnome-settings-daemon >/dev/null 2>&1; then
+#  gnome-settings-daemon &
+#fi
+
+# If you want to use XFCE config tools...
+#
+#xfce-mcs-manager &
+while sleep 10; do ~/.bin/batteryCheck.sh ; done& #Battery controler
+xss-lock -- ~/.bin/i3lock-extra.sh -m pixelize&
+while :; do ~/.bin/launchDunst.sh; done& #Notify-send server
+compton&
+~/.bin/setlayout 0 3 3 0&
+feh --bg-scale ~/.wall/2.jpg&
+conky&
+~/.bin/libinput-gestures&
+pulseaudio --start&
