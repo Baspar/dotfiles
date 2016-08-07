@@ -16,7 +16,7 @@
 #
 #xfce-mcs-manager &
 while sleep 10; do ~/.bin/batteryCheck.sh ; done& #Battery controler
-xss-lock -- ~/.bin/i3lock-extra.sh -m pixelize&
+#xss-lock -- ~/.bin/i3lock-extra.sh -m pixelize&
 while :; do ~/.bin/launchDunst.sh; done& #Notify-send server
 compton&
 ~/.bin/setlayout 0 3 3 0&
