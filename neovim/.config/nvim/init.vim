@@ -23,10 +23,13 @@ map <S-Left> :bN<CR>
 map <S-Right> :bn<CR>
 map <S-Down> :bp<CR> :bd #<CR>
 noremap <Leader>s :update<CR>
+noremap <Leader>t :terminal<CR>
+noremap <Leader>ft :tabe<CR> :terminal<CR>
 nnoremap <esc> :noh<return><esc>
 
 
 call plug#begin('~/.config/nvim/plugged')
+    "Plug 'Valloric/YouCompleteMe'
     Plug 'ctrlpvim/ctrlp.vim'
         let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
     Plug 'salsifis/vim-transpose'
@@ -77,4 +80,5 @@ call plug#begin('~/.config/nvim/plugged')
         let g:WebDevIconsNerdTreeGitPluginForceVAlign = 0
     Plug 'ntpeters/vim-better-whitespace'
         autocmd BufWritePre * StripWhitespace
+    Plug 'tpope/vim-markdown'
 call plug#end()
