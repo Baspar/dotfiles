@@ -17,9 +17,9 @@ rofi \
     -show run  \
     -font "MonofurForPowerline Nerd Font 30" \
     -bw 0 \
-    -fullscreen \
-    -padding 500 \
-    -eh 3 \
+    -eh 2 \
+    -lines 10 \
+    -padding 50 \
     -separator-style solid \
     -hide-scrollbar \
     -color-window "argb:dd$color1, argb:dd$color1, #$color2" \
