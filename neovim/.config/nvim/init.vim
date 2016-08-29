@@ -17,15 +17,28 @@ runtime macros/matchit.vim  " more match possibilities
 
 
 " Custom key map
-map <C-e> :NERDTreeToggle<CR>
-map <C-S-g> :Grepper<CR>
-map <S-Left> :bN<CR>
-map <S-Right> :bn<CR>
-map <S-Down> :bp<CR> :bd #<CR>
-noremap <Leader>s :update<CR>
-noremap <Leader>t :terminal<CR>
-noremap <Leader>ft :tabe<CR> :terminal<CR>
-nnoremap <esc> :noh<return><esc>
+    " Call to plugins
+    map <C-e> :NERDTreeToggle<CR>
+    map <C-S-g> :Grepper<CR>
+
+    " Buffer navigation
+    map <S-Left> :bN<CR>
+    map <S-Right> :bn<CR>
+    map <S-Down> :bp<CR> :bd #<CR>
+    nnoremap <Leader>s :update<CR>
+    nnoremap <leader>q :q<CR>
+    nnoremap <leader>Q :q!<CR>
+
+    " Terminal (TODO)
+    nnoremap <Leader>t :terminal<CR>
+    nnoremap <Leader>ft :tabe<CR> :terminal<CR>
+
+    " Splits
+    nnoremap <Leader>\| :vs<CR>
+    nnoremap <Leader>_ :sp<CR>
+
+    " Remove highlight
+    nnoremap <esc> :noh<CR><esc>
 
 
 call plug#begin('~/.config/nvim/plugged')
@@ -43,6 +56,10 @@ call plug#begin('~/.config/nvim/plugged')
         autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
     Plug 'Xuyuanp/nerdtree-git-plugin'
     Plug 'vim-scripts/paredit.vim'
+    "Plug 'neovim/node-host'
+    "Plug 'snoe/nvim-parinfer.js'
+    "Plug 'bhurlow/vim-parinfer'
+    Plug 'majutsushi/tagbar'
     Plug 'luochen1990/rainbow'
         let g:rainbow_active = 1
     Plug 'neomake/neomake'
