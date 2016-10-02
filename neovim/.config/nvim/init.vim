@@ -1,3 +1,5 @@
+"alduin
+"
 set encoding=utf8
 syntax on
 set number
@@ -5,7 +7,6 @@ set relativenumber
 set mouse=a
 let mapleader=","
 set tabstop=4 shiftwidth=4 expandtab
-colorscheme desert
 set nowrap
 set hlsearch
 set undofile
@@ -29,9 +30,15 @@ runtime macros/matchit.vim  " more match possibilities
     nnoremap <leader>q :q<CR>
     nnoremap <leader>Q :q!<CR>
 
-    " Terminal (TODO)
+    " Terminal (FIXME)
     nnoremap <Leader>t :terminal<CR>
     nnoremap <Leader>ft :tabe<CR> :terminal<CR>
+
+    " Reload nvim config
+    nnoremap <Leader>R :source ~/.config/nvim/init.vim<CR>
+
+    " tComment
+    nnoremap <Leader>c gc
 
     " Splits
     nnoremap <Leader>\| :vs<CR>
@@ -40,28 +47,53 @@ runtime macros/matchit.vim  " more match possibilities
     " Remove highlight
     nnoremap <esc> :noh<CR><esc>
 
+    " Tabular
+    noremap <Leader>T :Tabular /
+
+    " Fugitive
+    nnoremap <leader>ga :Git add %:p<CR><CR>
+    nnoremap <leader>gs :Gstatus<CR>
+    nnoremap <leader>gc :Gcommit -v -q<CR>
+    nnoremap <leader>gt :Gcommit -v -q %:p<CR>
+    nnoremap <leader>gd :Gdiff<CR>
+    nnoremap <leader>ge :Gedit<CR>
+    nnoremap <leader>gr :Gread<CR>
+    nnoremap <leader>gw :Gwrite<CR><CR>
+    nnoremap <leader>gl :silent! Glog<CR>:bot copen<CR>
+    nnoremap <leader>gp :Ggrep<Space>
+    nnoremap <leader>gm :Gmove<Space>
+    nnoremap <leader>gb :Git branch<Space>
+    nnoremap <leader>go :Git checkout<Space>
+    nnoremap <leader>gps :Dispatch! git push<CR>
+    nnoremap <leader>gpl :Dispatch! git pull<CR>
+
 
 call plug#begin('~/.config/nvim/plugged')
     "Plug 'Valloric/YouCompleteMe'
+    Plug 'flazz/vim-colorschemes'
+
+    Plug 'godlygeek/tabular'
+
+    " Plug 'terryma/vim-expand-region'
+    " Plug 'wellle/targets.vim'
+
     Plug 'ctrlpvim/ctrlp.vim'
         let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
     Plug 'salsifis/vim-transpose'
 
     Plug 'jiangmiao/auto-pairs'
 
+    Plug 'michaeljsmith/vim-indent-object'
     Plug 'mhinz/vim-grepper'
-    Plug 'scrooloose/nerdcommenter'
+    Plug 'tomtom/tcomment_vim'
     Plug 'scrooloose/nerdtree'
         autocmd StdinReadPre * let s:std_in=1
         autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
     Plug 'Xuyuanp/nerdtree-git-plugin'
     Plug 'vim-scripts/paredit.vim'
-    "Plug 'neovim/node-host'
-    "Plug 'snoe/nvim-parinfer.js'
-    "Plug 'bhurlow/vim-parinfer'
     Plug 'majutsushi/tagbar'
-    Plug 'luochen1990/rainbow'
-        let g:rainbow_active = 1
+    " Plug 'luochen1990/rainbow'
+    "     let g:rainbow_active = 1
     Plug 'neomake/neomake'
         autocmd! BufWritePost * Neomake
     Plug 'vim-airline/vim-airline'
@@ -73,21 +105,6 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'easymotion/vim-easymotion'
     "Plug 'tpope/vim-fireplace'
     Plug 'tpope/vim-fugitive'
-        nnoremap <leader>ga :Git add %:p<CR><CR>
-        nnoremap <leader>gs :Gstatus<CR>
-        nnoremap <leader>gc :Gcommit -v -q<CR>
-        nnoremap <leader>gt :Gcommit -v -q %:p<CR>
-        nnoremap <leader>gd :Gdiff<CR>
-        nnoremap <leader>ge :Gedit<CR>
-        nnoremap <leader>gr :Gread<CR>
-        nnoremap <leader>gw :Gwrite<CR><CR>
-        nnoremap <leader>gl :silent! Glog<CR>:bot copen<CR>
-        nnoremap <leader>gp :Ggrep<Space>
-        nnoremap <leader>gm :Gmove<Space>
-        nnoremap <leader>gb :Git branch<Space>
-        nnoremap <leader>go :Git checkout<Space>
-        nnoremap <leader>gps :Dispatch! git push<CR>
-        nnoremap <leader>gpl :Dispatch! git pull<CR>
     Plug 'airblade/vim-gitgutter'
     Plug 'kopischke/vim-stay'
     Plug 'tpope/vim-surround'
@@ -99,3 +116,6 @@ call plug#begin('~/.config/nvim/plugged')
         autocmd BufWritePre * StripWhitespace
     Plug 'tpope/vim-markdown'
 call plug#end()
+
+" colorscheme Tomorrow-Night
+colorscheme alduin
