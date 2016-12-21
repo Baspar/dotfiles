@@ -13,6 +13,10 @@ alias gs='git status'
 alias xx='termite& disown'
 alias vim='nvim'
 
+alias pbcopy='xsel --clipboard --input'
+alias pbpaste='xsel --clipboard --output'
+
+alias rlf='rlwrap lein figwheel'
 eval $(dircolors -b ~/.dir_colors)
 
 export EDITOR='nvim'

@@ -7,6 +7,10 @@ then
     pid=$RANDOM
 fi
 
-bat=$(cat ~/.bin/battery.d | head -n 1)
-state=$(cat ~/.bin/battery.d | head -n 2 | tail -n 1)
-notify-send -p -r $pid -i /home/baspar/.icons/ACYL_Icon_Theme_0.9.4/scalable/real_icons/devices/battery.svg "Batterie ($state)" "$(~/.bin/indicBattery.sh)"
+info=$(acpi | cut -d: -f2 | sed "s/[ %]//g" | cut -d, -f-2)
+
+
+bat=$(echo $info | cut -d, -f2)
+state=$(echo $info | cut -d, -f1)
+
+notify-send -r $pid -i /home/baspar/.icons/ACYL_Icon_Theme_0.9.4/scalable/real_icons/devices/battery.svg "Battery ($state)" "$(~/.bin/indicBattery.sh $bat)"

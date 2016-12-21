@@ -33,6 +33,7 @@ cursor = #d7af5f
 foreground = #ffffff
 foreground_bold = #dfaf8f
 ;background = #272521
+;background = #03142c
 background = #202020
 
 # 20% background transparency (requires a compositor)

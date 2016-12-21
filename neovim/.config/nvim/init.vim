@@ -1,5 +1,6 @@
 "alduin
 "
+set nocompatible
 set encoding=utf8
 syntax on
 set number
@@ -18,9 +19,23 @@ runtime macros/matchit.vim  " more match possibilities
 
 
 " Custom key map
-    " Call to plugins
+    " NerdTree
     map <C-e> :NERDTreeToggle<CR>
+    map <leader>e :NERDTreeToggle<CR>
+
+    " Grepper
     map <C-S-g> :Grepper<CR>
+
+
+    " Disable arrow keys
+    imap <up> <nop>
+    imap <down> <nop>
+    imap <left> <nop>
+    imap <right> <nop>
+    map <up> <nop>
+    map <down> <nop>
+    map <left> <nop>
+    map <right> <nop>
 
     " Buffer navigation
     map <S-Left> :bN<CR>
@@ -67,6 +82,15 @@ runtime macros/matchit.vim  " more match possibilities
     nnoremap <leader>gps :Dispatch! git push<CR>
     nnoremap <leader>gpl :Dispatch! git pull<CR>
 
+    " Goyo
+    nnoremap <leader>G :Goyo<cr>
+
+	" Smooth Scoll
+	noremap <silent> <c-b> :call smooth_scroll#up(&scroll*2, 10, 4)<CR>
+	noremap <silent> <PageUp> :call smooth_scroll#up(&scroll*2, 10, 4)<CR>
+	noremap <silent> <c-f> :call smooth_scroll#down(&scroll*2, 10, 4)<CR>
+	noremap <silent> <PageDown> :call smooth_scroll#down(&scroll*2, 10, 4)<CR>
+
 
 call plug#begin('~/.config/nvim/plugged')
     "Plug 'Valloric/YouCompleteMe'
@@ -76,6 +100,7 @@ call plug#begin('~/.config/nvim/plugged')
 
     " Plug 'terryma/vim-expand-region'
     " Plug 'wellle/targets.vim'
+    Plug 'kana/vim-textobj-user'
 
     Plug 'ctrlpvim/ctrlp.vim'
         let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
@@ -92,8 +117,8 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'Xuyuanp/nerdtree-git-plugin'
     Plug 'vim-scripts/paredit.vim'
     Plug 'majutsushi/tagbar'
-    " Plug 'luochen1990/rainbow'
-    "     let g:rainbow_active = 1
+    Plug 'luochen1990/rainbow'
+        let g:rainbow_active = 1
     Plug 'neomake/neomake'
         autocmd! BufWritePost * Neomake
     Plug 'vim-airline/vim-airline'
@@ -103,11 +128,13 @@ call plug#begin('~/.config/nvim/plugged')
         set laststatus=2
     Plug 'vim-airline/vim-airline-themes'
     Plug 'easymotion/vim-easymotion'
-    "Plug 'tpope/vim-fireplace'
+    " Plug 'tpope/vim-fireplace'
+    " Plug 'ctford/vim-fireplace-easy'
     Plug 'tpope/vim-fugitive'
     Plug 'airblade/vim-gitgutter'
     Plug 'kopischke/vim-stay'
     Plug 'tpope/vim-surround'
+    Plug 'glts/vim-textobj-comment'
     Plug 'ryanoasis/vim-devicons'
         let g:webdevicons_conceal_nerdtree_brackets = 0
         let g:WebDevIconsNerdTreeAfterGlyphPadding = ''
@@ -115,7 +142,13 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'ntpeters/vim-better-whitespace'
         autocmd BufWritePre * StripWhitespace
     Plug 'tpope/vim-markdown'
+    Plug 'suan/vim-instant-markdown'
+    Plug 'junegunn/goyo.vim'
+    Plug 'terryma/vim-smooth-scroll'
+    Plug 'yggdroot/indentline'
+    Plug 'ElmCast/elm-vim'
 call plug#end()
 
 " colorscheme Tomorrow-Night
+let g:indentLine_color_term = 0
 colorscheme alduin

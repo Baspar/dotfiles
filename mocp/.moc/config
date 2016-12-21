@@ -264,7 +264,7 @@ Theme = yellow_red_theme
 #
 # Example:    Keymap = my_keymap
 #
-#Keymap =
+Keymap = keymap.txt
 
 # Use ASCII rather than graphic characters for drawing lines.  This
 # helps on some terminals.

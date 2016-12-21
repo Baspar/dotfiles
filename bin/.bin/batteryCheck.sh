@@ -10,8 +10,9 @@ then
     pid=$RANDOM
 fi
 
-batTot=$(cat /sys/class/power_supply/BAT0/charge_full)
-bat=$(( 100 * $(cat /sys/class/power_supply/BAT0/charge_now) / batTot ))
+# batTot=$(cat /sys/class/power_supply/BAT0/charge_full)
+# bat=$(( 100 * $(cat /sys/class/power_supply/BAT0/charge_now) / batTot ))
+bat=$(acpi | sed "s/.* \([0-9]*\)%.*/\1/g")
 
 state=$(cat /sys/class/power_supply/BAT0/status)
 oldBat=$(cat ~/.bin/battery.d | head -n 1)
@@ -29,7 +30,7 @@ elif [ $bat -lt $oldBat ]
 then
     if [ $bat -le $suspendPC ]
     then
-        notify-send -p -r $pid -u critical -i /home/baspar/.icons/ACYL_Icon_Theme_0.9.4/scalable/real_icons/devices/battery.svg "Suspending!" "Batterie a $bat%" > $FILE
+        notify-send -p -r $pid -u critical -i /home/baspar/.icons/ACYL_Icon_Theme_0.9.4/scalable/real_icons/devices/battery.svg "Suspending!" "Battery at $bat%" > $FILE
         sleep 5 && systemctl suspend
     elif [ $bat -le $seuil ]
     then

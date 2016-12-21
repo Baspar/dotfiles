@@ -5,7 +5,7 @@ then
 
     pid=1
 fi
-id=$(xinput list  | grep TouchPad | sed 's/.*id=\([0-9]\+\).*/\1/g')
+id=$(xinput list  | grep TouchPad | sed 's/.*id=\([0-9]\+\).*/\1/g' | tail -n 1)
 nouvelEtat=$(( ( $(xinput list-props $id | grep "Device Enabled" | sed 's/.*\([01]\)$/\1/g') + 1 ) % 2 ))
 xinput -set-prop $id "Device Enabled" $nouvelEtat
 if [ $nouvelEtat -eq 0 ]
