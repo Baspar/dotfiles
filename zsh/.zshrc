@@ -1,6 +1,5 @@
 # Path to your oh-my-zsh installation.
 export ZSH=/home/baspar/.oh-my-zsh
-source /home/baspar/.bashrc
 
 # Set name of the theme to load.
 # Look in ~/.oh-my-zsh/themes/
@@ -59,6 +58,7 @@ plugins=(git)
 # export MANPATH="/usr/local/man:$MANPATH"
 
 source $ZSH/oh-my-zsh.sh
+source /home/baspar/.bashrc
 
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8

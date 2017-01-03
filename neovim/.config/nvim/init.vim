@@ -1,5 +1,5 @@
-"alduin
-"
+nnoremap <Space> <Nop>
+
 set nocompatible
 set encoding=utf8
 syntax on
@@ -7,6 +7,7 @@ set number
 set relativenumber
 set mouse=a
 let mapleader=","
+let maplocalleader=" "
 set tabstop=4 shiftwidth=4 expandtab
 set nowrap
 set hlsearch
@@ -22,10 +23,6 @@ runtime macros/matchit.vim  " more match possibilities
     " NerdTree
     map <C-e> :NERDTreeToggle<CR>
     map <leader>e :NERDTreeToggle<CR>
-
-    " Grepper
-    map <C-S-g> :Grepper<CR>
-
 
     " Disable arrow keys
     imap <up> <nop>
@@ -47,13 +44,10 @@ runtime macros/matchit.vim  " more match possibilities
 
     " Terminal (FIXME)
     nnoremap <Leader>t :terminal<CR>
-    nnoremap <Leader>ft :tabe<CR> :terminal<CR>
+    " nnoremap <Leader>ft :tabe<CR> :terminal<CR>
 
     " Reload nvim config
     nnoremap <Leader>R :source ~/.config/nvim/init.vim<CR>
-
-    " tComment
-    nnoremap <Leader>c gc
 
     " Splits
     nnoremap <Leader>\| :vs<CR>
@@ -93,56 +87,62 @@ runtime macros/matchit.vim  " more match possibilities
 
 
 call plug#begin('~/.config/nvim/plugged')
-    "Plug 'Valloric/YouCompleteMe'
     Plug 'flazz/vim-colorschemes'
-
     Plug 'godlygeek/tabular'
+    " Plug 'kana/vim-textobj-user'
+    " Plug 'jiangmiao/auto-pairs'
+    " Plug 'michaeljsmith/vim-indent-object'
+    " Plug 'glts/vim-textobj-comment'
+    Plug 'tomtom/tcomment_vim'
 
-    " Plug 'terryma/vim-expand-region'
-    " Plug 'wellle/targets.vim'
-    Plug 'kana/vim-textobj-user'
-
+    " CTRL P
     Plug 'ctrlpvim/ctrlp.vim'
         let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
-    Plug 'salsifis/vim-transpose'
 
-    Plug 'jiangmiao/auto-pairs'
-
-    Plug 'michaeljsmith/vim-indent-object'
-    Plug 'mhinz/vim-grepper'
-    Plug 'tomtom/tcomment_vim'
+     " NERDTREE
+    Plug 'ryanoasis/vim-devicons'
+        let g:webdevicons_conceal_nerdtree_brackets = 0
+        let g:WebDevIconsNerdTreeAfterGlyphPadding = ''
+        let g:WebDevIconsNerdTreeGitPluginForceVAlign = 0
     Plug 'scrooloose/nerdtree'
         autocmd StdinReadPre * let s:std_in=1
         autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
     Plug 'Xuyuanp/nerdtree-git-plugin'
-    Plug 'vim-scripts/paredit.vim'
-    Plug 'majutsushi/tagbar'
+
+
+    Plug 'Townk/vim-autoclose'
+    Plug 'mxw/vim-jsx'
+        let g:jsx_ext_required = 0
+
+    " CLOJURE
+    Plug 'tpope/vim-sexp-mappings-for-regular-people'
+    Plug 'guns/vim-sexp'
     Plug 'luochen1990/rainbow'
         let g:rainbow_active = 1
-    Plug 'neomake/neomake'
-        autocmd! BufWritePost * Neomake
+
+    " AIRLINE
     Plug 'vim-airline/vim-airline'
         let g:airline#extensions#tabline#enabled = 1
         let g:airline_powerline_fonts = 1
         let g:airline_theme='distinguished'
         set laststatus=2
     Plug 'vim-airline/vim-airline-themes'
-    Plug 'easymotion/vim-easymotion'
-    " Plug 'tpope/vim-fireplace'
-    " Plug 'ctford/vim-fireplace-easy'
-    Plug 'tpope/vim-fugitive'
-    Plug 'airblade/vim-gitgutter'
-    Plug 'kopischke/vim-stay'
-    Plug 'tpope/vim-surround'
-    Plug 'glts/vim-textobj-comment'
-    Plug 'ryanoasis/vim-devicons'
-        let g:webdevicons_conceal_nerdtree_brackets = 0
-        let g:WebDevIconsNerdTreeAfterGlyphPadding = ''
-        let g:WebDevIconsNerdTreeGitPluginForceVAlign = 0
-    Plug 'ntpeters/vim-better-whitespace'
-        autocmd BufWritePre * StripWhitespace
+
+    " MARKDOWN
     Plug 'tpope/vim-markdown'
     Plug 'suan/vim-instant-markdown'
+
+    " GIT
+    Plug 'tpope/vim-fugitive'
+    Plug 'airblade/vim-gitgutter'
+
+    " Plug 'easymotion/vim-easymotion'
+    " Plug 'tpope/vim-fireplace'
+    " Plug 'ctford/vim-fireplace-easy'
+    " Plug 'kopischke/vim-stay'
+    Plug 'tpope/vim-surround'
+    Plug 'ntpeters/vim-better-whitespace'
+        autocmd BufWritePre * StripWhitespace
     Plug 'junegunn/goyo.vim'
     Plug 'terryma/vim-smooth-scroll'
     Plug 'yggdroot/indentline'
