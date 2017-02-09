@@ -5,7 +5,7 @@ then
     pid=$RANDOM
 fi
 
-pulseaudio-ctl up 10
+pulseaudio-ctl up 5
 etat=$(pulseaudio-ctl full-status | cut -d ' ' -f 2)
 pc=$(pulseaudio-ctl full-status | cut -d ' ' -f 1)
 

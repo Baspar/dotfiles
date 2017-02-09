@@ -1,5 +1,3 @@
-nnoremap <Space> <Nop>
-
 set nocompatible
 set encoding=utf8
 syntax on
@@ -18,11 +16,14 @@ set undoreload=10000
 set hidden                  " manage effectively buffe
 runtime macros/matchit.vim  " more match possibilities
 
-
 " Custom key map
     " NerdTree
     map <C-e> :NERDTreeToggle<CR>
     map <leader>e :NERDTreeToggle<CR>
+
+    " Leader-ize tComment
+    map <leader>c gc
+    map <leader>c<space> gcc
 
     " Disable arrow keys
     imap <up> <nop>
@@ -35,17 +36,19 @@ runtime macros/matchit.vim  " more match possibilities
     map <right> <nop>
 
     " Buffer navigation
-    map <S-Left> :bN<CR>
-    map <S-Right> :bn<CR>
-    map <S-Down> :bp<CR> :bd #<CR>
+    map <S-h> :bN<CR>
+    map <S-l> :bn<CR>
+    map <S-k> :bd <CR>
+    " map <S-Left> :bN<CR>
+    " map <S-Right> :bn<CR>
+    " map <S-Down> :bp<CR> :bd #<CR>
     nnoremap <Leader>s :update<CR>
     nnoremap <leader>q :q<CR>
     nnoremap <leader>Q :q!<CR>
 
-    " Terminal (FIXME)
+    " Terminal
     nnoremap <Leader>t :terminal<CR>
-    " nnoremap <Leader>ft :tabe<CR> :terminal<CR>
-
+,
     " Reload nvim config
     nnoremap <Leader>R :source ~/.config/nvim/init.vim<CR>
 
@@ -79,6 +82,10 @@ runtime macros/matchit.vim  " more match possibilities
     " Goyo
     nnoremap <leader>G :Goyo<cr>
 
+    " Select all
+    nnoremap <leader>A :normal ggVG<cr>
+    nnoremap <leader>a :normal ggVG<cr>
+
 	" Smooth Scoll
 	noremap <silent> <c-b> :call smooth_scroll#up(&scroll*2, 10, 4)<CR>
 	noremap <silent> <PageUp> :call smooth_scroll#up(&scroll*2, 10, 4)<CR>
@@ -90,7 +97,7 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'flazz/vim-colorschemes'
     Plug 'godlygeek/tabular'
     " Plug 'kana/vim-textobj-user'
-    " Plug 'jiangmiao/auto-pairs'
+    Plug 'jiangmiao/auto-pairs'
     " Plug 'michaeljsmith/vim-indent-object'
     " Plug 'glts/vim-textobj-comment'
     Plug 'tomtom/tcomment_vim'
@@ -114,11 +121,16 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'mxw/vim-jsx'
         let g:jsx_ext_required = 0
 
+
+    Plug 'derekwyatt/vim-scala'
+
+
     " CLOJURE
-    Plug 'tpope/vim-sexp-mappings-for-regular-people'
     Plug 'guns/vim-sexp'
-    Plug 'luochen1990/rainbow'
-        let g:rainbow_active = 1
+    Plug 'tpope/vim-sexp-mappings-for-regular-people'
+        let g:sexp_insert_after_wrap = 'false'
+    " Plug 'luochen1990/rainbow'
+    "     let g:rainbow_active = 1
 
     " AIRLINE
     Plug 'vim-airline/vim-airline'
@@ -136,19 +148,21 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'tpope/vim-fugitive'
     Plug 'airblade/vim-gitgutter'
 
-    " Plug 'easymotion/vim-easymotion'
-    " Plug 'tpope/vim-fireplace'
-    " Plug 'ctford/vim-fireplace-easy'
-    " Plug 'kopischke/vim-stay'
     Plug 'tpope/vim-surround'
     Plug 'ntpeters/vim-better-whitespace'
         autocmd BufWritePre * StripWhitespace
     Plug 'junegunn/goyo.vim'
     Plug 'terryma/vim-smooth-scroll'
     Plug 'yggdroot/indentline'
-    Plug 'ElmCast/elm-vim'
+
+    " Love-Hate group
+    " Plug 'easymotion/vim-easymotion'
+    " Plug 'tpope/vim-fireplace'
+    " Plug 'ctford/vim-fireplace-easy'
+    " Plug 'kopischke/vim-stay'
+
 call plug#end()
 
-" colorscheme Tomorrow-Night
 let g:indentLine_color_term = 0
 colorscheme alduin
+

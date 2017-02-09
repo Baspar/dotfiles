@@ -7,7 +7,7 @@
 for_window [class="^.*"] border pixel 1
 
 set $mod Mod1
-set $desktop1 "1"
+set $desktop1 "1"
 set $desktop2 "2"
 set $desktop3 "3"
 set $desktop4 "4"
@@ -201,6 +201,7 @@ bindsym $mod+c exec ~/.bin/sayBattery.sh
 bindsym XF86AudioPlay exec ~/.bin/PPMOCP.sh
 bindsym XF86AudioPrev exec ~/.bin/PrevMOCP.sh
 bindsym XF86AudioNext exec ~/.bin/NextMOCP.sh
+bindsym $mod+XF86AudioPlay exec termite --exec=mocp
 bindsym $mod+x exec ~/.bin/sayMOCP.sh
 
 # Volume control

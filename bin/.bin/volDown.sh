@@ -6,7 +6,7 @@ then
 fi
 
 etat=$(pulseaudio-ctl full-status | cut -d ' ' -f 2)
-pulseaudio-ctl down 10
+pulseaudio-ctl down 5
 pc=$(pulseaudio-ctl full-status | cut -d ' ' -f 1)
 
 if [ $etat == "no" ]
