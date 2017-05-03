@@ -1,11 +1,4 @@
 #!/bin/bash
-pid=$(cat ~/.bin/notifypid)
-if [[ $pid == "" ]]
-then
-
-    pid=1
-fi
-
 MOCP=$(ps aux | grep mocp | grep -v grep | wc -l)
 
 if [ $MOCP -ne 0 ]

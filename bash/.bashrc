@@ -15,9 +15,15 @@ alias gs='git status'
 alias gc='git commit'
 alias gC='git checkout'
 alias xx='termite& disown'
+
+alias cp='acp -g'
+alias mv='amv -g'
+
 alias vim='nvim'
 alias vi='nvim'
 alias v='nvim'
+
+alias o='xdg-open'
 
 alias df='df -h'
 
@@ -32,7 +38,34 @@ alias repl='cd ~/.repl; lein repl; cd -'
 
 alias weather='curl -s wttr.in | head -n -2'
 
+alias scd='cd'
+alias sl='ls'
+
 export EDITOR='nvim'
+export GOPATH="$HOME/.go"
 
-PATH="$PATH:/home/baspar/.bin"
+alias j='jobs'
 
+export GOPATH=$(go env GOPATH)
+
+function grepin () {
+    echo $#
+    [ $# -ne 2 ] && {
+        echo "Wrong number of params (2)"
+        return 1
+    }
+
+    path_file=$1
+    pattern=$2
+
+    echo $PATH
+    files=$(find $path_file -type f)
+
+    for file in $files
+    do
+        cat $file | grep "$pattern" && echo "======> Found in $file"
+    done
+}
+
+PATH="$PATH:/home/baspar/.bin:$GOPATH/bin:/home/baspar/.gem/ruby/2.4.0/bin"
+TERM=xterm

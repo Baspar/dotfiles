@@ -16,7 +16,7 @@ set $desktop6 "6"
 set $desktop7 "7"
 set $desktop8 "8"
 set $desktop9 "9"
-set $desktop10 "10"
+set $desktop10 "10𝅘𝅥𝅮"
 
 
 # Font for window titles. Will also be used by the bar unless a different font
@@ -83,7 +83,6 @@ bindsym $mod+Shift+Right move right
 # split in vertical orientation
 # bindsym $mod+v split v
 bindsym $mod+q split toggle
-bindsym $mod+t mode "container"
 
 # enter fullscreen mode for the focused container
 bindsym $mod+s fullscreen toggle
@@ -141,34 +140,26 @@ mode "container" {
         bindsym q layout toggle split
         bindsym w layout stacking
         bindsym e layout tabbed
+
         bindsym Return mode "default"
         bindsym Escape mode "default"
 }
-# resize window (you can also use the mouse for that)
 mode "resize" {
-        # These bindings trigger as soon as you enter the resize mode
-
-        # Pressing left will shrink the window’s width.
-        # Pressing right will grow the window’s width.
-        # Pressing up will shrink the window’s height.
-        # Pressing down will grow the window’s height.
         bindsym j resize shrink width 10 px or 10 ppt
         bindsym k resize grow height 10 px or 10 ppt
         bindsym l resize shrink height 10 px or 10 ppt
         bindsym semicolon resize grow width 10 px or 10 ppt
-
-        # same bindings, but for the arrow keys
         bindsym Left resize shrink width 10 px or 10 ppt
         bindsym Down resize grow height 10 px or 10 ppt
         bindsym Up resize shrink height 10 px or 10 ppt
         bindsym Right resize grow width 10 px or 10 ppt
 
-        # back to normal: Enter or Escape
         bindsym Return mode "default"
         bindsym Escape mode "default"
 }
 
 bindsym $mod+r mode "resize"
+bindsym $mod+t mode "container"
 bindsym $mod+Tab exec ~/.bin/tab.sh
 
 client.focused #000000 #DFAF8F #000000 #936343
@@ -197,11 +188,15 @@ bindsym Print exec ~/.bin/togglePower.sh
 # Battery control
 bindsym $mod+c exec ~/.bin/sayBattery.sh
 
-# Music control
+# Music control [PLAY]
 bindsym XF86AudioPlay exec ~/.bin/PPMOCP.sh
+bindsym $mod+XF86AudioPlay exec termite -t "MOCP - Music Player" --exec=mocp && i3-msg workspace back_and_forth
+# Music control [PREV]
 bindsym XF86AudioPrev exec ~/.bin/PrevMOCP.sh
+bindsym $mod+XF86AudioPrev exec ~/.bin/reverseMOCP.sh
+# Music control [NEXT]
 bindsym XF86AudioNext exec ~/.bin/NextMOCP.sh
-bindsym $mod+XF86AudioPlay exec termite --exec=mocp
+bindsym $mod+XF86AudioNext exec ~/.bin/forwardMOCP.sh
 bindsym $mod+x exec ~/.bin/sayMOCP.sh
 
 # Volume control
@@ -218,5 +213,10 @@ bindsym XF86MonBrightnessDown exec  ~/.bin/brightDown.sh
 exec --no-startup-id compton
 exec --no-startup-id setxkbmap -option caps:swapescape
 
+smart_gaps on
+smart_borders no_gaps
+
+
 for_window [class="(?i)conky"] floating enable border none
+for_window [title="MOCP - Music Player"] move container to workspace $desktop10; workspace $desktop10
 # exec --no-startup-id i3-msg 'workspace 1:Web; exec /usr/bin/firefox'
