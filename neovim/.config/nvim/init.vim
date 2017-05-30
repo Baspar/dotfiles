@@ -41,7 +41,9 @@ set foldmethod=syntax
     " Buffer navigation
     map <leader>< :bN<CR>
     map <leader>> :bn<CR>
-    map <leader>bd :bd<CR>
+    " map <Leader>> :normal >)<CR>
+    " map <Leader>< :normal <)<CR>
+    map <leader>bd :bn<CR> :bd #<CR>
     nnoremap <Leader>s :update<CR>
     nnoremap <leader>q :q<CR>
     nnoremap <leader>Q :q!<CR>
@@ -140,6 +142,7 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'low-ghost/nerdtree-fugitive'
 
 
+    " Javascript/React.JS
     Plug 'mxw/vim-jsx'
         let g:jsx_ext_required = 0
 
@@ -178,6 +181,7 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'airblade/vim-gitgutter'
 
     " Misc
+    Plug 'tpope/vim-abolish'
     Plug 'machakann/vim-sandwich'
     Plug 'ntpeters/vim-better-whitespace'
         autocmd BufWritePre * StripWhitespace
