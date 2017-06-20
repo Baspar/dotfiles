@@ -41,8 +41,6 @@ set foldmethod=syntax
     " Buffer navigation
     map <leader>< :bN<CR>
     map <leader>> :bn<CR>
-    " map <Leader>> :normal >)<CR>
-    " map <Leader>< :normal <)<CR>
     map <leader>bd :bn<CR> :bd #<CR>
     nnoremap <Leader>s :update<CR>
     nnoremap <leader>q :q<CR>
@@ -53,7 +51,7 @@ set foldmethod=syntax
 
     " Terminal
     nnoremap <Leader>t :terminal<CR>
-,
+
     " Neoterm
     autocmd FileType clojure map <buffer> <Leader>zz :normal mava)<CR> :TREPLSendSelection<CR>`a
     nnoremap <Leader>Z :normal maV<CR> :TREPLSendSelection<CR>`a
@@ -95,7 +93,7 @@ set foldmethod=syntax
     nnoremap <leader>gpl :Dispatch! git pull<CR>
 
     " Goyo
-    nnoremap <leader>G :Goyo<CR>
+    " nnoremap <leader>G :Goyo<CR>
     nnoremap <leader>G :Goyo<CR>:Limelight!!<CR>
 
     " Select all
@@ -119,8 +117,9 @@ set foldmethod=syntax
 
 call plug#begin('~/.config/nvim/plugged')
     " Colorschemes
-    Plug 'alessandroyorba/alduin'
+    Plug 'AlessandroYorba/alduin'
     Plug 'AlessandroYorba/Sierra'
+    Plug 'AlessandroYorba/Despacio'
     Plug 'morhetz/gruvbox'
 
     " CTRL P
@@ -143,9 +142,9 @@ call plug#begin('~/.config/nvim/plugged')
 
 
     " Javascript/React.JS
-    Plug 'mxw/vim-jsx'
-        let g:jsx_ext_required = 0
 
+    Plug 'pangloss/vim-javascript'
+    Plug 'maxmellon/vim-jsx-pretty'
 
 
     " CLOJURE

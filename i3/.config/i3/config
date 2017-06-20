@@ -102,7 +102,7 @@ bindsym $mod+space focus mode_toggle
 bindsym $mod+a focus parent
 
 # focus the child container
-bindsym $mod+z focus child
+bindsym $mod+Shift+a focus child
 
 # switch to workspace
 bindsym $mod+1 workspace $desktop1
@@ -182,7 +182,7 @@ gaps inner 40
 # Lock control
 bindsym ctrl+$mod+l exec ~/.bin/i3lock-extra.sh -m pixelize
 
-# WIF power control
+# WIFI power control
 bindsym Print exec ~/.bin/togglePower.sh
 
 # Battery control
@@ -210,12 +210,23 @@ bindsym XF86MonBrightnessDown exec  ~/.bin/brightDown.sh
 # bindsym XF86MonBrightnessUp exec xbacklight + 5
 # bindsym XF86MonBrightnessDown exec xbacklight - 5
 
+# Toggle Control
+bindsym $mod+Shift+t exec ~/.bin/toggleTouchScreen.sh
+bindsym $mod+Shift+y exec ~/.bin/toggleSynaptic.sh
+
+# Make the currently focused window a scratchpad
+bindsym $mod+z move scratchpad
+
+# Show the first scratchpad window
+bindsym $mod+Shift+z scratchpad show
+
 exec --no-startup-id compton
 exec --no-startup-id setxkbmap -option caps:swapescape
 
 smart_gaps on
 smart_borders no_gaps
 workspace_auto_back_and_forth yes
+
 
 
 
