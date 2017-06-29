@@ -7,7 +7,7 @@ set relativenumber
 set mouse=a
 let mapleader=","
 let maplocalleader=" "
-set tabstop=4 shiftwidth=4 expandtab
+set tabstop=2 shiftwidth=2 expandtab
 set nowrap
 set hlsearch
 set incsearch
@@ -43,8 +43,15 @@ set foldmethod=syntax
     map <leader>> :bn<CR>
     map <leader>bd :bn<CR> :bd #<CR>
     nnoremap <Leader>s :update<CR>
+    nnoremap <Leader>w :w<CR>
     nnoremap <leader>q :q<CR>
     nnoremap <leader>Q :q!<CR>
+
+    " Split nav
+    nnoremap <C-Down> <C-w>j
+    nnoremap <C-Up> <C-w>k
+    nnoremap <C-Left> <C-w>h
+    nnoremap <C-Right> <C-w>l
 
     " TagBar
     map <Leader>B :TagbarToggle<CR>
@@ -96,6 +103,9 @@ set foldmethod=syntax
     " nnoremap <leader>G :Goyo<CR>
     nnoremap <leader>G :Goyo<CR>:Limelight!!<CR>
 
+    " Select line
+    nnoremap <leader>l :normal ^v$<cr>
+
     " Select all
     nnoremap <leader>A :normal ggVG<cr>
     nnoremap <leader>a :normal ggVG<cr>
@@ -122,6 +132,9 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'AlessandroYorba/Despacio'
     Plug 'morhetz/gruvbox'
 
+    " Syntax
+    Plug 'w0rp/ale'
+
     " CTRL P
     Plug 'ctrlpvim/ctrlp.vim'
         let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
@@ -142,9 +155,12 @@ call plug#begin('~/.config/nvim/plugged')
 
 
     " Javascript/React.JS
-
     Plug 'pangloss/vim-javascript'
     Plug 'maxmellon/vim-jsx-pretty'
+    " Plug 'neoclide/vim-jsx-improve'
+    " Plug 'neoclide/vim-jsx-improve'
+    " Plug 'prettier/prettier'
+    " Plug 'sbdchd/neoformat'
 
 
     " CLOJURE
