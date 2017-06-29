@@ -7,7 +7,6 @@ set relativenumber
 set mouse=a
 let mapleader=","
 let maplocalleader=" "
-set tabstop=2 shiftwidth=2 expandtab
 set nowrap
 set hlsearch
 set incsearch
@@ -18,15 +17,20 @@ set undoreload=10000
 set hidden
 set foldmethod=syntax
 
+" Indentation
+set tabstop=4 shiftwidth=4 expandtab
+autocmd FileType javascript set tabstop=2 shiftwidth=2 expandtab
 
 " Custom key map
+    " Triple global indent
+    map <leader>f :normal <leader>a=<leader>a=<leader>a=<CR>
+
     " NerdTree
     map <C-e> :NERDTreeToggle<CR>
     map <leader>e :NERDTreeToggle<CR>
 
-    " Leader-ize tComment
-    map <leader>c gc
-    map <leader>c<space> gcc
+    " Undo Tree
+    map <C-u> :UndotreeToggle<CR>
 
     " Disable arrow keys
     imap <up> <nop>
@@ -215,6 +219,7 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'zchee/deoplete-go', { 'do': 'make'}
     Plug 'ternjs/tern_for_vim', { 'for': ['javascript', 'javascript.jsx'] }
     Plug 'carlitux/deoplete-ternjs', { 'for': ['javascript', 'javascript.jsx'] }
+    Plug 'mbbill/undotree'
 
 
 
