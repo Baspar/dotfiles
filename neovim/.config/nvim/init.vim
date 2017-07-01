@@ -17,13 +17,25 @@ set undoreload=10000
 set hidden
 set foldmethod=syntax
 
+" Function
+function! ToggleGStatus()
+    if buflisted(bufname('.git/index'))
+        bd .git/index
+    else
+        Gstatus
+    endif
+endfunction
+command ToggleGStatus :call ToggleGStatus()
+
+
 " Indentation
-set tabstop=4 shiftwidth=4 expandtab
 autocmd FileType javascript set tabstop=2 shiftwidth=2 expandtab
+autocmd FileType css set tabstop=2 shiftwidth=2 expandtab
+set tabstop=4 shiftwidth=4 expandtab
 
 " Custom key map
     " Triple global indent
-    map <leader>f :normal <leader>a=<leader>a=<leader>a=<CR>
+    map <leader>f :Autoformat<CR>
 
     " NerdTree
     map <C-e> :NERDTreeToggle<CR>
@@ -31,6 +43,7 @@ autocmd FileType javascript set tabstop=2 shiftwidth=2 expandtab
 
     " Undo Tree
     map <C-u> :UndotreeToggle<CR>
+    map <leader>u :UndotreeToggle<CR>
 
     " Disable arrow keys
     imap <up> <nop>
@@ -88,7 +101,8 @@ autocmd FileType javascript set tabstop=2 shiftwidth=2 expandtab
 
     " Fugitive
     nnoremap <leader>ga :Git add %:p<CR><CR>
-    nnoremap <leader>gs :Gstatus<CR>
+    " nnoremap <leader>gs :Gstatus<CR>
+    nnoremap <leader>gs :ToggleGStatus<CR>
     nnoremap <leader>gc :Gcommit -v -q<CR>
     nnoremap <leader>gt :Gcommit -v -q %:p<CR>
     nnoremap <leader>gd :Gdiff<CR>
@@ -138,6 +152,10 @@ call plug#begin('~/.config/nvim/plugged')
 
     " Syntax
     Plug 'w0rp/ale'
+    let g:ale_linters = {
+                \   'javascript': ['standard'],
+                \}
+    Plug 'Chiel92/vim-autoformat'
 
     " CTRL P
     Plug 'ctrlpvim/ctrlp.vim'
@@ -159,12 +177,13 @@ call plug#begin('~/.config/nvim/plugged')
 
 
     " Javascript/React.JS
-    Plug 'pangloss/vim-javascript'
-    Plug 'maxmellon/vim-jsx-pretty'
-    " Plug 'neoclide/vim-jsx-improve'
-    " Plug 'neoclide/vim-jsx-improve'
-    " Plug 'prettier/prettier'
-    " Plug 'sbdchd/neoformat'
+    Plug 'othree/yajs.vim'
+    Plug 'alvan/vim-closetag'
+        let g:closetag_filenames = "*.html,*.xhtml,*.phtml,*.php,*.jsx,*.js"
+    Plug 'mattn/emmet-vim'
+    Plug 'fleischie/vim-styled-components'
+    " Plug 'pangloss/vim-javascript'
+    " Plug 'maxmellon/vim-jsx-pretty'
 
 
     " CLOJURE
@@ -188,6 +207,11 @@ call plug#begin('~/.config/nvim/plugged')
         let g:airline_theme='ubaryd'
         set laststatus=2
     Plug 'vim-airline/vim-airline-themes'
+
+    " Text obj
+    Plug 'kana/vim-textobj-user'
+    " Plug 'kana/vim-textobj-line'
+    Plug 'wellle/targets.vim'
 
     " MARKDOWN
     Plug 'tpope/vim-markdown'
@@ -220,8 +244,6 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'ternjs/tern_for_vim', { 'for': ['javascript', 'javascript.jsx'] }
     Plug 'carlitux/deoplete-ternjs', { 'for': ['javascript', 'javascript.jsx'] }
     Plug 'mbbill/undotree'
-
-
 
     " Love-Hate group
     " Plug 'flazz/vim-colorschemes'
