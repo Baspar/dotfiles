@@ -55,6 +55,14 @@ set tabstop=4 shiftwidth=4 expandtab
     map <left> <nop>
     map <right> <nop>
 
+    " Clipboard usage
+    noremap <leader>y "+y
+    noremap <leader>P "+P
+    noremap <leader>p "+p
+    noremap <leader>d "+d
+
+
+
     " Buffer navigation
     map <leader>< :bN<CR>
     map <leader>> :bn<CR>
