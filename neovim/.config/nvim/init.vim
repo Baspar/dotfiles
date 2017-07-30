@@ -29,11 +29,15 @@ command ToggleGStatus :call ToggleGStatus()
 
 
 " Indentation
-autocmd FileType javascript set tabstop=2 shiftwidth=2 expandtab
-autocmd FileType css set tabstop=2 shiftwidth=2 expandtab
 set tabstop=4 shiftwidth=4 expandtab
+autocmd FileType javascript,jsx set tabstop=2 shiftwidth=2 expandtab
+autocmd FileType css set tabstop=2 shiftwidth=2 expandtab
 
 " Custom key map
+    " Keep visual selection
+    :vnoremap < <gv
+    :vnoremap > >gv
+
     " Triple global indent
     map <leader>f :Autoformat<CR>
 
@@ -56,10 +60,10 @@ set tabstop=4 shiftwidth=4 expandtab
     map <right> <nop>
 
     " Clipboard usage
-    noremap <leader>y "+y
-    noremap <leader>P "+P
-    noremap <leader>p "+p
-    noremap <leader>d "+d
+    noremap <leader>cy "+y
+    noremap <leader>cP "+P
+    noremap <leader>cp "+p
+    noremap <leader>cd "+d
 
 
 
@@ -126,21 +130,26 @@ set tabstop=4 shiftwidth=4 expandtab
     nnoremap <leader>gpl :Dispatch! git pull<CR>
 
     " Goyo
-    " nnoremap <leader>G :Goyo<CR>
     nnoremap <leader>G :Goyo<CR>:Limelight!!<CR>
 
     " Select line
     nnoremap <leader>l :normal ^v$<cr>
 
     " Select all
-    nnoremap <leader>A :normal ggVG<cr>
     nnoremap <leader>a :normal ggVG<cr>
+
+    " Ags
+    nnoremap <leader>A :Ags<Space>
 
     " Smooth Scoll
     noremap <silent> <c-b> :call smooth_scroll#up(&scroll*2, 10, 4)<CR>
     noremap <silent> <PageUp> :call smooth_scroll#up(&scroll*2, 10, 4)<CR>
     noremap <silent> <c-f> :call smooth_scroll#down(&scroll*2, 10, 4)<CR>
     noremap <silent> <PageDown> :call smooth_scroll#down(&scroll*2, 10, 4)<CR>
+
+    " Ale
+    nmap [a <Plug>(ale_previous_wrap)
+    nmap ]a <Plug>(ale_next_wrap)
 
     " Vim-Go
     au FileType go nmap <localleader>gr <Plug>(go-run)
@@ -152,6 +161,7 @@ set tabstop=4 shiftwidth=4 expandtab
     au FileType go nmap <localleader>gi <Plug>(go-info)
 
 call plug#begin('~/.config/nvim/plugged')
+" call plug#begin('~/.vim/autoload')
     " Colorschemes
     Plug 'AlessandroYorba/alduin'
     Plug 'AlessandroYorba/Sierra'
@@ -185,13 +195,13 @@ call plug#begin('~/.config/nvim/plugged')
 
 
     " Javascript/React.JS
-    Plug 'othree/yajs.vim'
+    " Plug 'othree/yajs.vim'
     Plug 'alvan/vim-closetag'
         let g:closetag_filenames = "*.html,*.xhtml,*.phtml,*.php,*.jsx,*.js"
     Plug 'mattn/emmet-vim'
-    Plug 'fleischie/vim-styled-components'
-    " Plug 'pangloss/vim-javascript'
-    " Plug 'maxmellon/vim-jsx-pretty'
+    " Plug 'fleischie/vim-styled-components'
+    Plug 'pangloss/vim-javascript'
+    Plug 'maxmellon/vim-jsx-pretty'
 
 
     " CLOJURE
@@ -232,7 +242,8 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'airblade/vim-gitgutter'
 
     " Misc
-    Plug 'tpope/vim-abolish'
+    " Plug 'tpope/vim-abolish'
+    Plug 'gabesoft/vim-ags'
     Plug 'machakann/vim-sandwich'
     Plug 'ntpeters/vim-better-whitespace'
         autocmd BufWritePre * StripWhitespace
@@ -241,16 +252,17 @@ call plug#begin('~/.config/nvim/plugged')
         let g:limelight_conceal_ctermfg = 'gray'
         let g:limelight_conceal_ctermfg = 240
 
+    Plug 'easymotion/vim-easymotion'
     Plug 'terryma/vim-smooth-scroll'
     Plug 'kassio/neoterm'
     Plug 'godlygeek/tabular'
     Plug 'Townk/vim-autoclose'
     Plug 'alvan/vim-closetag'
     Plug 'tomtom/tcomment_vim'
-    Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-    Plug 'zchee/deoplete-go', { 'do': 'make'}
+    " Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+    " Plug 'zchee/deoplete-go', { 'do': 'make'}
     Plug 'ternjs/tern_for_vim', { 'for': ['javascript', 'javascript.jsx'] }
-    Plug 'carlitux/deoplete-ternjs', { 'for': ['javascript', 'javascript.jsx'] }
+    " Plug 'carlitux/deoplete-ternjs', { 'for': ['javascript', 'javascript.jsx'] }
     Plug 'mbbill/undotree'
 
     " Love-Hate group
