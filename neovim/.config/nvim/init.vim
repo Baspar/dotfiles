@@ -41,6 +41,9 @@ autocmd FileType css set tabstop=2 shiftwidth=2 expandtab
     " Triple global indent
     map <leader>f :Autoformat<CR>
 
+    " CTRL-P
+    map \ :CtrlP<CR>
+
     " NerdTree
     map <C-e> :NERDTreeToggle<CR>
     map <leader>e :NERDTreeToggle<CR>
@@ -136,10 +139,10 @@ autocmd FileType css set tabstop=2 shiftwidth=2 expandtab
     nnoremap <leader>l :normal ^v$<cr>
 
     " Select all
-    nnoremap <leader>a :normal ggVG<cr>
+    nnoremap <leader>A :normal ggVG<cr>
 
     " Ags
-    nnoremap <leader>A :Ags<Space>
+    nnoremap <leader>a :Ags<Space>
 
     " Smooth Scoll
     noremap <silent> <c-b> :call smooth_scroll#up(&scroll*2, 10, 4)<CR>
@@ -229,6 +232,8 @@ call plug#begin('~/.config/nvim/plugged')
     " Text obj
     Plug 'kana/vim-textobj-user'
     " Plug 'kana/vim-textobj-line'
+    " Plug 'reedes/vim-textobj-quote'
+    Plug 'beloglazov/vim-textobj-quotes'
     Plug 'wellle/targets.vim'
 
     " MARKDOWN
