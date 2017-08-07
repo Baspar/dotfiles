@@ -3,27 +3,37 @@
 #PARAMS
 EDITOR="nvim"
 DIR="$HOME/.notes/"
-DEFAULT_VALUE="\n\n# vim: syntax=markdown"
+DEFAULT_VALUE=""
 
 
-FILES=$(ls "$DIR")
+FILES=$(ls "$DIR" | sed "s/\.md//g")
 RELATIVE_SELECTED_FILE=$(echo -e "$FILES" | rofi -i -dmenu -font 'MonofurForPowerline Nerd Font 30' -theme '/home/baspar/.bin/theme.rasi' -fullscreen -mesg 'Type your note name' -matching fuzzy)
-SELECTED_FILE="$DIR/$RELATIVE_SELECTED_FILE"
+SELECTED_FILE="$DIR/$RELATIVE_SELECTED_FILE.md"
 
 # If option is selected
 if [ "$RELATIVE_SELECTED_FILE" ]
 then
-    # Prefill new notes if needed
-    if [[ ! -e "$SELECTED_FILE"  && "$DEFAULT_VALUE" ]]
+
+    # Prefill if new file
+    if [ ! -e "$SELECTED_FILE" ]
     then
-        echo -e "$DEFAULT_VALUE" >> "$SELECTED_FILE"
+        # Prefill title
+        echo -e "# $RELATIVE_SELECTED_FILE" >> "$SELECTED_FILE"
+
+        # Prefill new notes if needed
+        if [ "$DEFAULT_VALUE" ]
+        then
+            echo -e "$DEFAULT_VALUE" >> "$SELECTED_FILE"
+        fi
     fi
+
 
     # Launch editor
     termite -e "$EDITOR '$SELECTED_FILE'"
 
     # Remove if empty
-    if [[ ! "$(cat '$SELECTED_FILE')" ]]
+    FILE_CONTENT=$(cat "$SELECTED_FILE")
+    if [[ ! "$FILE_CONTENT" ]]
     then
         rm "$SELECTED_FILE"
     fi
