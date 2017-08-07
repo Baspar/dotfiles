@@ -139,10 +139,10 @@ autocmd FileType css set tabstop=2 shiftwidth=2 expandtab
     nnoremap <leader>l :normal ^v$<cr>
 
     " Select all
-    nnoremap <leader>A :normal ggVG<cr>
+    nnoremap <leader>a :normal ggVG<cr>
 
     " Ags
-    nnoremap <leader>a :Ags<Space>
+    nnoremap <leader>A :Ags<Space>
 
     " Smooth Scoll
     noremap <silent> <c-b> :call smooth_scroll#up(&scroll*2, 10, 4)<CR>
