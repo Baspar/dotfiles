@@ -7,34 +7,62 @@ DEFAULT_VALUE=""
 
 
 FILES=$(ls "$DIR" | sed "s/\.md//g")
-RELATIVE_SELECTED_FILE=$(echo -e "$FILES" | rofi -i -dmenu -font 'MonofurForPowerline Nerd Font 30' -theme '/home/baspar/.bin/theme.rasi' -fullscreen -mesg 'Type your note name' -matching fuzzy)
+RELATIVE_SELECTED_FILE=$(echo -e "$FILES" | rofi \
+    -i \
+    -dmenu \
+    -fullscreen \
+    -font 'MonofurForPowerline Nerd Font 30' \
+    -theme '/home/baspar/.bin/theme.rasi' \
+    -mesg 'Type your note name' \
+    -matching fuzzy \
+    -kb-custom-1 "Alt+d")
+DELETE_NOTE=$(( $? - 10 ))
 SELECTED_FILE="$DIR/$RELATIVE_SELECTED_FILE.md"
 
 # If option is selected
 if [ "$RELATIVE_SELECTED_FILE" ]
 then
-
-    # Prefill if new file
-    if [ ! -e "$SELECTED_FILE" ]
+    # Remove note
+    if [ $DELETE_NOTE -eq 0 ]
     then
-        # Prefill title
-        echo -e "# $RELATIVE_SELECTED_FILE" >> "$SELECTED_FILE"
+        # Ask for confirmation
+        SURE_TO_REMOVE=$(echo -e "Yes\nNo" | rofi \
+            -i \
+            -dmenu \
+            -fullscreen \
+            -font 'MonofurForPowerline Nerd Font 30' \
+            -theme '/home/baspar/.bin/theme.rasi' \
+            -mesg "Do you want to remove '$RELATIVE_SELECTED_FILE'")
 
-        # Prefill new notes if needed
-        if [ "$DEFAULT_VALUE" ]
+        if [[ $SURE_TO_REMOVE == "Yes" ]]
         then
-            echo -e "$DEFAULT_VALUE" >> "$SELECTED_FILE"
+            rm "$SELECTED_FILE"
+        fi
+
+    else
+        # Prefill if new file
+        if [ ! -e "$SELECTED_FILE" ]
+        then
+            # Prefill title
+            echo -e "# $RELATIVE_SELECTED_FILE" >> "$SELECTED_FILE"
+
+            # Prefill new notes if needed
+            if [ "$DEFAULT_VALUE" ]
+            then
+                echo -e "$DEFAULT_VALUE" >> "$SELECTED_FILE"
+            fi
+        fi
+
+
+        # Launch editor
+        termite -e "$EDITOR '$SELECTED_FILE'"
+
+        # Remove if empty
+        FILE_CONTENT=$(cat "$SELECTED_FILE")
+        if [[ ! "$FILE_CONTENT" ]]
+        then
+            rm "$SELECTED_FILE"
         fi
     fi
 
-
-    # Launch editor
-    termite -e "$EDITOR '$SELECTED_FILE'"
-
-    # Remove if empty
-    FILE_CONTENT=$(cat "$SELECTED_FILE")
-    if [[ ! "$FILE_CONTENT" ]]
-    then
-        rm "$SELECTED_FILE"
-    fi
 fi
