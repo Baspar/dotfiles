@@ -49,6 +49,9 @@ bindsym $mod+d kill
 bindsym $mod+e exec ~/.bin/exec.sh
 bindsym XF86Search exec ~/.bin/exec.sh
 
+# start qn
+bindsym $mod+n exec ~/.bin/qn
+
 # There also is the (new) i3-dmenu-desktop which only displays applications
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
 # installed.

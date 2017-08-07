@@ -1,0 +1,22 @@
+#!/bin/bash
+
+#PARAMS
+EDITOR="nvim"
+DIR="$HOME/.notes/"
+
+
+FILES=$(ls "$DIR")
+RELATIVE_SELECTED_FILE=$(echo -e "$FILES" | rofi -i -dmenu -font 'MonofurForPowerline Nerd Font 30' -theme '/home/baspar/.bin/theme.rasi' -fullscreen -mesg 'Type your note name' -matching fuzzy)
+echo "-> $RELATIVE_SELECTED_FILE|"
+SELECTED_FILE="$DIR/$RELATIVE_SELECTED_FILE"
+
+if [ "$RELATIVE_SELECTED_FILE" ]
+then
+    if [ ! -e "$SELECTED_FILE" ]
+    then
+        echo "# vim: syntax=markdown" >> "$SELECTED_FILE"
+    fi
+    termite -e "$EDITOR '$SELECTED_FILE'"
+else
+    echo "Escape"
+fi
