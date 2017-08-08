@@ -163,6 +163,11 @@ autocmd FileType css set tabstop=2 shiftwidth=2 expandtab
     au FileType go nmap <localleader>ge <Plug>(go-rename)
     au FileType go nmap <localleader>gi <Plug>(go-info)
 
+    " Markdown
+    au FileType markdown nmap <localleader><localleader> :s/^\([^a-zA-Z0-9]*\)\[.\?\]/\1\[x\]<CR>:noh<CR>
+    au FileType markdown nmap <localleader><backspace> :s/^\([^a-zA-Z0-9]*\)\[.\?\]/\1\[ \]<CR>:noh<CR>
+    au FileType markdown nmap <localleader>w :s/^\([^a-zA-Z0-9]*\)\[.\?\]/\1\[-\]<CR>:noh<CR>
+
 call plug#begin('~/.config/nvim/plugged')
 " call plug#begin('~/.vim/autoload')
     " Colorschemes
