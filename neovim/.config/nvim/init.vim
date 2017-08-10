@@ -17,6 +17,9 @@ set undoreload=10000
 set hidden
 set foldmethod=syntax
 
+set termguicolors
+set t_Co=256
+
 " Function
 function! ToggleGStatus()
     if buflisted(bufname('.git/index'))
@@ -26,7 +29,6 @@ function! ToggleGStatus()
     endif
 endfunction
 command ToggleGStatus :call ToggleGStatus()
-
 
 " Indentation
 set tabstop=4 shiftwidth=4 expandtab
@@ -103,8 +105,8 @@ autocmd FileType css set tabstop=2 shiftwidth=2 expandtab
     nnoremap <Leader>\| :vs<CR>
     nnoremap <Leader>_ :sp<CR>
 
-    " Remove highlight
-    nnoremap <esc> :noh<CR><esc>
+"     " Remove highlight
+"     nnoremap <esc> :noh<CR><esc>
 
     " Tabular
     noremap <Leader>pi :PlugInstall<CR>
@@ -264,7 +266,7 @@ call plug#begin('~/.config/nvim/plugged')
 
     Plug 'easymotion/vim-easymotion'
     Plug 'terryma/vim-smooth-scroll'
-    Plug 'kassio/neoterm'
+    " Plug 'kassio/neoterm'
     Plug 'godlygeek/tabular'
     Plug 'Townk/vim-autoclose'
     Plug 'alvan/vim-closetag'
@@ -289,5 +291,8 @@ call plug#end()
 
 let g:indentLine_color_term = 0
 colorscheme alduin
+" colorscheme sierra
+" colorscheme despacio
+" colorscheme gruvbox
 let g:deoplete#enable_at_startup = 1
 au FileType javascript,jsx setl omnifunc=tern#Complete

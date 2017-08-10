@@ -23,10 +23,10 @@ alias mv='amv -g'
 alias free='free -h'
 alias f='free'
 
-alias vimrc='nvim ~/.vimrc'
-alias vim='nvim'
-alias vi='nvim'
-alias v='nvim'
+# alias vimrc='nvim ~/.vimrc'
+# alias vim='nvim'
+# alias vi='nvim'
+# alias v='nvim'
 
 alias o='xdg-open'
 
