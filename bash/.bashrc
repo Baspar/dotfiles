@@ -20,13 +20,16 @@ alias xx='termite& disown'
 alias cp='acp -g'
 alias mv='amv -g'
 
+alias m='make'
+alias mc='make clean'
+
 alias free='free -h'
 alias f='free'
 
-# alias vimrc='nvim ~/.vimrc'
+alias vimrc='vim ~/.vimrc'
 # alias vim='nvim'
-# alias vi='nvim'
-# alias v='nvim'
+alias vi='vim'
+alias v='vim'
 
 alias o='xdg-open'
 

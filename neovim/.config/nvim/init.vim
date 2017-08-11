@@ -17,7 +17,7 @@ set undoreload=10000
 set hidden
 set foldmethod=syntax
 
-set termguicolors
+" set termguicolors
 set t_Co=256
 
 " Function
@@ -70,8 +70,6 @@ autocmd FileType css set tabstop=2 shiftwidth=2 expandtab
     noremap <leader>cp "+p
     noremap <leader>cd "+d
 
-
-
     " Buffer navigation
     map <leader>< :bN<CR>
     map <leader>> :bn<CR>
@@ -106,7 +104,7 @@ autocmd FileType css set tabstop=2 shiftwidth=2 expandtab
     nnoremap <Leader>_ :sp<CR>
 
 "     " Remove highlight
-"     nnoremap <esc> :noh<CR><esc>
+    nnoremap <leader><esc> :noh<CR><esc>
 
     " Tabular
     noremap <Leader>pi :PlugInstall<CR>
@@ -276,6 +274,7 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'ternjs/tern_for_vim', { 'for': ['javascript', 'javascript.jsx'] }
     " Plug 'carlitux/deoplete-ternjs', { 'for': ['javascript', 'javascript.jsx'] }
     Plug 'mbbill/undotree'
+    Plug 'tpope/vim-dispatch'
 
     " Love-Hate group
     " Plug 'flazz/vim-colorschemes'
