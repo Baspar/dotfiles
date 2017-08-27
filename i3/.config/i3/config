@@ -47,6 +47,7 @@ bindsym $mod+d kill
 
 # start dmenu (a program launcher)
 bindsym $mod+e exec ~/.bin/exec.sh
+bindsym $mod+space exec ~/.bin/exec.sh
 bindsym XF86Search exec ~/.bin/exec.sh
 
 # start nb
@@ -100,13 +101,13 @@ bindsym $mod+s fullscreen toggle
 bindsym $mod+Shift+space floating toggle
 
 # change focus between tiling / floating windows
-bindsym $mod+space focus mode_toggle
+# bindsym $mod+space focus mode_toggle
 
 # focus the parent container
-bindsym $mod+a focus parent
+bindsym $mod+a focus child
 
 # focus the child container
-bindsym $mod+Shift+a focus child
+bindsym $mod+Shift+a focus parent
 
 # switch to workspace
 bindsym $mod+1 workspace $desktop1
@@ -220,8 +221,6 @@ bindsym $mod+Shift+y exec ~/.bin/toggleSynaptic.sh
 
 # Make the currently focused window a scratchpad
 bindsym $mod+z move scratchpad
-
-# Show the first scratchpad window
 bindsym $mod+Shift+z scratchpad show
 
 exec --no-startup-id compton

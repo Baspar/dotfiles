@@ -34,8 +34,8 @@ foreground = #ffffff
 foreground_bold = #dfaf8f
 ;background = #272521
 ;background = #03142c
-background = #202020
-
+; background = #202020
+background = rgba(32, 32, 32, 0.95)
 # 20% background transparency (requires a compositor)
 #background = rgba(63, 63, 63, 0.8)
 

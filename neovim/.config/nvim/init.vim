@@ -41,18 +41,18 @@ autocmd FileType css set tabstop=2 shiftwidth=2 expandtab
     :vnoremap > >gv
 
     " Triple global indent
-    map <leader>f :Autoformat<CR>
+    nmap <leader>f :Autoformat<CR>
 
     " CTRL-P
     map \ :CtrlP<CR>
 
     " NerdTree
     map <C-e> :NERDTreeToggle<CR>
-    map <leader>e :NERDTreeToggle<CR>
+    nmap <leader>e :NERDTreeToggle<CR>
 
     " Undo Tree
     map <C-u> :UndotreeToggle<CR>
-    map <leader>u :UndotreeToggle<CR>
+    nmap <leader>u :UndotreeToggle<CR>
 
     " Disable arrow keys
     imap <up> <nop>
@@ -71,9 +71,9 @@ autocmd FileType css set tabstop=2 shiftwidth=2 expandtab
     noremap <leader>cd "+d
 
     " Buffer navigation
-    map <leader>< :bN<CR>
-    map <leader>> :bn<CR>
-    map <leader>bd :bn<CR> :bd #<CR>
+    nmap <leader>< :bN<CR>
+    nmap <leader>> :bn<CR>
+    nmap <leader>bd :bn<CR> :bd #<CR>
     nnoremap <Leader>s :update<CR>
     nnoremap <Leader>w :w<CR>
     nnoremap <leader>q :q<CR>
@@ -133,7 +133,8 @@ autocmd FileType css set tabstop=2 shiftwidth=2 expandtab
     nnoremap <leader>gpl :Dispatch! git pull<CR>
 
     " Goyo
-    nnoremap <leader>G :Goyo<CR>:Limelight!!<CR>
+    nnoremap <leader>G :Goyo<CR>:hi Normal guibg=NONE ctermbg=NONE<CR>
+    nnoremap <leader>L :Limelight!!<CR>
 
     " Select line
     nnoremap <leader>l :normal ^v$<cr>
@@ -164,9 +165,12 @@ autocmd FileType css set tabstop=2 shiftwidth=2 expandtab
     au FileType go nmap <localleader>gi <Plug>(go-info)
 
     " Markdown
-    au FileType markdown nmap <localleader><localleader> :s/^\([^a-zA-Z0-9]*\)\[.\?\]/\1\[x\]<CR>:noh<CR>
-    au FileType markdown nmap <localleader><backspace> :s/^\([^a-zA-Z0-9]*\)\[.\?\]/\1\[ \]<CR>:noh<CR>
-    au FileType markdown nmap <localleader>w :s/^\([^a-zA-Z0-9]*\)\[.\?\]/\1\[-\]<CR>:noh<CR>
+    au FileType markdown nmap <localleader><localleader> :s/^\([^a-zA-Z0-9]*\)\[.\?\]/\1\[x\]<CR>:noh<CR>j
+    au FileType markdown vmap <localleader><localleader> :'<,'>s/^\([^a-zA-Z0-9]*\)\[.\?\]/\1\[x\]<CR>:noh<CR>
+    au FileType markdown nmap <localleader><backspace> :s/^\([^a-zA-Z0-9]*\)\[.\?\]/\1\[ \]<CR>:noh<CR>j
+    au FileType markdown vmap <localleader><backspace> :'<,'>s/^\([^a-zA-Z0-9]*\)\[.\?\]/\1\[ \]<CR>:noh<CR>
+    au FileType markdown nmap <localleader>w :s/^\([^a-zA-Z0-9]*\)\[.\?\]/\1\[-\]<CR>:noh<CR>j
+    au FileType markdown vmap <localleader>w :'<,'>s/^\([^a-zA-Z0-9]*\)\[.\?\]/\1\[-\]<CR>:noh<CR>
 
 call plug#begin('~/.config/nvim/plugged')
 " call plug#begin('~/.vim/autoload')
@@ -225,6 +229,21 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'fatih/vim-go'
         let g:go_fmt_command = "goimports"
 
+    " LIGHLINE
+    " Plug 'itchyny/lightline.vim'
+    " set laststatus=2
+    " set noshowmode
+    " let g:lightline = {
+    "             \ 'colorscheme': 'jellybeans',
+    "             \ 'active': {
+    "             \   'left': [ [ 'mode', 'paste' ],
+    "             \             [ 'readonly', 'filename', 'modified' ] ]
+    "             \ },
+    "             \ 'component': {
+    "             \   'helloworld': 'Hello, world!'
+    "             \ },
+    "             \ }
+
     " AIRLINE
     Plug 'vim-airline/vim-airline'
         let g:airline#extensions#tabline#enabled = 1
@@ -233,6 +252,7 @@ call plug#begin('~/.config/nvim/plugged')
         let g:airline_theme='ubaryd'
         set laststatus=2
     Plug 'vim-airline/vim-airline-themes'
+
 
     " Text obj
     Plug 'kana/vim-textobj-user'
@@ -289,7 +309,10 @@ call plug#begin('~/.config/nvim/plugged')
 call plug#end()
 
 let g:indentLine_color_term = 0
+
+" Color
 colorscheme alduin
+hi Normal guibg=NONE ctermbg=NONE
 " colorscheme sierra
 " colorscheme despacio
 " colorscheme gruvbox
