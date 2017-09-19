@@ -6,7 +6,8 @@ then
 fi
 
 etat=$(pulseaudio-ctl full-status | cut -d ' ' -f 2)
-pulseaudio-ctl down 5
+# pulseaudio-ctl down 5
+pactl set-sink-volume 0 -5%
 pc=$(pulseaudio-ctl full-status | cut -d ' ' -f 1)
 
 if [ $etat == "no" ]
