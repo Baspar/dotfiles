@@ -16,6 +16,7 @@ set undolevels=1000
 set undoreload=10000
 set hidden
 set foldmethod=syntax
+set foldmethod=indent
 
 " set termguicolors
 set t_Co=256
@@ -36,144 +37,144 @@ autocmd FileType javascript,jsx set tabstop=2 shiftwidth=2 expandtab
 autocmd FileType css set tabstop=2 shiftwidth=2 expandtab
 
 " Custom key map
-    " Keep visual selection
-    :vnoremap < <gv
-    :vnoremap > >gv
+" Keep visual selection
+vnoremap < <gv
+vnoremap > >gv
 
-    " Triple global indent
-    nmap <leader>f :Autoformat<CR>
+" Triple global indent
+nmap <leader>f :Autoformat<CR>
 
-    " CTRL-P
-    map \ :CtrlP<CR>
+" CTRL-P
+map \ :CtrlP<CR>
 
-    " NerdTree
-    map <C-e> :NERDTreeToggle<CR>
-    nmap <leader>e :NERDTreeToggle<CR>
+" NerdTree
+map <C-e> :NERDTreeToggle<CR>
+nmap <leader>e :NERDTreeToggle<CR>
+"
+" Undo Tree
+map <C-u> :UndotreeToggle<CR>
+nmap <leader>u :UndotreeToggle<CR>
+"
+" Disable arrow keys
+imap <up> <nop>
+imap <down> <nop>
+imap <left> <nop>
+imap <right> <nop>
+map <up> <nop>
+map <down> <nop>
+map <left> <nop>
+map <right> <nop>
+"
+" Clipboard usage
+noremap <leader>cy "+y
+noremap <leader>cP "+P
+noremap <leader>cp "+p
+noremap <leader>cd "+d
 
-    " Undo Tree
-    map <C-u> :UndotreeToggle<CR>
-    nmap <leader>u :UndotreeToggle<CR>
+" Buffer navigation
+nmap <leader>< :bN<CR>
+nmap <leader>> :bn<CR>
+nmap <leader>bd :bn<CR> :bd #<CR>
+nnoremap <Leader>s :update<CR>
+nnoremap <Leader>w :w<CR>
+nnoremap <leader>q :q<CR>
+nnoremap <leader>Q :q!<CR>
 
-    " Disable arrow keys
-    imap <up> <nop>
-    imap <down> <nop>
-    imap <left> <nop>
-    imap <right> <nop>
-    map <up> <nop>
-    map <down> <nop>
-    map <left> <nop>
-    map <right> <nop>
+" Split nav
+nnoremap <C-Down> <C-w>j
+nnoremap <C-Up> <C-w>k
+nnoremap <C-Left> <C-w>h
+nnoremap <C-Right> <C-w>l
 
-    " Clipboard usage
-    noremap <leader>cy "+y
-    noremap <leader>cP "+P
-    noremap <leader>cp "+p
-    noremap <leader>cd "+d
+" TagBar
+map <Leader>B :TagbarToggle<CR>
 
-    " Buffer navigation
-    nmap <leader>< :bN<CR>
-    nmap <leader>> :bn<CR>
-    nmap <leader>bd :bn<CR> :bd #<CR>
-    nnoremap <Leader>s :update<CR>
-    nnoremap <Leader>w :w<CR>
-    nnoremap <leader>q :q<CR>
-    nnoremap <leader>Q :q!<CR>
+" Terminal
+nnoremap <Leader>t :terminal<CR>
 
-    " Split nav
-    nnoremap <C-Down> <C-w>j
-    nnoremap <C-Up> <C-w>k
-    nnoremap <C-Left> <C-w>h
-    nnoremap <C-Right> <C-w>l
+" Neoterm
+autocmd FileType clojure map <buffer> <Leader>zz :normal mava)<CR> :TREPLSendSelection<CR>`a
+nnoremap <Leader>Z :normal maV<CR> :TREPLSendSelection<CR>`a
 
-    " TagBar
-    map <Leader>B :TagbarToggle<CR>
+" Reload nvim config
+nnoremap <Leader>R :source ~/.config/nvim/init.vim<CR>
+nnoremap <Leader>O :edit ~/.vimrc<CR>
 
-    " Terminal
-    nnoremap <Leader>t :terminal<CR>
+" Splits
+nnoremap <Leader>\| :vs<CR>
+nnoremap <Leader>_ :sp<CR>
 
-    " Neoterm
-    autocmd FileType clojure map <buffer> <Leader>zz :normal mava)<CR> :TREPLSendSelection<CR>`a
-    nnoremap <Leader>Z :normal maV<CR> :TREPLSendSelection<CR>`a
+" Remove highlight
+nnoremap <leader><esc> :noh<CR><esc>
 
-    " Reload nvim config
-    nnoremap <Leader>R :source ~/.config/nvim/init.vim<CR>
-    nnoremap <Leader>O :edit ~/.vimrc<CR>
+" Tabular
+noremap <Leader>pi :PlugInstall<CR>
+noremap <Leader>pu :PlugUpdate<CR>
+noremap <Leader>pc :PlugClean<CR>
 
-    " Splits
-    nnoremap <Leader>\| :vs<CR>
-    nnoremap <Leader>_ :sp<CR>
+" Tabular
+noremap <Leader>T :Tabular /
 
-"     " Remove highlight
-    nnoremap <leader><esc> :noh<CR><esc>
+" Fugitive
+nnoremap <leader>ga :Git add %:p<CR><CR>
+" nnoremap <leader>gs :Gstatus<CR>
+nnoremap <leader>gs :ToggleGStatus<CR>
+nnoremap <leader>gc :Gcommit -v -q<CR>
+nnoremap <leader>gt :Gcommit -v -q %:p<CR>
+nnoremap <leader>gd :Gdiff<CR>
+nnoremap <leader>ge :Gedit<CR>
+nnoremap <leader>gr :Gread<CR>
+nnoremap <leader>gw :Gwrite<CR><CR>
+nnoremap <leader>gl :silent! Glog<CR>:bot copen<CR>
+nnoremap <leader>gp :Ggrep<Space>
+nnoremap <leader>gm :Gmove<Space>
+nnoremap <leader>gb :Git branch<Space>
+nnoremap <leader>go :Git checkout<Space>
+nnoremap <leader>gps :Dispatch! git push<CR>
+nnoremap <leader>gpl :Dispatch! git pull<CR>
 
-    " Tabular
-    noremap <Leader>pi :PlugInstall<CR>
-    noremap <Leader>pu :PlugUpdate<CR>
-    noremap <Leader>pc :PlugClean<CR>
+" Goyo
+nnoremap <leader>G :Goyo<CR>:hi Normal guibg=NONE ctermbg=NONE<CR>
+nnoremap <leader>L :Limelight!!<CR>
 
-    " Tabular
-    noremap <Leader>T :Tabular /
+" Select line
+nnoremap <leader>l :normal ^v$<cr>
 
-    " Fugitive
-    nnoremap <leader>ga :Git add %:p<CR><CR>
-    " nnoremap <leader>gs :Gstatus<CR>
-    nnoremap <leader>gs :ToggleGStatus<CR>
-    nnoremap <leader>gc :Gcommit -v -q<CR>
-    nnoremap <leader>gt :Gcommit -v -q %:p<CR>
-    nnoremap <leader>gd :Gdiff<CR>
-    nnoremap <leader>ge :Gedit<CR>
-    nnoremap <leader>gr :Gread<CR>
-    nnoremap <leader>gw :Gwrite<CR><CR>
-    nnoremap <leader>gl :silent! Glog<CR>:bot copen<CR>
-    nnoremap <leader>gp :Ggrep<Space>
-    nnoremap <leader>gm :Gmove<Space>
-    nnoremap <leader>gb :Git branch<Space>
-    nnoremap <leader>go :Git checkout<Space>
-    nnoremap <leader>gps :Dispatch! git push<CR>
-    nnoremap <leader>gpl :Dispatch! git pull<CR>
+" Select all
+nnoremap <leader>a :normal ggVG<cr>
 
-    " Goyo
-    nnoremap <leader>G :Goyo<CR>:hi Normal guibg=NONE ctermbg=NONE<CR>
-    nnoremap <leader>L :Limelight!!<CR>
+" Ags
+nnoremap <leader>A :Ags<Space>
 
-    " Select line
-    nnoremap <leader>l :normal ^v$<cr>
+" Smooth Scoll
+noremap <silent> <c-b> :call smooth_scroll#up(&scroll*2, 10, 4)<CR>
+noremap <silent> <PageUp> :call smooth_scroll#up(&scroll*2, 10, 4)<CR>
+noremap <silent> <c-f> :call smooth_scroll#down(&scroll*2, 10, 4)<CR>
+noremap <silent> <PageDown> :call smooth_scroll#down(&scroll*2, 10, 4)<CR>
 
-    " Select all
-    nnoremap <leader>a :normal ggVG<cr>
+" Ale
+nmap [a <Plug>(ale_previous_wrap)
+nmap ]a <Plug>(ale_next_wrap)
 
-    " Ags
-    nnoremap <leader>A :Ags<Space>
+" Vim-Go
+au FileType go nmap <localleader>gr <Plug>(go-run)
+au FileType go nmap <localleader>gb <Plug>(go-build)
+au FileType go nmap <localleader>gt <Plug>(go-test)
+au FileType go nmap <localleader>gc <Plug>(go-coverage)
+au FileType go nmap <localleader>gd <Plug>(go-doc)
+au FileType go nmap <localleader>ge <Plug>(go-rename)
+au FileType go nmap <localleader>gi <Plug>(go-info)
 
-    " Smooth Scoll
-    noremap <silent> <c-b> :call smooth_scroll#up(&scroll*2, 10, 4)<CR>
-    noremap <silent> <PageUp> :call smooth_scroll#up(&scroll*2, 10, 4)<CR>
-    noremap <silent> <c-f> :call smooth_scroll#down(&scroll*2, 10, 4)<CR>
-    noremap <silent> <PageDown> :call smooth_scroll#down(&scroll*2, 10, 4)<CR>
-
-    " Ale
-    nmap [a <Plug>(ale_previous_wrap)
-    nmap ]a <Plug>(ale_next_wrap)
-
-    " Vim-Go
-    au FileType go nmap <localleader>gr <Plug>(go-run)
-    au FileType go nmap <localleader>gb <Plug>(go-build)
-    au FileType go nmap <localleader>gt <Plug>(go-test)
-    au FileType go nmap <localleader>gc <Plug>(go-coverage)
-    au FileType go nmap <localleader>gd <Plug>(go-doc)
-    au FileType go nmap <localleader>ge <Plug>(go-rename)
-    au FileType go nmap <localleader>gi <Plug>(go-info)
-
-    " Markdown
-    au FileType markdown nmap <localleader><localleader> :s/^\([^a-zA-Z0-9]*\)\[.\?\]/\1\[x\]<CR>:noh<CR>j
-    au FileType markdown vmap <localleader><localleader> :'<,'>s/^\([^a-zA-Z0-9]*\)\[.\?\]/\1\[x\]<CR>:noh<CR>
-    au FileType markdown nmap <localleader><backspace> :s/^\([^a-zA-Z0-9]*\)\[.\?\]/\1\[ \]<CR>:noh<CR>j
-    au FileType markdown vmap <localleader><backspace> :'<,'>s/^\([^a-zA-Z0-9]*\)\[.\?\]/\1\[ \]<CR>:noh<CR>
-    au FileType markdown nmap <localleader>w :s/^\([^a-zA-Z0-9]*\)\[.\?\]/\1\[-\]<CR>:noh<CR>j
-    au FileType markdown vmap <localleader>w :'<,'>s/^\([^a-zA-Z0-9]*\)\[.\?\]/\1\[-\]<CR>:noh<CR>
-
+" Markdown
+au FileType markdown nmap <localleader><localleader> :s/^\([^a-zA-Z0-9]*\)\[.\?\]/\1\[x\]<CR>:noh<CR>j
+au FileType markdown vmap <localleader><localleader> :'<,'>s/^\([^a-zA-Z0-9]*\)\[.\?\]/\1\[x\]<CR>:noh<CR>
+au FileType markdown nmap <localleader><backspace> :s/^\([^a-zA-Z0-9]*\)\[.\?\]/\1\[ \]<CR>:noh<CR>j
+au FileType markdown vmap <localleader><backspace> :'<,'>s/^\([^a-zA-Z0-9]*\)\[.\?\]/\1\[ \]<CR>:noh<CR>
+au FileType markdown nmap <localleader>w :s/^\([^a-zA-Z0-9]*\)\[.\?\]/\1\[-\]<CR>:noh<CR>j
+au FileType markdown vmap <localleader>w :'<,'>s/^\([^a-zA-Z0-9]*\)\[.\?\]/\1\[-\]<CR>:noh<CR>
+"
 call plug#begin('~/.config/nvim/plugged')
-" call plug#begin('~/.vim/autoload')
+    " call plug#begin('~/.vim/autoload')
     " Colorschemes
     Plug 'AlessandroYorba/alduin'
     Plug 'AlessandroYorba/Sierra'
@@ -189,19 +190,19 @@ call plug#begin('~/.config/nvim/plugged')
 
     " CTRL P
     Plug 'ctrlpvim/ctrlp.vim'
-        let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
+    let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
 
     " TAGBAR
     Plug 'majutsushi/tagbar'
 
-     " NERDTREE
+    " NERDTREE
     Plug 'ryanoasis/vim-devicons'
-        let g:webdevicons_conceal_nerdtree_brackets = 0
-        let g:WebDevIconsNerdTreeAfterGlyphPadding = ''
-        let g:WebDevIconsNerdTreeGitPluginForceVAlign = 0
+    let g:webdevicons_conceal_nerdtree_brackets = 0
+    let g:WebDevIconsNerdTreeAfterGlyphPadding = ''
+    let g:WebDevIconsNerdTreeGitPluginForceVAlign = 0
     Plug 'scrooloose/nerdtree'
-        autocmd StdinReadPre * let s:std_in=1
-        " autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+    autocmd StdinReadPre * let s:std_in=1
+    " autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
     Plug 'Xuyuanp/nerdtree-git-plugin'
     Plug 'low-ghost/nerdtree-fugitive'
 
@@ -209,7 +210,7 @@ call plug#begin('~/.config/nvim/plugged')
     " Javascript/React.JS
     " Plug 'othree/yajs.vim'
     Plug 'alvan/vim-closetag'
-        let g:closetag_filenames = "*.html,*.xhtml,*.phtml,*.php,*.jsx,*.js"
+    let g:closetag_filenames = "*.html,*.xhtml,*.phtml,*.php,*.jsx,*.js"
     Plug 'mattn/emmet-vim'
     " Plug 'fleischie/vim-styled-components'
     Plug 'pangloss/vim-javascript'
@@ -221,18 +222,19 @@ call plug#begin('~/.config/nvim/plugged')
     " Plug 'clojure-vim/nvim-parinfer.js'
     Plug 'guns/vim-sexp'
     Plug 'guns/vim-clojure-static'
-        let g:clojure_align_multiline_strings = 1
+    let g:clojure_align_multiline_strings = 1
     Plug 'tpope/vim-sexp-mappings-for-regular-people'
-        let g:sexp_insert_after_wrap = 'false'
+    let g:sexp_insert_after_wrap = 'false'
 
     " GOLANG
     Plug 'fatih/vim-go'
-        let g:go_fmt_command = "goimports"
+    let g:go_fmt_command = "goimports"
 
     " LIGHLINE
-    " Plug 'itchyny/lightline.vim'
-    " set laststatus=2
-    " set noshowmode
+    Plug 'itchyny/lightline.vim'
+    set laststatus=2
+    set noshowmode
+    let g:lightline = {'colorscheme': 'seoul256'}
     " let g:lightline = {
     "             \ 'colorscheme': 'jellybeans',
     "             \ 'active': {
@@ -245,14 +247,13 @@ call plug#begin('~/.config/nvim/plugged')
     "             \ }
 
     " AIRLINE
-    Plug 'vim-airline/vim-airline'
-        let g:airline#extensions#tabline#enabled = 1
-        let g:airline_powerline_fonts = 1
-        " let g:airline_theme='distinguished'
-        let g:airline_theme='ubaryd'
-        set laststatus=2
-    Plug 'vim-airline/vim-airline-themes'
-
+    " Plug 'vim-airline/vim-airline'
+    "     let g:airline#extensions#tabline#enabled = 1
+    "     let g:airline_powerline_fonts = 1
+    "     " let g:airline_theme='distinguished'
+    "     let g:airline_theme='ubaryd'
+    " Plug 'vim-airline/vim-airline-themes'
+    "
 
     " Text obj
     Plug 'kana/vim-textobj-user'
@@ -276,11 +277,11 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'gabesoft/vim-ags'
     Plug 'machakann/vim-sandwich'
     Plug 'ntpeters/vim-better-whitespace'
-        autocmd BufWritePre * StripWhitespace
+    autocmd BufWritePre * StripWhitespace
     Plug 'junegunn/goyo.vim'
     Plug 'junegunn/limelight.vim'
-        let g:limelight_conceal_ctermfg = 'gray'
-        let g:limelight_conceal_ctermfg = 240
+    let g:limelight_conceal_ctermfg = 'gray'
+    let g:limelight_conceal_ctermfg = 240
 
     Plug 'easymotion/vim-easymotion'
     Plug 'terryma/vim-smooth-scroll'
