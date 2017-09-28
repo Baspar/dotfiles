@@ -49,7 +49,7 @@ alias weather='curl -s wttr.in | head -n -2'
 alias scd='cd'
 alias sl='ls'
 
-export EDITOR='nvim'
+export EDITOR='vim'
 export GOPATH="$HOME/.go"
 
 alias j='jobs'
