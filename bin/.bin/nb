@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #PARAMS
-EDITOR="nvim"
+# EDITOR="nvim"
 DIR="$HOME/.notes/"
 DEFAULT_VALUE=""
 

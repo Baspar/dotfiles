@@ -15,6 +15,8 @@ alias gs='git status'
 alias gS='git stash'
 alias gc='git commit'
 alias gC='git checkout'
+function gclone () {
+}
 alias xx='termite& disown'
 
 alias cp='acp -g'
@@ -48,6 +50,8 @@ alias weather='curl -s wttr.in | head -n -2'
 
 alias scd='cd'
 alias sl='ls'
+
+alias py='python3'
 
 export EDITOR='vim'
 export GOPATH="$HOME/.go"

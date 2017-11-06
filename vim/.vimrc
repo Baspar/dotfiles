@@ -17,6 +17,9 @@ set undoreload=10000
 set hidden
 set foldmethod=syntax
 set foldmethod=indent
+set wildmenu
+
+" TO BE CHANGED
 
 " set termguicolors
 set t_Co=256
@@ -29,7 +32,7 @@ function! ToggleGStatus()
         Gstatus
     endif
 endfunction
-command ToggleGStatus :call ToggleGStatus()
+command! ToggleGStatus :call ToggleGStatus()
 
 " Indentation
 set tabstop=4 shiftwidth=4 expandtab
@@ -44,26 +47,30 @@ vnoremap > >gv
 " Triple global indent
 nmap <leader>f :Autoformat<CR>
 
+" Instant Markdown
+let g:instant_markdown_autostart = 0
+nnoremap <leader>M :InstantMarkdownPreview<CR>
+
 " CTRL-P
 map \ :CtrlP<CR>
 
 " NerdTree
 map <C-e> :NERDTreeToggle<CR>
 nmap <leader>e :NERDTreeToggle<CR>
-"
+
 " Undo Tree
 map <C-u> :UndotreeToggle<CR>
 nmap <leader>u :UndotreeToggle<CR>
-"
+
 " Disable arrow keys
-imap <up> <nop>
-imap <down> <nop>
-imap <left> <nop>
-imap <right> <nop>
-map <up> <nop>
-map <down> <nop>
-map <left> <nop>
-map <right> <nop>
+inoremap <up> <nop>
+inoremap <down> <nop>
+inoremap <left> <nop>
+inoremap <right> <nop>
+noremap <up> <nop>
+noremap <down> <nop>
+noremap <left> <nop>
+noremap <right> <nop>
 "
 " Clipboard usage
 noremap <leader>cy "+y
@@ -90,14 +97,14 @@ nnoremap <C-Right> <C-w>l
 map <Leader>B :TagbarToggle<CR>
 
 " Terminal
-nnoremap <Leader>t :terminal<CR>
+nnoremap <Leader>t :set termsize=0x0<CR>:terminal<CR>
 
 " Neoterm
 autocmd FileType clojure map <buffer> <Leader>zz :normal mava)<CR> :TREPLSendSelection<CR>`a
 nnoremap <Leader>Z :normal maV<CR> :TREPLSendSelection<CR>`a
 
 " Reload nvim config
-nnoremap <Leader>R :source ~/.config/nvim/init.vim<CR>
+nnoremap <Leader>R :source ~/.vimrc<CR>
 nnoremap <Leader>O :edit ~/.vimrc<CR>
 
 " Splits
@@ -121,17 +128,16 @@ nnoremap <leader>ga :Git add %:p<CR><CR>
 nnoremap <leader>gs :ToggleGStatus<CR>
 nnoremap <leader>gc :Gcommit -v -q<CR>
 nnoremap <leader>gt :Gcommit -v -q %:p<CR>
-nnoremap <leader>gd :Gdiff<CR>
+nnoremap <leader>gd :Gvdiff<CR>
 nnoremap <leader>ge :Gedit<CR>
 nnoremap <leader>gr :Gread<CR>
 nnoremap <leader>gw :Gwrite<CR><CR>
 nnoremap <leader>gl :silent! Glog<CR>:bot copen<CR>
-nnoremap <leader>gp :Ggrep<Space>
 nnoremap <leader>gm :Gmove<Space>
 nnoremap <leader>gb :Git branch<Space>
 nnoremap <leader>go :Git checkout<Space>
-nnoremap <leader>gps :Dispatch! git push<CR>
-nnoremap <leader>gpl :Dispatch! git pull<CR>
+nnoremap <leader>gp :set termsize=10x0<CR>:term git push<CR>
+nnoremap <leader>gP :set termsize=10x0<CR>:term git pull<CR>
 
 " Goyo
 nnoremap <leader>G :Goyo<CR>:hi Normal guibg=NONE ctermbg=NONE<CR>
@@ -166,6 +172,7 @@ au FileType go nmap <localleader>ge <Plug>(go-rename)
 au FileType go nmap <localleader>gi <Plug>(go-info)
 
 " Markdown
+au FileType markdown nmap <localleader>n :normal o- [-]<CR>hr jk
 au FileType markdown nmap <localleader><localleader> :s/^\([^a-zA-Z0-9]*\)\[.\?\]/\1\[x\]<CR>:noh<CR>j
 au FileType markdown vmap <localleader><localleader> :'<,'>s/^\([^a-zA-Z0-9]*\)\[.\?\]/\1\[x\]<CR>:noh<CR>
 au FileType markdown nmap <localleader><backspace> :s/^\([^a-zA-Z0-9]*\)\[.\?\]/\1\[ \]<CR>:noh<CR>j
@@ -213,8 +220,9 @@ call plug#begin('~/.config/nvim/plugged')
     let g:closetag_filenames = "*.html,*.xhtml,*.phtml,*.php,*.jsx,*.js"
     Plug 'mattn/emmet-vim'
     " Plug 'fleischie/vim-styled-components'
-    Plug 'pangloss/vim-javascript'
-    Plug 'maxmellon/vim-jsx-pretty'
+    " Plug 'pangloss/vim-javascript'
+    " Plug 'maxmellon/vim-jsx-pretty'
+    Plug 'sheerun/vim-polyglot'
 
 
     " CLOJURE
@@ -296,6 +304,8 @@ call plug#begin('~/.config/nvim/plugged')
     " Plug 'carlitux/deoplete-ternjs', { 'for': ['javascript', 'javascript.jsx'] }
     Plug 'mbbill/undotree'
     Plug 'tpope/vim-dispatch'
+
+    " Plug 'chrisbra/unicode.vim'
 
     " Love-Hate group
     " Plug 'flazz/vim-colorschemes'
