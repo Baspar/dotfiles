@@ -32,7 +32,6 @@ function! ToggleGStatus()
         Gstatus
     endif
 endfunction
-command! ToggleGStatus :call ToggleGStatus()
 
 " Indentation
 set tabstop=4 shiftwidth=4 expandtab
@@ -104,8 +103,8 @@ autocmd FileType clojure map <buffer> <Leader>zz :normal mava)<CR> :TREPLSendSel
 nnoremap <Leader>Z :normal maV<CR> :TREPLSendSelection<CR>`a
 
 " Reload nvim config
-nnoremap <Leader>R :source ~/.vimrc<CR>
-nnoremap <Leader>O :edit ~/.vimrc<CR>
+nnoremap <Leader>R :source $MYVIMRC<CR>
+nnoremap <Leader>O :edit $MYVIMRC<CR>
 
 " Splits
 nnoremap <Leader>\| :vs<CR>
@@ -124,8 +123,7 @@ noremap <Leader>T :Tabular /
 
 " Fugitive
 nnoremap <leader>ga :Git add %:p<CR><CR>
-" nnoremap <leader>gs :Gstatus<CR>
-nnoremap <leader>gs :ToggleGStatus<CR>
+nnoremap <leader>gs :call ToggleGStatus()<CR>
 nnoremap <leader>gc :Gcommit -v -q<CR>
 nnoremap <leader>gt :Gcommit -v -q %:p<CR>
 nnoremap <leader>gd :Gvdiff<CR>
@@ -181,7 +179,6 @@ au FileType markdown nmap <localleader>w :s/^\([^a-zA-Z0-9]*\)\[.\?\]/\1\[-\]<CR
 au FileType markdown vmap <localleader>w :'<,'>s/^\([^a-zA-Z0-9]*\)\[.\?\]/\1\[-\]<CR>:noh<CR>
 "
 call plug#begin('~/.config/nvim/plugged')
-    " call plug#begin('~/.vim/autoload')
     " Colorschemes
     Plug 'AlessandroYorba/alduin'
     Plug 'AlessandroYorba/Sierra'
@@ -190,17 +187,11 @@ call plug#begin('~/.config/nvim/plugged')
 
     " Syntax
     Plug 'w0rp/ale'
-    let g:ale_linters = {
-                \   'javascript': ['standard'],
-                \}
-    Plug 'Chiel92/vim-autoformat'
+    let g:ale_linters = {'javascript': ['standard']}
 
     " CTRL P
     Plug 'ctrlpvim/ctrlp.vim'
     let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
-
-    " TAGBAR
-    Plug 'majutsushi/tagbar'
 
     " NERDTREE
     Plug 'ryanoasis/vim-devicons'
@@ -209,25 +200,17 @@ call plug#begin('~/.config/nvim/plugged')
     let g:WebDevIconsNerdTreeGitPluginForceVAlign = 0
     Plug 'scrooloose/nerdtree'
     autocmd StdinReadPre * let s:std_in=1
-    " autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
     Plug 'Xuyuanp/nerdtree-git-plugin'
     Plug 'low-ghost/nerdtree-fugitive'
 
 
     " Javascript/React.JS
-    " Plug 'othree/yajs.vim'
     Plug 'alvan/vim-closetag'
     let g:closetag_filenames = "*.html,*.xhtml,*.phtml,*.php,*.jsx,*.js"
-    Plug 'mattn/emmet-vim'
-    " Plug 'fleischie/vim-styled-components'
-    " Plug 'pangloss/vim-javascript'
-    " Plug 'maxmellon/vim-jsx-pretty'
     Plug 'sheerun/vim-polyglot'
 
 
     " CLOJURE
-    " Plug 'neovim/node-host'
-    " Plug 'clojure-vim/nvim-parinfer.js'
     Plug 'guns/vim-sexp'
     Plug 'guns/vim-clojure-static'
     let g:clojure_align_multiline_strings = 1
@@ -235,53 +218,29 @@ call plug#begin('~/.config/nvim/plugged')
     let g:sexp_insert_after_wrap = 'false'
 
     " GOLANG
-    Plug 'fatih/vim-go'
-    let g:go_fmt_command = "goimports"
+    " Plug 'fatih/vim-go'
+    " let g:go_fmt_command = "goimports"
 
     " LIGHLINE
     Plug 'itchyny/lightline.vim'
     set laststatus=2
     set noshowmode
     let g:lightline = {'colorscheme': 'seoul256'}
-    " let g:lightline = {
-    "             \ 'colorscheme': 'jellybeans',
-    "             \ 'active': {
-    "             \   'left': [ [ 'mode', 'paste' ],
-    "             \             [ 'readonly', 'filename', 'modified' ] ]
-    "             \ },
-    "             \ 'component': {
-    "             \   'helloworld': 'Hello, world!'
-    "             \ },
-    "             \ }
-
-    " AIRLINE
-    " Plug 'vim-airline/vim-airline'
-    "     let g:airline#extensions#tabline#enabled = 1
-    "     let g:airline_powerline_fonts = 1
-    "     " let g:airline_theme='distinguished'
-    "     let g:airline_theme='ubaryd'
-    " Plug 'vim-airline/vim-airline-themes'
-    "
 
     " Text obj
     Plug 'kana/vim-textobj-user'
-    " Plug 'kana/vim-textobj-line'
-    " Plug 'reedes/vim-textobj-quote'
     Plug 'beloglazov/vim-textobj-quotes'
-    Plug 'wellle/targets.vim'
+    " Plug 'wellle/targets.vim'
 
     " MARKDOWN
     Plug 'tpope/vim-markdown'
     Plug 'suan/vim-instant-markdown'
-    " Plug 'JamshedVesuna/vim-markdown-preview'
-    "     let vim_markdown_preview_github=1
 
     " GIT
     Plug 'tpope/vim-fugitive'
     Plug 'airblade/vim-gitgutter'
 
     " Misc
-    " Plug 'tpope/vim-abolish'
     Plug 'gabesoft/vim-ags'
     Plug 'machakann/vim-sandwich'
     Plug 'ntpeters/vim-better-whitespace'
@@ -292,31 +251,11 @@ call plug#begin('~/.config/nvim/plugged')
     let g:limelight_conceal_ctermfg = 240
 
     Plug 'easymotion/vim-easymotion'
-    Plug 'terryma/vim-smooth-scroll'
-    " Plug 'kassio/neoterm'
     Plug 'godlygeek/tabular'
     Plug 'Townk/vim-autoclose'
     Plug 'alvan/vim-closetag'
     Plug 'tomtom/tcomment_vim'
-    " Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-    " Plug 'zchee/deoplete-go', { 'do': 'make'}
-    Plug 'ternjs/tern_for_vim', { 'for': ['javascript', 'javascript.jsx'] }
-    " Plug 'carlitux/deoplete-ternjs', { 'for': ['javascript', 'javascript.jsx'] }
     Plug 'mbbill/undotree'
-    Plug 'tpope/vim-dispatch'
-
-    " Plug 'chrisbra/unicode.vim'
-
-    " Love-Hate group
-    " Plug 'flazz/vim-colorschemes'
-    " Plug 'easymotion/vim-easymotion'
-    " Plug 'tpope/vim-fireplace'
-    " Plug 'ctford/vim-fireplace-easy'
-    " Plug 'kopischke/vim-stay'
-    " Plug 'kana/vim-textobj-user'
-    " Plug 'michaeljsmith/vim-indent-object'
-    " Plug 'glts/vim-textobj-comment'
-    " Plug 'derekwyatt/vim-scala'
 call plug#end()
 
 let g:indentLine_color_term = 0
@@ -324,8 +263,5 @@ let g:indentLine_color_term = 0
 " Color
 colorscheme alduin
 hi Normal guibg=NONE ctermbg=NONE
-" colorscheme sierra
-" colorscheme despacio
-" colorscheme gruvbox
 let g:deoplete#enable_at_startup = 1
 au FileType javascript,jsx setl omnifunc=tern#Complete
