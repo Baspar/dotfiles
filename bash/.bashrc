@@ -58,6 +58,8 @@ export GOPATH="$HOME/.go"
 
 alias j='jobs'
 
+alias tmux='TERM=screen-256color-bce tmux'
+
 export GOPATH=$(go env GOPATH)
 
 function grepin () {
