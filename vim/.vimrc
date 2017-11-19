@@ -51,7 +51,7 @@ let g:instant_markdown_autostart = 0
 nnoremap <leader>M :InstantMarkdownPreview<CR>
 
 " CTRL-P
-map \ :CtrlP<CR>
+nnoremap \ :FZF<cr>
 
 " NerdTree
 map <C-e> :NERDTreeToggle<CR>
@@ -148,7 +148,7 @@ nnoremap <leader>l :normal ^v$<cr>
 nnoremap <leader>a :normal ggVG<cr>
 
 " Ags
-nnoremap <leader>A :Ags<Space>
+nnoremap <leader>A :Ag<Space>
 
 " Smooth Scoll
 noremap <silent> <c-b> :call smooth_scroll#up(&scroll*2, 10, 4)<CR>
@@ -190,8 +190,9 @@ call plug#begin('~/.config/nvim/plugged')
     let g:ale_linters = {'javascript': ['standard']}
 
     " CTRL P
-    Plug 'ctrlpvim/ctrlp.vim'
-    let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
+    " Plug 'ctrlpvim/ctrlp.vim'
+    " let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
+    Plug 'junegunn/fzf.vim'
 
     " NERDTREE
     Plug 'ryanoasis/vim-devicons'
