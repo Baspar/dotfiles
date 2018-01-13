@@ -50,8 +50,14 @@ bindsym $mod+e exec ~/.bin/exec.sh
 bindsym $mod+space exec ~/.bin/exec.sh
 bindsym XF86Search exec ~/.bin/exec.sh
 
+# start tmux-rofi
+bindsym $mod+b exec ~/.bin/tmux-rofi
+
 # start nb
 bindsym $mod+n exec ~/.bin/nb
+
+# start pass
+bindsym $mod+p exec ~/.bin/pass
 
 # There also is the (new) i3-dmenu-desktop which only displays applications
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
