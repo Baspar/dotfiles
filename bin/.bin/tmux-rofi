@@ -1,0 +1,23 @@
+#!/bin/bash
+tmux start
+SESSIONS=$(tmux ls | sed 's/:.*$//g')
+
+RELATIVE_SELECTED_FILE=$(echo -e "$SESSIONS" | rofi \
+    -i \
+    -p "Tmux Name> " \
+    -dmenu \
+    -fullscreen \
+    -font 'MonofurForPowerline Nerd Font 30' \
+    -theme '/home/baspar/.bin/theme.rasi' \
+    -mesg 'Tmux list' \
+    -matching fuzzy)
+[ $? -ne 0 ] && exit 0
+[ "$RELATIVE_SELECTED_FILE" = "" ] && exit 1
+
+[ $(echo "$SESSIONS" | grep "$RELATIVE_SELECTED_FILE") ] && {
+    echo "attach"
+    termite -e "tmux a -t \"$RELATIVE_SELECTED_FILE\""
+} || {
+    echo "new"
+    termite -e "tmux new -s \"$RELATIVE_SELECTED_FILE\""
+}
