@@ -5,7 +5,7 @@ export ZSH=/home/baspar/.oh-my-zsh
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
-#ZSH_THEME="robbyrussell"
+# ZSH_THEME="robbyrussell"
 ZSH_THEME="agnosterbaspar"
 
 # Uncomment the following line to use case-sensitive completion.
@@ -50,7 +50,7 @@ COMPLETION_WAITING_DOTS="true"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
+plugins=(git vi-mode history-substring-search lein httpie cp)
 
 # User configuration
 
@@ -61,7 +61,6 @@ source $ZSH/oh-my-zsh.sh
 source /home/baspar/.bashrc
 
 # You may need to manually set your language environment
-# export LANG=en_US.UTF-8
 
 # Preferred editor for local and remote sessions
 # if [[ -n $SSH_CONNECTION ]]; then
@@ -84,6 +83,8 @@ source /home/baspar/.bashrc
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+#
+#
 
 PATH="/home/baspar/perl5/bin${PATH:+:${PATH}}"; export PATH;
 PERL5LIB="/home/baspar/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
