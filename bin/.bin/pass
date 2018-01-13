@@ -1,0 +1,140 @@
+#!/bin/bash
+echo -n "" | xsel --clipboard
+
+#PARAMS
+DIR="$HOME/.pass/"
+DEFAULT_VALUE=""
+
+
+FILES=$(ls "$DIR" | sed "s/\.pass//g")
+RELATIVE_SELECTED_FILE=$(echo -e "$FILES" | rofi \
+    -i \
+    -p "Search> " \
+    -dmenu \
+    -fullscreen \
+    -font 'MonofurForPowerline Nerd Font 30' \
+    -theme '/home/baspar/.bin/theme.rasi' \
+    -mesg 'Which password do you want?' \
+    -matching fuzzy \
+    -kb-custom-1 "Alt+p" \
+)
+[ $? -ne 0 ] && exit 1
+SELECTED_FILE="$DIR/$RELATIVE_SELECTED_FILE.pass"
+
+if [ -f "$SELECTED_FILE" ]
+then
+    # Decode File
+    TEXT="Type the password to decrypt"
+    while :
+    do
+        pass=$(rofi \
+            -i \
+            -dmenu \
+            -p "Password> " \
+            -fullscreen \
+            -password \
+            -font 'MonofurForPowerline Nerd Font 30' \
+            -theme '/home/baspar/.bin/theme.rasi' \
+            -mesg "${TEXT}" \
+            -matching fuzzy)
+        [ $? -ne 0 ] && exit 1
+        decrypted=$(cat "$SELECTED_FILE" | openssl aes-256-cbc -d -pass "pass:$pass")
+        if [ $? -ne 0 ]
+        then
+            TEXT="Incorrect Password, try again"
+        else
+            break
+        fi
+    done
+
+    echo -n "$decrypted" | xsel --clipboard
+    notify-send "Password copied"
+else
+    # Create new file
+    TEXT="Type the password you want to use"
+    while :
+    do
+        PASS1=$(rofi \
+            -i \
+            -p "Password> " \
+            -dmenu \
+            -fullscreen \
+            -password \
+            -font 'MonofurForPowerline Nerd Font 30' \
+            -theme '/home/baspar/.bin/theme.rasi' \
+            -mesg "${TEXT}" \
+            -matching fuzzy)
+        [ $? -ne 0 ] && exit 1
+        PASS2=$(rofi \
+            -i \
+            -p "Password> " \
+            -dmenu \
+            -fullscreen \
+            -password \
+            -font 'MonofurForPowerline Nerd Font 30' \
+            -theme '/home/baspar/.bin/theme.rasi' \
+            -mesg 'Type a second time' \
+            -matching fuzzy)
+        [ $? -ne 0 ] && exit 1
+        if [ "$PASS1" = "$PASS2" ]
+        then
+            break
+        else
+            TEXT="Passwords doesn't match, please try again"
+        fi
+    done
+    REAL_FILE_NAME=$(echo "$SELECTED_FILE" | sed 's/ /_/g')
+    TEXT="Please enter the regexp to be use to generate the password"
+    REGEXP="A-Za-z0-9-_"
+    while :
+    do
+        REGEXP=$(rofi \
+            -i \
+            -p "Regexp> " \
+            -dmenu \
+            -fullscreen \
+            -filter "$REGEXP" \
+            -font 'MonofurForPowerline Nerd Font 30' \
+            -theme '/home/baspar/.bin/theme.rasi' \
+            -mesg "$TEXT" \
+            -matching fuzzy)
+        [ $? -ne 0 ] && exit 1
+
+        LENGTH="12"
+        TEXT="Please enter the length of the password"
+        while :
+        do
+            LENGTH=$(rofi \
+                -i \
+                -p "Length> " \
+                -dmenu \
+                -fullscreen \
+                -filter "$LENGTH" \
+                -font 'MonofurForPowerline Nerd Font 30' \
+                -theme '/home/baspar/.bin/theme.rasi' \
+                -mesg "$TEXT" \
+                -matching fuzzy)
+            [ $? -ne 0 ] && exit 1
+            if [ $(echo "$LENGTH" | grep "^[1-9][0-9]*$") ]
+            then
+                break
+            else
+                TEXT="You did not enter a proper length (digit only)"
+            fi
+        done
+
+        RANDOM_PASSWORD=$(< /dev/urandom tr -dc "$REGEXP" | head -c$LENGTH)
+        if [ $? -ne 0 ]
+        then
+            TEXT="The regexp seems to be invalid, try again"
+        else
+            break
+        fi
+    done
+
+    ENCRYPTED_RANDOM_PASSWORD=$(echo "$RANDOM_PASSWORD" | openssl aes-256-cbc -pass "pass:$PASS1")
+
+    echo -n "$ENCRYPTED_RANDOM_PASSWORD" > "$SELECTED_FILE"
+    notify-send "Password saved"
+fi
+
