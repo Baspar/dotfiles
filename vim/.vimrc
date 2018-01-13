@@ -109,6 +109,7 @@ nnoremap <Leader>O :edit $MYVIMRC<CR>
 " Splits
 nnoremap <Leader>\| :vs<CR>
 nnoremap <Leader>_ :sp<CR>
+nnoremap <Leader>- :sp<CR>
 
 " Remove highlight
 nnoremap <leader><esc> :noh<CR><esc>
@@ -169,6 +170,9 @@ au FileType go nmap <localleader>gd <Plug>(go-doc)
 au FileType go nmap <localleader>ge <Plug>(go-rename)
 au FileType go nmap <localleader>gi <Plug>(go-info)
 
+au FileType clojure nmap <localleader>ct magg/dayyw`a,:!clear; lein test "
+
+
 " Markdown
 au FileType markdown nmap <localleader>n :normal o- [-]<CR>hr jk
 au FileType markdown nmap <localleader><localleader> :s/^\([^a-zA-Z0-9]*\)\[.\?\]/\1\[x\]<CR>:noh<CR>j
@@ -189,6 +193,7 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'w0rp/ale'
     let g:ale_linters = {'javascript': ['standard']}
 
+    Plug 'xtal8/traces.vim'
     " CTRL P
     " Plug 'ctrlpvim/ctrlp.vim'
     " let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
