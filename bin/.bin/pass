@@ -18,7 +18,12 @@ RELATIVE_SELECTED_FILE=$(echo -e "$FILES" | rofi \
     -matching fuzzy \
     -kb-custom-1 "Alt+p" \
 )
-[ $? -ne 0 ] && exit 1
+EXIT_CODE=$?
+[ $EXIT_CODE -eq 10 ] && {
+    notify-send "Clipboard cleared"
+    exit 0
+}
+[ $EXIT_CODE -ne 0 ] && exit 1
 SELECTED_FILE="$DIR/$RELATIVE_SELECTED_FILE.pass"
 
 if [ -f "$SELECTED_FILE" ]
