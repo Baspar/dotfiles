@@ -1,61 +1,13 @@
 #!/bin/bash
 echo -n "" | xsel --clipboard
 
-#PARAMS
+# PARAMS
 DIR="$HOME/.pass/"
 DEFAULT_VALUE=""
 
-
-FILES=$(ls "$DIR" | sed "s/\.pass//g")
-RELATIVE_SELECTED_FILE=$(echo -e "$FILES" | rofi \
-    -i \
-    -p "Search> " \
-    -dmenu \
-    -fullscreen \
-    -font 'MonofurForPowerline Nerd Font 30' \
-    -theme '/home/baspar/.bin/theme.rasi' \
-    -mesg 'Which password do you want?' \
-    -matching fuzzy \
-    -kb-custom-1 "Alt+p" \
-)
-EXIT_CODE=$?
-[ $EXIT_CODE -eq 10 ] && {
-    notify-send "Clipboard cleared"
-    exit 0
-}
-[ $EXIT_CODE -ne 0 ] && exit 1
-SELECTED_FILE="$DIR/$RELATIVE_SELECTED_FILE.pass"
-
-if [ -f "$SELECTED_FILE" ]
-then
-    # Decode File
-    TEXT="Type the password to decrypt"
-    while :
-    do
-        pass=$(rofi \
-            -i \
-            -dmenu \
-            -p "Password> " \
-            -fullscreen \
-            -password \
-            -font 'MonofurForPowerline Nerd Font 30' \
-            -theme '/home/baspar/.bin/theme.rasi' \
-            -mesg "${TEXT}" \
-            -matching fuzzy)
-        [ $? -ne 0 ] && exit 1
-        decrypted=$(cat "$SELECTED_FILE" | openssl aes-256-cbc -d -pass "pass:$pass")
-        if [ $? -ne 0 ]
-        then
-            TEXT="Incorrect Password, try again"
-        else
-            break
-        fi
-    done
-
-    echo -n "$decrypted" | xsel --clipboard
-    notify-send "Password copied"
-else
-    # Create new file
+# FUNCTION
+function CREATE_PASSWORD () {
+    SELECTED_FILE="$1"
     TEXT="Type the password you want to use"
     while :
     do
@@ -141,5 +93,65 @@ else
 
     echo -n "$ENCRYPTED_RANDOM_PASSWORD" > "$SELECTED_FILE"
     notify-send "Password saved"
+    return 0
+}
+function DECODE_FILE () {
+    SELECTED_FILE="$1"
+    TEXT="Type the password to decrypt"
+    while :
+    do
+        pass=$(rofi \
+            -i \
+            -dmenu \
+            -p "Password> " \
+            -fullscreen \
+            -password \
+            -font 'MonofurForPowerline Nerd Font 30' \
+            -theme '/home/baspar/.bin/theme.rasi' \
+            -mesg "${TEXT}" \
+            -matching fuzzy)
+        [ $? -ne 0 ] && exit 1
+        decrypted=$(cat "$SELECTED_FILE" | openssl aes-256-cbc -d -pass "pass:$pass")
+        if [ $? -ne 0 ]
+        then
+            TEXT="Incorrect Password, try again"
+        else
+            break
+        fi
+    done
+
+    echo -n "$decrypted" | xsel --clipboard
+    notify-send "Password copied"
+}
+
+FILES=$(ls "$DIR" | sed "s/\.pass//g")
+RELATIVE_SELECTED_FILE=$(echo -e "$FILES" | rofi \
+    -i \
+    -p "Search> " \
+    -dmenu \
+    -fullscreen \
+    -font 'MonofurForPowerline Nerd Font 30' \
+    -theme '/home/baspar/.bin/theme.rasi' \
+    -mesg 'Which password do you want? (Alt-r: Regenerate pass, Alt-c: Change password)' \
+    -matching fuzzy \
+    -kb-custom-1 "Alt+p" \
+    -kb-custom-2 "Alt+r" \
+    -kb-custom-3 "Alt+c"
+)
+EXIT_CODE=$?
+[ $EXIT_CODE -eq 10 ] && {
+    notify-send "Clipboard cleared"
+    exit 0
+}
+[ $EXIT_CODE -ne 0 ] && exit 1
+SELECTED_FILE="$DIR/$RELATIVE_SELECTED_FILE.pass"
+
+if [ -f "$SELECTED_FILE" ]
+then
+    # Decode File
+    DECODE_FILE "$SELECTED_FILE"
+else
+    # Create new file
+    CREATE_PASSWORD "$SELECTED_FILE"
 fi
 
