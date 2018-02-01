@@ -4,4 +4,4 @@ rofi \
     -font "MonofurForPowerline Nerd Font 30" \
     -hide-scrollbar \
     -fullscreen \
-    -theme ~/.bin/theme.rasi
+    -theme /home/baspar/.config/rofi/baspar.rasi

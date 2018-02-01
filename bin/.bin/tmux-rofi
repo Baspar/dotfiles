@@ -8,7 +8,7 @@ RELATIVE_SELECTED_FILE=$(echo -e "$SESSIONS" | rofi \
     -dmenu \
     -fullscreen \
     -font 'MonofurForPowerline Nerd Font 30' \
-    -theme '/home/baspar/.bin/theme.rasi' \
+    -theme '/home/baspar/.config/rofi/baspar.rasi' \
     -mesg 'Tmux list' \
     -matching fuzzy)
 [ $? -ne 0 ] && exit 0
