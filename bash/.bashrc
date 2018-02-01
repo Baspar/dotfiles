@@ -19,8 +19,8 @@ function gclone () {
 }
 alias xx='termite& disown'
 
-alias cp='acp -g'
-alias mv='amv -g'
+# alias cp='acp -g'
+# alias mv='amv -g'
 
 alias m='make'
 alias mc='make clean'
@@ -57,6 +57,7 @@ export EDITOR='vim'
 export GOPATH="$HOME/.go"
 
 alias j='jobs'
+alias t='tree'
 
 alias tmux='TERM=screen-256color-bce tmux'
 
@@ -81,5 +82,14 @@ function grepin () {
     done
 }
 
-PATH="$PATH:/home/baspar/.bin:$GOPATH/bin:/home/baspar/.gem/ruby/2.4.0/bin"
+ANDROID_HOME=/home/baspar/.android/sdk/
+PATH="$PATH:/home/baspar/.bin:$GOPATH/bin:/home/baspar/.gem/ruby/2.4.0/bin:/home/baspar/.gem/ruby/2.5.0/bin"
 TERM=xterm
+PATH=$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
+
+export GOBOT_DIALOGFLOW_TOKEN="cc1ab36d5b064b3e92dbe2547b397e64"
+export GOBOT_TELEGRAM_TOKEN="518276016:AAHbtj6ls3eiz2Hrj6pDDg3AtSGpzO2twyU"
+
+export LANG=en_US.UTF-8
+export LC_CTYPE=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
