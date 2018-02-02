@@ -3,6 +3,7 @@
 # PARAMS
 DIR="$HOME/.pass/"
 DEFAULT_VALUE=""
+NB_SECOND=5
 
 # FUNCTION
 function CREATE_PASSWORD () {
@@ -119,7 +120,19 @@ function DECODE_FILE () {
     done
 
     echo -n "$decrypted" | xsel --clipboard
-    notify-send "Password copied"
+    while [ $NB_SECOND -gt 0 ]
+    do
+        if [ $NB_SECOND -le 2 ]
+        then
+            notify-send -r 42 "Password copied for ${NB_SECOND}s" -u critical
+        else
+            notify-send -r 42 "Password copied for ${NB_SECOND}s"
+        fi
+        NB_SECOND=$((NB_SECOND - 1))
+        sleep 1
+    done
+    echo -n "" | xsel --clipboard
+    notify-send -r 42 "Password cleared"
 }
 function HELP () {
     echo "Alt-h => Show this help
@@ -296,17 +309,11 @@ do
         -theme '/home/baspar/.config/rofi/baspar.rasi' \
         -mesg 'Which password do you want? (Alt-h: Help)' \
         -matching fuzzy \
-        -kb-custom-1 "Alt+p" \
         -kb-custom-2 "Alt+h" \
         -kb-custom-3 "Alt+r" \
         -kb-custom-4 "Alt+c"
     )
     EXIT_CODE=$?
-    [ $EXIT_CODE -eq 10 ] && {
-        echo -n "" | xsel --clipboard
-        notify-send "Clipboard cleared"
-        exit 0
-    }
     [ $EXIT_CODE -eq 11 ] && {
         HELP
         continue
