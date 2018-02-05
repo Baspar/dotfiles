@@ -158,10 +158,10 @@ mode "container" {
         bindsym Escape mode "default"
 }
 mode "resize" {
-        bindsym j resize shrink width 10 px or 10 ppt
+        bindsym j resize shrink height 10 px or 10 ppt
         bindsym k resize grow height 10 px or 10 ppt
-        bindsym l resize shrink height 10 px or 10 ppt
-        bindsym semicolon resize grow width 10 px or 10 ppt
+        bindsym l resize shrink width 10 px or 10 ppt
+        bindsym h resize grow width 10 px or 10 ppt
         bindsym Left resize shrink width 10 px or 10 ppt
         bindsym Down resize grow height 10 px or 10 ppt
         bindsym Up resize shrink height 10 px or 10 ppt
@@ -238,6 +238,8 @@ exec --no-startup-id compton
 exec --no-startup-id setxkbmap -option caps:swapescape
 # exec --no-startup-id feh --bg-scale ~/.wall/3.jpg
 exec --no-startup-id xbindkeys
+exec --no-startup-id amixer -c 0 set 'Headphone Mic Boost',0 1
+
 
 # smart_gaps on
 smart_borders no_gaps
