@@ -56,8 +56,8 @@ bindsym $mod+b exec ~/.bin/tmux-rofi
 # start nb
 bindsym $mod+n exec ~/.bin/nb
 
-# start pass
-bindsym $mod+p exec ~/.bin/pass
+# start pass3301
+bindsym $mod+p exec ~/.bin/pass3301
 
 # There also is the (new) i3-dmenu-desktop which only displays applications
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
@@ -69,20 +69,20 @@ bindsym $mod+h focus left
 bindsym $mod+j focus down
 bindsym $mod+k focus up
 bindsym $mod+l focus right
-# bindsym $mod+Left focus left
-# bindsym $mod+Down focus down
-# bindsym $mod+Up focus up
-# bindsym $mod+Right focus right
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
 
 # alternatively, you can use the cursor keys:
 bindsym $mod+Shift+h move left
 bindsym $mod+Shift+j move down
 bindsym $mod+Shift+k move up
 bindsym $mod+Shift+l move right
-# bindsym $mod+Shift+Left move left
-# bindsym $mod+Shift+Down move down
-# bindsym $mod+Shift+Up move up
-# bindsym $mod+Shift+Right move right
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
 
 # split in horizontal orientation
 # bindsym $mod+h split h
@@ -164,9 +164,20 @@ mode "resize" {
         bindsym Return mode "default"
         bindsym Escape mode "default"
 }
+mode "mocp" {
+        bindsym Left resize shrink width 10 px or 10 ppt
+        bindsym Down resize grow height 10 px or 10 ppt
+        bindsym Up resize shrink height 10 px or 10 ppt
+        bindsym Right resize grow width 10 px or 10 ppt
+        bindsym Space exec mocp -
+
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
 
 bindsym $mod+r mode "resize"
 bindsym $mod+t mode "container"
+# bindsym $mod+m mode "mocp"
 bindsym $mod+Tab exec ~/.bin/tab.sh
 
 client.focused #000000 #DFAF8F #000000 #936343
