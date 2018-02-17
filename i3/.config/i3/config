@@ -240,7 +240,7 @@ bindsym $mod+z move scratchpad
 bindsym $mod+Shift+z scratchpad show
 
 exec --no-startup-id compton
-exec --no-startup-id setxkbmap -option caps:swapescape
+exec --no-startup-id setxkbmap -option caps:escape
 # exec --no-startup-id feh --bg-scale ~/.wall/3.jpg
 exec --no-startup-id xbindkeys
 exec --no-startup-id amixer -c 0 set 'Headphone Mic Boost',0 1
