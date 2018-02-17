@@ -89,7 +89,7 @@ function CREATE_PASSWORD () {
         fi
     done
 
-    ENCRYPTED_RANDOM_PASSWORD=$(echo "$RANDOM_PASSWORD" | openssl aes-256-cbc -pass "pass:$PASS1")
+    ENCRYPTED_RANDOM_PASSWORD=$(echo "$RANDOM_PASSWORD" | openssl aes-256-cbc -md md5 -pass "pass:$PASS1")
 
     echo -n "$ENCRYPTED_RANDOM_PASSWORD" > "$SELECTED_FILE"
     notify-send "Password saved"
@@ -111,7 +111,7 @@ function DECODE_FILE () {
             -mesg "${TEXT}" \
             -matching fuzzy)
         [ $? -ne 0 ] && exit 1
-        decrypted=$(cat "$SELECTED_FILE" | openssl aes-256-cbc -d -pass "pass:$PASS")
+        decrypted=$(cat "$SELECTED_FILE" | openssl aes-256-cbc -d -md md5 -pass "pass:$PASS")
         [ $? -ne 0 ] && {
             TEXT="Incorrect Password, try again"
         } || {
@@ -166,7 +166,7 @@ function REGENERATE_PASSWORD () {
             -mesg "${TEXT}" \
             -matching fuzzy)
         [ $? -ne 0 ] && exit 1
-        DECRYPTED=$(cat "$SELECTED_FILE" | openssl aes-256-cbc -d -pass "pass:$PASS")
+        DECRYPTED=$(cat "$SELECTED_FILE" | openssl aes-256-cbc -d -md md5 -pass "pass:$PASS")
         [ $? -ne 0 ] && {
             TEXT="Incorrect Password, try again"
         } || {
@@ -223,7 +223,7 @@ function REGENERATE_PASSWORD () {
         fi
     done
 
-    ENCRYPTED_RANDOM_PASSWORD=$(echo "$RANDOM_PASSWORD" | openssl aes-256-cbc -pass "pass:$PASS")
+    ENCRYPTED_RANDOM_PASSWORD=$(echo "$RANDOM_PASSWORD" | openssl aes-256-cbc -md md5 -pass "pass:$PASS")
 
     echo -n "$ENCRYPTED_RANDOM_PASSWORD" > "$SELECTED_FILE"
     notify-send "Password saved"
@@ -246,7 +246,7 @@ function CHANGE_PASSWORD () {
             -mesg "${TEXT}" \
             -matching fuzzy)
         [ $? -ne 0 ] && exit 1
-        DECRYPTED=$(cat "$SELECTED_FILE" | openssl aes-256-cbc -d -pass "pass:$OLD_PASS")
+        DECRYPTED=$(cat "$SELECTED_FILE" | openssl aes-256-cbc -d -md md5 -pass "pass:$OLD_PASS")
         [ $? -ne 0 ] && {
             TEXT="Incorrect Password, try again"
         } || {
@@ -287,7 +287,7 @@ function CHANGE_PASSWORD () {
         fi
     done
 
-    ENCRYPTED_RANDOM_PASSWORD=$(echo "$DECRYPTED" | openssl aes-256-cbc -pass "pass:$PASS1")
+    ENCRYPTED_RANDOM_PASSWORD=$(echo "$DECRYPTED" | openssl aes-256-cbc -md md5 -pass "pass:$PASS1")
 
     echo -n "$ENCRYPTED_RANDOM_PASSWORD" > "$SELECTED_FILE"
     notify-send "Password saved"
