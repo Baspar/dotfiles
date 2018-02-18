@@ -10,6 +10,7 @@ FILES=$(ls "$DIR" | sed "s/\.md//g")
 RELATIVE_SELECTED_FILE=$(echo -e "$FILES" | rofi \
     -i \
     -dmenu \
+    -p "Notes> " \
     -fullscreen \
     -font 'MonofurForPowerline Nerd Font 30' \
     -theme '/home/baspar/.config/rofi/baspar.rasi' \
