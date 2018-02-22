@@ -165,19 +165,20 @@ mode "resize" {
         bindsym Escape mode "default"
 }
 mode "mocp" {
-        bindsym Left resize shrink width 10 px or 10 ppt
-        bindsym Down resize grow height 10 px or 10 ppt
-        bindsym Up resize shrink height 10 px or 10 ppt
-        bindsym Right resize grow width 10 px or 10 ppt
-        bindsym Space exec mocp -
+        bindsym Shift+f exec ~/.bin/PrevMOCP.sh
+        bindsym f exec ~/.bin/NextMOCP.sh
+        bindsym h exec ~/.bin/reverseMOCP.sh
+        bindsym l exec ~/.bin/forwardMOCP.sh
+        bindsym space exec exec ~/.bin/PPMOCP.sh
 
-        bindsym Return mode "default"
+        bindsym Return exec termite -t "MOCP - Music Player" --exec=mocp && i3-msg workspace back_and_forth; mode "default"
         bindsym Escape mode "default"
 }
 
 bindsym $mod+r mode "resize"
 bindsym $mod+t mode "container"
-# bindsym $mod+m mode "mocp"
+bindsym $mod+m mode "mocp"; exec notify-send "MOCP mode"
+# bindsym $mod+v mode "volume"; exec notify-send "Volume mode"
 bindsym $mod+Tab workspace back_and_forth
 
 client.focused #000000 #DFAF8F #000000 #936343
