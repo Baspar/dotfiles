@@ -178,7 +178,7 @@ mode "mocp" {
 bindsym $mod+r mode "resize"
 bindsym $mod+t mode "container"
 # bindsym $mod+m mode "mocp"
-bindsym $mod+Tab exec ~/.bin/tab.sh
+bindsym $mod+Tab workspace back_and_forth
 
 client.focused #000000 #DFAF8F #000000 #936343
 
