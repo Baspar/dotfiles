@@ -164,6 +164,14 @@ mode "resize" {
         bindsym Return mode "default"
         bindsym Escape mode "default"
 }
+mode "volume" {
+        bindsym Up exec ~/.bin/volUp.sh
+        bindsym Down exec ~/.bin/volDown.sh
+        bindsym space exec ~/.bin/volToggle.sh
+
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
 mode "mocp" {
         bindsym Shift+f exec ~/.bin/PrevMOCP.sh
         bindsym f exec ~/.bin/NextMOCP.sh
@@ -178,7 +186,7 @@ mode "mocp" {
 bindsym $mod+r mode "resize"
 bindsym $mod+t mode "container"
 bindsym $mod+m mode "mocp"; exec notify-send "MOCP mode"
-# bindsym $mod+v mode "volume"; exec notify-send "Volume mode"
+bindsym $mod+v mode "volume"; exec notify-send "Volume mode"
 bindsym $mod+Tab workspace back_and_forth
 
 client.focused #000000 #DFAF8F #000000 #936343
@@ -190,6 +198,7 @@ bar {
         focused_workspace #000000 #000000 #DFAF8F
         active_workspace #000000 #000000 #998774
         inactive_workspace #000000 #000000 #998774
+        urgent_workspace #000000 #DFAF8F #000000
     }
     # status_command i3status
     status_command i3blocks -c ~/.config/i3/i3blocks.conf
