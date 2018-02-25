@@ -151,12 +151,6 @@ nnoremap <leader>a :normal ggVG<cr>
 " Ags
 nnoremap <leader>A :Ag<Space>
 
-" Smooth Scoll
-noremap <silent> <c-b> :call smooth_scroll#up(&scroll*2, 10, 4)<CR>
-noremap <silent> <PageUp> :call smooth_scroll#up(&scroll*2, 10, 4)<CR>
-noremap <silent> <c-f> :call smooth_scroll#down(&scroll*2, 10, 4)<CR>
-noremap <silent> <PageDown> :call smooth_scroll#down(&scroll*2, 10, 4)<CR>
-
 " Ale
 nmap [a <Plug>(ale_previous_wrap)
 nmap ]a <Plug>(ale_next_wrap)
@@ -227,11 +221,16 @@ call plug#begin('~/.config/nvim/plugged')
     " Plug 'fatih/vim-go'
     " let g:go_fmt_command = "goimports"
 
+    " Airline
+    Plug 'vim-airline/vim-airline'
+    Plug 'vim-airline/vim-airline-themes'
+    let g:airline_theme='ubaryd'
+    let g:airline_powerline_fonts = 1
     " LIGHLINE
-    Plug 'itchyny/lightline.vim'
-    set laststatus=2
-    set noshowmode
-    let g:lightline = {'colorscheme': 'seoul256'}
+    " Plug 'itchyny/lightline.vim'
+    " set laststatus=2
+    " set noshowmode
+    " let g:lightline = {'colorscheme': 'seoul256'}
 
     " Text obj
     Plug 'kana/vim-textobj-user'
@@ -249,6 +248,7 @@ call plug#begin('~/.config/nvim/plugged')
     " Misc
     Plug 'gabesoft/vim-ags'
     Plug 'machakann/vim-sandwich'
+    Plug 'machakann/vim-highlightedyank'
     Plug 'ntpeters/vim-better-whitespace'
     autocmd BufWritePre * StripWhitespace
     Plug 'junegunn/goyo.vim'
@@ -264,10 +264,6 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'mbbill/undotree'
 call plug#end()
 
-let g:indentLine_color_term = 0
-
 " Color
 colorscheme alduin
 hi Normal guibg=NONE ctermbg=NONE
-let g:deoplete#enable_at_startup = 1
-au FileType javascript,jsx setl omnifunc=tern#Complete
