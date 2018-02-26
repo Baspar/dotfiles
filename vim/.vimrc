@@ -194,15 +194,10 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'junegunn/fzf.vim'
 
     " NERDTREE
-    Plug 'ryanoasis/vim-devicons'
-    let g:webdevicons_conceal_nerdtree_brackets = 0
-    let g:WebDevIconsNerdTreeAfterGlyphPadding = ''
-    let g:WebDevIconsNerdTreeGitPluginForceVAlign = 0
     Plug 'scrooloose/nerdtree'
     autocmd StdinReadPre * let s:std_in=1
-    Plug 'Xuyuanp/nerdtree-git-plugin'
-    Plug 'low-ghost/nerdtree-fugitive'
-
+    let NERDTreeMinimalUI=1
+    let NERDTreeDirArrows = 1
 
     " Javascript/React.JS
     Plug 'alvan/vim-closetag'
