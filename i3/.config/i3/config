@@ -169,7 +169,7 @@ mode "volume" {
         bindsym Down exec ~/.bin/volDown.sh
         bindsym space exec ~/.bin/volToggle.sh
 
-        bindsym Return mode "default"
+        bindsym Return exec termite --exec=pulsemixer; mode "default"
         bindsym Escape mode "default"
 }
 mode "mocp" {
