@@ -41,6 +41,7 @@ alias pbcopy='xsel --clipboard --input'
 alias pbpaste='xsel --clipboard --output'
 
 alias rlf='rlwrap lein figwheel'
+alias rlfa='rlwrap lein figwheel android'
 
 alias aws_scb='aws --profile scb'
 
