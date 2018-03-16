@@ -11,7 +11,7 @@ set nowrap
 set hlsearch
 set incsearch
 set undofile
-set undodir=$HOME/.config/nvim/undo
+set undodir=$HOME/.vim/undo
 set undolevels=1000
 set undoreload=10000
 set hidden
@@ -104,7 +104,7 @@ nnoremap <Leader>Z :normal maV<CR> :TREPLSendSelection<CR>`a
 
 " Reload nvim config
 nnoremap <Leader>R :source $MYVIMRC<CR>
-nnoremap <Leader>O :edit $MYVIMRC<CR>
+nnoremap <Leader>E :edit $MYVIMRC<CR>
 
 " Splits
 nnoremap <Leader>\| :vs<CR>
@@ -176,12 +176,13 @@ au FileType markdown vmap <localleader><backspace> :'<,'>s/^\([^a-zA-Z0-9]*\)\[.
 au FileType markdown nmap <localleader>w :s/^\([^a-zA-Z0-9]*\)\[.\?\]/\1\[-\]<CR>:noh<CR>j
 au FileType markdown vmap <localleader>w :'<,'>s/^\([^a-zA-Z0-9]*\)\[.\?\]/\1\[-\]<CR>:noh<CR>
 "
-call plug#begin('~/.config/nvim/plugged')
+call plug#begin('~/.vim/plugged')
     " Colorschemes
     Plug 'AlessandroYorba/alduin'
     Plug 'AlessandroYorba/Sierra'
     Plug 'AlessandroYorba/Despacio'
     Plug 'morhetz/gruvbox'
+    Plug 'archSeer/colibri.vim'
 
     " Syntax
     Plug 'w0rp/ale'
