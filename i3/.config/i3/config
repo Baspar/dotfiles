@@ -258,8 +258,8 @@ exec --no-startup-id xbindkeys
 exec --no-startup-id amixer -c 0 set 'Headphone Mic Boost',0 1
 
 
-# smart_gaps on
-# smart_borders no_gaps
+smart_gaps on
+smart_borders no_gaps
 workspace_auto_back_and_forth yes
 
 
