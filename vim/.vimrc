@@ -182,7 +182,14 @@ call plug#begin('~/.vim/plugged')
     Plug 'AlessandroYorba/Sierra'
     Plug 'AlessandroYorba/Despacio'
     Plug 'morhetz/gruvbox'
-    Plug 'archSeer/colibri.vim'
+
+    " REPL
+    Plug 'jpalardy/vim-slime'
+    let g:slime_target = "vimterminal"
+	let g:slime_no_mappings = 1
+	xmap <localleader>s <Plug>SlimeRegionSend
+	nmap <localleader>s <Plug>SlimeMotionSend
+	nmap <localleader>ss <Plug>SlimeLineSend
 
     " Syntax
     Plug 'w0rp/ale'
