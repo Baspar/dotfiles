@@ -261,7 +261,7 @@ call plug#begin('~/.vim/plugged')
 
     Plug 'easymotion/vim-easymotion'
     Plug 'godlygeek/tabular'
-    Plug 'Townk/vim-autoclose'
+    Plug 'jiangmiao/auto-pairs'
     Plug 'alvan/vim-closetag'
     Plug 'tomtom/tcomment_vim'
     Plug 'mbbill/undotree'
