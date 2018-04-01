@@ -164,8 +164,8 @@ au FileType go nmap <localleader>gd <Plug>(go-doc)
 au FileType go nmap <localleader>ge <Plug>(go-rename)
 au FileType go nmap <localleader>gi <Plug>(go-info)
 
+" Avent of code - CLojure
 au FileType clojure nmap <localleader>ct magg/dayyw`a,:!clear; lein test "
-
 
 " Markdown
 au FileType markdown nmap <localleader>n :normal o- [-]<CR>hr jk
@@ -175,7 +175,14 @@ au FileType markdown nmap <localleader><backspace> :s/^\([^a-zA-Z0-9]*\)\[.\?\]/
 au FileType markdown vmap <localleader><backspace> :'<,'>s/^\([^a-zA-Z0-9]*\)\[.\?\]/\1\[ \]<CR>:noh<CR>
 au FileType markdown nmap <localleader>w :s/^\([^a-zA-Z0-9]*\)\[.\?\]/\1\[-\]<CR>:noh<CR>j
 au FileType markdown vmap <localleader>w :'<,'>s/^\([^a-zA-Z0-9]*\)\[.\?\]/\1\[-\]<CR>:noh<CR>
-"
+
+" Add Move command (Visual / normal)
+nnoremap <S-down> ddp
+vnoremap <S-down> dpV`]
+vnoremap <S-up> dkPV`]
+nnoremap <S-up> ddkP
+
+" Plugin
 call plug#begin('~/.vim/plugged')
     " Colorschemes
     Plug 'AlessandroYorba/alduin'
