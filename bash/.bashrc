@@ -15,6 +15,8 @@ alias gs='git status'
 alias gS='git stash'
 alias gc='git commit'
 alias gC='git checkout'
+alias gpsu='git push --set-upstream origin HEAD'
+alias gpf='git push --force'
 function gclone () {
 }
 alias xx='termite& disown'
