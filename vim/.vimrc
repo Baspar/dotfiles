@@ -18,6 +18,8 @@ set hidden
 set foldmethod=syntax
 set foldmethod=indent
 set wildmenu
+set spelllang=en
+set spellfile=$HOME/.vim/spell/en.utf-8.add
 
 " TO BE CHANGED
 
@@ -51,7 +53,8 @@ let g:instant_markdown_autostart = 0
 nnoremap <leader>M :InstantMarkdownPreview<CR>
 
 " CTRL-P
-nnoremap \ :FZF<cr>
+nnoremap \ :Buffers<cr>
+nnoremap <bar> :FZF<cr>
 
 " NerdTree
 map <C-e> :NERDTreeToggle<CR>
