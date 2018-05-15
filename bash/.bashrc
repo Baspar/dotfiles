@@ -17,9 +17,11 @@ alias gc='git commit'
 alias gC='git checkout'
 alias gpsu='git push --set-upstream origin HEAD'
 alias gpf='git push --force'
-function gclone () {
-}
+
 alias xx='termite& disown'
+
+alias h='head'
+alias t='tail'
 
 # alias cp='acp -g'
 # alias mv='amv -g'
@@ -58,9 +60,6 @@ alias py='python3'
 
 export EDITOR='vim'
 export GOPATH="$HOME/.go"
-
-alias j='jobs'
-alias t='tree'
 
 alias tmux='TERM=screen-256color-bce tmux'
 
