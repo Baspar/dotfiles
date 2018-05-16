@@ -17,6 +17,8 @@ alias gc='git commit'
 alias gC='git checkout'
 alias gpsu='git push --set-upstream origin HEAD'
 alias gpf='git push --force'
+alias gr="git rebase"
+alias gR="git reset"
 
 alias xx='termite& disown'
 
