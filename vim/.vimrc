@@ -45,6 +45,10 @@ autocmd FileType css set tabstop=2 shiftwidth=2 expandtab
 vnoremap < <gv
 vnoremap > >gv
 
+" cgn/cgN
+nnoremap c* *Ncgn
+nnoremap c# #NcgN
+
 " Triple global indent
 nmap <leader>f :Autoformat<CR>
 
