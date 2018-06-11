@@ -91,11 +91,9 @@ PATH="$PATH:/home/baspar/.bin:$GOPATH/bin:/home/baspar/.gem/ruby/2.4.0/bin:/home
 TERM=xterm
 PATH=$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
 
-export GOBOT_DIALOGFLOW_TOKEN="cc1ab36d5b064b3e92dbe2547b397e64"
-export GOBOT_TELEGRAM_TOKEN="518276016:AAHbtj6ls3eiz2Hrj6pDDg3AtSGpzO2twyU"
-
 export LD_PRELOAD=~/.local/share/Steam/ubuntu12_32/steam-runtime/amd64/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0
 
 export LANG=en_US.UTF-8
 export LC_CTYPE=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
+source "/home/baspar/.tokenrc"
