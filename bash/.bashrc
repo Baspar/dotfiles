@@ -5,9 +5,9 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
-alias ls='ls -h --color=auto'
 alias l='ls -l'
 alias ll='ls -la'
+
 alias gp='git push'
 alias gP='git pull'
 alias ga='git add'
@@ -86,8 +86,8 @@ function grepin () {
     done
 }
 
-ANDROID_HOME=/home/baspar/.android/sdk/
-PATH="$PATH:/home/baspar/.bin:$GOPATH/bin:/home/baspar/.gem/ruby/2.4.0/bin:/home/baspar/.gem/ruby/2.5.0/bin"
+ANDROID_HOME=~/.android/sdk/
+PATH="$PATH:~/.bin:$GOPATH/bin:~/.gem/ruby/2.4.0/bin:~/.gem/ruby/2.5.0/bin:$HOME/.cargo/bin"
 TERM=xterm
 PATH=$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
 
@@ -96,4 +96,4 @@ export LD_PRELOAD=~/.local/share/Steam/ubuntu12_32/steam-runtime/amd64/usr/lib/x
 export LANG=en_US.UTF-8
 export LC_CTYPE=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
-source "/home/baspar/.tokenrc"
+source ~/.tokenrc
