@@ -72,7 +72,10 @@ nnoremap <Leader>Z :normal maV<CR> :TREPLSendSelection<CR>`a
 
 " Reload nvim config
 nnoremap <Leader>R :source $MYVIMRC<CR>
-nnoremap <Leader>E :edit $MYVIMRC<CR>
+nnoremap <Leader>Ee :edit $MYVIMRC<CR>
+nnoremap <Leader>Em :edit $HOME/.vim/mappings.vim<CR>
+nnoremap <Leader>Ep :edit $HOME/.vim/plugins.vim<CR>
+nnoremap <Leader>Ec :edit $HOME/.vim/config.vim<CR>
 
 " Splits
 nnoremap <Leader>\| :vs<CR>
