@@ -11,15 +11,15 @@ vnoremap > >gv
 nnoremap c* *Ncgn
 nnoremap c# #NcgN
 
-" Triple global indent
-nnoremap <leader>f :Autoformat<CR>
+" Global indent
+" nnoremap <leader>f :Autoformat<CR>
 
 " Instant Markdown
 nnoremap <leader>M :InstantMarkdownPreview<CR>
 
 " CTRL-P
 nnoremap \ :Buffers<cr>
-nnoremap <bar> :FZF<cr>
+nnoremap <tab> :FZF<cr>
 
 " NerdTree
 map <C-e> :NERDTreeToggle<CR>
@@ -34,11 +34,13 @@ inoremap <up> <nop>
 inoremap <down> <nop>
 inoremap <left> <nop>
 inoremap <right> <nop>
+
+" Navigate split
 noremap <up> <C-w><up>
 noremap <down> <C-w><down>
 noremap <left> <C-w><left>
 noremap <right> <C-w><right>
-"
+
 " Clipboard usage
 noremap <leader>cy "+y
 noremap <leader>cP "+P
@@ -49,8 +51,8 @@ noremap <leader>cd "+d
 nnoremap <leader>< :bN<CR>
 nnoremap <leader>> :bn<CR>
 nnoremap <leader>bd :bn<CR> :bd #<CR>
-nnoremap <Leader>s :update<CR>
-nnoremap <Leader>w :w<CR>
+nnoremap <leader>s :update<CR>
+nnoremap <leader>w :w<CR>
 nnoremap <leader>q :q<CR>
 nnoremap <leader>Q :q!<CR>
 
@@ -61,37 +63,37 @@ nnoremap <C-Left> <C-w>h
 nnoremap <C-Right> <C-w>l
 
 " TagBar
-map <Leader>B :TagbarToggle<CR>
+map <leader>B :TagbarToggle<CR>
 
 " Terminal
-nnoremap <Leader>t :set termsize=0x0<CR>:terminal<CR>
+nnoremap <leader>t :set termsize=0x0<CR>:terminal<CR>
 
 " Neoterm
-autocmd FileType clojure map <buffer> <Leader>zz :normal mava)<CR> :TREPLSendSelection<CR>`a
-nnoremap <Leader>Z :normal maV<CR> :TREPLSendSelection<CR>`a
+autocmd FileType clojure map <buffer> <leader>zz :normal mava)<CR> :TREPLSendSelection<CR>`a
+nnoremap <leader>Z :normal maV<CR> :TREPLSendSelection<CR>`a
 
 " Reload nvim config
-nnoremap <Leader>R :source $MYVIMRC<CR>
-nnoremap <Leader>Ee :edit $MYVIMRC<CR>
-nnoremap <Leader>Em :edit $HOME/.vim/mappings.vim<CR>
-nnoremap <Leader>Ep :edit $HOME/.vim/plugins.vim<CR>
-nnoremap <Leader>Ec :edit $HOME/.vim/config.vim<CR>
+nnoremap <leader>vr :source $MYVIMRC<CR>
+nnoremap <leader>ve :edit $MYVIMRC<CR>
+nnoremap <leader>vm :edit $HOME/.vim/mappings.vim<CR>
+nnoremap <leader>vp :edit $HOME/.vim/plugins.vim<CR>
+nnoremap <leader>vc :edit $HOME/.vim/config.vim<CR>
 
 " Splits
-nnoremap <Leader>\| :vs<CR>
-nnoremap <Leader>_ :sp<CR>
-nnoremap <Leader>- :sp<CR>
+nnoremap <leader>\| :vs<CR>
+nnoremap <leader>_ :sp<CR>
+nnoremap <leader>- :sp<CR>
 
 " Remove highlight
 nnoremap <leader><esc> :noh<CR><esc>
 
 " Tabular
-noremap <Leader>pi :PlugInstall<CR>
-noremap <Leader>pu :PlugUpdate<CR>
-noremap <Leader>pc :PlugClean<CR>
+noremap <leader>pi :PlugInstall<CR>
+noremap <leader>pu :PlugUpdate<CR>
+noremap <leader>pc :PlugClean<CR>
 
 " Tabular
-noremap <Leader>T :Tabular /
+noremap <leader>T :Tabular /
 
 " Fugitive
 nnoremap <leader>ga :Git add %:p<CR><CR>
