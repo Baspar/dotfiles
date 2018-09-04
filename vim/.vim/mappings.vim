@@ -122,7 +122,7 @@ nnoremap <leader>l :normal ^v$<cr>
 nnoremap <leader>a :normal ggVG<cr>
 
 " Ags
-nnoremap <leader>A :Ag<cr>
+nnoremap <leader>A :Ag<space>
 
 " Ale
 nnoremap [a <Plug>(ale_previous_wrap)
