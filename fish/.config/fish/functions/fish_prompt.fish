@@ -38,7 +38,7 @@ function print_abbr_path
     if [ "$argv" = "$HOME" ]
         print_in_bold "black" "white" "~"
     else
-        set ABBR_PATH (echo -n $argv | sed " s|^$HOME|~|; s|\([^/]\)[^/]*/|\1/|g")
+        set ABBR_PATH (echo -n $argv | sed " s|^$HOME|~|; s|\([^/a-zA-Z0-9]*[a-zA-Z0-9]\)[^/]*/|\1/|g")
         print_in      "black" "white" (echo "$ABBR_PATH" | sed "s|^\(.*/\)\([^/]*\)\$|\1|")
         print_in_bold "black" "white" (echo "$ABBR_PATH" | sed "s|^\(.*/\)\([^/]*\)\$|\2|")
     end
