@@ -15,7 +15,7 @@ nnoremap c# #NcgN
 " nnoremap <leader>f :Autoformat<CR>
 
 " Instant Markdown
-nnoremap <leader>M :InstantMarkdownPreview<CR>
+nnoremap <leader>M :LivedownPreview<CR>
 
 " CTRL-P
 nnoremap \ :Buffers<cr>
@@ -66,7 +66,7 @@ nnoremap <C-Right> <C-w>l
 map <leader>B :TagbarToggle<CR>
 
 " Terminal
-nnoremap <leader>t :set termsize=0x0<CR>:terminal<CR>
+nnoremap <leader>t :set termwinsize=0x0<CR>:terminal<CR>
 
 " Neoterm
 autocmd FileType clojure map <buffer> <leader>zz :normal mava)<CR> :TREPLSendSelection<CR>`a
@@ -108,8 +108,8 @@ nnoremap <leader>gl :silent! Glog<CR>:bot copen<CR>
 nnoremap <leader>gm :Gmove<Space>
 nnoremap <leader>gb :Git branch<Space>
 nnoremap <leader>go :Git checkout<Space>
-nnoremap <leader>gp :set termsize=10x0<CR>:term git push<CR>
-nnoremap <leader>gP :set termsize=10x0<CR>:term git pull<CR>
+nnoremap <leader>gp :set termwinsize=10x0<CR>:term git push<CR>
+nnoremap <leader>gP :set termwinsize=10x0<CR>:term git pull<CR>
 
 " Goyo
 nnoremap <leader>G :Goyo<CR>:hi Normal guibg=NONE ctermbg=NONE<CR>

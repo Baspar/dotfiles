@@ -8,6 +8,7 @@ call plug#begin('~/.vim/plugged')
         " {{{ Syntax
         Plug 'tomtom/tcomment_vim'
         Plug 'w0rp/ale'
+        Plug 'godlygeek/tabular'
         " }}}
         " {{{ Navigation
         Plug 'easymotion/vim-easymotion'
@@ -28,7 +29,8 @@ call plug#begin('~/.vim/plugged')
         Plug 'tpope/vim-sexp-mappings-for-regular-people'
         " }}}
         " {{{ Markdown
-        Plug 'tpope/vim-markdown'
+        " Plug 'tpope/vim-markdown'
+        Plug 'shime/vim-livedown'
         Plug 'suan/vim-instant-markdown'
         " }}}
     " }}}
@@ -41,6 +43,7 @@ call plug#begin('~/.vim/plugged')
         Plug 'jpalardy/vim-slime'
         " }}}
         " {{{ File
+        Plug 'tpope/vim-projectionist'
         Plug 'scrooloose/nerdtree'
         Plug '/usr/local/opt/fzf'
         Plug 'junegunn/fzf.vim'

@@ -179,7 +179,7 @@ mode "mocp" {
         bindsym l exec ~/.bin/forwardMOCP.sh
         bindsym space exec exec ~/.bin/PPMOCP.sh
 
-        bindsym Return exec kitty --tile "MOCP - Music Player" mocp && i3-msg workspace back_and_forth; mode "default"
+        bindsym Return exec kitty --title "MOCP - Music Player" mocp && i3-msg workspace back_and_forth; mode "default"
         bindsym Escape mode "default"
 }
 
@@ -243,6 +243,7 @@ bindsym XF86MonBrightnessDown exec  ~/.bin/brightDown.sh
 # bindsym Print exec import png:- | xclip -selection c -t image/png
 
 # Toggle Control
+bindsym XF86PowerOff exec ~/.bin/toggleTouchScreen.sh && ~/.bin/toggleSynaptic.sh && ~/.bin/toggleKeyboard.sh
 bindsym $mod+Shift+t exec ~/.bin/toggleTouchScreen.sh
 bindsym $mod+Shift+y exec ~/.bin/toggleSynaptic.sh
 
@@ -252,7 +253,7 @@ bindsym $mod+Shift+b bar mode toggle
 bindsym $mod+z move scratchpad
 bindsym $mod+Shift+z scratchpad show
 
-exec --no-startup-id compton
+exec --no-startup-id { while:; do compton; done; }&
 exec --no-startup-id setxkbmap -option caps:escape
 # exec --no-startup-id feh --bg-scale ~/.wall/3.jpg
 exec --no-startup-id xbindkeys

@@ -2,89 +2,14 @@
 # ~/.bashrc
 #
 
-# If not running interactively, don't do anything
-[[ $- != *i* ]] && return
+alias abbr=alias
 
-alias l='ls -l'
-alias ll='ls -la'
-
-alias gp='git push'
-alias gP='git pull'
-alias ga='git add'
-alias gs='git status'
-alias gS='git stash'
-alias gc='git commit'
-alias gC='git checkout'
-alias gpsu='git push --set-upstream origin HEAD'
-alias gpf='git push --force'
-alias gr="git rebase"
-alias gR="git reset"
-
-alias xx='termite& disown'
-
-alias h='head'
-alias t='tail'
-
-# alias cp='acp -g'
-# alias mv='amv -g'
-
-alias m='make'
-alias mc='make clean'
-
-alias free='free -h'
-alias f='free'
-
-alias vimrc='vim ~/.vimrc'
-# alias vim='nvim'
-alias vi='vim'
-alias v='vim'
-
-alias o='xdg-open'
-
-alias df='df -h'
-
-alias pbcopy='xsel --clipboard --input'
-alias pbpaste='xsel --clipboard --output'
-
-alias rlf='rlwrap lein figwheel'
-alias rlfa='rlwrap lein figwheel android'
-
-alias aws_scb='aws --profile scb'
-
-alias repl='cd ~/.repl; lein repl; cd -'
-
-alias weather='curl -s wttr.in | head -n -2'
-
-alias scd='cd'
-alias sl='ls'
-
-alias py='python3'
+source ~/.bash_aliases
 
 export EDITOR='vim'
 export GOPATH="$HOME/.go"
 
-alias tmux='TERM=screen-256color-bce tmux'
-
 export GOPATH=$(go env GOPATH)
-
-function grepin () {
-    echo $#
-    [ $# -ne 2 ] && {
-        echo "Wrong number of params (2)"
-        return 1
-    }
-
-    path_file=$1
-    pattern=$2
-
-    echo $PATH
-    files=$(find $path_file -type f)
-
-    for file in $files
-    do
-        cat $file | grep "$pattern" && echo "======> Found in $file"
-    done
-}
 
 ANDROID_HOME=~/.android/sdk/
 PATH="$PATH:~/.bin:$GOPATH/bin:~/.gem/ruby/2.4.0/bin:~/.gem/ruby/2.5.0/bin:$HOME/.cargo/bin"
@@ -97,3 +22,4 @@ export LANG=en_US.UTF-8
 export LC_CTYPE=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 source ~/.tokenrc
+export MOZ_USE_XINPUT2 DEFAULT=1

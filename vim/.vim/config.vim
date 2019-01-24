@@ -17,7 +17,7 @@ set undolevels=1000
 set undoreload=10000
 set hidden
 set foldmethod=syntax
-set foldmethod=indent
+" set foldmethod=indent
 set wildmenu
 set spelllang=en
 set spellfile=$HOME/.vim/spell/en.utf-8.add
@@ -46,14 +46,14 @@ autocmd FileType css set tabstop=2 shiftwidth=2 expandtab
 
 let g:slime_target = "vimterminal"
 let g:slime_no_mappings = 1
-let g:ale_linters = {'javascript': ['standard']}
+let g:ale_linters = {'javascript': ['standard'], 'clojure': ['joker']}
 autocmd StdinReadPre * let s:std_in=1
 let NERDTreeMinimalUI=1
 let NERDTreeDirArrows = 1
 let g:closetag_filenames = "*.html,*.xhtml,*.phtml,*.php,*.jsx,*.js"
 let g:clojure_align_multiline_strings = 1
 let g:sexp_insert_after_wrap = 'false'
-let g:airline_theme='ubaryd'
+let g:airline_theme='minimalist'
 let g:airline_powerline_fonts = 1
 autocmd BufWritePre * StripWhitespace
 let g:limelight_conceal_ctermfg = 'gray'

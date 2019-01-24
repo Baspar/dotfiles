@@ -4,7 +4,7 @@ DOTS=$*
 DIR=$(dirname "$0")
 
 GET_ALL_DOTS () {
-    find "$DIR" -depth 1 -type d | grep -v "\.git"
+    find -depth 1 -type d "$DIR/" | grep -v "\.git"
 }
 INSTALL_DOT () {
     DOT="$1"
@@ -30,7 +30,10 @@ INSTALL_DOT () {
 }
 
 if [ $# -eq 0 ]; then
+    echo "FInd all"
     DOTS=$(GET_ALL_DOTS)
+    echo $DOTS
+    exit
 fi
 
 for DOT in $DOTS; do
