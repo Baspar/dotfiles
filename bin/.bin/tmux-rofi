@@ -16,8 +16,8 @@ RELATIVE_SELECTED_FILE=$(echo -e "$SESSIONS" | rofi \
 
 [ $(echo "$SESSIONS" | grep "$RELATIVE_SELECTED_FILE") ] && {
     echo "attach"
-    termite -e "tmux a -t \"$RELATIVE_SELECTED_FILE\""
+    kitty -e "tmux a -t \"$RELATIVE_SELECTED_FILE\""
 } || {
     echo "new"
-    termite -e "tmux new -s \"$RELATIVE_SELECTED_FILE\""
+    kitty -e "tmux new -s \"$RELATIVE_SELECTED_FILE\""
 }
