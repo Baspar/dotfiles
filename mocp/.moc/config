@@ -264,7 +264,7 @@ Theme = yellow_red_theme
 #
 # Example:    Keymap = my_keymap
 #
-Keymap = keymap.txt
+Keymap = keymap_vim
 
 # Use ASCII rather than graphic characters for drawing lines.  This
 # helps on some terminals.
