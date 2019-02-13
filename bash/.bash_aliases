@@ -65,3 +65,5 @@ abbr sl 'ls'
 abbr r 'ranger'
 
 abbr py 'python3'
+
+abbr - 'cd -'
