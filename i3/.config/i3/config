@@ -7,7 +7,7 @@
 for_window [class="^.*"] border pixel 0
 
 set $mod Mod1
-set $desktop1 "1"
+set $desktop1 "1"
 set $desktop2 "2"
 set $desktop3 "3"
 set $desktop4 "4"
@@ -195,9 +195,10 @@ client.focused #000000 #DFAF8F #000000 #936343
 # finds out, if available)
 bar {
     colors {
-        focused_workspace #000000 #000000 #DFAF8F
-        active_workspace #000000 #000000 #998774
-        inactive_workspace #000000 #000000 #998774
+        background #202020
+        focused_workspace #000000 #202020 #DFAF8F
+        active_workspace #000000 #202020 #998774
+        inactive_workspace #000000 #202020 #998774
         urgent_workspace #000000 #DFAF8F #000000
     }
     mode hide
@@ -209,7 +210,8 @@ gaps inner 40
 
 
 # Lock control
-bindsym ctrl+$mod+l exec ~/.bin/i3lock-extra.sh -m pixelize
+# bindsym ctrl+$mod+l exec ~/.bin/i3lock-extra.sh -m pixelize
+bindsym ctrl+$mod+l exec dm-tool switch-to-greeter
 
 # WIFI power control
 bindsym Print exec ~/.bin/togglePower.sh
@@ -253,7 +255,7 @@ bindsym $mod+Shift+b bar mode toggle
 bindsym $mod+z move scratchpad
 bindsym $mod+Shift+z scratchpad show
 
-exec --no-startup-id { while:; do compton; done; }&
+exec --no-startup-id compton
 exec --no-startup-id setxkbmap -option caps:escape
 # exec --no-startup-id feh --bg-scale ~/.wall/3.jpg
 exec --no-startup-id xbindkeys
