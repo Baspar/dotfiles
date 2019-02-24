@@ -66,7 +66,7 @@ function git_prompt
     block "black" "white" "$COLOR" " $ABBR_GIT_ROOT "
 
     # Build git string
-    set GIT_STATUS (echo  " $GIT_BRANCH $ICONS " | sed 's/\s+/\s/g')
+    set GIT_STATUS (echo  " $GIT_BRANCH $ICONS " | sed 's/\s\+/ /g')
     block "$COLOR" "black" "black" "$GIT_STATUS"
 
     # Rest path

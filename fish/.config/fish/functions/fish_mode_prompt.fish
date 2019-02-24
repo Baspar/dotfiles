@@ -1,14 +1,19 @@
 function fish_mode_prompt
-    set_color "black" -b "yellow" -o
+
     if [ "$fish_bind_mode" = "insert" ]
-        echo -n " I "
+        set LETTER "I"
+        set COLOR "yellow"
     else if [ "$fish_bind_mode" = "visual" ]
-        echo -n " V "
+        set LETTER "V"
+        set COLOR "red"
     else
-        echo -n " N "
+        set LETTER "N"
+        set COLOR "white"
     end
 
+    set_color "black" -b "$COLOR" -o
+    echo -n " $LETTER "
     set_color "normal"
-    set_color "yellow" -b "black"
+    set_color "$COLOR" -b "black"
     echo -n ""
 end
