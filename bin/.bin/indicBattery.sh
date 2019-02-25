@@ -1,10 +1,30 @@
 #!/bin/bash
 
-[ $1 ] && PERCENTAGE=$1 || PERCENTAGE=$(cat ~/.bin/battery.d | head -n 1)
+WIDTH=50
+CHARACTER="█"
+ARGS=()
 
-[ $2 ] && WIDTH=$2 || WIDTH=50
+while [ $# -ne 0 ]
+do
+    key=$1
+    case $1 in
+        -w|--width)
+            WIDTH=$2
+            shift; shift;;
+        -c|--character)
+            CHARACTER=$2
+            shift; shift;;
+        *)
+            ARGS+=($1)
+            shift;;
+    esac
+done
 
-[ $3 ] && CHARACTER=$3 || CHARACTER="█"
+[ ${#ARGS} -ne 0 ] && {
+    PERCENTAGE=${ARGS[0]}
+} || {
+    PERCENTAGE=$(cat ~/.bin/battery.d | head -n 1)
+}
 
 npc=$((PERCENTAGE * WIDTH / 100))
 
