@@ -173,11 +173,12 @@ mode "volume" {
         bindsym Escape mode "default"
 }
 mode "mocp" {
-        bindsym Shift+f exec ~/.bin/PrevMOCP.sh
-        bindsym f exec ~/.bin/NextMOCP.sh
-        bindsym h exec ~/.bin/reverseMOCP.sh
-        bindsym l exec ~/.bin/forwardMOCP.sh
-        bindsym space exec ~/.bin/PPMOCP.sh
+        bindsym     Shift+f exec ~/.bin/PrevMOCP.sh
+        bindsym           f exec ~/.bin/NextMOCP.sh
+        bindsym           h exec ~/.bin/reverseMOCP.sh
+        bindsym           l exec ~/.bin/forwardMOCP.sh
+        bindsym       space exec ~/.bin/PPMOCP.sh
+        bindsym Shift+slash exec ~/.bin/sayMOCPSong.sh && sleep 1 && ~/.bin/sayMOCP.sh
 
         bindsym Return exec kitty --title "MOCP - Music Player" mocp && i3-msg workspace back_and_forth; mode "default"
         bindsym Escape mode "default"
