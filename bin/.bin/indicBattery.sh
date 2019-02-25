@@ -1,47 +1,48 @@
 #!/bin/bash
 
+[ $1 ] && PERCENTAGE=$1 || PERCENTAGE=$(cat ~/.bin/battery.d | head -n 1)
 
-[ $1 ] && pc=$1 || pc=$(cat ~/.bin/battery.d | head -n 1)
+[ $2 ] && WIDTH=$2 || WIDTH=50
 
-[ $2 ] && length=$2 || length=50
+[ $3 ] && CHARACTER=$3 || CHARACTER="█"
 
-npc=$((pc * length / 100))
+npc=$((PERCENTAGE * WIDTH / 100))
 
-str="["
-for i in $(seq 0 $length)
+STR="["
+for i in $(seq 0 $WIDTH)
 do
     if [ $i -le $npc ]
     then
-        str="$str="
+        STR=$STR$CHARACTER
     else
-        str=$str"_"
+        STR=$STR"_"
     fi
 done
-str="$str]"
+STR="$STR]"
 
-mid=$((length/2+1))
+mid=$((WIDTH/2+1))
 
-str=$(echo $str | sed "
-    s/./|/$((mid-1));
+STR=$(echo $STR | sed "
+    s/./▌/$((mid-1));
     s/./%/$((mid+3));
-    s/./|/$((mid+4))")
+    s/./▐/$((mid+4))")
 
-if [ $pc -lt 10 ]
+if [ $PERCENTAGE -lt 10 ]
 then
-    str=$(echo $str | sed "
+    STR=$(echo $STR | sed "
         s/./_/$((mid));
         s/./_/$((mid+1));
-        s/./$pc/$((mid+2))")
-elif [ $pc -le 99 ]
+        s/./$PERCENTAGE/$((mid+2))")
+elif [ $PERCENTAGE -le 99 ]
 then
-    str=$(echo $str | sed "
+    STR=$(echo $STR | sed "
         s/./_/$((mid));
-        s/./$((pc/10))/$((mid+1));
-        s/./$((pc%10))/$((mid+2))")
+        s/./$((PERCENTAGE/10))/$((mid+1));
+        s/./$((PERCENTAGE%10))/$((mid+2))")
 else
-    str=$(echo $str | sed "
+    STR=$(echo $STR | sed "
         s/./1/$((mid));
         s/./0/$((mid+1));
         s/./0/$((mid+2))")
 fi
-echo $str | sed 's/_/ /g'
+echo $STR | sed 's/_/ /g'

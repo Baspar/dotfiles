@@ -1,9 +1,9 @@
 #!/bin/bash
-pid=$(cat ~/.bin/notifypid)
+pid=$(cat ~/.bin/pid/keyboard)
 if [[ $pid == "" ]]
 then
-
-    pid=1
+    pid=$RANDOM
+    echo "$pid" > $FILE
 fi
 id=$(xinput list  | grep "AT Translated Set 2 keyboard " | sed 's/.*id=\([0-9]\+\).*/\1/g')
 nouvelEtat=$(( ( $(xinput list-props $id | grep "Device Enabled" | sed 's/.*\([01]\)$/\1/g') + 1 ) % 2 ))

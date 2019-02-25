@@ -1,5 +1,5 @@
 [global]
-    font = MonofurForPowerline Nerd Font 20
+    font = Fira Code 20
 
     # Allow a small subset of html markup:
     #   <b>bold</b>
@@ -73,7 +73,7 @@
     # The transparency of the window.  Range: [0; 100].
     # This option will only work if a compositing windowmanager is
     # present (e.g. xcompmgr, compiz, etc.).
-    transparency = 0
+    transparency = 10
 
     # Don't remove messages, if the user is idle (no mouse or keyboard input)
     # for longer than idle_threshold seconds.
@@ -142,7 +142,7 @@
     browser = /usr/bin/opera -new-tab
 
     # Align icons left/right/off
-    icon_position = left
+    icon_position = off
 
     # Paths to default icons.
     icon_folders = /usr/share/icons/gnome/16x16/status/:/usr/share/icons/gnome/16x16/devices/
@@ -170,7 +170,7 @@
     #history = ctrl+grave
 
     # Context menu.
-    context = mod1+shift+e
+    context = ctrl+shift+space
 
 [urgency_normal]
     # IMPORTANT: colors have to be defined in quotation marks.

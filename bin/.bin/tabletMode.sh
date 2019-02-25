@@ -4,6 +4,7 @@ pid=$(cat $FILE)
 if [[ $pid == "" ]]
 then
     pid=$RANDOM
+    echo "$pid" > $FILE
 fi
 
 idTS=$(xinput list  | grep Touchscreen | sed 's/.*id=\([0-9]\+\).*/\1/g')
@@ -25,7 +26,7 @@ else
     xinput -set-prop $idTP "Device Enabled" 1
     xinput -set-prop $idTS "Device Enabled" 0
     kill -9 $(ps aux | grep autoRotate | grep -v grep | sed 's/\ \+/\ /g' | cut -d ' ' -f 2)
-    xrandr --screen 0 -o normal 
+    xrandr --screen 0 -o normal
     xinput set-prop --type=int --format=8 "ELAN Touchscreen" "Evdev Axes Swap" 0
     xinput set-prop --type=int --format=8 "ELAN Touchscreen" "Evdev Axis Inversion" 0 0
 fi

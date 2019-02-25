@@ -3,6 +3,7 @@ pid=$(cat $FILE)
 if [[ $pid == "" ]]
 then
     pid=$RANDOM
+    echo "$pid" > $FILE
 fi
 
 xbacklight + 10

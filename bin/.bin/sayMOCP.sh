@@ -4,37 +4,44 @@ FILE=~/.bin/pid/moc
 pid=$(cat $FILE)
 if [[ $pid == "" ]]
 then
-
     pid=$RANDOM
+    echo "$pid" > $FILE
 fi
 
-MOCP=$(ps aux | grep mocp | grep -v grep | wc -l)
+MOCP_RUNNING=$(ps aux | grep mocp | grep -v grep | wc -l)
+MOCP_INFO=$(mocp -i | tr '\n' '#')
+MOCP_STATE=$(echo "$MOCP_INFO" | tr '#' '\n' | grep State | sed 's/State:\ //g')
 
-if [ $MOCP -ne 0 ]
+if [ $MOCP_RUNNING -ne 0 ]
 then
-    INFO=$(mocp -i | tr '\n' '#')
-    State=$(echo "$INFO" | tr '#' '\n' | grep State | sed 's/State:\ //g')
-    if [[ $State != "STOP" ]]
+    if [[ $MOCP_STATE != "STOP" ]]
     then
-        song=$(echo "$INFO" | tr '#' '\n' | grep SongTitle | sed 's/SongTitle:\ //g')
-        artist=$(echo "$INFO" | tr '#' '\n' | grep Artist | sed 's/Artist:\ //g')
-        TotalSec=$(echo "$INFO" | tr '#' '\n' | grep TotalSec | sed 's/TotalSec:\ //g')
-        CurrentSec=$(echo "$INFO" | tr '#' '\n' | grep CurrentSec | sed 's/CurrentSec:\ //g')
-        TotalTime=$(echo "$INFO" | tr '#' '\n' | grep TotalTime | sed 's/TotalTime:\ //g')
-        CurrentTime=$(echo "$INFO" | tr '#' '\n' | grep CurrentTime | sed 's/CurrentTime:\ //g')
-        percentage=$((100 * CurrentSec / TotalSec))
+        SONG=$(echo "$MOCP_INFO" | tr '#' '\n' | grep SongTitle | sed 's/SongTitle:\ //g')
+        ARTIST=$(echo "$MOCP_INFO" | tr '#' '\n' | grep Artist | sed 's/Artist:\ //g')
+        TOTAL_SEC=$(echo "$MOCP_INFO" | tr '#' '\n' | grep TotalSec | sed 's/TotalSec:\ //g')
+        CURRENT_SEC=$(echo "$MOCP_INFO" | tr '#' '\n' | grep CurrentSec | sed 's/CurrentSec:\ //g')
+        TOTAL_TIME=$(echo "$MOCP_INFO" | tr '#' '\n' | grep TotalTime | sed 's/TotalTime:\ //g')
+        CURRENT_TIME=$(echo "$MOCP_INFO" | tr '#' '\n' | grep CurrentTime | sed 's/CurrentTime:\ //g')
+        PERCENTAGE=$((100 * CURRENT_SEC / TOTAL_SEC))
 
-        status="[ $([[ $(mocp -i | grep State | cut -d' ' -f 2) == 'PLAY' ]] && echo '|>' || echo '||') ]"
+        if [[ $(mocp -i | grep State | cut -d' ' -f 2) == 'PLAY' ]]
+        then
+            CHAR="█"
+        else
+            CHAR="░"
+        fi
 
-        title="$status $song - $artist"
-        descr="$CurrentTime  $(~/.bin/indicBattery.sh $percentage 30)  $TotalTime"
+        TITLE="$STATUS $SONG - $ARTIST
+        $CURRENT_TIME$(~/.bin/indicBattery.sh $PERCENTAGE 30 $CHAR)  $TOTAL_TIME"
     else
-        title="MOCP not playing"
+        TITLE="MOCP not playing"
     fi
 
 else
-    title="MOCP not running"
-    descr=""
+    TITLE="MOCP not running"
 fi
 
-notify-send -p -r $pid -t 1000  -i /home/baspar/.icons/ACYL_Icon_Theme_0.9.4/scalable/real_icons/actions/gtk-media-stop.svg "$title" "$descr"
+notify-send \
+    -r $pid \
+    -t 1000  \
+    "$TITLE"

@@ -1,23 +1,26 @@
+#!/bin/bash
 FILE=~/.bin/pid/volume
 pid=$(cat $FILE)
 if [[ $pid == "" ]]
 then
     pid=$RANDOM
+    echo "$pid" > $FILE
 fi
 
 # pulseaudio-ctl up 5
 pactl set-sink-volume 0 +5%
-etat=$(pulseaudio-ctl full-status | cut -d ' ' -f 2)
-pc=$(pulseaudio-ctl full-status | cut -d ' ' -f 1)
+STATE=$(pulseaudio-ctl full-status | cut -d ' ' -f 2)
+PERCENTAGE=$(pulseaudio-ctl full-status | cut -d ' ' -f 1)
 
-if [ $etat == "no" ]
+if [ $STATE == "no" ]
 then
-    img="low"
-    txt="(U)"
+    CHAR="█"
 else
-    img="muted"
-    txt="(M)"
+    CHAR="░"
 fi
-echo $pc
 
-notify-send -t 1000 -p -r $pid -i /home/baspar/.icons/ACYL_Icon_Theme_0.9.4/scalable/real_icons/status/audio-volume-$img.svg "$txt - Volume up" "$(~/.bin/indicBattery.sh $pc 50)"
+notify-send \
+    -t 1000 \
+    -p \
+    -r $pid \
+    "$(~/.bin/indicBattery.sh $PERCENTAGE 50 $CHAR)"

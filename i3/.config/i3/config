@@ -177,7 +177,7 @@ mode "mocp" {
         bindsym f exec ~/.bin/NextMOCP.sh
         bindsym h exec ~/.bin/reverseMOCP.sh
         bindsym l exec ~/.bin/forwardMOCP.sh
-        bindsym space exec exec ~/.bin/PPMOCP.sh
+        bindsym space exec ~/.bin/PPMOCP.sh
 
         bindsym Return exec kitty --title "MOCP - Music Player" mocp && i3-msg workspace back_and_forth; mode "default"
         bindsym Escape mode "default"
@@ -255,11 +255,11 @@ bindsym $mod+Shift+b bar mode toggle
 bindsym $mod+z move scratchpad
 bindsym $mod+Shift+z scratchpad show
 
-exec --no-startup-id compton
-exec --no-startup-id setxkbmap -option caps:escape
+# exec --no-startup-id compton
+# exec --no-startup-id xbindkeys
+# exec --no-startup-id amixer -c 0 set 'Headphone Mic Boost',0 1
+# exec --no-startup-id setxkbmap -option caps:escape
 # exec --no-startup-id feh --bg-scale ~/.wall/3.jpg
-exec --no-startup-id xbindkeys
-exec --no-startup-id amixer -c 0 set 'Headphone Mic Boost',0 1
 
 
 # smart_gaps on

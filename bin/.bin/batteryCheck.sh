@@ -1,42 +1,44 @@
 #!/bin/bash
-FILE=~/.bin/pid/battery
+# Parameters
+THRESHOLD_WARNING=20
+THRESHOLD_ALERT=5
+PID_FILE=~/.bin/PID/battery
+BATTERY_NUMBER=0
 
-seuil=20 # Seuil d'alerte
-suspendPC=5 # Seuil de mise en veille
-
-pid=$(cat $FILE)
-if [[ $pid == "" ]]
+# Set
+PID=$(cat $PID_FILE)
+if [[ $PID == "" ]]
 then
-    pid=$RANDOM
+    PID=$RANDOM
+    echo $PID > PID_FILE
 fi
 
-# batTot=$(cat /sys/class/power_supply/BAT0/charge_full)
-# bat=$(( 100 * $(cat /sys/class/power_supply/BAT0/charge_now) / batTot ))
-bat=$(acpi | sed "s/.* \([0-9]*\)%.*/\1/g")
+STATUS=$(cat /sys/class/power_supply/BAT$BATTERY_NUMBER/status)
+FULL=$(cat /sys/class/power_supply/BAT$BATTERY_NUMBER/charge_full)
+CURRENT=$(cat /sys/class/power_supply/BAT$BATTERY_NUMBER/charge_now)
 
-state=$(cat /sys/class/power_supply/BAT0/status)
-oldBat=$(cat ~/.bin/battery.d | head -n 1)
-oldState=$(cat ~/.bin/battery.d | head -n 2 | tail -n 1)
+OLD_BATTERY_LEVEL=$(cat ~/.bin/battery.d | head -n 1)
+OLD_CHARGING_STATE=$(cat ~/.bin/battery.d | head -n 2 | tail -n 1)
 
 # Ecriture des données dans fichier
-echo $bat > ~/.bin/battery.d
-echo $state >> ~/.bin/battery.d
+echo $BATTERY_LEVEL > ~/.bin/battery.d
+echo $CHARGING_STATE >> ~/.bin/battery.d
 
 export DISPLAY=:0.0
-if [[ $state != $oldState ]]
+if [[ $CHARGING_STATE != $OLD_CHARGING_STATE ]]
 then
-    notify-send -p -r $pid -i /home/baspar/.icons/ACYL_Icon_Theme_0.9.4/scalable/real_icons/devices/battery.svg "Battery $state" "Battery at $bat%"> $FILE
-elif [ $bat -lt $oldBat ]
+    notify-send -p -r $PID -i /home/baspar/.icons/ACYL_Icon_Theme_0.9.4/scalable/real_icons/devices/battery.svg "Battery $CHARGING_STATE" "Battery at $BATTERY_LEVEL%"> $PID_FILE
+elif [ $BATTERY_LEVEL -lt $OLD_BATTERY_LEVEL ]
 then
-    if [ $bat -le $suspendPC ]
+    if [ $BATTERY_LEVEL -le $THRESHOLD_ALERT ]
     then
-        notify-send -p -r $pid -u critical -i /home/baspar/.icons/ACYL_Icon_Theme_0.9.4/scalable/real_icons/devices/battery.svg "Suspending!" "Battery at $bat%" > $FILE
+        notify-send -p -r $PID -u critical -i /home/baspar/.icons/ACYL_Icon_Theme_0.9.4/scalable/real_icons/devices/battery.svg "Suspending!" "Battery at $BATTERY_LEVEL%" > $PID_FILE
         sleep 5 && systemctl suspend
-    elif [ $bat -le $seuil ]
+    elif [ $BATTERY_LEVEL -le $THRESHOLD_WARNING ]
     then
-        notify-send -p -r $pid -u critical -i /home/baspar/.icons/ACYL_Icon_Theme_0.9.4/scalable/real_icons/devices/battery.svg "Battery at $bat%" > $FILE
+        notify-send -p -r $PID -u critical -i /home/baspar/.icons/ACYL_Icon_Theme_0.9.4/scalable/real_icons/devices/battery.svg "Battery at $BATTERY_LEVEL%" > $PID_FILE
     fi
-elif [ $bat -eq 100 ] && [ $oldBat -ne 100 ]
+elif [ $BATTERY_LEVEL -eq 100 ] && [ $OLD_BATTERY_LEVEL -ne 100 ]
 then
-        notify-send -p -r $pid -i /home/baspar/.icons/ACYL_Icon_Theme_0.9.4/scalable/real_icons/devices/battery.svg "Battery at $bat%" > $FILE
+        notify-send -p -r $PID -i /home/baspar/.icons/ACYL_Icon_Theme_0.9.4/scalable/real_icons/devices/battery.svg "Battery at $BATTERY_LEVEL%" > $PID_FILE
 fi

@@ -5,6 +5,7 @@ pid=$(cat $FILE)
 if [[ $pid == "" ]]
 then
     pid=$RANDOM
+    echo "$pid" > $FILE
 fi
 
 info=$(acpi | cut -d: -f2 | sed "s/[ %]//g" | cut -d, -f-2)

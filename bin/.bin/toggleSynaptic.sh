@@ -1,9 +1,9 @@
 #!/bin/bash
-pid=$(cat ~/.bin/notifypid)
+pid=$(cat ~/.bin/pid/synaptic)
 if [[ $pid == "" ]]
 then
-
-    pid=1
+    pid=$RANDOM
+    echo "$pid" > $FILE
 fi
 id=$(xinput list  | grep -i "touchpad" | sed 's/.*id=\([0-9]\+\).*/\1/g' | tail -n 1)
 nouvelEtat=$(( ( $(xinput list-props $id | grep "Device Enabled" | sed 's/.*\([01]\)$/\1/g') + 1 ) % 2 ))
