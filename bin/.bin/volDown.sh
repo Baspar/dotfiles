@@ -21,4 +21,4 @@ fi
 notify-send \
     -t 1000 \
     -r $pid \
-    "$(~/.bin/indicBattery.sh $PERCENTAGE 50 $CHAR)"
+    "$(~/.bin/indicBattery.sh $PERCENTAGE -w 50 -c $CHAR)"

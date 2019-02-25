@@ -16,8 +16,6 @@ if [ $MOCP_RUNNING -ne 0 ]
 then
     if [[ $MOCP_STATE != "STOP" ]]
     then
-        SONG=$(echo "$MOCP_INFO" | tr '#' '\n' | grep SongTitle | sed 's/SongTitle:\ //g')
-        ARTIST=$(echo "$MOCP_INFO" | tr '#' '\n' | grep Artist | sed 's/Artist:\ //g')
         TOTAL_SEC=$(echo "$MOCP_INFO" | tr '#' '\n' | grep TotalSec | sed 's/TotalSec:\ //g')
         CURRENT_SEC=$(echo "$MOCP_INFO" | tr '#' '\n' | grep CurrentSec | sed 's/CurrentSec:\ //g')
         TOTAL_TIME=$(echo "$MOCP_INFO" | tr '#' '\n' | grep TotalTime | sed 's/TotalTime:\ //g')
@@ -31,17 +29,15 @@ then
             CHAR="░"
         fi
 
-        TITLE="$STATUS $SONG - $ARTIST
-        $CURRENT_TIME$(~/.bin/indicBattery.sh $PERCENTAGE 30 $CHAR)  $TOTAL_TIME"
+        TEXT="$CURRENT_TIME $(~/.bin/indicBattery.sh $PERCENTAGE -w 50 -c $CHAR) $TOTAL_TIME"
     else
-        TITLE="MOCP not playing"
+        TEXT="MOCP not playing"
     fi
-
 else
-    TITLE="MOCP not running"
+    TEXT="MOCP not running"
 fi
 
 notify-send \
     -r $pid \
     -t 1000  \
-    "$TITLE"
+    "$TEXT"
