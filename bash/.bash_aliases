@@ -23,7 +23,6 @@ abbr gn "git notes"
 abbr gba "git branch --all"
 abbr gclone "git clone git@github.com:"
 
-# abbr xx 'termite& disown'
 abbr y "yarn"
 
 abbr h 'head'
@@ -50,15 +49,17 @@ abbr df 'df -h'
 abbr pbcopy 'xsel --clipboard --input'
 abbr pbpaste 'xsel --clipboard --output'
 
+# Clojure
 abbr rlf 'rlwrap lein figwheel'
 abbr rlfa 'rlwrap lein figwheel android'
-
-abbr aws_scb 'aws --profile scb'
-
 abbr repl 'cd ~/.repl; lein repl; cd -'
+
+# AWS
+abbr aws_scb 'aws --profile scb'
 
 abbr weather 'curl -s wttr.in | head -n -2'
 
+# Typo
 abbr scd 'cd'
 abbr sl 'ls'
 
@@ -66,4 +67,9 @@ abbr r 'ranger'
 
 abbr py 'python3'
 
+# CD related
 abbr - 'cd -'
+abbr .. 'cd ..'
+abbr ... 'cd ../..'
+
+abbr se 'sudoedit'
