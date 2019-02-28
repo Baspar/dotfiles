@@ -250,6 +250,10 @@ bindsym XF86PowerOff exec ~/.bin/toggleTouchScreen.sh && ~/.bin/toggleSynaptic.s
 bindsym $mod+Shift+t exec ~/.bin/toggleTouchScreen.sh
 bindsym $mod+Shift+y exec ~/.bin/toggleSynaptic.sh
 
+# Keyboard brightness control
+bindsym XF86KbdBrightnessDown exec ~/.bin/keyboardBrightDown.sh
+bindsym XF86KbdBrightnessUp exec ~/.bin/keyboardBrightUp.sh
+
 bindsym $mod+Shift+b bar mode toggle
 
 # Make the currently focused window a scratchpad
