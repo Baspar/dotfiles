@@ -91,14 +91,20 @@ function fzf_key_bindings
     end
   end
 
+  function fzf-tmux -d "Connect/switch to TMUX session"
+      tmux list-sessions -F "#{session_name}" | fzf | read -l result; and tmux switch-client -t "$result"
+  end
+
   bind \cf fzf-file-widget
   bind \cr fzf-history-widget
   bind \ct fzf-cd-widget
+  bind \cj fzf-tmux
 
   if bind -M insert > /dev/null 2>&1
     bind -M insert \cf fzf-file-widget
     bind -M insert \cr fzf-history-widget
     bind -M insert \ct fzf-cd-widget
+    bind -M insert \cj fzf-tmux
   end
 
   function __fzf_parse_commandline -d 'Parse the current command line token and return split of existing filepath and rest of token'

@@ -45,7 +45,7 @@ function git_prompt
     set GIT_HAS_CHANGES_TO_COMMIT $status
 
     # Default color
-    set COLOR "green"
+    set COLOR "#4B8252"
     set ICONS ""
 
     # Colors and icons
@@ -53,25 +53,25 @@ function git_prompt
         set ICONS "$ICONS+"
     end
     if [ $GIT_HAS_UNSTAGED -eq 0 ]
-        set COLOR "yellow"
+        set COLOR "#AF875F"
         set ICONS "$ICONS~"
     end
     if [ $GIT_HAS_UNTRACKED -eq 0 ]
-        set COLOR "yellow"
+        set COLOR "#AF875F"
         set ICONS "$ICONS?"
     end
 
     # Print prefix
     set ABBR_GIT_ROOT (abbr_path $GIT_ROOT)
-    block "black" "white" "$COLOR" " $ABBR_GIT_ROOT "
+    block "#3e3e3e" "white" "$COLOR" " $ABBR_GIT_ROOT "
 
     # Build git string
     set GIT_STATUS (echo  " $GIT_BRANCH $ICONS " | sed 's/\s\+/ /g')
-    block "$COLOR" "black" "black" "$GIT_STATUS"
+    block "$COLOR" "black" "#3e3e3e" "$GIT_STATUS"
 
     # Rest path
     set ABBR_GIT_PATH (abbr_path (pwd | sed "s|$GIT_ROOT||; s|^|/|; s|^//|/|"))
-    block "black" "white" "normal" " $ABBR_GIT_PATH "
+    block "#3e3e3e" "white" "normal" " $ABBR_GIT_PATH "
 end
 
 function fish_prompt
@@ -81,7 +81,7 @@ function fish_prompt
         git_prompt $GIT_ROOT
     else
         set ABBR_PWD (abbr_path $PWD)
-        block "black" "white" "normal" " $ABBR_PWD "
+        block "#3e3e3e" "white" "normal" " $ABBR_PWD "
     end
 
     echo -n " "
