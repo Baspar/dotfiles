@@ -21,7 +21,7 @@ set foldmethod=syntax
 set wildmenu
 set spelllang=en
 set spellfile=$HOME/.vim/spell/en.utf-8.add
-
+set directory=$HOME/.vim/swap
 " set termguicolors
 set t_Co=256
 
@@ -46,7 +46,7 @@ autocmd FileType css set tabstop=2 shiftwidth=2 expandtab
 
 let g:slime_target = "vimterminal"
 let g:slime_no_mappings = 1
-let g:ale_linters = {'javascript': ['standard'], 'clojure': ['joker']}
+let g:ale_linters = {'javascript': ['standard', 'eslint'], 'clojure': ['joker']}
 autocmd StdinReadPre * let s:std_in=1
 let NERDTreeMinimalUI=1
 let NERDTreeDirArrows = 1

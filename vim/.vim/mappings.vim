@@ -18,8 +18,8 @@ nnoremap c# #NcgN
 nnoremap <leader>M :LivedownPreview<CR>
 
 " CTRL-P
-nnoremap \ :Buffers<cr>
-nnoremap <tab> :FZF<cr>
+nnoremap \ :Buffers<CR>
+nnoremap <tab> :FZF<CR>
 
 " NerdTree
 map <C-e> :NERDTreeToggle<CR>
@@ -116,17 +116,17 @@ nnoremap <leader>G :Goyo<CR>:hi Normal guibg=NONE ctermbg=NONE<CR>
 nnoremap <leader>L :Limelight!!<CR>
 
 " Select line
-nnoremap <leader>l :normal ^v$<cr>
+nnoremap <leader>l :normal ^v$<CR>
 
 " Select all
-nnoremap <leader>a :normal ggVG<cr>
+nnoremap <leader>a :normal ggVG<CR>
 
 " Ags
 nnoremap <leader>A :Ag<space>
 
 " Ale
-nnoremap [a <Plug>(ale_previous_wrap)
-nnoremap ]a <Plug>(ale_next_wrap)
+nnoremap [a :ALEPrevious<CR>
+nnoremap ]a :ALENext<CR>
 
 " Vim-Go
 au FileType go nnoremap <localleader>gr <Plug>(go-run)
