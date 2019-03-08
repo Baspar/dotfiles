@@ -26,7 +26,8 @@ abbr gclone "git clone git@github.com:"
 abbr y "yarn"
 
 abbr h 'head'
-abbr t 'tail'
+abbr t 'tmux'
+abbr ta 'tmux a'
 
 # abbr cp 'acp -g'
 # abbr mv 'amv -g'
@@ -46,8 +47,8 @@ abbr o 'xdg-open'
 
 abbr df 'df -h'
 
-abbr pbcopy 'xsel --clipboard --input'
-abbr pbpaste 'xsel --clipboard --output'
+# abbr pbcopy 'xsel --clipboard --input'
+# abbr pbpaste 'xsel --clipboard --output'
 
 # Clojure
 abbr rlf 'rlwrap lein figwheel'
@@ -73,3 +74,4 @@ abbr .. 'cd ..'
 abbr ... 'cd ../..'
 
 abbr se 'sudoedit'
+abbr nvm 'bass source /usr/local/opt/nvm/nvm.sh --no-use ";" nvm'
