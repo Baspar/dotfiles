@@ -22,6 +22,8 @@ set wildmenu
 set spelllang=en
 set spellfile=$HOME/.vim/spell/en.utf-8.add
 set directory=$HOME/.vim/swap
+set shell=/bin/bash
+
 " set termguicolors
 set t_Co=256
 

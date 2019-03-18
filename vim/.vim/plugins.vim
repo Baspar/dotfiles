@@ -54,6 +54,7 @@ call plug#begin('~/.vim/plugged')
         " {{{ Git
         Plug 'tpope/vim-fugitive'
         Plug 'airblade/vim-gitgutter'
+        Plug 'rbong/vim-flog'
         " }}}
         " {{{ Text Object
         Plug 'machakann/vim-sandwich'
