@@ -85,7 +85,11 @@ nnoremap <leader>_ :sp<CR>
 nnoremap <leader>- :sp<CR>
 
 " Remove highlight
-nnoremap <leader><esc> :noh<CR><esc>
+" nnoremap <leader><esc> :noh<CR><esc>
+
+" Exit insert mode
+inoremap jf <C-c>:noh<cr>
+inoremap kj <C-c>:noh<cr>
 
 " Tabular
 noremap <leader>pi :PlugInstall<CR>
