@@ -1,6 +1,5 @@
 #
-# ~/.bashrc
-#
+# ~/.bashrc #
 
 # alias abbr='alias'
 # source ~/.bash_aliases
@@ -13,7 +12,7 @@ export GOPATH=$(go env GOPATH 2&> /dev/null)
 ANDROID_HOME=~/.android/sdk/
 PATH="$PATH:~/.bin:$GOPATH/bin:~/.gem/ruby/2.4.0/bin:~/.gem/ruby/2.5.0/bin:$HOME/.cargo/bin"
 TERM=xterm
-PATH=$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
+PATH=$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$HOME/.cargo/bin
 
 export LD_PRELOAD=~/.local/share/Steam/ubuntu12_32/steam-runtime/amd64/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0
 

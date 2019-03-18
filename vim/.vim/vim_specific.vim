@@ -1,0 +1,1 @@
+set ttymouse=xterm2

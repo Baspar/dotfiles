@@ -38,10 +38,10 @@ abbr mc 'make clean'
 abbr free 'free -h'
 abbr f 'free'
 
-abbr vimrc 'vim ~/.vimrc'
-# abbr vim 'nvim'
-abbr vi 'vim'
-abbr v 'vim'
+abbr vimrc 'nvim ~/.vimrc'
+abbr vim 'nvim'
+abbr vi 'nvim'
+abbr v 'nvim'
 
 abbr o 'xdg-open'
 

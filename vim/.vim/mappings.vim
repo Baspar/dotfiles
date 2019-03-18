@@ -125,8 +125,8 @@ nnoremap <leader>a :normal ggVG<CR>
 nnoremap <leader>A :Ag<space>
 
 " Ale
-nnoremap [a :ALEPrevious<CR>
-nnoremap ]a :ALENext<CR>
+nmap [a <Plug>(coc-diagnostic-prev)
+nmap ]a <Plug>(coc-diagnostic-next)
 
 " Vim-Go
 au FileType go nnoremap <localleader>gr <Plug>(go-run)

@@ -46,7 +46,7 @@ autocmd FileType css set tabstop=2 shiftwidth=2 expandtab
 
 let g:slime_target = "vimterminal"
 let g:slime_no_mappings = 1
-let g:ale_linters = {'javascript': ['standard', 'eslint'], 'clojure': ['joker']}
+let g:ale_linters = {'javascript': ['eslint', 'standard'], 'clojure': ['joker']}
 autocmd StdinReadPre * let s:std_in=1
 let NERDTreeMinimalUI=1
 let NERDTreeDirArrows = 1

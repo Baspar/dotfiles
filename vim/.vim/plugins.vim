@@ -7,11 +7,14 @@ call plug#begin('~/.vim/plugged')
         " }}}
         " {{{ Syntax
         Plug 'tomtom/tcomment_vim'
-        Plug 'w0rp/ale'
+        " Plug 'w0rp/ale'
         Plug 'godlygeek/tabular'
         " }}}
         " {{{ Navigation
         Plug 'easymotion/vim-easymotion'
+        " }}}
+        " {{{ LSP
+        Plug 'neoclide/coc.nvim', {'do': 'yarn install'}
         " }}}
     " }}}
 
