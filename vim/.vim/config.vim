@@ -65,7 +65,6 @@ let g:instant_markdown_autostart = 0
 " '/src/test/components/SearchTable/index.spec.js'
 
 let g:xxx = {
-
             \ 'config': '{name}/config.vim',
             \ 'plugins': '{name}/plugins.vim',
             \ 'mappings': '{name}/mappings.vim'

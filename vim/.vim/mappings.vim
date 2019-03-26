@@ -12,8 +12,8 @@ nnoremap c*  *Ncgn
 nnoremap c#  #NcgN
 nnoremap c>* *Ncgn<C-r>"
 nnoremap c># #NcgN<C-r>"
-nnoremap c<* *Ncgn<C-r>"<S-Left>
-nnoremap c<# #NcgN<C-r>"<S-Left>
+nnoremap <expr> c<* '*Ncgn<C-r>"'.repeat('<C-G>U<Left>',strlen(@"))
+nnoremap <expr> c<# '#NcgN<C-r>"'.repeat('<C-G>U<Left>',strlen(@"))
 
 " Global indent
 " nnoremap <leader>f :Autoformat<CR>
