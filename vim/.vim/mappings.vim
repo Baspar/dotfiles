@@ -8,8 +8,12 @@ vnoremap < <gv
 vnoremap > >gv
 
 " cgn/cgN
-nnoremap c* *Ncgn
-nnoremap c# #NcgN
+nnoremap c*  *Ncgn
+nnoremap c#  #NcgN
+nnoremap c>* *Ncgn<C-r>"
+nnoremap c># #NcgN<C-r>"
+nnoremap c<* *Ncgn<C-r>"<S-Left>
+nnoremap c<# #NcgN<C-r>"<S-Left>
 
 " Global indent
 " nnoremap <leader>f :Autoformat<CR>
@@ -51,8 +55,8 @@ noremap <leader>cd "+d
 nnoremap <leader>< :bN<CR>
 nnoremap <leader>> :bn<CR>
 nnoremap <leader>bd :bn<CR> :bd #<CR>
-nnoremap <leader>s :update<CR>
-nnoremap <leader>w :w<CR>
+nnoremap <leader>s :update<CR>:noh<CR>
+nnoremap <leader>w :w<CR>:noh<CR>
 nnoremap <leader>q :q<CR>
 nnoremap <leader>Q :q!<CR>
 
@@ -90,6 +94,7 @@ nnoremap <leader>- :sp<CR>
 " Exit insert mode
 inoremap jf <C-c>:noh<cr>
 inoremap kj <C-c>:noh<cr>
+inoremap jk <C-c>:noh<cr>
 
 " Tabular
 noremap <leader>pi :PlugInstall<CR>

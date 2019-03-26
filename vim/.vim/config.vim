@@ -62,3 +62,37 @@ let g:limelight_conceal_ctermfg = 'gray'
 let g:limelight_conceal_ctermfg = 240
 let g:instant_markdown_autostart = 0
 
+" '/src/test/components/SearchTable/index.spec.js'
+
+let g:xxx = {
+
+            \ 'config': '{name}/config.vim',
+            \ 'plugins': '{name}/plugins.vim',
+            \ 'mappings': '{name}/mappings.vim'
+            \ }
+
+function! FindFileType()
+    let pairs = items(g:xxx)
+    let current_file = expand("%:f")
+    for [type, path] in pairs
+        let sanitized_path = substitute(path, "{[^}]*}", '\\([^/]*\\)', "g")
+        let match = matchlist(current_file, sanitized_path)
+        if len(match) > 0
+            echo "You're in a file of type \"" . type . "\""
+            let match_variables = {}
+            let variable_names = []
+            call substitute(path, '{\zs[a-zA-Z]*\ze}', '\=add(variable_names, submatch(0))', 'g')
+            for id in range(len(variable_names))
+                let variable_name = variable_names[id]
+                let variable_value = match[id+1]
+                let match_variables[variable_name] = variable_value
+            endfor
+
+            echo match_variables
+            return
+        endif
+    endfor
+    echo "Nope"
+endfunction
+
+nmap <leader><leader>g :call FindFileType()<CR>

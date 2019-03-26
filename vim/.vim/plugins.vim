@@ -8,7 +8,6 @@ call plug#begin('~/.vim/plugged')
         " {{{ Syntax
         Plug 'tomtom/tcomment_vim'
         " Plug 'w0rp/ale'
-        Plug 'godlygeek/tabular'
         " }}}
         " {{{ Navigation
         Plug 'easymotion/vim-easymotion'
@@ -41,9 +40,8 @@ call plug#begin('~/.vim/plugged')
     " {{{ Utils
         " {{{ Undo
         Plug 'mbbill/undotree'
-        " }}}
-        " {{{ REPL
-        Plug 'jpalardy/vim-slime'
+        Plug 'tpope/vim-repeat'
+
         " }}}
         " {{{ File
         Plug 'tpope/vim-projectionist'
@@ -68,9 +66,6 @@ call plug#begin('~/.vim/plugged')
     " {{{ UI
         " {{{ Colorschemes
         Plug 'AlessandroYorba/alduin'
-        Plug 'AlessandroYorba/Sierra'
-        Plug 'AlessandroYorba/Despacio'
-        Plug 'morhetz/gruvbox'
         " }}}
         " {{{ Airline
         Plug 'vim-airline/vim-airline'
