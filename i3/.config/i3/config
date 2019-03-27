@@ -207,7 +207,7 @@ bar {
     status_command i3blocks -c ~/.config/i3/i3blocks.conf
 }
 
-gaps inner 40
+gaps inner 30
 
 
 # Lock control
@@ -268,7 +268,7 @@ bindsym $mod+Shift+z scratchpad show
 
 
 # smart_gaps on
-smart_borders no_gaps
+# smart_borders no_gaps
 # workspace_auto_back_and_forth yes
 
 # for_window [class="(?i)conky"] floating enable border none
