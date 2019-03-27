@@ -12,8 +12,13 @@ nnoremap c*  *Ncgn
 nnoremap c#  #NcgN
 nnoremap c>* *Ncgn<C-r>"
 nnoremap c># #NcgN<C-r>"
-nnoremap <expr> c<* '*Ncgn<C-r>"'.repeat('<C-G>U<Left>',strlen(@"))
-nnoremap <expr> c<# '#NcgN<C-r>"'.repeat('<C-G>U<Left>',strlen(@"))
+nnoremap <Plug>PrependText* n".P:call repeat#set("\<Plug>PrependText*")<CR>
+nnoremap c<*                *Ncgn<C-r>"<C-o>`[<C-o>:call repeat#set("\<Plug>PrependText*")<CR>
+nnoremap <Plug>PrependText# n".P:call repeat#set("\<Plug>PrependText#")<CR>
+nnoremap c<#                #cgN<C-r>"<C-o>`[<C-o>:call repeat#set("\<Plug>PrependText#")<CR>
+
+" nnoremap <expr> c<* '*Ncgn<C-r>"'.repeat('<C-G>U<Left>',strlen(@"))
+" nnoremap <expr> c<# '#NcgN<C-r>"'.repeat('<C-G>U<Left>',strlen(@"))
 
 " Global indent
 " nnoremap <leader>f :Autoformat<CR>
