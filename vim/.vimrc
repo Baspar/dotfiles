@@ -3,8 +3,8 @@ source ~/.vim/config.vim
 source ~/.vim/mappings.vim
 
 set exrc
-if filereadable('.git/.vimrc')
-    source '.git/.vimrc'
+if filereadable(getcwd().'/.git/vimrc')
+    execute "source" getcwd().'/.git/vimrc'
 endif
 
 if has('nvim')
