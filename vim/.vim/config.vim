@@ -71,10 +71,6 @@ let g:GeomatMap = {
             \ }
 
 " {
-"     'indextest': '/src/test/components/{name}/index.spec.js'
-"     'puretest': '/src/test/components/{name}/{name}.spec.js'
-"     'index': '/src/main/components/{name}/index.spec.js'
-"     'pure': '/src/main/components/{name}/{name}.spec.js'
 " }
 
 function! s:Eq(a, b)
@@ -113,7 +109,7 @@ function! s:FindType(settings)
     endfor
 endfunction
 
-function! GeomatNavigate(type)
+function! GeomatNavigate(type, command)
     if !exists("g:GeomatMap")
         echohl WarningMsg
         echom "[Geomat] Please define your g:GeomatMap"
@@ -142,11 +138,14 @@ function! GeomatNavigate(type)
     for [var_name, var_value] in items(current_file_info['variables'])
         let path_with_variables = substitute(path_with_variables, '{'.var_name.'}', var_value, 'g')
     endfor
+    echom a:command
     if filereadable(root.path_with_variables)
-        execute "edit" root.path_with_variables
+        execute a:command root.path_with_variables
     else
-        execute "edit" root.path_with_variables
+        execute a:command root.path_with_variables
     endif
 endfunction
 
-nmap <silent> <leader><leader>g :call GeomatNavigate('mappings')<CR>
+command! -nargs=1 GNav call GeomatNavigate('<args>', 'edit')
+command! -nargs=1 GNavS call GeomatNavigate('<args>', 'split')
+command! -nargs=1 GNavV call GeomatNavigate('<args>', 'vsplit')
