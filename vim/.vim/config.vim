@@ -69,3 +69,4 @@ let g:GeomatMap = {
             \ 'plugins': '{name}/plugins.vim',
             \ 'mappings': '{name}/mappings.vim'
             \ }
+let g:GeomatRoot = 'vim/.vim'

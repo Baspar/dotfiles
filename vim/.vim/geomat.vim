@@ -31,6 +31,14 @@ function! s:ExtractVariables(settings, type, file_path)
     endif
 endfunction
 
+function! s:InjectVariables(settings, type, variables)
+    let path_with_variables = a:settings[a:type]
+    for [var_name, var_value] in items(a:variables)
+        let path_with_variables = substitute(path_with_variables, '{'.var_name.'}', var_value, 'g')
+    endfor
+    return path_with_variables
+endfunction!
+
 function! s:FindType(settings)
     let pairs = items(a:settings)
     let file_path = expand("%:p")
@@ -44,7 +52,7 @@ function! s:FindType(settings)
     endfor
 endfunction
 
-function! GeomatNavigate(type, command)
+function! s:GeomatNavigate(type, command)
     if !exists("g:GeomatMap")
         echohl WarningMsg
         echom "[Geomat] Please define your g:GeomatMap"
@@ -68,16 +76,13 @@ function! GeomatNavigate(type, command)
         return
     endif
 
-    let path_with_variables = g:GeomatMap[a:type]
+    let new_path = s:InjectVariables(g:GeomatMap, a:type, current_file_info['variables'])
     let root = current_file_info['root']
-    for [var_name, var_value] in items(current_file_info['variables'])
-        let path_with_variables = substitute(path_with_variables, '{'.var_name.'}', var_value, 'g')
-    endfor
-    echom a:command
-    if filereadable(root.path_with_variables)
-        execute a:command root.path_with_variables
+
+    if filereadable(root.new_path)
+        execute a:command root.new_path
     else
-        execute a:command root.path_with_variables
+        execute a:command root.new_path
     endif
 endfunction
 
@@ -87,7 +92,43 @@ function! s:GeomatComplete(A,L,P)
     return filter(potential_completion, {idx, val -> val =~ "^".partial_argument})
 endfun
 
+function! g:GeomatList()
+    let root = '.'
+    if exists("g:GeomatRoot")
+        let root = g:GeomatRoot
+    endif
 
-command! -nargs=1 -complete=customlist,s:GeomatComplete GNav call GeomatNavigate('<args>', 'edit')
-command! -nargs=1 -complete=customlist,s:GeomatComplete GNavS call GeomatNavigate('<args>', 'split')
-command! -nargs=1 -complete=customlist,s:GeomatComplete GNavV call GeomatNavigate('<args>', 'vsplit')
+    if !exists("g:GeomatMap")
+        echohl WarningMsg
+        echom "[Geomat] Please define your g:GeomatMap"
+        echohl None
+        return
+    endif
+
+    let current_file_info = s:FindType(g:GeomatMap)
+
+    if s:Eq(current_file_info, 0)
+        echohl WarningMsg
+        echom "[Geomat] Cannot match current file with any type"
+        echohl None
+        return
+    endif
+
+    let files = split(globpath(root, '**'), '\n')
+
+    for [type, path_with_variables] in items(g:GeomatMap)
+        let path = s:InjectVariables(g:GeomatMap, type, current_file_info['variables'])
+        for file in files
+            if file =~ path.'$'
+                echo type.': '.file
+            endif
+        endfor
+    endfor
+endfun
+
+
+command! -nargs=1 -complete=customlist,s:GeomatComplete GNav  call s:GeomatNavigate('<args>', 'edit')
+command! -nargs=1 -complete=customlist,s:GeomatComplete GNavS call s:GeomatNavigate('<args>', 'split')
+command! -nargs=1 -complete=customlist,s:GeomatComplete GNavV call s:GeomatNavigate('<args>', 'vsplit')
+
+nnoremap <leader><leader>g :call g:GeomatList()<CR>
