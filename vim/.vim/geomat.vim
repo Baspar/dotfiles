@@ -6,30 +6,40 @@ function! s:SanitizePath(path)
     return substitute(a:path."$", "{[^}]*}", '\\([^/]*\\)', 'g')
 endfunction
 
+function! s:ExtractVariables(settings, type, file_path)
+    let path = a:settings[a:type]
+    let sanitized_path = s:SanitizePath(path)
+    let match = matchlist(a:file_path, sanitized_path)
+    if len(match) > 0
+        let match_variables = {}
+        let variable_names = []
+        let root = matchlist(a:file_path, '^\(.*/\)'.sanitized_path)[1]
+        call substitute(path, '{\zs[a-zA-Z]*\ze}', '\=add(variable_names, submatch(0))', 'g')
+        let no_error = 1
+        for id in range(len(variable_names))
+            let variable_name = variable_names[id]
+            let variable_value = match[id+1]
+            if has_key(match_variables, variable_name) && match_variables[variable_name] != variable_value
+                let no_error = 0
+            endif
+            let match_variables[variable_name] = variable_value
+        endfor
+
+        if no_error == 1
+            return { 'variables': match_variables, 'root': root }
+        endif
+    endif
+endfunction
+
 function! s:FindType(settings)
     let pairs = items(a:settings)
-    let current_file = expand("%:p")
-    for [type, path] in pairs
-        let sanitized_path = s:SanitizePath(path)
-        let match = matchlist(current_file, sanitized_path)
-        if len(match) > 0
-            let match_variables = {}
-            let variable_names = []
-            let root = matchlist(current_file, '^\(.*/\)'.sanitized_path)[1]
-            call substitute(path, '{\zs[a-zA-Z]*\ze}', '\=add(variable_names, submatch(0))', 'g')
-            let no_error = 1
-            for id in range(len(variable_names))
-                let variable_name = variable_names[id]
-                let variable_value = match[id+1]
-                if has_key(match_variables, variable_name) && match_variables[variable_name] != variable_value
-                    let no_error = 0
-                endif
-                let match_variables[variable_name] = variable_value
-            endfor
+    let file_path = expand("%:p")
 
-            if no_error == 1
-                return { 'type': type, 'current_file': current_file, 'variables': match_variables, 'root': root }
-            endif
+    for type in keys(a:settings)
+        let file_info = s:ExtractVariables(a:settings, type, file_path)
+        if !s:Eq(file_info, 0)
+            let file_info['type'] = type
+            return file_info
         endif
     endfor
 endfunction

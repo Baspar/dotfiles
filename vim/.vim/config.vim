@@ -65,6 +65,7 @@ let g:instant_markdown_autostart = 0
 let g:GeomatMap = {
             \ 'wrong': '{name}/{name}.vim',
             \ 'config': '{name}/config.vim',
+            \ 'geomat': '{name}/geomat.vim',
             \ 'plugins': '{name}/plugins.vim',
             \ 'mappings': '{name}/mappings.vim'
             \ }
