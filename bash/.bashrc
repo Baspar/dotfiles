@@ -31,3 +31,5 @@ fs() {
 		| cut -d':' -f1 \
 		| xargs tmux switch-client -t
 }
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
