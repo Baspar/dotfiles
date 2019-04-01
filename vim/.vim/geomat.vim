@@ -126,15 +126,21 @@ function! g:GeomatList()
         endfor
     endfor
 
-    function! s:handle_sink(type)
-        call s:GeomatNavigate(a:type, 'vs')
+    function! s:handle_sink(list)
+        let command = get({
+                    \ 'ctrl-x': 'split',
+                    \ 'ctrl-v': 'vsplit',
+                    \ }, a:list[0], 'e')
+        for type in a:list[1:]
+            call s:GeomatNavigate(type, command)
+        endfor
     endfunction
 
     call fzf#run({
                 \ 'source': matches_types,
-                \ 'options': '--multi',
+                \ 'options': '--multi --expect=ctrl-v,ctrl-x',
                 \ 'down': '20%',
-                \ 'sink': function('s:handle_sink')
+                \ 'sink*': function('s:handle_sink')
                 \ })
 endfunction
 
