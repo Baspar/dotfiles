@@ -116,15 +116,27 @@ function! g:GeomatList()
 
     let files = split(globpath(root, '**'), '\n')
 
+    let matches_types = []
     for [type, path_with_variables] in items(g:GeomatMap)
         let path = s:InjectVariables(g:GeomatMap, type, current_file_info['variables'])
         for file in files
             if file =~ path.'$'
-                echo type.': '.file
+                call add(matches_types, type)
             endif
         endfor
     endfor
-endfun
+
+    function! s:handle_sink(type)
+        call s:GeomatNavigate(a:type, 'vs')
+    endfunction
+
+    call fzf#run({
+                \ 'source': matches_types,
+                \ 'options': '--multi',
+                \ 'down': '20%',
+                \ 'sink': function('s:handle_sink')
+                \ })
+endfunction
 
 
 command! -nargs=1 -complete=customlist,s:GeomatComplete GNav  call s:GeomatNavigate('<args>', 'edit')
