@@ -13,4 +13,4 @@ else
     source ~/.vim/vim_specific.vim
 endif
 
-source ~/.vim/geomat.vim
+source ~/.vim/cartographe.vim

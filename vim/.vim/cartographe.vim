@@ -52,31 +52,37 @@ function! s:FindType(settings)
     endfor
 endfunction
 
-function! g:GeomatNavigate(type, command)
-    if !exists("g:GeomatMap")
+function! s:CartographeComplete(A,L,P)
+    let partial_argument = substitute(a:L, '^\S\+\s\+', '', '')
+    let potential_completion = copy(keys(g:CartographeMap))
+    return filter(potential_completion, {idx, val -> val =~ "^".partial_argument})
+endfun
+
+function! g:CartographeNavigate(type, command)
+    if !exists("g:CartographeMap")
         echohl WarningMsg
-        echom "[Geomat] Please define your g:GeomatMap"
+        echom "[Cartographe] Please define your g:CartographeMap"
         echohl None
         return
     endif
 
-    let current_file_info = s:FindType(g:GeomatMap)
+    let current_file_info = s:FindType(g:CartographeMap)
 
     if s:Eq(current_file_info, 0)
         echohl WarningMsg
-        echom "[Geomat] Cannot match current file with any type"
+        echom "[Cartographe] Cannot match current file with any type"
         echohl None
         return
     endif
 
-    if !has_key(g:GeomatMap, a:type)
+    if !has_key(g:CartographeMap, a:type)
         echohl WarningMsg
-        echom "[Geomat] Cannot find information for type '" . a:type . "'"
+        echom "[Cartographe] Cannot find information for type '" . a:type . "'"
         echohl None
         return
     endif
 
-    let new_path = s:InjectVariables(g:GeomatMap, a:type, current_file_info['variables'])
+    let new_path = s:InjectVariables(g:CartographeMap, a:type, current_file_info['variables'])
     let root = current_file_info['root']
 
     if filereadable(root.new_path)
@@ -86,30 +92,24 @@ function! g:GeomatNavigate(type, command)
     endif
 endfunction
 
-function! s:GeomatComplete(A,L,P)
-    let partial_argument = substitute(a:L, '^\S\+\s\+', '', '')
-    let potential_completion = copy(keys(g:GeomatMap))
-    return filter(potential_completion, {idx, val -> val =~ "^".partial_argument})
-endfun
-
-function! g:GeomatListTypes()
+function! g:CartographeListTypes()
     let root = '.'
-    if exists("g:GeomatRoot")
-        let root = g:GeomatRoot
+    if exists("g:CartographeRoot")
+        let root = g:CartographeRoot
     endif
 
-    if !exists("g:GeomatMap")
+    if !exists("g:CartographeMap")
         echohl WarningMsg
-        echom "[Geomat] Please define your g:GeomatMap"
+        echom "[Cartographe] Please define your g:CartographeMap"
         echohl None
         return
     endif
 
-    let current_file_info = s:FindType(g:GeomatMap)
+    let current_file_info = s:FindType(g:CartographeMap)
 
     if s:Eq(current_file_info, 0)
         echohl WarningMsg
-        echom "[Geomat] Cannot match current file with any type"
+        echom "[Cartographe] Cannot match current file with any type"
         echohl None
         return
     endif
@@ -118,8 +118,8 @@ function! g:GeomatListTypes()
 
     let existing_matched_types = []
     let new_matched_types = []
-    for [type, path_with_variables] in items(g:GeomatMap)
-        let path = s:InjectVariables(g:GeomatMap, type, current_file_info['variables'])
+    for [type, path_with_variables] in items(g:CartographeMap)
+        let path = s:InjectVariables(g:CartographeMap, type, current_file_info['variables'])
         let found = 0
         for file in files
             if file =~ path.'$'
@@ -142,7 +142,7 @@ function! g:GeomatListTypes()
                     \ 'ctrl-v': 'vsplit',
                     \ }, a:list[0], 'edit')
         for type in a:list[1:]
-            call g:GeomatNavigate(type, command)
+            call g:CartographeNavigate(type, command)
         endfor
     endfunction
 
@@ -154,14 +154,17 @@ function! g:GeomatListTypes()
                 \ })
 endfunction
 
-function! g:GeomatListComponents()
+function! g:CartographeListComponents()
+  " echo globpath(g:CartographeRoot, '**'.substitute(g:CartographeMap.index, "{[^}]*}", "*", 'g'))
+  " check_variables()
+  echom "ok"
 endfunction
 
-command! -nargs=0                                       GeoList call g:GeomatListTypes()
-command! -nargs=0                                       GeoComp call g:GeomatListComponents()
-command! -nargs=1 -complete=customlist,s:GeomatComplete GeoNav  call g:GeomatNavigate('<args>', 'edit')
-command! -nargs=1 -complete=customlist,s:GeomatComplete GeoNavS call g:GeomatNavigate('<args>', 'split')
-command! -nargs=1 -complete=customlist,s:GeomatComplete GeoNavV call g:GeomatNavigate('<args>', 'vsplit')
+command! -nargs=0                                            CartographeList call g:CartographeListTypes()
+command! -nargs=0                                            CartographeComp call g:CartographeListComponents()
+command! -nargs=1 -complete=customlist,s:CartographeComplete CartographeNav  call g:CartographeNavigate('<args>', 'edit')
+command! -nargs=1 -complete=customlist,s:CartographeComplete CartographeNavS call g:CartographeNavigate('<args>', 'split')
+command! -nargs=1 -complete=customlist,s:CartographeComplete CartographeNavV call g:CartographeNavigate('<args>', 'vsplit')
 
-nnoremap <leader><leader>g :call g:GeomatListTypes()<CR>
-nnoremap <leader><leader>c :call g:GeomatListComponents()<CR>
+nnoremap <leader><leader>g :CartographeList<CR>
+nnoremap <leader><leader>c :CartographeComp<CR>
