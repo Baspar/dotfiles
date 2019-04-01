@@ -7,7 +7,7 @@ call plug#begin('~/.vim/plugged')
         " }}}
         " {{{ Syntax
         Plug 'tomtom/tcomment_vim'
-        " Plug 'w0rp/ale'
+        Plug 'tommcdo/vim-lion'
         " }}}
         " {{{ Navigation
         Plug 'easymotion/vim-easymotion'
@@ -31,9 +31,6 @@ call plug#begin('~/.vim/plugged')
         Plug 'tpope/vim-sexp-mappings-for-regular-people'
         " }}}
         " {{{ Markdown
-        " Plug 'tpope/vim-markdown'
-        Plug 'shime/vim-livedown'
-        Plug 'suan/vim-instant-markdown'
         " }}}
     " }}}
 
@@ -41,10 +38,8 @@ call plug#begin('~/.vim/plugged')
         " {{{ Undo
         Plug 'mbbill/undotree'
         Plug 'tpope/vim-repeat'
-
         " }}}
         " {{{ File
-        Plug 'tpope/vim-projectionist'
         Plug 'scrooloose/nerdtree'
         Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
         Plug 'junegunn/fzf.vim'
@@ -60,6 +55,9 @@ call plug#begin('~/.vim/plugged')
         Plug 'xtal8/traces.vim'
         Plug 'kana/vim-textobj-user'
         Plug 'beloglazov/vim-textobj-quotes'
+        " }}}
+        " {{{ Async
+        Plug 'tpope/vim-dispatch'
         " }}}
     " }}}
 
