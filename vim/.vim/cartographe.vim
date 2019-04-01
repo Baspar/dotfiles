@@ -149,7 +149,7 @@ function! g:CartographeListTypes()
     call fzf#run({
                 \ 'source': matches_types,
                 \ 'options': '--no-sort --ansi --multi --expect=ctrl-v,ctrl-x',
-                \ 'down': len(matches_types)+2,
+                \ 'down': len(matches_types)+3,
                 \ 'sink*': function('s:handle_sink')
                 \ })
 endfunction
