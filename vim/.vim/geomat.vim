@@ -92,7 +92,7 @@ function! s:GeomatComplete(A,L,P)
     return filter(potential_completion, {idx, val -> val =~ "^".partial_argument})
 endfun
 
-function! g:GeomatList()
+function! g:GeomatListTypes()
     let root = '.'
     if exists("g:GeomatRoot")
         let root = g:GeomatRoot
@@ -116,27 +116,31 @@ function! g:GeomatList()
 
     let files = split(globpath(root, '**'), '\n')
 
-    let matches_types = []
+    let existing_matched_types = []
+    let new_matched_types = []
     for [type, path_with_variables] in items(g:GeomatMap)
         let path = s:InjectVariables(g:GeomatMap, type, current_file_info['variables'])
         let found = 0
         for file in files
             if file =~ path.'$'
                 let found = 1
-                call add(matches_types, type)
+                call add(existing_matched_types, "\e[0m".type)
+                break
             endif
         endfor
 
         if !found
-            call add(matches_types, "\e[90m".type)
+            call add(new_matched_types, "\e[90m".type)
         endi
     endfor
+
+    let matches_types = existing_matched_types + new_matched_types
 
     function! s:handle_sink(list)
         let command = get({
                     \ 'ctrl-x': 'split',
                     \ 'ctrl-v': 'vsplit',
-                    \ }, a:list[0], 'e')
+                    \ }, a:list[0], 'edit')
         for type in a:list[1:]
             call g:GeomatNavigate(type, command)
         endfor
@@ -144,16 +148,20 @@ function! g:GeomatList()
 
     call fzf#run({
                 \ 'source': matches_types,
-                \ 'options': '--ansi --multi --expect=ctrl-v,ctrl-x',
-                \ 'down': '20%',
+                \ 'options': '--no-sort --ansi --multi --expect=ctrl-v,ctrl-x',
+                \ 'down': len(matches_types)+2,
                 \ 'sink*': function('s:handle_sink')
                 \ })
 endfunction
 
+function! g:GeomatListComponents()
+endfunction
 
-command! -nargs=0                                       GList call g:GeomatList()
-command! -nargs=1 -complete=customlist,s:GeomatComplete GNav  call g:GeomatNavigate('<args>', 'edit')
-command! -nargs=1 -complete=customlist,s:GeomatComplete GNavS call g:GeomatNavigate('<args>', 'split')
-command! -nargs=1 -complete=customlist,s:GeomatComplete GNavV call g:GeomatNavigate('<args>', 'vsplit')
+command! -nargs=0                                       GeoList call g:GeomatListTypes()
+command! -nargs=0                                       GeoComp call g:GeomatListComponents()
+command! -nargs=1 -complete=customlist,s:GeomatComplete GeoNav  call g:GeomatNavigate('<args>', 'edit')
+command! -nargs=1 -complete=customlist,s:GeomatComplete GeoNavS call g:GeomatNavigate('<args>', 'split')
+command! -nargs=1 -complete=customlist,s:GeomatComplete GeoNavV call g:GeomatNavigate('<args>', 'vsplit')
 
-nnoremap <leader><leader>g :call g:GeomatList()<CR>
+nnoremap <leader><leader>g :call g:GeomatListTypes()<CR>
+nnoremap <leader><leader>c :call g:GeomatListComponents()<CR>
