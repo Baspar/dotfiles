@@ -28,13 +28,13 @@ function! s:CheckVariables(variables)
 
     " Cannot match pattern
     if len(values) == 0
-        return s:Error('Cannot match')
+        return s:Error('Cannot match pattern')
     endif
 
     " Cannot match all variables
     for i in range(len(info))
         if s:Eq(values[i], '')
-            return s:Error('Cannot match')
+            return s:Error('Cannot match some variables')
         endif
     endfor
 
@@ -49,12 +49,12 @@ function! s:CheckVariables(variables)
         if has_key(mem_variables, variable_name)
             " All or none should have a modifier
             if mem_variables[variable_name].has_modifier != has_modifier
-                return s:Error('Cannot match')
+                return s:Error('Should all or none have modifier')
             endif
 
             " Value doesn't match
             if mem_variables[variable_name].value != s:UnformatWithModifiers(variable_value, variable_modifiers)
-                return s:Error('Cannot match')
+                return s:Error('Values does not match')
             endif
         endif
         let mem_variables[variable_name] = {
@@ -98,7 +98,7 @@ function! s:InjectVariables(pattern, variables)
         endif
 
         let variable_value = s:FormatWithModifiers(a:variables[variable_name].value, variable_modifiers)
-        let potential_path = substitute(potential_path, '{'.variable_name.'}', variable_value, '')
+        let potential_path = substitute(potential_path, '{'.variable_name.'\(:[a-zA-Z]\+\)*}', variable_value, '')
     endfor
     return potential_path
 endfunction!
@@ -115,16 +115,22 @@ function! s:FindType(settings)
     for type in keys(a:settings)
         let pattern = a:settings[type]
         let variables_info = s:ExtractVariables(pattern, file_path)
-        let checked_variables = s:CheckVariables(variables_info)
-        if !s:HasError(checked_variables)
-            let checked_variables['type'] = type
-            let root = s:ExtractRoot(file_path, pattern)
-            return {
-                        \ 'variables': checked_variables,
-                        \ 'type': type,
-                        \ 'root': root
-                        \ }
+        if s:HasError(variables_info)
+            continue
         endif
+
+        let checked_variables = s:CheckVariables(variables_info)
+        if s:HasError(checked_variables)
+            continue
+        endif
+
+        let checked_variables['type'] = type
+        let root = s:ExtractRoot(file_path, pattern)
+        return {
+                    \ 'variables': checked_variables,
+                    \ 'type': type,
+                    \ 'root': root
+                    \ }
     endfor
 
     return s:Error('Cannot find a type')
@@ -188,7 +194,8 @@ function! g:CartographeListTypes()
 
     if s:HasError(current_file_info)
         echohl WarningMsg
-        echom "[Cartographe] Cannot match current file with any type"
+        echo current_file_info.Error
+        " echom "[Cartographe] Cannot match current file with any type"
         echohl None
         return
     endif
@@ -199,6 +206,12 @@ function! g:CartographeListTypes()
     let new_matched_types = []
     for [type, path_with_variables] in items(g:CartographeMap)
         let path = s:InjectVariables(g:CartographeMap[type], current_file_info['variables'])
+        if s:HasError(path)
+            echohl WarningMsg
+            echom '[Cartographe] '.path['Error']
+            echohl None
+            return
+        endif
         let found = 0
         for file in files
             if file =~ path.'$'

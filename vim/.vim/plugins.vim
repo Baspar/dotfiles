@@ -30,8 +30,6 @@ call plug#begin('~/.vim/plugged')
         Plug 'guns/vim-clojure-static'
         Plug 'tpope/vim-sexp-mappings-for-regular-people'
         " }}}
-        " {{{ Markdown
-        " }}}
     " }}}
 
     " {{{ Utils
@@ -46,8 +44,6 @@ call plug#begin('~/.vim/plugged')
         " }}}
         " {{{ Git
         Plug 'tpope/vim-fugitive'
-        Plug 'airblade/vim-gitgutter'
-        Plug 'rbong/vim-flog'
         " }}}
         " {{{ Text Object
         Plug 'machakann/vim-sandwich'
