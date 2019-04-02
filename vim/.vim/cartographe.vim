@@ -8,6 +8,12 @@ function! s:Error(err)
     return { 'Error': a:err }
 endfunction
 
+function! s:PrintError(err)
+    echohl WarningMsg
+    echom '[Cartographe] '.err
+    echohl None
+endfunction
+
 function! s:HasError(res)
     return type(a:res) == type({}) && has_key(a:res, 'Error')
 endfunction
@@ -136,34 +142,29 @@ function! s:FindType(settings)
     return s:Error('Cannot find a type')
 endfunction
 
-
+" Autocomplete
 function! s:CartographeComplete(A,L,P)
     let partial_argument = substitute(a:L, '^\S\+\s\+', '', '')
     let potential_completion = copy(keys(g:CartographeMap))
     return filter(potential_completion, {idx, val -> val =~ "^".partial_argument})
 endfun
 
+" Global functions
 function! g:CartographeNavigate(type, command)
     if !exists("g:CartographeMap")
-        echohl WarningMsg
-        echom "[Cartographe] Please define your g:CartographeMap"
-        echohl None
+        s:PrintError("Please define your g:CartographeMap")
         return
     endif
 
     let current_file_info = s:FindType(g:CartographeMap)
 
     if s:HasError(current_file_info)
-        echohl WarningMsg
-        echom "[Cartographe] Cannot match current file with any type"
-        echohl None
+        s:PrintError("Cannot match current file with any type")
         return
     endif
 
     if !has_key(g:CartographeMap, a:type)
-        echohl WarningMsg
-        echom "[Cartographe] Cannot find information for type '" . a:type . "'"
-        echohl None
+        s:PrintError("Cannot find information for type '" . a:type . "'")
         return
     endif
 
@@ -184,19 +185,14 @@ function! g:CartographeListTypes()
     endif
 
     if !exists("g:CartographeMap")
-        echohl WarningMsg
-        echom "[Cartographe] Please define your g:CartographeMap"
-        echohl None
+        s:PrintError("Please define your g:CartographeMap")
         return
     endif
 
     let current_file_info = s:FindType(g:CartographeMap)
 
     if s:HasError(current_file_info)
-        echohl WarningMsg
-        echo current_file_info.Error
-        " echom "[Cartographe] Cannot match current file with any type"
-        echohl None
+        s:PrintError(current_file_info.Error)
         return
     endif
 
@@ -207,9 +203,7 @@ function! g:CartographeListTypes()
     for [type, path_with_variables] in items(g:CartographeMap)
         let path = s:InjectVariables(g:CartographeMap[type], current_file_info['variables'])
         if s:HasError(path)
-            echohl WarningMsg
-            echom '[Cartographe] '.path['Error']
-            echohl None
+            s:PrintError(path.Error)
             return
         endif
         let found = 0
@@ -252,11 +246,13 @@ function! g:CartographeListComponents()
   echom "ok"
 endfunction
 
+" Commands
 command! -nargs=0                                            CartographeList call g:CartographeListTypes()
 command! -nargs=0                                            CartographeComp call g:CartographeListComponents()
 command! -nargs=1 -complete=customlist,s:CartographeComplete CartographeNav  call g:CartographeNavigate('<args>', 'edit')
 command! -nargs=1 -complete=customlist,s:CartographeComplete CartographeNavS call g:CartographeNavigate('<args>', 'split')
 command! -nargs=1 -complete=customlist,s:CartographeComplete CartographeNavV call g:CartographeNavigate('<args>', 'vsplit')
 
+" Mappings
 nnoremap <leader><leader>g :CartographeList<CR>
 nnoremap <leader><leader>c :CartographeComp<CR>
