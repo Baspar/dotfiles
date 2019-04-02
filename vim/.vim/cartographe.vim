@@ -8,12 +8,6 @@ function! s:Error(err)
     return { 'Error': a:err }
 endfunction
 
-function! s:PrintError(err)
-    echohl WarningMsg
-    echom '[Cartographe] '.err
-    echohl None
-endfunction
-
 function! s:HasError(res)
     return type(a:res) == type({}) && has_key(a:res, 'Error')
 endfunction
@@ -34,13 +28,13 @@ function! s:CheckVariables(variables)
 
     " Cannot match pattern
     if len(values) == 0
-        return s:Error('Cannot match pattern')
+        return s:Error('Cannot match')
     endif
 
     " Cannot match all variables
     for i in range(len(info))
         if s:Eq(values[i], '')
-            return s:Error('Cannot match some variables')
+            return s:Error('Cannot match')
         endif
     endfor
 
@@ -55,16 +49,16 @@ function! s:CheckVariables(variables)
         if has_key(mem_variables, variable_name)
             " All or none should have a modifier
             if mem_variables[variable_name].has_modifier != has_modifier
-                return s:Error('Should all or none have modifier')
+                return s:Error('Cannot match')
             endif
 
             " Value doesn't match
-            if mem_variables[variable_name].value != s:UnformatWithModifiers(variable_value, variable_modifiers)
-                return s:Error('Values does not match')
+            if mem_variables[variable_name].value != s:FormatWithModifiers(variable_value, variable_modifiers)
+                return s:Error('Cannot match')
             endif
         endif
         let mem_variables[variable_name] = {
-                    \ 'value': s:UnformatWithModifiers(variable_value, variable_modifiers),
+                    \ 'value': s:FormatWithModifiers(variable_value, variable_modifiers),
                     \ 'has_modifier': len(variable_modifiers) > 0
                     \ }
     endfor
@@ -88,83 +82,69 @@ function! s:ExtractVariables(pattern, file_path)
 endfunction
 
 function! s:InjectVariables(pattern, variables)
-    let pattern_variables = s:ExtractVariables(a:pattern, "")
     let potential_path = a:pattern
-    for var_info in pattern_variables['info']
-        let variable_name = var_info.name
-        let variable_modifiers = var_info.modifiers
-        let has_modifier = len(variable_modifiers) > 0
-
-        if !has_key(a:variables, variable_name)
-            return s:Error('Cannot retrieve value for variable '.variable_name)
-        endif
-
-        if a:variables[variable_name].has_modifier != has_modifier
-            return s:Error('Please specify modifier for ALL the same variables, or NONE')
-        endif
-
-        let variable_value = s:FormatWithModifiers(a:variables[variable_name].value, variable_modifiers)
-        let potential_path = substitute(potential_path, '{'.variable_name.'\(:[a-zA-Z]\+\)*}', variable_value, '')
+    for [var_name, var_info] in items(a:variables)
+        let var_value = var_info['value']
+        let potential_path = substitute(potential_path, '{'.var_name.'}', var_value, 'g')
     endfor
     return potential_path
 endfunction!
 
-function! s:ExtractRoot(file_path, pattern)
+function! s:ExtractRoot(file_path, root, pattern)
     let sanitized_path = substitute(a:pattern."$", "{[^}]*}", "\\\\([^/]*\\\\)", "g")
-    return substitute(a:file_path, sanitized_path, '', '')
+    return matchlist(a:file_path, '^\(.*\)'.sanitized_path)[1]
 endfunction
 
-function! s:FindType(settings)
+function! s:FindType(settings, root)
     let pairs = items(a:settings)
     let file_path = expand("%:p")
 
     for type in keys(a:settings)
         let pattern = a:settings[type]
         let variables_info = s:ExtractVariables(pattern, file_path)
-        if s:HasError(variables_info)
-            continue
-        endif
-
         let checked_variables = s:CheckVariables(variables_info)
-        if s:HasError(checked_variables)
-            continue
+        if !s:HasError(checked_variables)
+            let checked_variables['type'] = type
+            let root = s:ExtractRoot(file_path, a:root, pattern)
+            return {
+                        \ 'variables': checked_variables,
+                        \ 'type': type,
+                        \ 'root': root
+                        \ }
         endif
-
-        let checked_variables['type'] = type
-        let root = s:ExtractRoot(file_path, pattern)
-        return {
-                    \ 'variables': checked_variables,
-                    \ 'type': type,
-                    \ 'root': root
-                    \ }
     endfor
 
     return s:Error('Cannot find a type')
 endfunction
 
-" Autocomplete
+
 function! s:CartographeComplete(A,L,P)
     let partial_argument = substitute(a:L, '^\S\+\s\+', '', '')
     let potential_completion = copy(keys(g:CartographeMap))
     return filter(potential_completion, {idx, val -> val =~ "^".partial_argument})
 endfun
 
-" Global functions
 function! g:CartographeNavigate(type, command)
     if !exists("g:CartographeMap")
-        s:PrintError("Please define your g:CartographeMap")
+        echohl WarningMsg
+        echom "[Cartographe] Please define your g:CartographeMap"
+        echohl None
         return
     endif
 
-    let current_file_info = s:FindType(g:CartographeMap)
+    let current_file_info = s:FindType(g:CartographeMap, g:CartographeRoot)
 
     if s:HasError(current_file_info)
-        s:PrintError("Cannot match current file with any type")
+        echohl WarningMsg
+        echom "[Cartographe] Cannot match current file with any type"
+        echohl None
         return
     endif
 
     if !has_key(g:CartographeMap, a:type)
-        s:PrintError("Cannot find information for type '" . a:type . "'")
+        echohl WarningMsg
+        echom "[Cartographe] Cannot find information for type '" . a:type . "'"
+        echohl None
         return
     endif
 
@@ -185,16 +165,23 @@ function! g:CartographeListTypes()
     endif
 
     if !exists("g:CartographeMap")
-        s:PrintError("Please define your g:CartographeMap")
+        echohl WarningMsg
+        echom "[Cartographe] Please define your g:CartographeMap"
+        echohl None
         return
     endif
 
-    let current_file_info = s:FindType(g:CartographeMap)
+    let current_file_info = s:FindType(g:CartographeMap, g:CartographeRoot)
 
     if s:HasError(current_file_info)
-        s:PrintError(current_file_info.Error)
+        echohl WarningMsg
+        echom "[Cartographe] Cannot match current file with any type"
+        echohl None
         return
     endif
+
+    " echo current_file_info
+    " return
 
     let files = split(globpath(root, '**'), '\n')
 
@@ -202,10 +189,6 @@ function! g:CartographeListTypes()
     let new_matched_types = []
     for [type, path_with_variables] in items(g:CartographeMap)
         let path = s:InjectVariables(g:CartographeMap[type], current_file_info['variables'])
-        if s:HasError(path)
-            s:PrintError(path.Error)
-            return
-        endif
         let found = 0
         for file in files
             if file =~ path.'$'
@@ -236,7 +219,7 @@ function! g:CartographeListTypes()
                 \ 'source': matches_types,
                 \ 'options': '--no-sort --ansi --multi --expect=ctrl-v,ctrl-x',
                 \ 'down': len(matches_types)+3,
-                \ 'sink*': function('s:handle_sink'),
+                \ 'sink*': function('s:handle_sink')
                 \ })
 endfunction
 
@@ -246,13 +229,11 @@ function! g:CartographeListComponents()
   echom "ok"
 endfunction
 
-" Commands
 command! -nargs=0                                            CartographeList call g:CartographeListTypes()
 command! -nargs=0                                            CartographeComp call g:CartographeListComponents()
 command! -nargs=1 -complete=customlist,s:CartographeComplete CartographeNav  call g:CartographeNavigate('<args>', 'edit')
 command! -nargs=1 -complete=customlist,s:CartographeComplete CartographeNavS call g:CartographeNavigate('<args>', 'split')
 command! -nargs=1 -complete=customlist,s:CartographeComplete CartographeNavV call g:CartographeNavigate('<args>', 'vsplit')
 
-" Mappings
 nnoremap <leader><leader>g :CartographeList<CR>
 nnoremap <leader><leader>c :CartographeComp<CR>
