@@ -183,24 +183,18 @@ function! g:CartographeListTypes()
     " echo current_file_info
     " return
 
-    let files = split(globpath(root, '**'), '\n')
+    " let files = split(globpath(root, '**'), '\n')
+    echo
 
     let existing_matched_types = []
     let new_matched_types = []
     for [type, path_with_variables] in items(g:CartographeMap)
         let path = s:InjectVariables(g:CartographeMap[type], current_file_info['variables'])
-        let found = 0
-        for file in files
-            if file =~ path.'$'
-                let found = 1
-                call add(existing_matched_types, "\e[0m".type)
-                break
-            endif
-        endfor
-
-        if !found
+        if filereadable(current_file_info['root'].path)
+            call add(existing_matched_types, "\e[0m".type)
+        else
             call add(new_matched_types, "\e[90m".type)
-        endi
+        endif
     endfor
 
     let matches_types = existing_matched_types + new_matched_types
