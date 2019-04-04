@@ -85,7 +85,7 @@ function! s:InjectVariables(pattern, variables)
     let potential_path = a:pattern
     for [var_name, var_info] in items(a:variables)
         let var_value = var_info['value']
-        let potential_path = substitute(potential_path, '{'.var_name.'}', var_value, 'g')
+        let potential_path = substitute(potential_path, '{'.var_name.'\%(:[a-zA-Z]\+\)*}', var_value, 'g')
     endfor
     return potential_path
 endfunction!
@@ -180,20 +180,14 @@ function! g:CartographeListTypes()
         return
     endif
 
-    " echo current_file_info
-    " return
-
-    " let files = split(globpath(root, '**'), '\n')
-    echo
-
     let existing_matched_types = []
     let new_matched_types = []
     for [type, path_with_variables] in items(g:CartographeMap)
         let path = s:InjectVariables(g:CartographeMap[type], current_file_info['variables'])
         if filereadable(current_file_info['root'].path)
-            call add(existing_matched_types, "\e[0m".type)
+            let existing_matched_types = add(existing_matched_types, "\e[0m".type)
         else
-            call add(new_matched_types, "\e[90m".type)
+            let new_matched_types = add(new_matched_types, "\e[90m".type)
         endif
     endfor
 
@@ -218,9 +212,9 @@ function! g:CartographeListTypes()
 endfunction
 
 function! g:CartographeListComponents()
-  " echo globpath(g:CartographeRoot, '**'.substitute(g:CartographeMap.index, "{[^}]*}", "*", 'g'))
+  echo globpath('.', '**'.substitute(g:CartographeMap.index, "{[^}]*}", "*", 'g'))
   " check_variables()
-  echom "ok"
+  " echom "ok"
 endfunction
 
 command! -nargs=0                                            CartographeList call g:CartographeListTypes()
