@@ -12,13 +12,44 @@ function! s:HasError(res)
     return type(a:res) == type({}) && has_key(a:res, 'Error')
 endfunction
 
-" Modifiers handling
-function! s:FormatWithModifiers(name, modifiers)
-    return a:name
+" Modifier handling
+function! s:FormatWithModifier(name, modifier)
+    if a:modifier == 'pascal'
+        return substitute(
+                    \ join(map(a:name, {_,w -> tolower(w)}), '_'),
+                    \ '\%(_\|^\)\(\l\)',
+                    \ '\U\1',
+                    \ 'g'
+                    \ )
+    elseif a:modifier == 'camel'
+        return substitute(
+                    \ join(map(a:name, {_,w -> tolower(w)}), '_'),
+                    \ '_\(\l\)',
+                    \ '\U\1',
+                    \ 'g'
+                    \ )
+    elseif a:modifier == 'snake'
+        return join(map(a:name, {_,w -> toupper(w)}), '_')
+    elseif a:modifier == 'kebab'
+        return join(map(a:name, {_,w -> tolower(w)}), '-')
+    else
+        return join(a:name, '')
+    endif
 endfunction
 
-function! s:UnformatWithModifiers(name, modifiers)
-    return a:name
+function! s:UnformatWithModifier(name, modifier)
+    if a:modifier == 'pascal'
+        let splitRes = split(a:name, '\ze[A-Z]')
+    elseif a:modifier == 'camel'
+        let splitRes = split(a:name, '\ze[A-Z]')
+    elseif a:modifier == 'snake'
+        let splitRes = split(a:name, '_')
+    elseif a:modifier == 'kebab'
+        let splitRes = split(a:name, '-')
+    else
+        let splitRes = [a:name]
+    endif
+    return map(splitRes, {_, w -> tolower(w)})
 endfunction
 
 " Variables manipulation
@@ -41,9 +72,14 @@ function! s:CheckVariables(variables)
     let mem_variables = {}
     for id in range(len(info))
         let variable_name = info[id].name
-        let variable_modifiers = info[id].modifiers
-        let has_modifier = len(variable_modifiers) > 0
+        let variable_modifier = info[id].modifier
+        let has_modifier = len(variable_modifier) > 0
         let variable_value = values[id]
+
+        " Unformat if variable has modifier
+        if has_modifier
+            let variable_value = s:UnformatWithModifier(variable_value, variable_modifier[0])
+        endif
 
         " Variable already seen
         if has_key(mem_variables, variable_name)
@@ -52,14 +88,14 @@ function! s:CheckVariables(variables)
                 return s:Error('Cannot match')
             endif
 
-            " Value doesn't match
-            if mem_variables[variable_name].value != s:FormatWithModifiers(variable_value, variable_modifiers)
+            " Value doesn't match modifier
+            if mem_variables[variable_name].value != variable_value
                 return s:Error('Cannot match')
             endif
         endif
         let mem_variables[variable_name] = {
-                    \ 'value': s:FormatWithModifiers(variable_value, variable_modifiers),
-                    \ 'has_modifier': len(variable_modifiers) > 0
+                    \ 'value': variable_value,
+                    \ 'has_modifier': len(variable_modifier) > 0
                     \ }
     endfor
 
@@ -69,10 +105,10 @@ endfunction
 function! s:ExtractVariables(pattern, file_path)
     let variables_values = matchlist(a:file_path, substitute(a:pattern."$", "{[^}]*}", "\\\\([^/]*\\\\)", "g"))[1:]
     let variables_info = []
-    call substitute(a:pattern, '{\zs[a-zA-Z]*\%(:[a-zA-Z]\+\)*\ze}', '\=add(variables_info, submatch(0))', 'g')
+    call substitute(a:pattern, '{\zs[a-zA-Z]*\%(:[a-zA-Z]\+\)\?\ze}', '\=add(variables_info, submatch(0))', 'g')
     let variables_info = map(variables_info, {id, name -> {
                 \ 'name': split(name, ':')[0],
-                \ 'modifiers': split(name, ':')[1:]
+                \ 'modifier': split(name, ':')[1:]
                 \ }})
 
     return {
@@ -83,9 +119,16 @@ endfunction
 
 function! s:InjectVariables(pattern, variables)
     let potential_path = a:pattern
-    for [var_name, var_info] in items(a:variables)
-        let var_value = var_info['value']
-        let potential_path = substitute(potential_path, '{'.var_name.'\%(:[a-zA-Z]\+\)*}', var_value, 'g')
+    let variables_info = s:ExtractVariables(a:pattern, "")['info']
+    for variable_info in variables_info
+        let variable_name = variable_info['name']
+        let variable_modifier = variable_info['modifier']
+        let variable_value = a:variables[variable_name]['value']
+        let variable_has_modifier = a:variables[variable_name]['has_modifier']
+        if variable_has_modifier
+            let variable_value = s:FormatWithModifier(variable_value, variable_modifier[0])
+        endif
+        let potential_path = substitute(potential_path, '{'.variable_name.'\%(:[a-zA-Z]\+\)\?}', variable_value, '')
     endfor
     return potential_path
 endfunction!
@@ -212,7 +255,7 @@ function! g:CartographeListTypes()
 endfunction
 
 function! g:CartographeListComponents()
-  echo globpath('.', '**'.substitute(g:CartographeMap.index, "{[^}]*}", "*", 'g'))
+  " echo globpath('.', '**'.substitute(g:CartographeMap.index, "{[^}]*}", "*", 'g'))
   " check_variables()
   " echom "ok"
 endfunction
