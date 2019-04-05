@@ -14,16 +14,19 @@ call plug#begin('~/.vim/plugged')
         " }}}
         " {{{ LSP
         Plug 'neoclide/coc.nvim', {'do': 'yarn install'}
+        " Plug 'prabirshrestha/vim-lsp'
         " }}}
     " }}}
 
     " {{{ Languages
         " {{{ Javascript/React.JS
-        Plug 'alvan/vim-closetag'
         Plug 'sheerun/vim-polyglot'
         " }}}
         " {{{ Rust
         Plug 'rust-lang/rust.vim'
+        " }}}
+        " {{{ Scala
+        Plug 'derekwyatt/vim-scala'
         " }}}
         " {{{ Clojure
         Plug 'guns/vim-sexp'
@@ -54,6 +57,7 @@ call plug#begin('~/.vim/plugged')
         " }}}
         " {{{ Async
         Plug 'tpope/vim-dispatch'
+        Plug 'prabirshrestha/async.vim'
         " }}}
     " }}}
 
