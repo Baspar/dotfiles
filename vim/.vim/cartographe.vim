@@ -102,14 +102,18 @@ function! s:CheckVariables(variables)
     return mem_variables
 endfunction
 
-function! s:ExtractVariables(pattern, file_path)
-    let variables_values = matchlist(a:file_path, substitute(a:pattern."$", "{[^}]*}", "\\\\([^/]*\\\\)", "g"))[1:]
+function! s:ReadVariables(pattern)
     let variables_info = []
     call substitute(a:pattern, '{\zs[a-zA-Z]*\%(:[a-zA-Z]\+\)\?\ze}', '\=add(variables_info, submatch(0))', 'g')
     let variables_info = map(variables_info, {id, name -> {
                 \ 'name': split(name, ':')[0],
                 \ 'modifier': split(name, ':')[1:]
                 \ }})
+    return variables_info
+endfunction!
+function! s:ExtractVariables(pattern, file_path)
+    let variables_values = matchlist(a:file_path, substitute(a:pattern."$", "{[^}]*}", "\\\\([^/]*\\\\)", "g"))[1:]
+    let variables_info = s:ReadVariables(a:pattern)
 
     return {
                 \ 'info': variables_info,
@@ -138,17 +142,16 @@ function! s:ExtractRoot(file_path, pattern)
     return matchlist(a:file_path, '^\(.*\)'.sanitized_path)[1]
 endfunction
 
-function! s:FindType(settings)
+function! s:FindType(settings, file_path)
     let pairs = items(a:settings)
-    let file_path = expand("%:p")
 
     for type in keys(a:settings)
         let pattern = a:settings[type]
-        let variables_info = s:ExtractVariables(pattern, file_path)
+        let variables_info = s:ExtractVariables(pattern, a:file_path)
         let checked_variables = s:CheckVariables(variables_info)
         if !s:HasError(checked_variables)
             let checked_variables['type'] = type
-            let root = s:ExtractRoot(file_path, pattern)
+            let root = s:ExtractRoot(a:file_path, pattern)
             return {
                         \ 'variables': checked_variables,
                         \ 'type': type,
@@ -158,6 +161,38 @@ function! s:FindType(settings)
     endfor
 
     return s:Error('Cannot find a type')
+endfunction
+
+function! s:OpenFZF(current_file_info)
+    let existing_matched_types = []
+    let new_matched_types = []
+    for [type, path_with_variables] in items(g:CartographeMap)
+        let path = s:InjectVariables(g:CartographeMap[type], a:current_file_info['variables'])
+        if filereadable(a:current_file_info['root'].path)
+            let existing_matched_types = add(existing_matched_types, "\e[0m".type)
+        else
+            let new_matched_types = add(new_matched_types, "\e[90m".type)
+        endif
+    endfor
+
+    let matches_types = existing_matched_types + new_matched_types
+
+    function! s:handle_sink(list)
+        let command = get({
+                    \ 'ctrl-x': 'split',
+                    \ 'ctrl-v': 'vsplit',
+                    \ }, a:list[0], 'edit')
+        for type in a:list[1:]
+            call g:CartographeNavigate(type, command)
+        endfor
+    endfunction
+
+    call fzf#run({
+                \ 'source': matches_types,
+                \ 'options': '--no-sort --ansi --multi --expect=ctrl-v,ctrl-x',
+                \ 'down': len(matches_types)+3,
+                \ 'sink*': function('s:handle_sink')
+                \ })
 endfunction
 
 
@@ -175,7 +210,7 @@ function! g:CartographeNavigate(type, command)
         return
     endif
 
-    let current_file_info = s:FindType(g:CartographeMap)
+    let current_file_info = s:FindType(g:CartographeMap, expand("%:p"))
 
     if s:HasError(current_file_info)
         echohl WarningMsg
@@ -214,7 +249,7 @@ function! g:CartographeListTypes()
         return
     endif
 
-    let current_file_info = s:FindType(g:CartographeMap)
+    let current_file_info = s:FindType(g:CartographeMap, expand("%:p"))
 
     if s:HasError(current_file_info)
         echohl WarningMsg
@@ -223,39 +258,36 @@ function! g:CartographeListTypes()
         return
     endif
 
-    let existing_matched_types = []
-    let new_matched_types = []
-    for [type, path_with_variables] in items(g:CartographeMap)
-        let path = s:InjectVariables(g:CartographeMap[type], current_file_info['variables'])
-        if filereadable(current_file_info['root'].path)
-            let existing_matched_types = add(existing_matched_types, "\e[0m".type)
-        else
-            let new_matched_types = add(new_matched_types, "\e[90m".type)
-        endif
-    endfor
-
-    let matches_types = existing_matched_types + new_matched_types
-
-    function! s:handle_sink(list)
-        let command = get({
-                    \ 'ctrl-x': 'split',
-                    \ 'ctrl-v': 'vsplit',
-                    \ }, a:list[0], 'edit')
-        for type in a:list[1:]
-            call g:CartographeNavigate(type, command)
-        endfor
-    endfunction
-
-    call fzf#run({
-                \ 'source': matches_types,
-                \ 'options': '--no-sort --ansi --multi --expect=ctrl-v,ctrl-x',
-                \ 'down': len(matches_types)+3,
-                \ 'sink*': function('s:handle_sink')
-                \ })
+    call s:OpenFZF(current_file_info)
 endfunction
 
 function! g:CartographeListComponents()
-  " echo globpath('.', g:CartographeRoot.'/**/'.substitute(g:CartographeMap.index, "{[^}]*}", "*", 'g'))
+  let fancy_names = {}
+  let xxx = s:ReadVariables(g:CartographeFancyName)[0]
+
+  for [type, pattern] in items(g:CartographeMap)
+      let files = globpath('.', g:CartographeRoot.'/**/'.substitute(pattern, "{[^}]*}", "*", 'g'))
+      for file in split(files, '\n')
+          let infos = s:CheckVariables(s:ExtractVariables(pattern, file))
+          if s:HasError(infos)
+              continue
+          endif
+
+          " TODO: handle no modifier
+          let fancy_name = s:FormatWithModifier(infos[xxx.name].value, xxx.modifier[0])
+
+          if has_key(fancy_names, fancy_name)
+              let fancy_names[fancy_name] = add(fancy_names[fancy_name], type)
+          else
+              let fancy_names[fancy_name] = [type]
+          endif
+      endfor
+  endfor
+  call fzf#run({
+              \ 'source': keys(fancy_names),
+              \ 'options': '--no-sort --ansi --multi --expect=ctrl-v,ctrl-x',
+              \ 'down': "25%",
+              \ })
   " check_variables()
   " echom "ok"
 endfunction
