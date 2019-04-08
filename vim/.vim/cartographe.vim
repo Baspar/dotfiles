@@ -133,12 +133,12 @@ function! s:InjectVariables(pattern, variables)
     return potential_path
 endfunction!
 
-function! s:ExtractRoot(file_path, root, pattern)
+function! s:ExtractRoot(file_path, pattern)
     let sanitized_path = substitute(a:pattern."$", "{[^}]*}", "\\\\([^/]*\\\\)", "g")
     return matchlist(a:file_path, '^\(.*\)'.sanitized_path)[1]
 endfunction
 
-function! s:FindType(settings, root)
+function! s:FindType(settings)
     let pairs = items(a:settings)
     let file_path = expand("%:p")
 
@@ -148,7 +148,7 @@ function! s:FindType(settings, root)
         let checked_variables = s:CheckVariables(variables_info)
         if !s:HasError(checked_variables)
             let checked_variables['type'] = type
-            let root = s:ExtractRoot(file_path, a:root, pattern)
+            let root = s:ExtractRoot(file_path, pattern)
             return {
                         \ 'variables': checked_variables,
                         \ 'type': type,
@@ -175,7 +175,7 @@ function! g:CartographeNavigate(type, command)
         return
     endif
 
-    let current_file_info = s:FindType(g:CartographeMap, g:CartographeRoot)
+    let current_file_info = s:FindType(g:CartographeMap)
 
     if s:HasError(current_file_info)
         echohl WarningMsg
@@ -214,7 +214,7 @@ function! g:CartographeListTypes()
         return
     endif
 
-    let current_file_info = s:FindType(g:CartographeMap, g:CartographeRoot)
+    let current_file_info = s:FindType(g:CartographeMap)
 
     if s:HasError(current_file_info)
         echohl WarningMsg
@@ -255,7 +255,7 @@ function! g:CartographeListTypes()
 endfunction
 
 function! g:CartographeListComponents()
-  " echo globpath('.', '**'.substitute(g:CartographeMap.index, "{[^}]*}", "*", 'g'))
+  " echo globpath('.', g:CartographeRoot.'/**/'.substitute(g:CartographeMap.index, "{[^}]*}", "*", 'g'))
   " check_variables()
   " echom "ok"
 endfunction
