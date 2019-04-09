@@ -53,7 +53,7 @@ function! s:UnformatWithModifier(name, modifier)
 endfunction
 
 " Variables manipulation
-function! s:CheckVariables(variables)
+function! s:CheckExtractedVariables(variables)
     let info = a:variables.info
     let values = a:variables.values
 
@@ -111,8 +111,9 @@ function! s:ReadVariables(pattern)
                 \ }})
     return variables_info
 endfunction!
-function! s:ExtractVariables(pattern, file_path)
-    let variables_values = matchlist(a:file_path, substitute(a:pattern."$", "{[^}]*}", "\\\\([^/]*\\\\)", "g"))[1:]
+
+function! s:ExtractVariables(pattern, string_to_match)
+    let variables_values = matchlist(a:string_to_match, substitute(a:pattern."$", "{[^}]*}", "\\\\([^/]*\\\\)", "g"))[1:]
     let variables_info = s:ReadVariables(a:pattern)
 
     return {
@@ -121,9 +122,9 @@ function! s:ExtractVariables(pattern, file_path)
                 \ }
 endfunction
 
-function! s:InjectVariables(pattern, variables)
-    let potential_path = a:pattern
-    let variables_info = s:ExtractVariables(a:pattern, "")['info']
+function! s:InjectVariables(string, variables)
+    let string_with_variables = a:string
+    let variables_info = s:ReadVariables(a:string)
     for variable_info in variables_info
         let variable_name = variable_info['name']
         let variable_modifier = variable_info['modifier']
@@ -132,10 +133,11 @@ function! s:InjectVariables(pattern, variables)
         if variable_has_modifier
             let variable_value = s:FormatWithModifier(variable_value, variable_modifier[0])
         endif
-        let potential_path = substitute(potential_path, '{'.variable_name.'\%(:[a-zA-Z]\+\)\?}', variable_value, '')
+        let string_with_variables = substitute(string_with_variables, '{'.variable_name.'\%(:[a-zA-Z]\+\)\?}', variable_value, '')
     endfor
-    return potential_path
+    return string_with_variables
 endfunction!
+
 
 function! s:ExtractRoot(file_path, pattern)
     let sanitized_path = substitute(a:pattern."$", "{[^}]*}", "\\\\([^/]*\\\\)", "g")
@@ -148,7 +150,7 @@ function! s:FindType(settings, file_path)
     for type in keys(a:settings)
         let pattern = a:settings[type]
         let variables_info = s:ExtractVariables(pattern, a:file_path)
-        let checked_variables = s:CheckVariables(variables_info)
+        let checked_variables = s:CheckExtractedVariables(variables_info)
         if !s:HasError(checked_variables)
             let checked_variables['type'] = type
             let root = s:ExtractRoot(a:file_path, pattern)
@@ -263,26 +265,23 @@ endfunction
 
 function! g:CartographeListComponents()
   let fancy_names = {}
-  let xxx = s:ReadVariables(g:CartographeFancyName)[0]
 
   for [type, pattern] in items(g:CartographeMap)
       let files = globpath('.', g:CartographeRoot.'/**/'.substitute(pattern, "{[^}]*}", "*", 'g'))
       for file in split(files, '\n')
-          let infos = s:CheckVariables(s:ExtractVariables(pattern, file))
+          let infos = s:CheckExtractedVariables(s:ExtractVariables(pattern, file))
           if s:HasError(infos)
               continue
           endif
 
           " TODO: handle no modifier
-          let fancy_name = s:FormatWithModifier(infos[xxx.name].value, xxx.modifier[0])
-
-          if has_key(fancy_names, fancy_name)
-              let fancy_names[fancy_name] = add(fancy_names[fancy_name], type)
-          else
-              let fancy_names[fancy_name] = [type]
-          endif
+          let fancy_name = s:InjectVariables(g:CartographeFancyName, infos)
+          let fancy_names[fancy_name] = has_key(fancy_names, fancy_name)
+                      \ ? add(fancy_names[fancy_name], type)
+                      \ : [type]
       endfor
   endfor
+
   call fzf#run({
               \ 'source': keys(fancy_names),
               \ 'options': '--no-sort --ansi --multi --expect=ctrl-v,ctrl-x',
