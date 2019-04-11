@@ -112,7 +112,7 @@ function! s:ReadVariables(pattern)
     return variables_info
 endfunction!
 
-function! s:ExtractVariables(pattern, string_to_match)
+function! s:ExtractVariables(string_to_match, pattern)
     let variables_values = matchlist(a:string_to_match, substitute(a:pattern."$", "{[^}]*}", "\\\\([^/]*\\\\)", "g"))[1:]
     let variables_info = s:ReadVariables(a:pattern)
 
@@ -154,12 +154,14 @@ function! s:FindCurrentFileInfo(settings)
 
     for type in keys(a:settings)
         let pattern = a:settings[type]
-        let variables_info = s:ExtractVariables(pattern, file_path)
+        let variables_info = s:ExtractVariables(file_path, pattern)
         let checked_variables = s:CheckExtractedVariables(variables_info)
         if !s:HasError(checked_variables)
             let checked_variables['type'] = type
+            let root = s:ExtractRoot(file_path, pattern)
             let info = {
                         \ 'variables': checked_variables,
+                        \ 'root': root
                         \ }
             let b:CartographeBufferInfo = info
             return info
@@ -169,12 +171,14 @@ function! s:FindCurrentFileInfo(settings)
     return s:Error('Cannot find a type')
 endfunction
 
-function! s:OpenFZF(variables)
+function! s:OpenFZF(current_file_info)
+    let variables = a:current_file_info['variables']
+    let root = a:current_file_info['root']
     let existing_matched_types = []
     let new_matched_types = []
     for [type, path_with_variables] in items(g:CartographeMap)
-        let path = s:InjectVariables(g:CartographeMap[type], a:variables)
-        if filereadable(g:CartographeRoot . '/' . path)
+        let path = s:InjectVariables(g:CartographeMap[type], variables)
+        if filereadable(root . '/' . path)
             let existing_matched_types = add(existing_matched_types, "\e[0m" . type)
         else
             let new_matched_types = add(new_matched_types, "\e[90m".type)
@@ -232,12 +236,13 @@ function! g:CartographeNavigate(type, command)
         return
     endif
 
+    let root = current_file_info['root']
     let new_path = s:InjectVariables(g:CartographeMap[a:type], current_file_info['variables'])
 
     if filereadable(g:CartographeRoot . '/' . new_path)
-        execute a:command g:CartographeRoot . '//' . new_path
+        execute a:command root . '/' . new_path
     else
-        execute a:command g:CartographeRoot . '//' . new_path
+        execute a:command root . '/' . new_path
     endif
 endfunction
 
@@ -263,32 +268,36 @@ function! g:CartographeListTypes()
         return
     endif
 
-    call s:OpenFZF(current_file_info['variables'])
+    call s:OpenFZF(current_file_info)
 endfunction
 
-function! g:CartographeListComponents()
+function! g:CartographeListComponents(type)
+  if !has_key(g:CartographeMap, a:type)
+      echoerr "[Cartographe] Cannot find type '".a:type."' in your g:CartographeMap"
+      return
+  endif
+
   let fancy_names = {}
+  let pattern = g:CartographeMap[a:type]
+  let files = globpath('.', g:CartographeRoot.'/**/'.substitute(pattern, "{[^}]*}", "*", 'g'))
 
-  for [type, pattern] in items(g:CartographeMap)
-      let files = globpath('.', g:CartographeRoot.'/**/'.substitute(pattern, "{[^}]*}", "*", 'g'))
-      for file in split(files, '\n')
-          let infos = s:CheckExtractedVariables(s:ExtractVariables(pattern, file))
-          if s:HasError(infos)
-              continue
-          endif
+  for file in split(files, '\n')
+      let infos = s:CheckExtractedVariables(s:ExtractVariables(file, pattern))
+      if s:HasError(infos)
+          continue
+      endif
 
-          " TODO: handle no modifier
-          let fancy_name = s:InjectVariables(g:CartographeFancyName, infos)
-          let fancy_names[fancy_name] = has_key(fancy_names, fancy_name)
-                      \ ? add(fancy_names[fancy_name], type)
-                      \ : [type]
-      endfor
+
+      " TODO: handle no modifier
+      let fancy_name = s:InjectVariables(g:CartographeFancyName, infos)
+      if !has_key(fancy_names, fancy_name)
+          let fancy_names[fancy_name] = {}
+      endif
+      let fancy_names[fancy_name] = { 'file': file }
   endfor
 
   function! Handle_sink_bis(fancy_names, name)
-      echom string(a:fancy_names[a:name])
-      " let variables = s:CheckExtractedVariables(s:ExtractVariables(g:CartographeFancyName, a:name))
-      " call s:OpenFZF(variables)
+      execute "edit" a:fancy_names[a:name].file
   endfunction
 
   call fzf#run({
@@ -300,7 +309,7 @@ function! g:CartographeListComponents()
 endfunction
 
 command! -nargs=0                                            CartographeList call g:CartographeListTypes()
-command! -nargs=0                                            CartographeComp call g:CartographeListComponents()
+command! -nargs=1 -complete=customlist,s:CartographeComplete CartographeComp call g:CartographeListComponents('<args>')
 command! -nargs=1 -complete=customlist,s:CartographeComplete CartographeNav  call g:CartographeNavigate('<args>', 'edit')
 command! -nargs=1 -complete=customlist,s:CartographeComplete CartographeNavS call g:CartographeNavigate('<args>', 'split')
 command! -nargs=1 -complete=customlist,s:CartographeComplete CartographeNavV call g:CartographeNavigate('<args>', 'vsplit')
