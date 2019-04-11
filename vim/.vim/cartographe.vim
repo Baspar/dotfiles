@@ -296,15 +296,23 @@ function! g:CartographeListComponents(type)
       let fancy_names[fancy_name] = { 'file': file }
   endfor
 
-  function! Handle_sink_bis(fancy_names, name)
-      execute "edit" a:fancy_names[a:name].file
+  function! Handle_sink_bis(fancy_names, list)
+
+      let command = get({
+                  \ 'ctrl-x': 'split',
+                  \ 'ctrl-v': 'vsplit',
+                  \ }, a:list[0], 'edit')
+
+      for name in a:list[1:]
+          execute command a:fancy_names[name].file
+      endfor
   endfunction
 
   call fzf#run({
               \ 'source': keys(fancy_names),
-              \ 'options': '--no-sort',
+              \ 'options': '--no-sort --multi --expect=ctrl-v,ctrl-x',
               \ 'down': "25%",
-              \ 'sink': {a -> Handle_sink_bis(fancy_names, a)}
+              \ 'sink*': {a -> Handle_sink_bis(fancy_names, a)}
               \ })
 endfunction
 
@@ -315,4 +323,4 @@ command! -nargs=1 -complete=customlist,s:CartographeComplete CartographeNavS cal
 command! -nargs=1 -complete=customlist,s:CartographeComplete CartographeNavV call g:CartographeNavigate('<args>', 'vsplit')
 
 nnoremap <leader><leader>g :CartographeList<CR>
-nnoremap <leader><leader>c :CartographeComp<CR>
+nnoremap <leader><leader>c :CartographeComp index<CR>
