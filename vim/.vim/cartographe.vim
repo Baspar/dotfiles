@@ -139,6 +139,11 @@ function! s:InjectVariables(string, variables)
 endfunction!
 
 
+function! s:ExtractRoot(file_path, pattern)
+    let sanitized_path = substitute(a:pattern."$", "{[^}]*}", "\\\\([^/]*\\\\)", "g")
+    return matchlist(a:file_path, '^\(.*\)'.sanitized_path)[1]
+endfunction
+
 function! s:FindCurrentFileInfo(settings)
     if exists('b:CartographeBufferInfo')
         return b:CartographeBufferInfo
@@ -280,16 +285,17 @@ function! g:CartographeListComponents()
       endfor
   endfor
 
-  function! Handle_sink_bis(name)
-      let variables = s:CheckExtractedVariables(s:ExtractVariables(g:CartographeFancyName, a:name))
-      call s:OpenFZF(variables)
+  function! Handle_sink_bis(fancy_names, name)
+      echom string(a:fancy_names[a:name])
+      " let variables = s:CheckExtractedVariables(s:ExtractVariables(g:CartographeFancyName, a:name))
+      " call s:OpenFZF(variables)
   endfunction
 
   call fzf#run({
               \ 'source': keys(fancy_names),
               \ 'options': '--no-sort',
               \ 'down': "25%",
-              \ 'sink': function('Handle_sink_bis')
+              \ 'sink': {a -> Handle_sink_bis(fancy_names, a)}
               \ })
 endfunction
 
