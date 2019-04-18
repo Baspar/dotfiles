@@ -70,7 +70,7 @@ function git_prompt
     block "$COLOR" "black" "#3e3e3e" "$GIT_STATUS"
 
     # Rest path
-    set ABBR_GIT_PATH (abbr_path (pwd | sed "s|$GIT_ROOT||; s|^|/|; s|^//|/|"))
+    set ABBR_GIT_PATH (abbr_path (pwd -P | sed "s|$GIT_ROOT||; s|^|/|; s|^//|/|"))
     block "#3e3e3e" "white" "normal" " $ABBR_GIT_PATH "
 end
 
