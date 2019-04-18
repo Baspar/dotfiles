@@ -67,3 +67,4 @@ let g:GeomatMap = {
             \ 'mappings': '{name}/mappings.vim'
             \ }
 let g:GeomatRoot = 'vim/.vim'
+let g:lion_squeeze_spaces = 1
