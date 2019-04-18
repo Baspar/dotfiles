@@ -12,5 +12,3 @@ if has('nvim')
 else
     source ~/.vim/vim_specific.vim
 endif
-
-source ~/.vim/cartographe.vim
