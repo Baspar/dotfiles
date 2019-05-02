@@ -52,19 +52,9 @@ let NERDTreeDirArrows = 1
 let g:closetag_filenames = "*.html,*.xhtml,*.phtml,*.php,*.jsx,*.js"
 let g:clojure_align_multiline_strings = 1
 let g:sexp_insert_after_wrap = 'false'
-let g:airline_theme='minimalist'
-let g:airline_powerline_fonts = 1
 autocmd BufWritePre * StripWhitespace
 let g:limelight_conceal_ctermfg = 'gray'
 let g:limelight_conceal_ctermfg = 240
 let g:instant_markdown_autostart = 0
 
-let g:GeomatMap = {
-            \ 'wrong': '{name}/{name}.vim',
-            \ 'config': '{name}/config.vim',
-            \ 'geomat': '{name}/geomat.vim',
-            \ 'plugins': '{name}/plugins.vim',
-            \ 'mappings': '{name}/mappings.vim'
-            \ }
-let g:GeomatRoot = 'vim/.vim'
 let g:lion_squeeze_spaces = 1

@@ -60,8 +60,8 @@ noremap <leader>cd "+d
 nnoremap <leader>< :bN<CR>
 nnoremap <leader>> :bn<CR>
 nnoremap <leader>bd :bn<CR> :bd #<CR>
-nnoremap <leader>s :update<CR>:noh<CR>
-nnoremap <leader>w :w<CR>:noh<CR>
+nnoremap <leader>s :noh<CR>:update<CR>
+nnoremap <leader>w :noh<CR>:w<CR>
 nnoremap <leader>q :q<CR>
 nnoremap <leader>Q :q!<CR>
 

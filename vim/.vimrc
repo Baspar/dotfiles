@@ -1,6 +1,7 @@
 source ~/.vim/plugins.vim
 source ~/.vim/config.vim
 source ~/.vim/mappings.vim
+source ~/.vim/statusline.vim
 
 set exrc
 if filereadable(getcwd().'/.git/vimrc')
