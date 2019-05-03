@@ -29,6 +29,7 @@ nnoremap <leader>M :LivedownPreview<CR>
 " CTRL-P
 nnoremap \ :Buffers<CR>
 nnoremap <tab> :FZF<CR>
+nnoremap - :Ex<CR>
 
 " NerdTree
 map <C-e> :NERDTreeToggle<CR>

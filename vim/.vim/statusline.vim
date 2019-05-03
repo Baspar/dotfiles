@@ -10,27 +10,46 @@ let s:p = {'normal': {}, 'inactive': {}, 'insert': {}, 'replace': {}, 'visual': 
 
 let s:p.normal.left = [ [ s:white, s:dark_grey, 'bold' ], [ s:white, s:light_grey ] ]
 let s:p.normal.middle = [ [ s:white, s:transparent ] ]
-let s:p.normal.right = [ [ s:white, s:orange ], [ s:white, s:dark_grey ], [ s:white, s:orange ], [ s:white, s:red ] ]
+let s:p.normal.right = [ [ s:white, s:dark_grey ], [ s:white, s:light_grey ], [ s:white, s:orange ], [ s:white, s:red ] ]
 
 let s:p.inactive.left =  [ [ s:dark_grey, s:light_grey ] ]
 let s:p.inactive.middle  = [ [ s:white, s:transparent ] ]
 let s:p.inactive.right = [ [ s:white, s:dark_grey ], [ s:white, s:orange ], [ s:white, s:red ] ]
 
 let s:p.insert.left = [ [ s:white, s:orange, 'bold' ], [ s:white, s:light_grey ] ]
-let s:p.insert.right = [ [ s:white, s:orange ], [ s:white, s:dark_grey ], [ s:white, s:orange ], [ s:white, s:red ] ]
+let s:p.insert.right = [ [ s:white, s:dark_grey ], [ s:white, s:light_grey ], [ s:white, s:orange ], [ s:white, s:red ] ]
 
 let s:p.replace.left = [ [ s:white, s:green, 'bold' ], [ s:white, s:light_grey ] ]
-let s:p.replace.right = [ [ s:white, s:orange ], [ s:white, s:dark_grey ], [ s:white, s:orange ], [ s:white, s:red ] ]
+let s:p.replace.right = [ [ s:white, s:dark_grey ], [ s:white, s:light_grey ], [ s:white, s:orange ], [ s:white, s:red ] ]
 
 let s:p.visual.left = [ [ s:white, s:red, 'bold' ], [ s:white, s:light_grey ] ]
-let s:p.visual.right = [ [ s:white, s:orange ], [ s:white, s:dark_grey ], [ s:white, s:orange ], [ s:white, s:red ] ]
-
-" let s:p.normal.error = [ [ s:base2, s:red ] ]
-" let s:p.normal.warning = [ [ s:base02, s:yellow ] ]
+let s:p.visual.right = [ [ s:white, s:dark_grey ], [ s:white, s:light_grey ], [ s:white, s:orange ], [ s:white, s:red ] ]
 
 let g:lightline#colorscheme#baspar#palette = lightline#colorscheme#flatten(s:p)
-" b:coc_diagnostic_info
 
+let s:mode_map = {
+            \ 'n' : 'NORMAL',
+            \ 'i' : 'INSERT',
+            \ 'R' : 'REPLACE',
+            \ 'v' : 'VISUAL',
+            \ 'V' : 'V-LINE',
+            \ "\<C-v>": 'V-BLOCK',
+            \ 'c' : 'COMMAND',
+            \ 's' : 'SELECT',
+            \ 'S' : 'S-LINE',
+            \ "\<C-s>": 'S-BLOCK',
+            \ 't': 'TERMINAL',
+            \ }
+
+" Helper functions
+func! s:is_nerd_tree(filename)
+    return a:filename =~# '^NERD_tree_'
+endfunc
+func! s:is_fzf(filename)
+    return a:filename =~# '^term://.*#FZF$'
+endfunc
+
+" Component functions
 func! Coc(field)
     try
         let count = get(b:coc_diagnostic_info, a:field)
@@ -50,11 +69,30 @@ func! CocError()
 endfunc
 
 func! LineInfo()
-    return (col('.') - 1) . '/' . (col('$') - 1)
+    let filename = expand('%:f')
+    if s:is_nerd_tree(filename)
+        return ''
+    elseif s:is_fzf(filename)
+        return ''
+    else
+        return (col('.') - 1) . '/' . (col('$') - 1)
+    endif
 endfunc
 
 func! FileName()
-    let out = [expand('%f')]
+    let out = []
+
+    let filename = expand('%:f')
+    if s:is_nerd_tree(filename)
+        call add(out, 'NERDTREE')
+    elseif s:is_fzf(filename)
+        call add(out, 'FZF')
+    elseif filename == ''
+        call add(out, '[No name]')
+    else
+        call add(out, filename)
+    endif
+
     if &readonly
         call add(out, '')
     endif
@@ -71,6 +109,14 @@ func! Fugitive()
         return ' '.branch
     endif
     return ''
+endfunc
+
+func! Mode()
+    let filename = expand('%:f')
+    if s:is_nerd_tree(filename) || s:is_fzf(filename)
+        return ''
+    endif
+    return get(s:mode_map, mode())
 endfunc
 
 
@@ -90,6 +136,8 @@ let g:lightline = {
             \   'right': []
             \ },
             \ 'component_function': {
+            \   'mode': 'Mode',
+            \   'lineinfo': 'LineInfo',
             \   'fugitive': 'Fugitive',
             \   'filename': 'FileName',
             \   'cocWarning': 'CocWarning',

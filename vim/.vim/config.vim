@@ -58,3 +58,5 @@ let g:limelight_conceal_ctermfg = 240
 let g:instant_markdown_autostart = 0
 
 let g:lion_squeeze_spaces = 1
+let g:netrw_liststyle = 3
+let g:netrw_banner = 0
