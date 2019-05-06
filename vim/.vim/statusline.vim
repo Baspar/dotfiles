@@ -14,7 +14,7 @@ let s:p.normal.right = [ [ s:white, s:dark_grey ], [ s:white, s:light_grey ], [ 
 
 let s:p.inactive.left =  [ [ s:dark_grey, s:light_grey ] ]
 let s:p.inactive.middle  = [ [ s:white, s:transparent ] ]
-let s:p.inactive.right = [ [ s:white, s:dark_grey ], [ s:white, s:orange ], [ s:white, s:red ] ]
+let s:p.inactive.right = [ [ s:dark_grey, s:light_grey ] ]
 
 let s:p.insert.left = [ [ s:white, s:orange, 'bold' ], [ s:white, s:light_grey ] ]
 let s:p.insert.right = [ [ s:white, s:dark_grey ], [ s:white, s:light_grey ], [ s:white, s:orange ], [ s:white, s:red ] ]
@@ -133,7 +133,7 @@ let g:lightline = {
             \ },
             \ 'inactive': {
             \   'left': [ [ 'filename', 'readOnlyModified' ] ],
-            \   'right': []
+            \   'right': [ ['fugitive'] ]
             \ },
             \ 'component_function': {
             \   'mode': 'Mode',
