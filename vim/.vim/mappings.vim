@@ -139,9 +139,13 @@ nnoremap <leader>a :normal ggVG<CR>
 " Ags
 nnoremap <leader>A :Ag<space>
 
-" Ale
+" CocNvim
 nmap [a <Plug>(coc-diagnostic-prev)
 nmap ]a <Plug>(coc-diagnostic-next)
+nmap <silent> <localleader>i <Plug>(coc-implementation)
+nmap <silent> <localleader>r <Plug>(coc-references)
+nmap <silent> <localleader><localleader> :call CocAction("doHover")<CR>
+nmap <silent> <localleader>R <Plug>(coc-rename)
 
 " Vim-Go
 au FileType go nnoremap <localleader>gr <Plug>(go-run)
