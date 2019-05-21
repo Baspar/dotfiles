@@ -49,6 +49,7 @@ call plug#begin('~/.vim/plugged')
         " }}}
         " {{{ Git
         Plug 'tpope/vim-fugitive'
+        Plug 'rhysd/git-messenger.vim'
         " }}}
         " {{{ Text Object
         Plug 'machakann/vim-sandwich'
