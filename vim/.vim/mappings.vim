@@ -126,6 +126,10 @@ nnoremap <leader>go :Git checkout<Space>
 nnoremap <leader>gp :set termwinsize=10x0<CR>:term git push<CR>
 nnoremap <leader>gP :set termwinsize=10x0<CR>:term git pull<CR>
 
+" Flog
+nnoremap <leader>F :Flog<CR>
+nnoremap <leader>ff :Flog -path=%<CR>
+
 " Goyo
 nnoremap <leader>G :Goyo<CR>:hi Normal guibg=NONE ctermbg=NONE<CR>
 nnoremap <leader>L :Limelight!!<CR>
