@@ -102,13 +102,10 @@ inoremap jf <C-c>:noh<cr>
 inoremap kj <C-c>:noh<cr>
 inoremap jk <C-c>:noh<cr>
 
-" Tabular
+" Plug
 noremap <leader>pi :PlugInstall<CR>
 noremap <leader>pu :PlugUpdate<CR>
 noremap <leader>pc :PlugClean<CR>
-
-" Tabular
-noremap <leader>T :Tabular /
 
 " Fugitive
 nnoremap <leader>ga :Git add %:p<CR><CR>
