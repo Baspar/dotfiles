@@ -55,7 +55,7 @@ call plug#begin('~/.vim/plugged')
         " {{{ Text Object
         Plug 'machakann/vim-sandwich'
         Plug 'machakann/vim-highlightedyank'
-        Plug 'xtal8/traces.vim'
+        " Plug 'xtal8/traces.vim'
         Plug 'kana/vim-textobj-user'
         Plug 'beloglazov/vim-textobj-quotes'
         " }}}
