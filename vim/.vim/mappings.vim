@@ -1,8 +1,3 @@
-" Slime
-xmap <localleader>s <Plug>SlimeRegionSend
-nnoremap <localleader>s <Plug>SlimeMotionSend
-nnoremap <localleader>ss <Plug>SlimeLineSend
-
 " Keep visual selection
 vnoremap < <gv
 vnoremap > >gv
@@ -17,21 +12,12 @@ nnoremap c<*                *Ncgn<C-r>"<C-o>`[<C-o>:call repeat#set("\<Plug>Prep
 nnoremap <Plug>PrependText# n".P:call repeat#set("\<Plug>PrependText#")<CR>
 nnoremap c<#                #cgN<C-r>"<C-o>`[<C-o>:call repeat#set("\<Plug>PrependText#")<CR>
 
-" nnoremap <expr> c<* '*Ncgn<C-r>"'.repeat('<C-G>U<Left>',strlen(@"))
-" nnoremap <expr> c<# '#NcgN<C-r>"'.repeat('<C-G>U<Left>',strlen(@"))
-
-" Global indent
-" nnoremap <leader>f :Autoformat<CR>
-
-" Instant Markdown
-nnoremap <leader>M :LivedownPreview<CR>
-
-" CTRL-P
+" FZF
 nnoremap \ :Buffers<CR>
 nnoremap <tab> :FZF<CR>
-nnoremap - :Ex<CR>
 
-" NerdTree
+" fileExplorer
+" nnoremap - :sil execute "Ex ".expand('%:h')<CR>
 map <C-e> :NERDTreeToggle<CR>
 nnoremap <leader>e :NERDTreeToggle<CR>
 
@@ -74,13 +60,6 @@ nnoremap <C-Right> <C-w>l
 
 " TagBar
 map <leader>B :TagbarToggle<CR>
-
-" Terminal
-nnoremap <leader>t :set termwinsize=0x0<CR>:terminal<CR>
-
-" Neoterm
-autocmd FileType clojure map <buffer> <leader>zz :normal mava)<CR> :TREPLSendSelection<CR>`a
-nnoremap <leader>Z :normal maV<CR> :TREPLSendSelection<CR>`a
 
 " Reload nvim config
 nnoremap <leader>vr :source $MYVIMRC<CR>
@@ -130,6 +109,12 @@ nnoremap <leader>ff :Flog -path=%<CR>
 " Goyo
 nnoremap <leader>G :Goyo<CR>:hi Normal guibg=NONE ctermbg=NONE<CR>
 nnoremap <leader>L :Limelight!!<CR>
+au FileType go nnoremap <localleader>ge <Plug>(go-rename)
+au FileType go nnoremap <localleader>ge <Plug>(go-rename)
+au FileType go nnoremap <localleader>ge <Plug>(go-rename)
+au FileType go nnoremap <localleader>gi <Plug>(go-info)
+au FileType go nnoremap <localleader>gi <Plug>(go-info)
+au FileType go nnoremap <localleader>gi <Plug>(go-info)
 
 " Select line
 nnoremap <leader>l :normal ^v$<CR>
