@@ -17,13 +17,15 @@ INSTALL_DOT () {
 
     FILES=$(find . -type f)
     for FILE in $FILES; do
-        echo -n " $HOME/$FILE..."
-        if [ -L "$HOME/$FILE" ]; then
-            echo " ALREADY LINKED"
-        elif [ -e "$HOME/$FILE" ]; then
-            echo " ERR"
+        SOURCE_FILE=$(echo "$(pwd)/$FILE" | sed 's#\(/\.\.\)\+/#/#g; s#/\./#/#g')
+        DEST_FILE=$(echo "$HOME/$FILE" | sed 's#\(/\.\.\)\+/#/#g; s#/\./#/#g')
+        echo -n " $DEST_FILE..."
+        if [ -L "$DEST_FILE" ]; then
+            echo " Already linked"
+        elif [ -e "$DEST_FILE" ]; then
+            echo " Error, file already exists"
         else
-            ln -s "$(pwd)/$FILE" "$HOME/$FILE"
+            ln -s "$SOURCE_FILE" "$DEST_FILE"
             echo " OK"
         fi
     done
