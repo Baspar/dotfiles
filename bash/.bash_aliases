@@ -47,8 +47,8 @@ abbr o 'xdg-open'
 
 abbr df 'df -h'
 
-# abbr pbcopy 'xsel --clipboard --input'
-# abbr pbpaste 'xsel --clipboard --output'
+command -v pbcopy > /dev/null || abbr pbcopy 'xsel --clipboard --input'
+command -v pbpaste > /dev/null || abbr pbpaste 'xsel --clipboard --output'
 
 abbr se 'sudoedit'
 abbr nvm 'bass source /usr/local/opt/nvm/nvm.sh --no-use ";" nvm'

@@ -1,10 +1,31 @@
 #
 # ~/.bashrc #
 
-# alias abbr='alias'
-# source ~/.bash_aliases
+abbr() {
+    NAME=""
+    VALUE=""
+    for I in $(seq $#)
+    do
+        ITEM=$(eval "echo \$$I")
 
-export EDITOR='vim'
+        if [ "$(echo $ITEM | head -c 1)" != "-" ]
+        then
+            if [ "$NAME" == "" ]
+            then
+                NAME=$ITEM
+            elif [ "$VALUE" == "" ]
+            then
+                VALUE=$ITEM
+                break
+            fi
+        fi
+    done
+    echo "alias \"$NAME\"=\"$VALUE\""
+    alias $NAME="$VALUE"
+}
+source ~/.bash_aliases
+
+export EDITOR='nvim'
 export GOPATH="$HOME/.go"
 
 export GOPATH=$(go env GOPATH 2&> /dev/null)
