@@ -15,7 +15,7 @@ abbr gC 'git checkout'
 abbr gCo 'git checkout --our'
 abbr gCt 'git checkout --their'
 abbr gpsu 'git push --set-upstream origin HEAD'
-abbr gpf 'git push --force'
+abbr gpf 'git push --force-with-lease'
 abbr gr "git rebase"
 abbr gR "git reset"
 abbr gb "git branch"
