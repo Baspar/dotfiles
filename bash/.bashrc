@@ -20,7 +20,6 @@ abbr() {
             fi
         fi
     done
-    echo "alias \"$NAME\"=\"$VALUE\""
     alias $NAME="$VALUE"
 }
 source ~/.bash_aliases
