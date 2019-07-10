@@ -12,7 +12,7 @@ call plug#begin('~/.vim/plugged')
         " }}}
         " {{{ Navigation
         Plug 'easymotion/vim-easymotion'
-        Plug 'baspar/vim-cartographe', { 'branch': 'dev' }
+        Plug 'baspar/vim-cartographe'
         " }}}
         " {{{ LSP
         Plug 'neoclide/coc.nvim', {'do': 'yarn install'}
