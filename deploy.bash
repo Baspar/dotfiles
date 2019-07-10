@@ -4,7 +4,7 @@ DOTS=$*
 DIR=$(dirname "$0")
 
 GET_ALL_DOTS () {
-    find -depth 1 -type d "$DIR/" | grep -v "\.git"
+    ls "$DIR/"
 }
 INSTALL_DOT () {
     DOT="$1"
