@@ -1,0 +1,94 @@
+:: default : chunkc border::color 0xffffffff
+:: music @ : chunkc border::color 0xff775759
+
+# open terminal, blazingly fast compared to iTerm/Hyper
+alt - w : /Applications/Kitty.app/Contents/MacOS/kitty --single-instance -d ~
+
+# close focused window
+alt - d : chunkc tiling::window --close
+
+# focus window
+alt - h : chunkc tiling::window --focus west
+alt - j : chunkc tiling::window --focus south
+alt - k : chunkc tiling::window --focus north
+alt - l : chunkc tiling::window --focus east
+
+# swap window
+shift + alt - h : chunkc tiling::window --swap west
+shift + alt - j : chunkc tiling::window --swap south
+shift + alt - k : chunkc tiling::window --swap north
+shift + alt - l : chunkc tiling::window --swap east
+
+# move window
+shift + cmd - h : chunkc tiling::window --warp west
+shift + cmd - j : chunkc tiling::window --warp south
+shift + cmd - k : chunkc tiling::window --warp north
+shift + cmd - l : chunkc tiling::window --warp east
+
+# send window to desktop and follow focus
+shift + cmd - 1 : chunkc tiling::window --send-to-desktop 1; chunkc tiling::desktop --focus 1
+shift + cmd - 2 : chunkc tiling::window --send-to-desktop 2; chunkc tiling::desktop --focus 2
+shift + cmd - 3 : chunkc tiling::window --send-to-desktop 3; chunkc tiling::desktop --focus 3
+shift + cmd - 4 : chunkc tiling::window --send-to-desktop 4; chunkc tiling::desktop --focus 4
+shift + cmd - 5 : chunkc tiling::window --send-to-desktop 5; chunkc tiling::desktop --focus 5
+shift + cmd - 6 : chunkc tiling::window --send-to-desktop 6; chunkc tiling::desktop --focus 6
+shift + cmd - 7 : chunkc tiling::window --send-to-desktop 7; chunkc tiling::desktop --focus 7
+shift + cmd - 8 : chunkc tiling::window --send-to-desktop 8; chunkc tiling::desktop --focus 8
+shift + cmd - 9 : chunkc tiling::window --send-to-desktop 9; chunkc tiling::desktop --focus 9
+shift + cmd - 0 : chunkc tiling::window --send-to-desktop 10; chunkc tiling::desktop --focus 10
+
+# focus monitor
+# ctrl + alt - z  : chunkc tiling::monitor -f prev
+# ctrl + alt - c  : chunkc tiling::monitor -f next
+# ctrl + alt - 1  : chunkc tiling::monitor -f 1
+# ctrl + alt - 2  : chunkc tiling::monitor -f 2
+# ctrl + alt - 3  : chunkc tiling::monitor -f 3
+
+# send window to monitor and follow focus
+# ctrl + cmd - z  : chunkc tiling::window --send-to-monitor prev; chunkc tiling::monitor -f prev
+# ctrl + cmd - c  : chunkc tiling::window --send-to-monitor next; chunkc tiling::monitor -f next
+# ctrl + cmd - 1  : chunkc tiling::window --send-to-monitor 1; chunkc tiling::monitor -f 1
+# ctrl + cmd - 2  : chunkc tiling::window --send-to-monitor 2; chunkc tiling::monitor -f 2
+# ctrl + cmd - 3  : chunkc tiling::window --send-to-monitor 3; chunkc tiling::monitor -f 3
+
+# increase region size
+# shift + alt - a : chunkc tiling::window --use-temporary-ratio 0.1 --adjust-window-edge west
+# shift + alt - s : chunkc tiling::window --use-temporary-ratio 0.1 --adjust-window-edge south
+# shift + alt - w : chunkc tiling::window --use-temporary-ratio 0.1 --adjust-window-edge north
+# shift + alt - d : chunkc tiling::window --use-temporary-ratio 0.1 --adjust-window-edge east
+
+# decrease region size
+# shift + cmd - a : chunkc tiling::window --use-temporary-ratio -0.1 --adjust-window-edge west
+# shift + cmd - s : chunkc tiling::window --use-temporary-ratio -0.1 --adjust-window-edge south
+# shift + cmd - w : chunkc tiling::window --use-temporary-ratio -0.1 --adjust-window-edge north
+# shift + cmd - d : chunkc tiling::window --use-temporary-ratio -0.1 --adjust-window-edge east
+
+# set insertion point for focused container
+ctrl + alt - f : chunkc tiling::window --use-insertion-point cancel
+ctrl + alt - h : chunkc tiling::window --use-insertion-point west
+ctrl + alt - j : chunkc tiling::window --use-insertion-point south
+ctrl + alt - k : chunkc tiling::window --use-insertion-point north
+ctrl + alt - l : chunkc tiling::window --use-insertion-point east
+
+# rotate tree
+alt - r : chunkc tiling::desktop --rotate 90
+alt - y : chunkc tiling::desktop --mirror vertical
+alt - x : chunkc tiling::desktop --mirror horizontal
+
+# toggle window fullscreen
+alt - s : chunkc tiling::window --toggle fullscreen
+
+# toggle window native fullscreen
+shift + alt - f : chunkc tiling::window --toggle native-fullscreen
+
+# toggle window split type
+alt - q : chunkc tiling::window --toggle split
+
+# MOCP
+cmd - m ; music
+music < escape ; default
+music < space : mpc toggle
+music < return : /Applications/Kitty.app/Contents/MacOS/kitty mocp
+music < up : m volume +5
+music < down : m volume -5
+
