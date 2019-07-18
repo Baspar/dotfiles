@@ -4,10 +4,16 @@ BACKGROUND_COLOR=$1
 if [ $(command -v acpi) ]
 then
     INFO=$(acpi)
-    [ $INFO ] || return
-    PERCENTAGE=$(echo $INFO | grep -o "\([0-9]\+\)%" | sed 's/%//')
-    DISCHARGING=$(echo $INFO | grep -i "discharging")
-    CHARGING=$(echo $INFO | grep -i "charging")
+    PERCENTAGE=$(echo "$INFO" | grep -o "\([0-9]\+\)%" | sed 's/%//')
+    DISCHARGING=$(echo "$INFO" | grep -i "discharging")
+    CHARGING=$(echo "$INFO" | grep -i "charging")
+elif [ $(command -v m) ]
+then
+    INFO=$(m battery status)
+    PERCENTAGE=$(echo "$INFO" | grep -o "\([0-9]\+\)%" | sed 's/%//')
+    DISCHARGING=$(echo "$INFO" | grep -i "discharging")
+    CHARGING=$(echo "$INFO" | grep -i "charging")
+    CHARGED=$(echo "$INFO" | grep -i "charged")
 fi
 
 [ "$PERCENTAGE" ] || {
@@ -28,14 +34,15 @@ then
         COLOR='#4e4e4e'
         FONT='white'
     fi
-elif [ "$CHARGING" ]
+elif [ "$CHARGING" ] ||[ "$CHARGED" ]
 then
     COLOR='#4e4e4e'
     FONT='white'
+    SIGN=' '
 else
     COLOR='red'
     FONT='white'
 fi
-echo "#[bg=$BACKGROUND_COLOR,fg=$COLOR]#[bg=$COLOR,fg=$FONT] $PERCENTAGE% "
+echo "#[bg=$BACKGROUND_COLOR,fg=$COLOR]#[bg=$COLOR,fg=$FONT] $SIGN$PERCENTAGE% "
 
 #Powerline characters: 
