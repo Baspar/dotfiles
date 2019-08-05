@@ -12,7 +12,7 @@ then
     INFO=$(m battery status)
     PERCENTAGE=$(echo "$INFO" | grep -o "\([0-9]\+\)%" | sed 's/%//')
     DISCHARGING=$(echo "$INFO" | grep -i "discharging")
-    CHARGING=$(echo "$INFO" | grep -i "charging")
+    CHARGING=$(echo "$INFO" | grep -i "\(charging|finishing charge\)")
     CHARGED=$(echo "$INFO" | grep -i "charged")
 fi
 
