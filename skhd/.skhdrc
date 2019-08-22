@@ -87,7 +87,7 @@ alt - q : chunkc tiling::window --toggle split
 # MOCP
 cmd - m ; music
 music < escape ; default
-music < space : mpc toggle
+music < space : mocp -G
 music < return : /Applications/Kitty.app/Contents/MacOS/kitty mocp
 music < up : m volume +5
 music < down : m volume -5

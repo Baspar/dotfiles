@@ -13,6 +13,7 @@ call plug#begin('~/.vim/plugged')
         " {{{ Navigation
         Plug 'easymotion/vim-easymotion'
         Plug 'baspar/vim-cartographe'
+        Plug 'scrooloose/nerdtree'
         " }}}
         " {{{ LSP
         Plug 'neoclide/coc.nvim', {'do': 'yarn install'}
@@ -43,7 +44,6 @@ call plug#begin('~/.vim/plugged')
         Plug 'tpope/vim-repeat'
         " }}}
         " {{{ File
-        Plug 'scrooloose/nerdtree'
         Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
         Plug 'junegunn/fzf.vim'
         " }}}
@@ -69,8 +69,6 @@ call plug#begin('~/.vim/plugged')
         Plug 'AlessandroYorba/alduin'
         " }}}
         " {{{ Airline
-        " Plug 'vim-airline/vim-airline'
-        " Plug 'vim-airline/vim-airline-themes'
         Plug 'itchyny/lightline.vim'
         " }}}
         " {{{ Goyo

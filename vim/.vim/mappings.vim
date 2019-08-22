@@ -109,13 +109,6 @@ nnoremap <leader>ff :Flog -path=%<CR>
 " Goyo
 nnoremap <leader>G :Goyo<CR>:hi Normal guibg=NONE ctermbg=NONE<CR>
 nnoremap <leader>L :Limelight!!<CR>
-au FileType go nnoremap <localleader>ge <Plug>(go-rename)
-au FileType go nnoremap <localleader>ge <Plug>(go-rename)
-au FileType go nnoremap <localleader>ge <Plug>(go-rename)
-au FileType go nnoremap <localleader>gi <Plug>(go-info)
-au FileType go nnoremap <localleader>gi <Plug>(go-info)
-au FileType go nnoremap <localleader>gi <Plug>(go-info)
-
 " Select line
 nnoremap <leader>l :normal ^v$<CR>
 
@@ -132,15 +125,6 @@ nmap <silent> <localleader>i <Plug>(coc-implementation)
 nmap <silent> <localleader>r <Plug>(coc-references)
 nmap <silent> <localleader><localleader> :call CocAction("doHover")<CR>
 nmap <silent> <localleader>R <Plug>(coc-rename)
-
-" Vim-Go
-au FileType go nnoremap <localleader>gr <Plug>(go-run)
-au FileType go nnoremap <localleader>gb <Plug>(go-build)
-au FileType go nnoremap <localleader>gt <Plug>(go-test)
-au FileType go nnoremap <localleader>gc <Plug>(go-coverage)
-au FileType go nnoremap <localleader>gd <Plug>(go-doc)
-au FileType go nnoremap <localleader>ge <Plug>(go-rename)
-au FileType go nnoremap <localleader>gi <Plug>(go-info)
 
 " Avent of code - CLojure
 au FileType clojure nnoremap <localleader>ct magg/dayyw`a,:!clear; lein test "

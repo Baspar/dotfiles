@@ -29,6 +29,7 @@ abbr y "yarn"
 abbr h 'head'
 abbr t 'tmux'
 abbr ta 'tmux a'
+abbr tat 'tmux a -t'
 
 # abbr cp 'acp -g'
 # abbr mv 'amv -g'
