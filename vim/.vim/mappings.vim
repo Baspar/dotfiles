@@ -118,6 +118,14 @@ nnoremap <leader>a :normal ggVG<CR>
 " Ags
 nnoremap <leader>A :Ag<space>
 
+" Vim-Lsp
+" nmap [a :LspNextError<CR>
+" nmap ]a :LspPreviousError<CR>
+" nmap <silent> <localleader>i :LspImplementation<CR>
+" nmap <silent> <localleader>r :LspReferences<CR>
+" nmap <silent> <localleader><localleader> :LspHover<CR>
+" nmap <silent> <localleader>R :LspRename<CR>
+
 " CocNvim
 nmap [a <Plug>(coc-diagnostic-prev)
 nmap ]a <Plug>(coc-diagnostic-next)

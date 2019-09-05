@@ -17,7 +17,11 @@ call plug#begin('~/.vim/plugged')
         " }}}
         " {{{ LSP
         Plug 'neoclide/coc.nvim', {'do': 'yarn install'}
+        " Plug 'prabirshrestha/asyncomplete.vim'
+        " Plug 'prabirshrestha/async.vim'
         " Plug 'prabirshrestha/vim-lsp'
+        " Plug 'prabirshrestha/asyncomplete-lsp.vim'
+        " Plug 'dense-analysis/ale'
         " }}}
     " }}}
 
@@ -60,7 +64,7 @@ call plug#begin('~/.vim/plugged')
         " }}}
         " {{{ Async
         Plug 'tpope/vim-dispatch'
-        Plug 'prabirshrestha/async.vim'
+        " Plug 'prabirshrestha/async.vim'
         " }}}
     " }}}
 
