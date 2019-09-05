@@ -12,7 +12,7 @@ then
     INFO=$(m battery status)
     PERCENTAGE=$(echo "$INFO" | grep -o "\([0-9]\+\)%" | sed 's/%//')
     DISCHARGING=$(echo "$INFO" | grep -i "discharging")
-    CHARGING=$(echo "$INFO" | grep -i "\(charging|finishing charge\)")
+    CHARGING=$(echo "$INFO" | grep -i "\(charging\|finishing charge\)")
     CHARGED=$(echo "$INFO" | grep -i "charged")
 fi
 
@@ -38,11 +38,11 @@ elif [ "$CHARGING" ] ||[ "$CHARGED" ]
 then
     COLOR='#4e4e4e'
     FONT='white'
-    SIGN=' '
+    SIGN='ϟ '
 else
     COLOR='red'
     FONT='white'
 fi
-echo "#[bg=$BACKGROUND_COLOR,fg=$COLOR]#[bg=$COLOR,fg=$FONT] ϟ $SIGN$PERCENTAGE% "
+echo "#[bg=$BACKGROUND_COLOR,fg=$COLOR]#[bg=$COLOR,fg=$FONT] $PERCENTAGE% $SIGN"
 
 #Powerline characters: 
