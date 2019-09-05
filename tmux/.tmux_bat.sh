@@ -43,6 +43,6 @@ else
     COLOR='red'
     FONT='white'
 fi
-echo "#[bg=$BACKGROUND_COLOR,fg=$COLOR]#[bg=$COLOR,fg=$FONT] $SIGN$PERCENTAGE% "
+echo "#[bg=$BACKGROUND_COLOR,fg=$COLOR]#[bg=$COLOR,fg=$FONT] ϟ $SIGN$PERCENTAGE% "
 
 #Powerline characters: 
