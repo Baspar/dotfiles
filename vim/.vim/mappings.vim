@@ -97,7 +97,8 @@ nnoremap <leader>gr :Gread<CR>
 nnoremap <leader>gw :Gwrite<CR><CR>
 nnoremap <leader>gl :silent! Glog<CR>:bot copen<CR>
 nnoremap <leader>gm :Gmove<Space>
-nnoremap <leader>gb :Git branch<Space>
+nnoremap <leader>gb :Gblame<CR>
+nnoremap <leader>gB :Git branch<Space>
 nnoremap <leader>go :Git checkout<Space>
 nnoremap <leader>gp :set termwinsize=10x0<CR>:term git push<CR>
 nnoremap <leader>gP :set termwinsize=10x0<CR>:term git pull<CR>
