@@ -16,8 +16,8 @@ set undodir=$HOME/.vim/undo
 set undolevels=1000
 set undoreload=10000
 set hidden
-set foldmethod=syntax
-" set foldmethod=indent
+" set foldmethod=syntax
+set foldmethod=indent
 set wildmenu
 set spelllang=en
 set spellfile=$HOME/.vim/spell/en.utf-8.add

@@ -44,8 +44,9 @@ noremap <leader>cp "+p
 noremap <leader>cd "+d
 
 " Buffer navigation
-nnoremap <leader>< :bN<CR>
-nnoremap <leader>> :bn<CR>
+nnoremap <leader>< :tabN<CR>
+nnoremap <leader>> :tabn<CR>
+nnoremap <leader><CR> :tabe<CR>
 nnoremap <leader>bd :bn<CR> :bd #<CR>
 nnoremap <leader>s :noh<CR>:update<CR>
 nnoremap <leader>w :noh<CR>:w<CR>
@@ -63,10 +64,10 @@ map <leader>B :TagbarToggle<CR>
 
 " Reload nvim config
 nnoremap <leader>vr :source $MYVIMRC<CR>
-nnoremap <leader>ve :edit $MYVIMRC<CR>
-nnoremap <leader>vm :edit $HOME/.vim/mappings.vim<CR>
-nnoremap <leader>vp :edit $HOME/.vim/plugins.vim<CR>
-nnoremap <leader>vc :edit $HOME/.vim/config.vim<CR>
+nnoremap <leader>ve :tabe $MYVIMRC<CR>
+nnoremap <leader>vm :tabe $HOME/.vim/mappings.vim<CR>
+nnoremap <leader>vp :tabe $HOME/.vim/plugins.vim<CR>
+nnoremap <leader>vc :tabe $HOME/.vim/config.vim<CR>
 
 " Splits
 nnoremap <leader>\| :vs<CR>
