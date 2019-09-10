@@ -32,7 +32,7 @@ INSTALL_DOT () {
 }
 
 if [ $# -eq 0 ]; then
-    echo "FInd all"
+    echo "Find all"
     DOTS=$(GET_ALL_DOTS)
     echo $DOTS
     exit
