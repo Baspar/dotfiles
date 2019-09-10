@@ -25,6 +25,9 @@ let s:p.replace.right = [ [ s:white, s:dark_grey ], [ s:white, s:light_grey ], [
 let s:p.visual.left = [ [ s:white, s:red, 'bold' ], [ s:white, s:light_grey ] ]
 let s:p.visual.right = [ [ s:white, s:dark_grey ], [ s:white, s:light_grey ], [ s:white, s:orange ], [ s:white, s:red ] ]
 
+let s:p.tabline.left = [ [ s:white, s:light_grey ] ]
+let s:p.tabline.tabsel = [ [ s:dark_grey, s:orange ] ]
+
 let g:lightline#colorscheme#baspar#palette = lightline#colorscheme#flatten(s:p)
 
 let s:mode_map = {
