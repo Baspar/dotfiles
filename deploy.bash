@@ -1,22 +1,22 @@
 #!/bin/bash
-PWD=$(pwd)
 DOTS=$*
-DIR=$(dirname "$0")
+ROOT_DIR=$(dirname "$0")
 
 GET_ALL_DOTS () {
-    ls "$DIR/"
+    find "$ROOT_DIR/" -type d -maxdepth 1 | sed 's#^\.*##; s#^/*##; /^$/d; /^\./d; s# #\ #g'
 }
 INSTALL_DOT () {
     DOT="$1"
     echo "Installing $DOT"
-    cd "$DIR/$DOT"
+    cd "$ROOT_DIR/$DOT"
     DIRS=$(find . -type d)
-    for DIR in $DIRS; do
-        mkdir -p "$HOME/$DIR"
+    for HOME_DIR in $DIRS; do
+        mkdir -p "$HOME/$HOME_DIR"
     done
 
-    FILES=$(find . -type f)
-    for FILE in $FILES; do
+    FILES=$(find . -type f | sed 's# #_SPACE_#g')
+    for ENCODED_FILE in $FILES; do
+        FILE=$(echo $ENCODED_FILE | sed 's#_SPACE_# #g')
         SOURCE_FILE=$(echo "$(pwd)/$FILE" | sed 's#\(/\.\.\)\+/#/#g; s#/\./#/#g')
         DEST_FILE=$(echo "$HOME/$FILE" | sed 's#\(/\.\.\)\+/#/#g; s#/\./#/#g')
         echo -n " $DEST_FILE..."
@@ -29,21 +29,18 @@ INSTALL_DOT () {
             echo " OK"
         fi
     done
+
+    cd -
 }
 
 if [ $# -eq 0 ]; then
-    echo "Find all"
     DOTS=$(GET_ALL_DOTS)
-    echo $DOTS
-    exit
 fi
 
 for DOT in $DOTS; do
-    if [ -e "$DIR/$DOT" ]; then
-        INSTALL_DOT "$DIR/$DOT"
+    if [ -e "$ROOT_DIR/$DOT" ]; then
+        INSTALL_DOT "$DOT"
     else
-        echo "$(basename $DOT) is not a valid directory"
+        echo "$ROOT_DIR/$DOT is not a valid directory"
     fi
 done
-
-cd "$PWD"
