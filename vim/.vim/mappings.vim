@@ -50,6 +50,7 @@ nnoremap <leader><CR> :tabe<CR>
 nnoremap <leader>bd :bn<CR> :bd #<CR>
 nnoremap <leader>s :noh<CR>:update<CR>
 nnoremap <leader>w :noh<CR>:w<CR>
+nnoremap <C-l> :noh<CR>
 nnoremap <leader>q :q<CR>
 nnoremap <leader>Q :q!<CR>
 
