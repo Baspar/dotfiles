@@ -53,7 +53,8 @@ call plug#begin('~/.vim/plugged')
         " }}}
         " {{{ Git
         Plug 'tpope/vim-fugitive'
-        Plug 'rbong/vim-flog'
+        " Plug 'rbong/vim-flog'
+        Plug 'junegunn/gv.vim'
         " }}}
         " {{{ Text Object
         Plug 'machakann/vim-sandwich'

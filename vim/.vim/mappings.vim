@@ -106,8 +106,12 @@ nnoremap <leader>gp :set termwinsize=10x0<CR>:term git push<CR>
 nnoremap <leader>gP :set termwinsize=10x0<CR>:term git pull<CR>
 
 " Flog
-nnoremap <leader>F :Flog<CR>
-nnoremap <leader>ff :Flog -path=%<CR>
+" nnoremap <leader>F :Flog<CR>
+" nnoremap <leader>ff :Flog -path=%<CR>
+
+" GV
+nnoremap <leader>F :GV<CR>
+nnoremap <leader>ff :GV!<CR>
 
 " Goyo
 nnoremap <leader>G :Goyo<CR>:hi Normal guibg=NONE ctermbg=NONE<CR>
