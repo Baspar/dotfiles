@@ -9,8 +9,9 @@ INSTALL_DOT () {
     DOT="$1"
     echo "Installing $DOT"
     cd "$ROOT_DIR/$DOT"
-    DIRS=$(find . -type d)
-    for HOME_DIR in $DIRS; do
+    DIRS=$(find . -type d | sed 's# #_SPACE_#g')
+    for ENCODED_HOME_DIR in $DIRS; do
+        HOME_DIR=$(echo $ENCODED_HOME_DIR | sed 's#_SPACE_# #g')
         mkdir -p "$HOME/$HOME_DIR"
     done
 
@@ -20,17 +21,17 @@ INSTALL_DOT () {
         SOURCE_FILE=$(echo "$(pwd)/$FILE" | sed 's#\(/\.\.\)\+/#/#g; s#/\./#/#g')
         DEST_FILE=$(echo "$HOME/$FILE" | sed 's#\(/\.\.\)\+/#/#g; s#/\./#/#g')
         echo -n " $DEST_FILE..."
-        if [ -L "$DEST_FILE" ]; then
+        if [ -L "$DEST_FILE" ] && [ -e "$DEST_FILE" ] && [ "$SOURCE_FILE" -ef "$DEST_FILE" ]; then
             echo " Already linked"
         elif [ -e "$DEST_FILE" ]; then
-            echo " Error, file already exists"
+            echo "\n Error, file already exists"
         else
             ln -s "$SOURCE_FILE" "$DEST_FILE"
             echo " OK"
         fi
     done
 
-    cd -
+    cd - >> /dev/null
 }
 
 if [ $# -eq 0 ]; then
