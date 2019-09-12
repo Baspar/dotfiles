@@ -1,5 +1,15 @@
 #!/bin/bash
-DOTS=$*
+DOTS=""
+MODE="INSTALL"
+for DOT in $*
+do
+    [ "$DOT" == "-u" ] && {
+        MODE="UNINSTALL"
+    } || {
+        DOTS="$DOTS $DOT"
+    }
+done
+
 ROOT_DIR=$(dirname "$0")
 
 GET_ALL_DOTS () {
@@ -7,6 +17,42 @@ GET_ALL_DOTS () {
         | sed "s#^$ROOT_DIR/##" \
         | sed 's#^\.*##; s#^/*##; /^$/d; /^\./d; s# #\ #g'
 }
+
+UNINSTALL_DOT () {
+    DOT="$1"
+    echo "Uninstalling $DOT"
+    cd "$ROOT_DIR/$DOT"
+
+    FILES=$(find . -type f | sed 's# #_SPACE_#g')
+    for ENCODED_FILE in $FILES; do
+        FILE=$(echo $ENCODED_FILE | sed 's#_SPACE_# #g')
+        SOURCE_FILE=$(echo "$(pwd)/$FILE" | sed 's#\(/\.\.\)\+/#/#g; s#/\./#/#g')
+        DEST_FILE=$(echo "$HOME/$FILE" | sed 's#\(/\.\.\)\+/#/#g; s#/\./#/#g')
+        echo -n "  $FILE..."
+        if [ -L "$DEST_FILE" ] && [ -e "$DEST_FILE" ] && [ "$SOURCE_FILE" -ef "$DEST_FILE" ]; then
+            rm -rf "$DEST_FILE"
+            echo " Removed"
+        elif [ -e "$DEST_FILE" ]; then
+            echo -e "\n    Error, file was not set by deploy.bash"
+        else
+            echo " Is not linked"
+        fi
+    done
+
+    DIRS=$(find . -type d | sed 's# #_SPACE_#g' | tac)
+    for ENCODED_HOME_DIR in $DIRS; do
+        HOME_DIR=$(echo $ENCODED_HOME_DIR | sed 's#_SPACE_# #g')
+        [ -d "$HOME/$HOME_DIR" ] || continue
+        FILES_IN_DIR=$(ls -A "$HOME/$HOME_DIR")
+        [ -z "$FILES_IN_DIR" ] && {
+            echo "  Removing empty $HOME_DIR"
+            rm -rf "$HOME/$HOME_DIR"
+        }
+    done
+
+    cd - >> /dev/null
+}
+
 INSTALL_DOT () {
     DOT="$1"
     echo "Installing $DOT"
@@ -22,7 +68,7 @@ INSTALL_DOT () {
         FILE=$(echo $ENCODED_FILE | sed 's#_SPACE_# #g')
         SOURCE_FILE=$(echo "$(pwd)/$FILE" | sed 's#\(/\.\.\)\+/#/#g; s#/\./#/#g')
         DEST_FILE=$(echo "$HOME/$FILE" | sed 's#\(/\.\.\)\+/#/#g; s#/\./#/#g')
-        echo -n "  $DEST_FILE..."
+        echo -n "  $FILE..."
         if [ -L "$DEST_FILE" ] && [ -e "$DEST_FILE" ] && [ "$SOURCE_FILE" -ef "$DEST_FILE" ]; then
             echo " Already linked"
         elif [ -e "$DEST_FILE" ]; then
@@ -36,13 +82,17 @@ INSTALL_DOT () {
     cd - >> /dev/null
 }
 
-if [ $# -eq 0 ]; then
+[ "$DOTS" ] || {
     DOTS=$(GET_ALL_DOTS)
-fi
+}
 
 for DOT in $DOTS; do
     if [ -e "$ROOT_DIR/$DOT" ]; then
-        INSTALL_DOT "$DOT"
+        [ "$MODE" == "INSTALL" ] && {
+            INSTALL_DOT "$DOT"
+        } || {
+            UNINSTALL_DOT "$DOT"
+        }
     else
         echo "$ROOT_DIR/$DOT is not a valid directory"
     fi

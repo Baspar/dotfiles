@@ -12,6 +12,8 @@ To install all configuration, call the script with no parameters
 ./deploy.bash
 ```
 
+The flag `-u` can be used to **Uninstall** instead of linking the dotfiles
+
 
 ## Notes
 Some of the dotfiles are not fully supported (zsh/oh-my-zsh in particular).
