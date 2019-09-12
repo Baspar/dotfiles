@@ -3,7 +3,9 @@ DOTS=$*
 ROOT_DIR=$(dirname "$0")
 
 GET_ALL_DOTS () {
-    find "$ROOT_DIR/" -maxdepth 1 -type d | sed 's#^\.*##; s#^/*##; /^$/d; /^\./d; s# #\ #g'
+    find "$ROOT_DIR/" -maxdepth 1 -type d \
+        | sed "s#^$ROOT_DIR/##" \
+        | sed 's#^\.*##; s#^/*##; /^$/d; /^\./d; s# #\ #g'
 }
 INSTALL_DOT () {
     DOT="$1"
@@ -20,11 +22,11 @@ INSTALL_DOT () {
         FILE=$(echo $ENCODED_FILE | sed 's#_SPACE_# #g')
         SOURCE_FILE=$(echo "$(pwd)/$FILE" | sed 's#\(/\.\.\)\+/#/#g; s#/\./#/#g')
         DEST_FILE=$(echo "$HOME/$FILE" | sed 's#\(/\.\.\)\+/#/#g; s#/\./#/#g')
-        echo -n " $DEST_FILE..."
+        echo -n "  $DEST_FILE..."
         if [ -L "$DEST_FILE" ] && [ -e "$DEST_FILE" ] && [ "$SOURCE_FILE" -ef "$DEST_FILE" ]; then
             echo " Already linked"
         elif [ -e "$DEST_FILE" ]; then
-            echo "\n Error, file already exists"
+            echo -e "\n    Error, file already exists"
         else
             ln -s "$SOURCE_FILE" "$DEST_FILE"
             echo " OK"
