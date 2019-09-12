@@ -110,20 +110,23 @@ nnoremap <leader>gP :set termwinsize=10x0<CR>:term git pull<CR>
 " nnoremap <leader>ff :Flog -path=%<CR>
 
 " GV
-nnoremap <leader>F :GV<CR>
-nnoremap <leader>ff :GV!<CR>
+nnoremap <leader>G :GV<CR>
+nnoremap <leader>gg :GV!<CR>
 
 " Goyo
-nnoremap <leader>G :Goyo<CR>:hi Normal guibg=NONE ctermbg=NONE<CR>
-nnoremap <leader>L :Limelight!!<CR>
+" nnoremap <leader>G :Goyo<CR>:hi Normal guibg=NONE ctermbg=NONE<CR>
+" nnoremap <leader>L :Limelight!!<CR>
 " Select line
-nnoremap <leader>l :normal ^v$<CR>
+" nnoremap <leader>l :normal ^v$<CR>
 
 " Select all
 nnoremap <leader>a :normal ggVG<CR>
 
 " Ags
-nnoremap <leader>A :Ag<space>
+nnoremap <leader>F :Ag<space>
+nnoremap <leader>f :set opfunc=ag_helper#look_for_block_op<CR>g@
+nnoremap <leader>f<leader>f :<C-u>call ag_helper#look_for_block('^', '$')<CR>
+vnoremap <leader>f :<C-u>call ag_helper#look_for_block('`<', '`>')<CR>
 
 " Vim-Lsp
 " nmap [a :LspNextError<CR>
