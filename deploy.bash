@@ -3,7 +3,7 @@ DOTS=$*
 ROOT_DIR=$(dirname "$0")
 
 GET_ALL_DOTS () {
-    find "$ROOT_DIR/" -type d -maxdepth 1 | sed 's#^\.*##; s#^/*##; /^$/d; /^\./d; s# #\ #g'
+    find "$ROOT_DIR/" -maxdepth 1 -type d | sed 's#^\.*##; s#^/*##; /^$/d; /^\./d; s# #\ #g'
 }
 INSTALL_DOT () {
     DOT="$1"
