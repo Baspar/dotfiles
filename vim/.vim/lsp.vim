@@ -38,8 +38,8 @@ let g:ale_virtualtext_cursor = 1
 " }}}
 
 " {{{ Highlight
-hi LspInformationText ctermfg=239 ctermbg=3 guifg=guibg=
-hi LspHintText ctermfg=239 ctermbg=3 guifg=guibg=
+hi LspInformationText ctermfg=239 ctermbg=3
+hi LspHintText ctermfg=239 ctermbg=3
 " }}}
 
 " vim: foldmethod=marker:foldlevel=1

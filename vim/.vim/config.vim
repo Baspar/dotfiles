@@ -38,7 +38,7 @@ endfunction
 
 " Color
 colorscheme alduin
-hi Normal guibg=NONE ctermbg=NONE
+hi Normal ctermbg=NONE
 
 " Indentation
 set tabstop=4 shiftwidth=4 expandtab
