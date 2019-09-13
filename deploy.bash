@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 DOTS=""
 MODE="INSTALL"
 for DOT in $*
@@ -31,11 +31,11 @@ UNINSTALL_DOT () {
         echo -n "  $FILE..."
         if [ -L "$DEST_FILE" ] && [ -e "$DEST_FILE" ] && [ "$SOURCE_FILE" -ef "$DEST_FILE" ]; then
             rm -rf "$DEST_FILE"
-            echo " Removed"
+            echo -e " \e[32mRemoved\e[0m"
         elif [ -e "$DEST_FILE" ]; then
-            echo -e "\n    Error, file was not set by deploy.bash"
+            echo -e " \e[31mError, file was not set by deploy.bash\e[0m"
         else
-            echo " Is not linked"
+            echo -e " \e[33mIs not linked\e[0m"
         fi
     done
 
@@ -70,12 +70,12 @@ INSTALL_DOT () {
         DEST_FILE=$(echo "$HOME/$FILE" | sed 's#\(/\.\.\)\+/#/#g; s#/\./#/#g')
         echo -n "  $FILE..."
         if [ -L "$DEST_FILE" ] && [ -e "$DEST_FILE" ] && [ "$SOURCE_FILE" -ef "$DEST_FILE" ]; then
-            echo " Already linked"
+            echo -e " \e[33mAlready linked\e[0m"
         elif [ -e "$DEST_FILE" ]; then
-            echo -e "\n    Error, file already exists"
+            echo -e " \e[31mError, file already exists\e[0m"
         else
             ln -s "$SOURCE_FILE" "$DEST_FILE"
-            echo " OK"
+            echo -e " \e[32mOK\e[0m"
         fi
     done
 
