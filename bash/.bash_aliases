@@ -1,3 +1,4 @@
+ls --color 1>/dev/null 2>/dev/null && alias ls='ls --color' || alias ls='ls -G'
 abbr l 'ls -lh'
 abbr ll 'ls -lah'
 
