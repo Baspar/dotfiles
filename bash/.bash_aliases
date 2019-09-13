@@ -40,16 +40,15 @@ abbr mc 'make clean'
 abbr free 'free -h'
 abbr f 'free'
 
-abbr vimrc 'nvim ~/.vimrc'
-abbr vim 'nvim'
-abbr vi 'nvim'
-abbr v 'nvim'
+command -v nvim > /dev/null && abbr vim 'nvim'
+command -v nvim > /dev/null && abbr vi  'nvim' || abbr vi 'vim'
+command -v nvim > /dev/null && abbr v   'nvim' || abbr vi 'vim'
 
 abbr o 'xdg-open'
 
 abbr df 'df -h'
 
-command -v pbcopy > /dev/null || abbr pbcopy 'xsel --clipboard --input'
+command -v pbcopy > /dev/null  || abbr pbcopy 'xsel --clipboard --input'
 command -v pbpaste > /dev/null || abbr pbpaste 'xsel --clipboard --output'
 
 abbr se 'sudoedit'
