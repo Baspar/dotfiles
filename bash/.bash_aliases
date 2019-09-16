@@ -23,7 +23,7 @@ abbr gR "git reset"
 abbr gb "git branch"
 abbr gn "git notes"
 abbr gba "git branch --all"
-abbr gclone "git clone git@github.com:"
+abbr gclone "git clone --recursive gh:"
 
 abbr y "yarn"
 
