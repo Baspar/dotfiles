@@ -122,8 +122,8 @@ nnoremap <leader>gg :GV!<CR>
 " Select all
 nnoremap <leader>a :normal ggVG<CR>
 
-" Ags
-nnoremap <leader>F :Ag<space>
+" Rgs
+nnoremap <leader>F :Rg<space>
 nnoremap <leader>f :set opfunc=ag_helper#look_for_block_op<CR>g@
 nnoremap <leader>f<leader>f :<C-u>call ag_helper#look_for_block('^', '$')<CR>
 vnoremap <leader>f :<C-u>call ag_helper#look_for_block('`<', '`>')<CR>
