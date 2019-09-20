@@ -28,14 +28,14 @@ UNINSTALL_DOT () {
         FILE=$(echo $ENCODED_FILE | sed 's#_SPACE_# #g')
         SOURCE_FILE=$(echo "$(pwd)/$FILE" | sed 's#\(/\.\.\)\+/#/#g; s#/\./#/#g')
         DEST_FILE=$(echo "$HOME/$FILE" | sed 's#\(/\.\.\)\+/#/#g; s#/\./#/#g')
-        echo -n "  $FILE..."
+        echo -e -n "  $FILE...\r"
         if [ -L "$DEST_FILE" ] && [ -e "$DEST_FILE" ] && [ "$SOURCE_FILE" -ef "$DEST_FILE" ]; then
             rm -rf "$DEST_FILE"
-            echo -e " \e[32mRemoved\e[0m"
+            echo -e "\r  \e[32m$FILE...\e[0m Removed"
         elif [ -e "$DEST_FILE" ]; then
-            echo -e " \e[31mError, file was not set by deploy.bash\e[0m"
+            echo -e "\r  \e[31m$FILE...\e[0m Error, file was not set by deploy.bash"
         else
-            echo -e " \e[33mIs not linked\e[0m"
+            echo -e "\r  \e[33m$FILE...\e[0m Is not linked"
         fi
     done
 
@@ -68,14 +68,14 @@ INSTALL_DOT () {
         FILE=$(echo $ENCODED_FILE | sed 's#_SPACE_# #g')
         SOURCE_FILE=$(echo "$(pwd)/$FILE" | sed 's#\(/\.\.\)\+/#/#g; s#/\./#/#g')
         DEST_FILE=$(echo "$HOME/$FILE" | sed 's#\(/\.\.\)\+/#/#g; s#/\./#/#g')
-        echo -n "  $FILE..."
+        echo -e -n "  $FILE...\r"
         if [ -L "$DEST_FILE" ] && [ -e "$DEST_FILE" ] && [ "$SOURCE_FILE" -ef "$DEST_FILE" ]; then
-            echo -e " \e[33mAlready linked\e[0m"
+            echo -e "\r  \e[33m$FILE...\e[0m Already linked"
         elif [ -e "$DEST_FILE" ]; then
-            echo -e " \e[31mError, file already exists\e[0m"
+            echo -e "\r  \e[31m$FILE...\e[0m Error, file already exists"
         else
             ln -s "$SOURCE_FILE" "$DEST_FILE"
-            echo -e " \e[32mOK\e[0m"
+            echo -e "\r  \e[32m$FILE...\e[0m OK"
         fi
     done
 
