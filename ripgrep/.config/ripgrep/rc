@@ -1,0 +1,9 @@
+--smart-case
+--colors=path:fg:0xAF,0x87,0x5F
+--colors=path:style:bold
+--colors=line:fg:0x8C,0x6D,0x4D
+--colors=line:style:bold
+--colors=column:fg:0x8C,0x6D,0x4D
+--colors=column:style:bold
+--colors=match:fg:0xAF,0x5F,0x5F
+--colors=match:style:bold
