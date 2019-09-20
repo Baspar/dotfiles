@@ -24,7 +24,11 @@ set spellfile=$HOME/.vim/spell/en.utf-8.add
 set directory=$HOME/.vim/swap
 set shell=/bin/bash
 
-" set termguicolors
+if exists('+termguicolors')
+  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+  set termguicolors
+endif
 set t_Co=256
 
 " Function
@@ -38,7 +42,8 @@ endfunction
 
 " Color
 colorscheme alduin
-hi Normal ctermbg=NONE
+hi! Normal ctermbg=NONE guibg=NONE
+hi! NonText ctermbg=NONE guibg=NONE
 
 " Indentation
 set tabstop=4 shiftwidth=4 expandtab

@@ -1,10 +1,10 @@
-let s:white = ['#000000', 15]
-let s:orange = ['#000000', 3]
-let s:red = ['#000000', 1]
-let s:green = ['#000000', 2]
-let s:dark_grey = ['#000000', 237]
-let s:light_grey = ['#000000', 239]
-let s:transparent = ['#000000', 'NONE']
+let s:white = ['#FFFFFF', 15]
+let s:orange = ['#AF875F', 3]
+let s:red = ['#AF5F5E', 1]
+let s:green = ['#4B8252', 2]
+let s:dark_grey = ['#3A3A3A', 237]
+let s:light_grey = ['#4E4E4E', 239]
+let s:transparent = ['NONE', 'NONE']
 
 let s:p = {'normal': {}, 'inactive': {}, 'insert': {}, 'replace': {}, 'visual': {}, 'tabline': {}}
 
