@@ -125,7 +125,7 @@ nnoremap <leader>a :normal ggVG<CR>
 " Rgs
 nnoremap <leader>F :Rg<space>
 nnoremap <leader>f :set opfunc=ag_helper#look_for_block_op<CR>g@
-nnoremap <leader>f<leader>f :<C-u>call ag_helper#look_for_block('^', '$')<CR>
+nmap <leader>f<leader>f <leader>fiw
 vnoremap <leader>f :<C-u>call ag_helper#look_for_block('`<', '`>')<CR>
 
 " Vim-Lsp
