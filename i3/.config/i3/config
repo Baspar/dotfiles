@@ -203,8 +203,8 @@ bar {
         urgent_workspace #000000 #DFAF8F #000000
     }
     mode hide
-    # status_command none
-    status_command i3blocks -c ~/.config/i3/i3blocks.conf
+    # status_command while :; do date; done
+    status_command i3blocks
 }
 
 gaps inner 30
