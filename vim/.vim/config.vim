@@ -12,7 +12,6 @@ set nowrap
 set hlsearch
 set incsearch
 set undofile
-set undodir=$HOME/.vim/undo
 set undolevels=1000
 set undoreload=10000
 set hidden
@@ -21,8 +20,10 @@ set foldmethod=indent
 set wildmenu
 set spelllang=en
 set spellfile=$HOME/.vim/spell/en.utf-8.add
-set directory=$HOME/.vim/swap
+set undodir=$HOME/.vim/undo//
+set directory=$HOME/.vim/swap//
 set shell=/bin/bash
+set noswapfile
 
 if exists('+termguicolors')
   let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
