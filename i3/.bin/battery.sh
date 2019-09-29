@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BAT=$(acpi -b | grep -E -o '[0-9][0-9]?%')
+BAT=$(acpi -b | grep -E -o '[1-9][0-9]*%')
 
 # Full and short texts
 echo "Battery: $BAT"
