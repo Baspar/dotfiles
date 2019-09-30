@@ -67,7 +67,15 @@ let g:netrw_liststyle = 3
 let g:netrw_banner = 0
 
 highlight HighlightCurrentWord guibg=#463626 ctermbg=94
+function! HighlightCurrentWordFn()
+    if &filetype != "nerdtree" && &filetype != "fugitive" && &filetype != "fzf"
+        call clearmatches()
+        call matchadd("HighlightCurrentWord", "\\<" . escape(expand("<cword>"), "\\/[]") ."\\>", -1)
+        "match HighlightCurrentWord /\\<" . escape(expand("<cword>"), "\\/[]") . "\\>/"
+    endif
+endfunction
+
 augroup highlight_current_word
     au!
-    au CursorMoved * if &filetype != "nerdtree" && &filetype != "fugitive" | execute "match HighlightCurrentWord /\\<" . escape(expand("<cword>"), "\\/[]") . "\\>/" | endif
+    au CursorMoved * call HighlightCurrentWordFn()
 augroup END
