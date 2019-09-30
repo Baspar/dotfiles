@@ -2,6 +2,12 @@
 vnoremap < <gv
 vnoremap > >gv
 
+" */#/n/N
+nmap * *zz
+nmap # #zz
+nmap n nzz
+nmap N Nzz
+
 " cgn/cgN
 nnoremap c*  *Ncgn
 nnoremap c#  #NcgN
@@ -50,7 +56,6 @@ nnoremap <leader><CR> :tabe<CR>
 nnoremap <leader>bd :bn<CR> :bd #<CR>
 nnoremap <leader>s :noh<CR>:update<CR>
 nnoremap <leader>w :noh<CR>:w<CR>
-nnoremap <C-l> :noh<CR>
 nnoremap <leader>q :q<CR>
 nnoremap <leader>Q :q!<CR>
 
@@ -77,11 +82,7 @@ nnoremap <leader>- :sp<CR>
 
 " Remove highlight
 " nnoremap <leader><esc> :noh<CR><esc>
-
-" Exit insert mode
-inoremap jf <C-c>:noh<cr>
-inoremap kj <C-c>:noh<cr>
-inoremap jk <C-c>:noh<cr>
+nnoremap <C-l> :noh<CR>
 
 " Plug
 noremap <leader>pi :PlugInstall<CR>
