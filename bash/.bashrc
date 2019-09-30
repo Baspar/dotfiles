@@ -57,5 +57,6 @@ fs() {
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
+PS1='\[\e[43m\e[30m \u@\h \e[100m \W \$\[\e[m\] '
 # Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
 export PATH="$PATH:$HOME/.rvm/bin"
