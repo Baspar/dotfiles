@@ -65,3 +65,9 @@ let g:instant_markdown_autostart = 0
 let g:lion_squeeze_spaces = 1
 let g:netrw_liststyle = 3
 let g:netrw_banner = 0
+
+highlight HighlightCurrentWord guibg=#463626 ctermbg=94
+augroup highlight_current_word
+    au!
+    au CursorMoved * if &filetype != "nerdtree" && &filetype != "fugitive" | execute "match HighlightCurrentWord /\\<" . escape(expand("<cword>"), "\\/[]") . "\\>/" | endif
+augroup END
