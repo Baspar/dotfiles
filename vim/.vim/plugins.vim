@@ -1,5 +1,6 @@
 call plug#begin('~/.vim/plugged')
 
+
     " {{{ Assist
         " {{{ Autoclosing
         Plug 'ntpeters/vim-better-whitespace'
@@ -72,6 +73,7 @@ call plug#begin('~/.vim/plugged')
     " {{{ UI
         " {{{ Colorschemes
         Plug 'AlessandroYorba/alduin'
+        Plug 'morhetz/gruvbox'
         " }}}
         " {{{ Airline
         Plug 'itchyny/lightline.vim'
