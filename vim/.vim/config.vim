@@ -49,6 +49,7 @@ hi! NonText ctermbg=NONE guibg=NONE
 " Indentation
 set tabstop=4 shiftwidth=4 expandtab
 autocmd FileType javascript,jsx set tabstop=2 shiftwidth=2 expandtab
+autocmd FileType typescript set tabstop=2 shiftwidth=2 expandtab
 autocmd FileType css set tabstop=2 shiftwidth=2 expandtab
 
 autocmd StdinReadPre * let s:std_in=1

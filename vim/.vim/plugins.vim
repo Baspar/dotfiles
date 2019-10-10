@@ -28,7 +28,10 @@ call plug#begin('~/.vim/plugged')
 
     " {{{ Languages
         " {{{ Javascript/React.JS
-        Plug 'sheerun/vim-polyglot'
+        Plug 'MaxMEllon/vim-jsx-pretty', {'for': ['typescriptreact', 'javascriptreact']}
+        Plug 'pangloss/vim-javascript'
+        Plug 'leafgarland/typescript-vim'
+        Plug 'jparise/vim-graphql'
         " }}}
         " {{{ Rust
         Plug 'rust-lang/rust.vim'
