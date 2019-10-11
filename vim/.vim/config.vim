@@ -26,9 +26,9 @@ set shell=/bin/bash
 set noswapfile
 
 if exists('+termguicolors')
-  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-  set termguicolors
+    let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+    let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+    set termguicolors
 endif
 set t_Co=256
 
@@ -47,10 +47,7 @@ hi! Normal ctermbg=NONE guibg=NONE
 hi! NonText ctermbg=NONE guibg=NONE
 
 " Indentation
-set tabstop=4 shiftwidth=4 expandtab
-autocmd FileType javascript,jsx set tabstop=2 shiftwidth=2 expandtab
-autocmd FileType typescript set tabstop=2 shiftwidth=2 expandtab
-autocmd FileType css set tabstop=2 shiftwidth=2 expandtab
+set tabstop=2 shiftwidth=2 expandtab
 
 autocmd StdinReadPre * let s:std_in=1
 let NERDTreeMinimalUI=1

@@ -77,6 +77,7 @@ call plug#begin('~/.vim/plugged')
         " {{{ Colorschemes
         Plug 'AlessandroYorba/alduin'
         Plug 'morhetz/gruvbox'
+        Plug 'arzg/vim-substrata'
         " }}}
         " {{{ Airline
         Plug 'itchyny/lightline.vim'
