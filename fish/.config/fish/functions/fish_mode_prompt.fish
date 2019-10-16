@@ -6,6 +6,9 @@ function fish_mode_prompt
     else if [ "$fish_bind_mode" = "visual" ]
         set LETTER "V"
         set COLOR "#AF5F5E"
+    else if [ "$fish_bind_mode" = "autocomplete" ]
+        set LETTER "X"
+        set COLOR "#AF5F5E"
     else
         set LETTER "N"
         set COLOR "white"

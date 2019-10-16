@@ -2,7 +2,7 @@ source ~/.bash_aliases
 set -Ux EDITOR nvim
 set -Ux LANG en_US.UTF-8
 set -Ux LC_CTYPE en_US.UTF-8
-set -Ux FZF_DEFAULT_COMMAND 'ag --nocolor --ignore node_modules -g ""'
+set -Ux FZF_DEFAULT_COMMAND 'rg --nocolor --ignore node_modules -g ""'
 
 set -Ux NVM_DIR "$HOME/.nvm"
 set PATH "$HOME/.bin" "$HOME/.rvm/bin" "$HOME/.yarn/bin" "$HOME/.cargo/bin/" $PATH
