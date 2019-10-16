@@ -1,4 +1,15 @@
 function custom_fzf_bindings
+  function cgc -d "Connect to Gcloud Cluster"
+    set -q FZF_TMUX_HEIGHT; or set FZF_TMUX_HEIGHT 40%
+    set -lx FZF_DEFAULT_OPTS "--height $FZF_TMUX_HEIGHT $FZF_DEFAULT_OPTS $FZF_CTRL_R_OPTS --layout=reverse --header-lines=1 +m"
+    gcloud projects list \
+        | eval (__fzfcmd --prompt="Select\ a\ project\>\ ")  | sed "s/ \{1,\}/|/g" | cut -d\| -f1 | read -l project
+      and gcloud container clusters list --zone us-central1-a --project "$project" --format "table(name,location,endpoint,status,currentNodeCount)" \
+        | eval (__fzfcmd --prompt="Select\ a\ cluster\>\ ") | sed "s/ \{1,\}/|/g" | cut -d\| -f1 | read -l cluster
+      and commandline "gcloud container clusters get-credentials $cluster --zone us-central1-a --project $project"
+      and commandline -f repaint
+  end
+
   function fzf-docker -d "List docker id"
     set -q FZF_TMUX_HEIGHT; or set FZF_TMUX_HEIGHT 40%
     set -lx FZF_DEFAULT_OPTS "--height $FZF_TMUX_HEIGHT $FZF_DEFAULT_OPTS $FZF_CTRL_R_OPTS --layout=reverse --header-lines=1 +m"
