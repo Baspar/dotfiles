@@ -109,7 +109,7 @@ endfunc
 func! Fugitive()
     if exists('*fugitive#head')
         let branch = fugitive#head()
-        return ' '.branch
+        return branch
     endif
     return ''
 endfunc
