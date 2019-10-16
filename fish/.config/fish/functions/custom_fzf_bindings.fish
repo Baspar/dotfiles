@@ -1,4 +1,17 @@
 function custom_fzf_bindings
+  function pforward -d "Port forward from k8s"
+    set -q FZF_TMUX_HEIGHT; or set FZF_TMUX_HEIGHT 40%
+    set -lx FZF_DEFAULT_OPTS "--height $FZF_TMUX_HEIGHT $FZF_DEFAULT_OPTS $FZF_CTRL_R_OPTS --layout=reverse --header-lines=1 +m"
+    kubectl get services -A \
+        | eval (__fzfcmd --prompt="Select\ a\ service\>\ ")  | sed "s/ \{1,\}/|/g" | cut -d\| -f1,2,6 | read -l service
+      and kubectl get pods -n (echo $service | cut -d\| -f1) \
+        | eval (__fzfcmd  -q (echo $service | cut -d\| -f2) --prompt="Select\ a\ pod\>\ ")  | sed "s/ \{1,\}/|/g" | cut -d\| -f1 | read -l pod
+
+    set ports (echo $service | cut -d\| -f3-)
+    commandline -i "$pod|$ports ($service)"
+    commandline -f repaint
+  end
+
   function cgc -d "Connect to Gcloud Cluster"
     set -q FZF_TMUX_HEIGHT; or set FZF_TMUX_HEIGHT 40%
     set -lx FZF_DEFAULT_OPTS "--height $FZF_TMUX_HEIGHT $FZF_DEFAULT_OPTS $FZF_CTRL_R_OPTS --layout=reverse --header-lines=1 +m"
