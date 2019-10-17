@@ -33,8 +33,9 @@ function custom_fzf_bindings
       end
       set port_param "$port_param $port_forward:$port"
     end
+    [ "$port_param" ] || return
 
-    commandline "kubectl port-forward --namespace $namespace $pod $port_param"
+    commandline "kubectl port-forward --namespace $namespace $pod$port_param"
     commandline -f repaint
   end
 
