@@ -81,16 +81,6 @@ function fzf_key_bindings
     commandline -f repaint
   end
 
-  function __fzfcmd
-    set -q FZF_TMUX; or set FZF_TMUX 0
-    set -q FZF_TMUX_HEIGHT; or set FZF_TMUX_HEIGHT 40%
-    if [ $FZF_TMUX -eq 1 ]
-      echo "fzf-tmux -d$FZF_TMUX_HEIGHT $argv"
-    else
-      echo "fzf $argv"
-    end
-  end
-
   bind \ct fzf-file-widget
   bind \cr fzf-history-widget
   bind \ec fzf-cd-widget
