@@ -26,6 +26,7 @@ abbr gba "git branch --all"
 abbr gclone "git clone --recursive gh:"
 
 abbr y "yarn"
+abbr yt "yarn test"
 
 abbr h 'head'
 abbr t 'tmux'
