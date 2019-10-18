@@ -5,9 +5,8 @@ function! HighlightCurrentWordFn()
             call matchdelete(481516)
         catch
         endtry
-        let current_word = escape(expand("<cword>"), "\\/[]*")
-        let b:highlight_current_word_id = matchadd("HighlightCurrentWord", "\\<" . current_word ."\\>", -1, 481516)
-        "match HighlightCurrentWord /\\<" . escape(expand("<cword>"), "\\/[]") . "\\>/"
+        let current_word = escape(expand("<cword>"), "\\/[]*~")
+        call matchadd("HighlightCurrentWord", "\\<" . current_word ."\\>", -1, 481516)
     endif
 endfunction
 
