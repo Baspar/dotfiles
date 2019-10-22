@@ -1,5 +1,5 @@
 # dotfiles
-Dotfiles used for my Arch installation
+Dotfiles used for my Arch / OsX installation
 
 ## Usage
 To install a specific configuration file, simply type:
