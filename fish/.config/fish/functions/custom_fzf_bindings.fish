@@ -1,3 +1,4 @@
+#!/usr/bin/env fish
 function custom_fzf_bindings
   function port-forward -d "Port forward from k8s"
     set -q FZF_TMUX_HEIGHT; or set FZF_TMUX_HEIGHT 40%

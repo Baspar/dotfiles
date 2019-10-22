@@ -1,3 +1,4 @@
+#!/usr/bin/env fish
 function block # BG FG NEXT_BG ...TEXT
     set BG (echo $argv | cut -d\  -f1)
     set FG (echo $argv | cut -d\  -f2)

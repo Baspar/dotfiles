@@ -1,3 +1,4 @@
+#!/usr/bin/env fish
 function fish_user_key_bindings
   function __fzfcmd
     set -q FZF_TMUX; or set FZF_TMUX 0

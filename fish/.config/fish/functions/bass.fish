@@ -1,3 +1,4 @@
+#!/usr/bin/env fish
 function bass
   set __bash_args $argv
   if test "$__bash_args[1]_" = '-d_'

@@ -1,3 +1,4 @@
+#!/usr/bin/env fish
 function auto_complete_mode
   function fzf-docker -d "List docker id"
     set -q FZF_TMUX_HEIGHT; or set FZF_TMUX_HEIGHT 40%
