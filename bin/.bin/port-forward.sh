@@ -1,4 +1,13 @@
 #!/usr/bin/env bash
+MODE="normal"
+for ARG in $*
+do
+  if [ "$ARG" == "--mock" ]
+  then
+    MODE="mock"
+  fi
+done
+
 [ "$FZF_TMUX_HEIGHT" ] || {
   FZF_TMUX_HEIGHT="40%"
 }
@@ -51,3 +60,6 @@ done
 [ "$PORT_PARAM" ] || exit 1
 
 echo "kubectl port-forward --namespace $NAMESPACE $POD$PORT_PARAM"
+[ "$MODE" == "normal" ] && {
+  kubectl port-forward --namespace $NAMESPACE $POD$PORT_PARAM
+}

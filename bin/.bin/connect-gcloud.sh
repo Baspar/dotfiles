@@ -1,4 +1,13 @@
 #!/usr/bin/env bash
+MODE="normal"
+for ARG in $*
+do
+  if [ "$ARG" == "--mock" ]
+  then
+    MODE="mock"
+  fi
+done
+
 [ "$FZF_TMUX_HEIGHT" ] || {
   FZF_TMUX_HEIGHT=40%
 }
@@ -14,3 +23,6 @@ CLUSTER=$( \
 [ "$CLUSTER" ] || exit 1
 
 echo "gcloud container clusters get-credentials $CLUSTER --zone us-central1-a --project $PROJECT"
+[ "$MODE" == "normal" ] && {
+  gcloud container clusters get-credentials $CLUSTER --zone us-central1-a --project $PROJECT
+}
