@@ -1,4 +1,14 @@
 #!/usr/bin/env fish
+
+# Function block
+#
+# @param BG: Background color of the block
+# @param FG: Foreground color of the block
+# @param NEXT_BG: Background color of subsequent text
+# @param ...TEXT: Text to display in the block
+#
+# @returns: A block with style and text
+
 function block # BG FG NEXT_BG ...TEXT
     set BG (echo $argv | cut -d\  -f1)
     set FG (echo $argv | cut -d\  -f2)
@@ -12,21 +22,28 @@ function block # BG FG NEXT_BG ...TEXT
     set_color normal -b normal
 end
 
-function abbr_path # PATH
-    if [ "$argv" = "$HOME" ]
-        echo -n "~"
-    else
-        set ABBR_PATH (echo -n $argv | sed " s|^$HOME|~|; s|\([^/a-zA-Z0-9]*[a-zA-Z0-9]\)[^/]*/|\1/|g")
-        echo -n "$ABBR_PATH"
-        # (echo '$ABBR_PATH' | sed 's|^\(.*/\)\([^/]*\)\$|\1|')
-        # (echo '$ABBR_PATH' | sed 's|^\(.*/\)\([^/]*\)\$|\2|')
-    end
+# Function abbr_path
+#
+# @param PATH_PART a part of the PATH
+#
+# @returns: An abbreviated version of the PATH_PART (one letter, but keep prefix special characters)
+#           with $HOME replaced by ~
+
+function abbr_path
+  echo -n $argv | sed "s#^$HOME#~#; s#\([^/a-zA-Z0-9]*[a-zA-Z0-9]\)[^/]*/#\1/#g"
 end
 
-function git_prompt
+
+# Function git_block_info
+#
+# @param GIT_ROOT: Absolute path of the git folder
+#
+# @returns: The color and status of the git information at given GIT_ROOT
+
+function git_block_info
     set GIT_ROOT $argv
 
-    set GIT_STATUS (git status | grep "^[a-zA-Z0-9]")
+    set GIT_STATUS (git -C $GIT_ROOT status | grep "^[a-zA-Z0-9]")
     set GIT_BRANCH (cat $GIT_ROOT/.git/HEAD | \
         sed 's|^\([a-f0-9]\{9\}\)[a-f0-9]*$|\1|' | \
         cut -d' ' -f2- | \
@@ -62,28 +79,39 @@ function git_prompt
         set ICONS "$ICONS?"
     end
 
-    # Print prefix
-    set ABBR_GIT_ROOT (abbr_path $GIT_ROOT)
-    block "#3e3e3e" "white" "$COLOR" " $ABBR_GIT_ROOT "
-
     # Build git string
-    set GIT_STATUS (echo  " $GIT_BRANCH $ICONS " | sed 's/\s\+/ /g')
-    block "$COLOR" "black" "#3e3e3e" "$GIT_STATUS"
-
-    # Rest path
-    set ABBR_GIT_PATH (abbr_path (pwd -P | sed "s|$GIT_ROOT||; s|^|/|; s|^//|/|"))
-    block "#3e3e3e" "white" "normal" " $ABBR_GIT_PATH "
+    echo -n "$COLOR|$GIT_BRANCH $ICONS" | sed 's# $##'
 end
 
-function fish_prompt
-    set GIT_ROOT (git rev-parse --show-toplevel 2> /dev/null)
 
-    if [ $GIT_ROOT ]
-        git_prompt $GIT_ROOT
-    else
-        set ABBR_PWD (abbr_path $PWD)
-        block "#3e3e3e" "white" "normal" " $ABBR_PWD "
+# Function fish_prompt
+#
+# @returns A fancy prompt
+
+function fish_prompt
+    set_color white -b '#3e3e3e'
+
+    set TOTAL_PATH ''
+    set ACCUMULATED_PATH ''
+
+    for PWD_PART in (echo $PWD | sed 's#^/##; s#/$##' |  tr '/' '\n')
+      set ACCUMULATED_PATH "$ACCUMULATED_PATH/$PWD_PART"
+      if [ -e "$TOTAL_PATH$ACCUMULATED_PATH/.git/config" ]
+        git_block_info "$TOTAL_PATH$ACCUMULATED_PATH" | read -d '|' -l GIT_BG_COLOR GIT_STATUS
+        set TOTAL_PATH "$TOTAL_PATH$ACCUMULATED_PATH"
+
+
+        set ACCUMULATED_PATH (abbr_path "$ACCUMULATED_PATH")
+        block "#3e3e3e" "white" "$GIT_BG_COLOR" " $ACCUMULATED_PATH "
+        block "$GIT_BG_COLOR" "black" "#3e3e3e" " $GIT_STATUS "
+        set ACCUMULATED_PATH ''
+      end
     end
+
+    [ "$ACCUMULATED_PATH" ] || set ACCUMULATED_PATH '/'
+    set ACCUMULATED_PATH (abbr_path "$ACCUMULATED_PATH")
+
+    block "#3e3e3e" "white" "normal" " $ACCUMULATED_PATH "
 
     echo -n " "
 end
