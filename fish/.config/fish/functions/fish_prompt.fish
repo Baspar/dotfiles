@@ -17,14 +17,12 @@ function fish_prompt
     # @returns: A block with style and text
 
     echo $argv | read -d ' ' BG FG TEXT
-    # set BG (echo $argv | cut -d\  -f1)
-    # set FG (echo $argv | cut -d\  -f2)
-    # set TEXT (echo $argv | cut -d\  -f3-)
 
-    if [ "$OLD_BG" != "" ]
+    if [ "$OLD_BG" != "" ] && [ -z "$FISH_NO_POWERLINE" ]
       set_color $OLD_BG -b $BG
       echo -n ""
     end
+
     set_color $FG -b $BG
     echo -n "$TEXT"
     set -g OLD_BG $BG
