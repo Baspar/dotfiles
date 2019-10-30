@@ -50,6 +50,12 @@ function git_block_info
         sed 's|refs/[^/]*/||g' | \
         tr -d '\n')
 
+    set GIT_AHEAD (git -C $GIT_ROOT status | grep "Your branch is ahead of '[^']*' by \d\+ commit.")
+    if [ "$GIT_AHEAD" ]
+      set GIT_AHEAD_OF (echo $GIT_AHEAD | sed "s#Your branch is ahead of '[^']*' by \([0-9]*\) commit.*#\1#")
+      set GIT_BRANCH "($GIT_AHEAD_OF) $GIT_BRANCH"
+    end
+
     # Untracked files
     echo $GIT_STATUS | grep "Untracked files:" > /dev/null
     set GIT_HAS_UNTRACKED $status
@@ -105,6 +111,7 @@ function fish_prompt
         block "#3e3e3e" "white" "$GIT_BG_COLOR" " $ACCUMULATED_PATH "
         block "$GIT_BG_COLOR" "black" "#3e3e3e" " $GIT_STATUS "
         set ACCUMULATED_PATH ''
+      else if [ -f "$TOTAL_PATH$ACCUMULATED_PATH/.git" ]
       end
     end
 
