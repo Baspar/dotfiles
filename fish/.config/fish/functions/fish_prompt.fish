@@ -62,15 +62,21 @@ function fish_prompt
   function git_block_info
     # Function git_block_info
     #
-    # @param GIT_ROOT: Absolute path of the git folder
+    # @param GIT_ROOT: Absolute path of the current folder
+    # @param GIT_CONFIG: Absolute path of the .git folder
+    #                    If unspecified, set to $GET_ROOT/.git
     #
     # @returns: The color and status of the git information at given GIT_ROOT
 
-    set GIT_ROOT $argv
+    echo $argv | read -d ' ' -l GIT_ROOT GIT_CONFIG
+
+    if [ "$GIT_CONFIG" = "" ]
+      set GIT_CONFIG "$GIT_ROOT/.git"
+    end
 
     set GIT_STATUS (git -C $GIT_ROOT status | grep "^[a-zA-Z0-9]")
 
-    set GIT_BRANCH (cat $GIT_ROOT/.git/HEAD | \
+    set GIT_BRANCH (cat $GIT_CONFIG/HEAD | \
         sed 's|^\([a-f0-9]\{9\}\)[a-f0-9]*$|\1|' | \
         cut -d' ' -f2- | \
         sed 's|refs/[^/]*/||g' | \
@@ -122,8 +128,16 @@ function fish_prompt
 
   for PWD_PART in (echo $PWD | sed 's#^/##; s#/$##' |  tr '/' '\n')
     set ACCUMULATED_PATH "$ACCUMULATED_PATH/$PWD_PART"
-    if [ -e "$TOTAL_PATH$ACCUMULATED_PATH/.git/config" ]
-      git_block_info "$TOTAL_PATH$ACCUMULATED_PATH" | read -d '|' -l GIT_BG_COLOR GIT_AHEAD_OF GIT_STATUS
+    if [ -e "$TOTAL_PATH$ACCUMULATED_PATH/.git" ]
+      if [ -f "$TOTAL_PATH$ACCUMULATED_PATH/.git" ]
+        set GIT_CONFIG (cat "$TOTAL_PATH$ACCUMULATED_PATH/.git" | grep "^gitdir" | sed "s#^gitdir:\s*##")
+        git_block_info "$TOTAL_PATH$ACCUMULATED_PATH" "$TOTAL_PATH$ACCUMULATED_PATH/$GIT_CONFIG" \
+          | read -d '|' GIT_BG_COLOR GIT_AHEAD_OF GIT_STATUS
+      else if [ -e "$TOTAL_PATH$ACCUMULATED_PATH/.git/config" ]
+        git_block_info "$TOTAL_PATH$ACCUMULATED_PATH" \
+          | read -d '|' GIT_BG_COLOR GIT_AHEAD_OF GIT_STATUS
+      end
+
       set TOTAL_PATH "$TOTAL_PATH$ACCUMULATED_PATH"
 
       set ACCUMULATED_PATH (abbr_path "$ACCUMULATED_PATH")
@@ -136,7 +150,6 @@ function fish_prompt
 
       block "$GIT_BG_COLOR" "black" " $GIT_STATUS "
       set ACCUMULATED_PATH ''
-    else if [ -f "$TOTAL_PATH$ACCUMULATED_PATH/.git" ]
     end
   end
 
