@@ -5,7 +5,7 @@ function auto_complete_mode
     set -lx FZF_DEFAULT_OPTS "--height $FZF_TMUX_HEIGHT $FZF_DEFAULT_OPTS $FZF_CTRL_R_OPTS --layout=reverse --header-lines=1 +m"
     docker images | eval (__fzfcmd) | read -l result
       and commandline -i -- (echo $result | sed "s/ \{1,\}/|/g" | cut -d\| -f3)
-      and commandline -f repaint
+    commandline -f repaint
   end
 
   # Remove existing <C-x> mapping
