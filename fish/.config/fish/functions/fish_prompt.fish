@@ -42,6 +42,22 @@ function fish_prompt
     echo -n $argv | sed "s#^$HOME#~#; s#\([^/a-zA-Z0-9]*[a-zA-Z0-9]\)[^/]*/#\1/#g"
   end
 
+  function darker_of
+    # Function darker_of
+    #
+    # @param COLOR a color part of the list
+    #
+    # @returns: A darker shade of this color
+
+    if [ "$argv" = "#AF875F" ]
+      echo -n "#926E49"
+    else if [ "$argv" = "#4B8252" ]
+      echo -n "#38623E"
+    else
+      echo -n ""
+    end
+  end
+
 
   function git_block_info
     # Function git_block_info
@@ -53,16 +69,16 @@ function fish_prompt
     set GIT_ROOT $argv
 
     set GIT_STATUS (git -C $GIT_ROOT status | grep "^[a-zA-Z0-9]")
+
     set GIT_BRANCH (cat $GIT_ROOT/.git/HEAD | \
         sed 's|^\([a-f0-9]\{9\}\)[a-f0-9]*$|\1|' | \
         cut -d' ' -f2- | \
         sed 's|refs/[^/]*/||g' | \
         tr -d '\n')
 
-    set GIT_AHEAD (git -C $GIT_ROOT status | grep "Your branch is ahead of '[^']*' by \d\+ commit.")
+    set GIT_AHEAD (git -C $GIT_ROOT status | grep "Your branch is ahead of '[^']*' by [0-9]* commit.")
     if [ "$GIT_AHEAD" ]
       set GIT_AHEAD_OF (echo $GIT_AHEAD | sed "s#Your branch is ahead of '[^']*' by \([0-9]*\) commit.*#\1#")
-      set GIT_BRANCH "($GIT_AHEAD_OF) $GIT_BRANCH"
     end
 
     # Untracked files
@@ -95,7 +111,7 @@ function fish_prompt
     end
 
     # Build git string
-    echo -n "$COLOR|$GIT_BRANCH $ICONS" | sed 's# $##'
+    echo -n "$COLOR|$GIT_AHEAD_OF|$GIT_BRANCH $ICONS" | sed 's# $##'
   end
 
 
@@ -107,12 +123,17 @@ function fish_prompt
   for PWD_PART in (echo $PWD | sed 's#^/##; s#/$##' |  tr '/' '\n')
     set ACCUMULATED_PATH "$ACCUMULATED_PATH/$PWD_PART"
     if [ -e "$TOTAL_PATH$ACCUMULATED_PATH/.git/config" ]
-      git_block_info "$TOTAL_PATH$ACCUMULATED_PATH" | read -d '|' -l GIT_BG_COLOR GIT_STATUS
+      git_block_info "$TOTAL_PATH$ACCUMULATED_PATH" | read -d '|' -l GIT_BG_COLOR GIT_AHEAD_OF GIT_STATUS
       set TOTAL_PATH "$TOTAL_PATH$ACCUMULATED_PATH"
-
 
       set ACCUMULATED_PATH (abbr_path "$ACCUMULATED_PATH")
       block "#3e3e3e" "white" " $ACCUMULATED_PATH "
+
+      if [ "$GIT_AHEAD_OF" != "" ]
+        set GIT_DARKER_BG (darker_of $GIT_BG_COLOR)
+        block "$GIT_DARKER_BG" "black" " $GIT_AHEAD_OF "
+      end
+
       block "$GIT_BG_COLOR" "black" " $GIT_STATUS "
       set ACCUMULATED_PATH ''
     else if [ -f "$TOTAL_PATH$ACCUMULATED_PATH/.git" ]
