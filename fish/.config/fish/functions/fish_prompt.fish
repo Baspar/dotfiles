@@ -16,7 +16,7 @@ function fish_prompt
     #
     # @returns: A block with style and text
 
-    echo $argv | read -d ' ' BG FG TEXT
+    echo $argv | read -d ' ' -l BG FG TEXT
 
     if [ "$OLD_BG" != "" ] && [ -z "$FISH_NO_POWERLINE" ]
       set_color $OLD_BG -b $BG
@@ -128,7 +128,7 @@ function fish_prompt
     set ACCUMULATED_PATH "$ACCUMULATED_PATH/$PWD_PART"
     if [ -e "$TOTAL_PATH$ACCUMULATED_PATH/.git" ]
       if [ -f "$TOTAL_PATH$ACCUMULATED_PATH/.git" ]
-        set GIT_CONFIG (cat "$TOTAL_PATH$ACCUMULATED_PATH/.git" | grep "^gitdir" | sed "s#^gitdir:\s*##")
+        set GIT_CONFIG (cat "$TOTAL_PATH$ACCUMULATED_PATH/.git" | grep "^gitdir" | sed 's#^gitdir: *##')
         git_block_info "$TOTAL_PATH$ACCUMULATED_PATH" "$TOTAL_PATH$ACCUMULATED_PATH/$GIT_CONFIG" \
           | read -d '|' GIT_BG_COLOR GIT_AHEAD_OF GIT_STATUS
       else if [ -e "$TOTAL_PATH$ACCUMULATED_PATH/.git/config" ]
