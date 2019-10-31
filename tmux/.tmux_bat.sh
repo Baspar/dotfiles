@@ -7,9 +7,9 @@ then
     PERCENTAGE=$(echo "$INFO" | grep -o "\([0-9]\+\)%" | sed 's/%//')
     DISCHARGING=$(echo "$INFO" | grep -i "discharging")
     CHARGING=$(echo "$INFO" | grep -i "charging")
-elif [ $(command -v m) ]
+elif [ $(command -v pmset) ]
 then
-    INFO=$(m battery status)
+    INFO=$(pmset -g batt)
     PERCENTAGE=$(echo "$INFO" | grep -o "\([0-9]\+\)%" | sed 's/%//')
     DISCHARGING=$(echo "$INFO" | grep -i "discharging")
     CHARGING=$(echo "$INFO" | grep -i "\(charging\|finishing charge\)")
