@@ -8,6 +8,7 @@ call plug#begin('~/.vim/plugged')
         Plug 'alvan/vim-closetag'
         " }}}
         " {{{ Syntax
+        Plug 'sheerun/vim-polyglot'
         Plug 'tomtom/tcomment_vim'
         Plug 'tommcdo/vim-lion'
         " }}}
@@ -28,9 +29,6 @@ call plug#begin('~/.vim/plugged')
 
     " {{{ Languages
         " {{{ Javascript/React.JS
-        Plug 'MaxMEllon/vim-jsx-pretty', {'for': ['typescriptreact', 'javascriptreact']}
-        Plug 'pangloss/vim-javascript'
-        Plug 'leafgarland/typescript-vim'
         Plug 'jparise/vim-graphql'
         " }}}
         " {{{ Rust
@@ -63,13 +61,11 @@ call plug#begin('~/.vim/plugged')
         " {{{ Text Object
         Plug 'machakann/vim-sandwich'
         Plug 'machakann/vim-highlightedyank'
-        " Plug 'xtal8/traces.vim'
         Plug 'kana/vim-textobj-user'
         Plug 'beloglazov/vim-textobj-quotes'
         " }}}
         " {{{ Async
         Plug 'tpope/vim-dispatch'
-        " Plug 'prabirshrestha/async.vim'
         " }}}
     " }}}
 
