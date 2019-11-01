@@ -8,7 +8,6 @@ call plug#begin('~/.vim/plugged')
         Plug 'alvan/vim-closetag'
         " }}}
         " {{{ Syntax
-        Plug 'sheerun/vim-polyglot'
         Plug 'tomtom/tcomment_vim'
         Plug 'tommcdo/vim-lion'
         " }}}
@@ -28,6 +27,12 @@ call plug#begin('~/.vim/plugged')
     " }}}
 
     " {{{ Languages
+        " {{{ Syntax
+        " Plug 'sheerun/vim-polyglot'
+        Plug 'MaxMEllon/vim-jsx-pretty', {'for': ['typescriptreact', 'javascriptreact']}
+        Plug 'pangloss/vim-javascript'
+        Plug 'leafgarland/typescript-vim'
+        " }}}
         " {{{ Javascript/React.JS
         Plug 'jparise/vim-graphql'
         " }}}
