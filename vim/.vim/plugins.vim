@@ -29,7 +29,7 @@ call plug#begin('~/.vim/plugged')
     " {{{ Languages
         " {{{ Syntax
         " Plug 'sheerun/vim-polyglot'
-        Plug 'MaxMEllon/vim-jsx-pretty', {'for': ['typescriptreact', 'javascriptreact']}
+        Plug 'MaxMEllon/vim-jsx-pretty', {'for': ['typescript', 'javascript', 'typescriptreact', 'javascriptreact']}
         Plug 'pangloss/vim-javascript'
         Plug 'leafgarland/typescript-vim'
         " }}}
