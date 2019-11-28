@@ -5,7 +5,7 @@
 alt - w : /Applications/Kitty.app/Contents/MacOS/kitty --single-instance -d ~
 
 # close focused window
-alt - d : chunkc tiling::window --close
+# alt - d : chunkc tiling::window --close
 
 # focus window
 alt - h : yabai -m window --focus west
@@ -38,25 +38,25 @@ shift + cmd - 9 : yabai -m window --space 9
 shift + cmd - 0 : yabai -m window --space 10
 
 # set insertion point for focused container
-ctrl + alt - f : chunkc tiling::window --use-insertion-point cancel
-ctrl + alt - h : chunkc tiling::window --use-insertion-point west
-ctrl + alt - j : chunkc tiling::window --use-insertion-point south
-ctrl + alt - k : chunkc tiling::window --use-insertion-point north
-ctrl + alt - l : chunkc tiling::window --use-insertion-point east
+# ctrl + alt - f : chunkc tiling::window --use-insertion-point cancel
+# ctrl + alt - h : chunkc tiling::window --use-insertion-point west
+# ctrl + alt - j : chunkc tiling::window --use-insertion-point south
+# ctrl + alt - k : chunkc tiling::window --use-insertion-point north
+# ctrl + alt - l : chunkc tiling::window --use-insertion-point east
 
 # rotate tree
-alt - r : chunkc tiling::desktop --rotate 90
-alt - y : chunkc tiling::desktop --mirror vertical
-alt - x : chunkc tiling::desktop --mirror horizontal
+# alt - r : chunkc tiling::desktop --rotate 90
+# alt - y : chunkc tiling::desktop --mirror vertical
+# alt - x : chunkc tiling::desktop --mirror horizontal
 
 # toggle window fullscreen
-alt - s : chunkc tiling::window --toggle fullscreen
+alt - s : yabai -m window --toggle zoom-fullscreen
 
 # toggle window native fullscreen
-shift + alt - f : chunkc tiling::window --toggle native-fullscreen
+# shift + alt - f : chunkc tiling::window --toggle native-fullscreen
 
 # toggle window split type
-alt - q : chunkc tiling::window --toggle split
+# alt - q : chunkc tiling::window --toggle split
 
 # MOCP
 cmd - m ; music
