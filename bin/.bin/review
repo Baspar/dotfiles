@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "Getting PR list"
-PR=$(hub pr list -f "%i (%B) %t | %au | %H%n" | fzf)
+PR=$(hub pr list -f "%i (%B) %t | %au | %H%n" | fzf --height 40% --reverse)
 [ $? -eq 0 ] || {
     echo "Abort"
     exit 1
