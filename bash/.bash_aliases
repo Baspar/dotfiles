@@ -27,6 +27,7 @@ abbr gclone "git clone --recursive gh:"
 
 abbr y "yarn"
 abbr yt "yarn test"
+abbr yl "yarn lint"
 
 abbr h 'head'
 abbr t 'tmux'
