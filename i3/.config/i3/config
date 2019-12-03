@@ -169,7 +169,8 @@ mode "volume" {
         bindsym Down exec ~/.bin/volDown.sh
         bindsym space exec ~/.bin/volToggle.sh
 
-        bindsym Return exec termite --exec=pulsemixer; mode "default"
+        bindsym Return exec kitty -e pulsemixer; mode "default"
+        bindsym $mod+v exec kitty -e pulsemixer; mode "default"
         bindsym Escape mode "default"
 }
 mode "mocp" {
@@ -207,7 +208,8 @@ bar {
     status_command i3blocks
 }
 
-gaps inner 30
+gaps outer 10
+gaps inner 10
 
 
 # Lock control
