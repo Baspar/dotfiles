@@ -234,9 +234,12 @@ bindsym $mod+XF86AudioNext exec ~/.bin/forwardMOCP.sh
 bindsym $mod+x exec ~/.bin/sayMOCP.sh
 
 # Volume control
-bindsym XF86AudioRaiseVolume exec ~/.bin/volUp.sh
-bindsym XF86AudioLowerVolume exec ~/.bin/volDown.sh
-bindsym XF86AudioMute exec ~/.bin/volToggle.sh
+bindsym XF86AudioRaiseVolume exec ~/.bin/volUp.sh 0
+bindsym XF86AudioLowerVolume exec ~/.bin/volDown.sh 0
+bindsym XF86AudioMute exec ~/.bin/volToggle.sh 0
+bindsym Shift+XF86AudioRaiseVolume exec ~/.bin/volUp.sh 1
+bindsym Shift+XF86AudioLowerVolume exec ~/.bin/volDown.sh 1
+bindsym Shift+XF86AudioMute exec ~/.bin/volToggle.sh 1
 
 # Brightness Control
 bindsym XF86MonBrightnessUp exec ~/.bin/brightUp.sh
