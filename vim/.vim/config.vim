@@ -48,6 +48,7 @@ hi! NonText ctermbg=NONE guibg=NONE
 
 " Indentation
 set tabstop=2 shiftwidth=2 expandtab
+autocmd FileType sh set tabstop=4 shiftwidth=4 expandtab
 
 autocmd StdinReadPre * let s:std_in=1
 let NERDTreeMinimalUI=1
