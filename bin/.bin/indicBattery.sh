@@ -6,7 +6,6 @@ ARGS=()
 
 while [ $# -ne 0 ]
 do
-    key=$1
     case $1 in
         -w|--width)
             WIDTH=$2
@@ -15,14 +14,16 @@ do
             CHARACTER=$2
             shift; shift;;
         *)
-            ARGS+=($1)
+            [ "$PERCENTAGE" ] && {
+                ARGS+=($1)
+            } || {
+                PERCENTAGE="$1"
+            }
             shift;;
     esac
 done
 
-[ ${#ARGS} -ne 0 ] && {
-    PERCENTAGE=${ARGS[0]}
-} || {
+[ "$PERCENTAGE" ] || {
     PERCENTAGE=$(cat ~/.bin/battery.d | head -n 1)
 }
 
@@ -65,4 +66,9 @@ else
         s/./0/$((mid+1));
         s/./0/$((mid+2))")
 fi
-echo $STR | sed 's/_/ /g'
+
+[ ${#ARGS} -ne 0 ] && {
+    echo "${ARGS[*]} $STR $(echo "${ARGS[*]}" | sed 's/./ /g')" | sed 's/_/ /g'
+} || {
+    echo $STR | sed 's/_/ /g'
+}
