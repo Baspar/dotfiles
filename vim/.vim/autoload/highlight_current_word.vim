@@ -6,6 +6,6 @@ function! highlight_current_word#fn()
         catch
         endtry
         let current_word = escape(expand("<cword>"), "\\/[]*~")
-        call matchadd("HighlightCurrentWord", "\\<" . current_word ."\\>", -1, 481516)
+        call matchadd("HighlightCurrentWord", "\\<" . current_word ."\\>", 0, 481516)
     endif
 endfunction
