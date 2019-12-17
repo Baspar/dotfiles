@@ -1,10 +1,47 @@
 #!/usr/bin/env fish
 function auto_complete_mode
-  function fzf-docker -d "List docker id"
+  function fzf-docker
     set -q FZF_TMUX_HEIGHT; or set FZF_TMUX_HEIGHT 40%
     set -lx FZF_DEFAULT_OPTS "--height $FZF_TMUX_HEIGHT $FZF_DEFAULT_OPTS $FZF_CTRL_R_OPTS --layout=reverse --header-lines=1 +m"
-    docker images | eval (__fzfcmd) | read -l result
-      and commandline -i -- (echo $result | sed "s/ \{1,\}/|/g" | cut -d\| -f3)
+    docker images \
+      | eval (__fzfcmd) \
+      | sed "s/ \{0,\}/|/g" \
+      | cut -d\| -f2 \
+      | read -l image; or return
+
+    commandline -i -- "$image"
+    commandline -f repaint
+  end
+
+  function fzf-k8s-namespace
+    set -q FZF_TMUX_HEIGHT; or set FZF_TMUX_HEIGHT 40%
+    set -lx FZF_DEFAULT_OPTS "--height $FZF_TMUX_HEIGHT $FZF_DEFAULT_OPTS $FZF_CTRL_R_OPTS --layout=reverse --header-lines=1 +m"
+    kubectl get namespace \
+      | eval (__fzfcmd) \
+      | sed "s/ \{1,\}/|/g" \
+      | cut -d\| -f1 \
+      | read -l namespace; or return
+
+    commandline -i -- "$namespace"
+    commandline -f repaint
+  end
+
+  function fzf-k8s-pod
+    set -q FZF_TMUX_HEIGHT; or set FZF_TMUX_HEIGHT 40%
+    set -lx FZF_DEFAULT_OPTS "--height $FZF_TMUX_HEIGHT $FZF_DEFAULT_OPTS $FZF_CTRL_R_OPTS --layout=reverse --header-lines=1 +m"
+    kubectl get namespace \
+      | eval (__fzfcmd) \
+      | sed "s/ \{1,\}/|/g" \
+      | cut -d\| -f1 \
+      | read -l namespace; or return
+
+    kubectl get pods -n "$namespace"\
+      | eval (__fzfcmd) \
+      | sed "s/ \{1,\}/|/g" \
+      | cut -d\| -f1 \
+      | read -l pod; or return
+
+    commandline -i -- "$pod"
     commandline -f repaint
   end
 
@@ -18,6 +55,8 @@ function auto_complete_mode
     bind \cc -M autocomplete --sets-mode insert force-repaint
     bind \e  -M autocomplete --sets-mode insert force-repaint
     bind d   -M autocomplete --sets-mode insert fzf-docker
+    bind n   -M autocomplete --sets-mode insert fzf-k8s-namespace
+    bind p   -M autocomplete --sets-mode insert fzf-k8s-pod
   end
 
   if bind -M insert > /dev/null 2>&1
