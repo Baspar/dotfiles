@@ -17,7 +17,7 @@ function custom_fzf_bindings
   end
 
   function change-gcloud-project -d "Connect to Gcloud Cluster"
-    change-gcloud-project --mock | read COMMAND
+    change-gcloud-project.sh --mock | read COMMAND
     if [ "$COMMAND" ]
       commandline -- "$COMMAND"
       commandline -f repaint
