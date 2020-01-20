@@ -40,7 +40,7 @@ call plug#begin('~/.vim/plugged')
         Plug 'rust-lang/rust.vim'
         " }}}
         " {{{ Scala
-        Plug 'derekwyatt/vim-scala'
+        " Plug 'derekwyatt/vim-scala'
         " }}}
         " {{{ Clojure
         Plug 'guns/vim-sexp'
@@ -60,7 +60,6 @@ call plug#begin('~/.vim/plugged')
         " }}}
         " {{{ Git
         Plug 'tpope/vim-fugitive'
-        " Plug 'rbong/vim-flog'
         Plug 'junegunn/gv.vim'
         " }}}
         " {{{ Text Object
@@ -76,8 +75,8 @@ call plug#begin('~/.vim/plugged')
     " {{{ UI
         " {{{ Colorschemes
         Plug 'AlessandroYorba/alduin'
-        Plug 'morhetz/gruvbox'
-        Plug 'arzg/vim-substrata'
+        " Plug 'morhetz/gruvbox'
+        " Plug 'arzg/vim-substrata'
         " }}}
         " {{{ Airline
         Plug 'itchyny/lightline.vim'
