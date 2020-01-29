@@ -5,8 +5,8 @@ function auto_complete_mode
     set -lx FZF_DEFAULT_OPTS "--height $FZF_TMUX_HEIGHT $FZF_DEFAULT_OPTS $FZF_CTRL_R_OPTS --layout=reverse --header-lines=1 +m"
     docker images \
       | eval (__fzfcmd) \
-      | sed "s/ \{0,\}/|/g" \
-      | cut -d\| -f2 \
+      | sed "s/ \{1,\}/|/g" \
+      | cut -d\| -f3 \
       | read -l image; or return
 
     commandline -i -- "$image"
