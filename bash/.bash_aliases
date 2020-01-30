@@ -26,6 +26,7 @@ abbr gba "git branch --all"
 abbr gclone "git clone --recursive gh:"
 
 abbr y "yarn"
+abbr yd "yarn dev"
 abbr yt "yarn test"
 abbr yl "yarn lint"
 
