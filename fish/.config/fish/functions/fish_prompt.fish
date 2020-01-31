@@ -80,7 +80,7 @@ function fish_prompt
         sed 's|refs/[^/]*/||g' | \
         tr -d '\n')
 
-    set GIT_AHEAD (git -C $GIT_ROOT status | grep "Your branch is ahead of '[^']*' by [0-9]* commit.")
+    set GIT_AHEAD (cat $GIT_CONFIG/HEAD | grep "Your branch is ahead of '[^']*' by [0-9]* commit.")
     if [ "$GIT_AHEAD" ]
       set GIT_AHEAD_OF (echo $GIT_AHEAD | sed "s#Your branch is ahead of '[^']*' by \([0-9]*\) commit.*#\1#")
     end
