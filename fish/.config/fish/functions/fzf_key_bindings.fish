@@ -19,7 +19,7 @@ function fzf_key_bindings
     set -q FZF_TMUX_HEIGHT; or set FZF_TMUX_HEIGHT 40%
     begin
       set -lx FZF_DEFAULT_OPTS "--height $FZF_TMUX_HEIGHT --reverse $FZF_DEFAULT_OPTS $FZF_CTRL_T_OPTS"
-      eval "$FZF_CTRL_T_COMMAND | "(__fzfcmd)' -m --query "'$fzf_query'"' | while read -l r; set result $result $r; end
+      eval "$FZF_CTRL_T_COMMAND | "fzf' -m --query "'$fzf_query'"' | while read -l r; set result $result $r; end
     end
     if [ -z "$result" ]
       commandline -f repaint
@@ -47,10 +47,10 @@ function fzf_key_bindings
       # history's -z flag was added in fish 2.4.0, so don't use it for versions
       # before 2.4.0.
       if [ "$FISH_MAJOR" -gt 2 -o \( "$FISH_MAJOR" -eq 2 -a "$FISH_MINOR" -ge 4 \) ];
-        history -z | eval (__fzfcmd) --read0 --print0 -q '(commandline)' | read -lz result
+        history -z | eval fzf --read0 --print0 -q '(commandline)' | read -lz result
         and commandline -- $result
       else
-        history | eval (__fzfcmd) -q '(commandline)' | read -l result
+        history | eval fzf -q '(commandline)' | read -l result
         and commandline -- $result
       end
     end
@@ -68,7 +68,7 @@ function fzf_key_bindings
     set -q FZF_TMUX_HEIGHT; or set FZF_TMUX_HEIGHT 40%
     begin
       set -lx FZF_DEFAULT_OPTS "--height $FZF_TMUX_HEIGHT --reverse $FZF_DEFAULT_OPTS $FZF_ALT_C_OPTS"
-      eval "$FZF_ALT_C_COMMAND | "(__fzfcmd)' +m --query "'$fzf_query'"' | read -l result
+      eval "$FZF_ALT_C_COMMAND | "fzf' +m --query "'$fzf_query'"' | read -l result
 
       if [ -n "$result" ]
         cd $result
