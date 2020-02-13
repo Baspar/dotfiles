@@ -52,11 +52,8 @@ shift + cmd - 0 : yabai -m window --space 10
 # toggle window fullscreen
 alt - s : yabai -m window --toggle zoom-fullscreen
 
-# toggle window native fullscreen
-# shift + alt - f : chunkc tiling::window --toggle native-fullscreen
-
-# toggle window split type
-# alt - q : chunkc tiling::window --toggle split
+# toggle float
+alt - f: yabai -m window --toggle float
 
 # MOCP
 cmd - m ; music
