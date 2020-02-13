@@ -53,7 +53,8 @@ shift + cmd - 0 : yabai -m window --space 10
 alt - s : yabai -m window --toggle zoom-fullscreen
 
 # toggle float
-alt - f: yabai -m window --toggle float
+alt - f: yabai -m window --toggle float; \
+         yabai -m window --toggle sticky;
 
 # MOCP
 cmd - m ; music
