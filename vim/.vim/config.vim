@@ -45,6 +45,7 @@ endfunction
 colorscheme alduin
 hi! Normal ctermbg=NONE guibg=NONE
 hi! NonText ctermbg=NONE guibg=NONE
+hi! SignColumn ctermbg=233 guibg=#121212
 
 " Indentation
 set tabstop=2 shiftwidth=2 expandtab
