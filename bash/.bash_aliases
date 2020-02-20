@@ -57,3 +57,5 @@ command -v pbpaste > /dev/null || abbr pbpaste 'xsel --clipboard --output'
 
 abbr se 'sudoedit'
 abbr nvm 'bass source /usr/local/opt/nvm/nvm.sh --no-use ";" nvm'
+
+abbr fhf 'fzf --header-lines 1'
