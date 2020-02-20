@@ -1,6 +1,4 @@
 call plug#begin('~/.vim/plugged')
-
-
     " {{{ Assist
         " {{{ Autoclosing
         Plug 'ntpeters/vim-better-whitespace'
@@ -12,17 +10,11 @@ call plug#begin('~/.vim/plugged')
         Plug 'tommcdo/vim-lion'
         " }}}
         " {{{ Navigation
-        Plug 'easymotion/vim-easymotion'
         Plug 'baspar/vim-cartographe'
         Plug 'scrooloose/nerdtree'
         " }}}
         " {{{ LSP
         Plug 'neoclide/coc.nvim', {'do': 'yarn install'}
-        " Plug 'prabirshrestha/asyncomplete.vim'
-        " Plug 'prabirshrestha/async.vim'
-        " Plug 'prabirshrestha/vim-lsp'
-        " Plug 'prabirshrestha/asyncomplete-lsp.vim'
-        " Plug 'dense-analysis/ale'
         " }}}
     " }}}
 
@@ -37,22 +29,18 @@ call plug#begin('~/.vim/plugged')
         Plug 'jparise/vim-graphql'
         " }}}
         " {{{ Rust
-        Plug 'rust-lang/rust.vim'
-        " }}}
-        " {{{ Scala
-        " Plug 'derekwyatt/vim-scala'
+        Plug 'rust-lang/rust.vim', {'for': ['rust']}
         " }}}
         " {{{ Clojure
-        Plug 'guns/vim-sexp'
-        Plug 'guns/vim-clojure-static'
-        Plug 'tpope/vim-sexp-mappings-for-regular-people'
+        Plug 'guns/vim-sexp', {'for': ['clojure']}
+        Plug 'guns/vim-clojure-static', {'for': ['clojure']}
+        Plug 'tpope/vim-sexp-mappings-for-regular-people', {'for': ['clojure']}
         " }}}
     " }}}
 
     " {{{ Utils
         " {{{ Undo
         Plug 'mbbill/undotree'
-        Plug 'tpope/vim-repeat'
         " }}}
         " {{{ File
         Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -60,30 +48,19 @@ call plug#begin('~/.vim/plugged')
         " }}}
         " {{{ Git
         Plug 'tpope/vim-fugitive'
-        Plug 'junegunn/gv.vim'
+        Plug 'tpope/vim-dispatch'
         " }}}
         " {{{ Text Object
         Plug 'machakann/vim-sandwich'
-        Plug 'kana/vim-textobj-user'
-        Plug 'beloglazov/vim-textobj-quotes'
-        " }}}
-        " {{{ Async
-        Plug 'tpope/vim-dispatch'
         " }}}
     " }}}
 
     " {{{ UI
         " {{{ Colorschemes
         Plug 'AlessandroYorba/alduin'
-        " Plug 'morhetz/gruvbox'
-        " Plug 'arzg/vim-substrata'
         " }}}
-        " {{{ Airline
+        " {{{ Statusline
         Plug 'itchyny/lightline.vim'
-        " }}}
-        " {{{ Goyo
-        Plug 'junegunn/goyo.vim'
-        Plug 'junegunn/limelight.vim'
         " }}}
     " }}}
 call plug#end()
