@@ -8,6 +8,10 @@ nmap # #zz
 nmap n nzz
 nmap N Nzz
 
+" Change j/k to wrap correctly
+nnoremap j gj
+nnoremap k gk
+
 " cgn/cgN
 nnoremap c*  *Ncgn
 nnoremap c#  #NcgN
