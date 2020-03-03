@@ -23,7 +23,7 @@ UNINSTALL_DOT () {
     echo "Uninstalling $DOT"
     cd "$ROOT_DIR/$DOT"
 
-    FILES=$(find . -type f | sed 's# #_SPACE_#g')
+    FILES=$(find . \( -type l -o -type f \) | sed 's# #_SPACE_#g')
     for ENCODED_FILE in $FILES; do
         FILE=$(echo $ENCODED_FILE | sed 's#_SPACE_# #g')
         SOURCE_FILE=$(echo "$(pwd)/$FILE" | sed 's#\(/\.\.\)\+/#/#g; s#/\./#/#g')
@@ -63,7 +63,7 @@ INSTALL_DOT () {
         mkdir -p "$HOME/$HOME_DIR"
     done
 
-    FILES=$(find . -type f | sed 's# #_SPACE_#g')
+    FILES=$(find . \( -type l -o -type f \) | sed 's# #_SPACE_#g')
     for ENCODED_FILE in $FILES; do
         FILE=$(echo $ENCODED_FILE | sed 's#_SPACE_# #g')
         SOURCE_FILE=$(echo "$(pwd)/$FILE" | sed 's#\(/\.\.\)\+/#/#g; s#/\./#/#g')
