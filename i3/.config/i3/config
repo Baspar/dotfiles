@@ -250,6 +250,9 @@ bindsym XF86MonBrightnessDown exec  ~/.bin/brightDown.sh
 # Print SCreen
 # bindsym Print exec import png:- | xclip -selection c -t image/png
 
+# Sticky
+bindsym $mod+f sticky toggle
+
 # Toggle Control
 bindsym XF86PowerOff exec ~/.bin/toggleTouchScreen.sh && ~/.bin/toggleSynaptic.sh && ~/.bin/toggleKeyboard.sh
 bindsym $mod+Shift+t exec ~/.bin/toggleTouchScreen.sh
