@@ -6,20 +6,18 @@ let &packpath = &runtimepath
 set winblend=10
 set pumblend=10
 
-let $FZF_DEFAULT_OPTS='--layout=reverse'
-let g:fzf_layout = { 'window': 'call FloatingFZF()' }
-
-function! FloatingFZF()
+function! FloatingFZF(n)
     let buf = nvim_create_buf(v:false, v:true)
     call setbufvar(buf, '&signcolumn', 'no')
 
-    let height = &lines / 2
-    let width = float2nr(&columns / 2)
+    let height = float2nr(&lines * (a:n - 1) / a:n)
+    let width = float2nr(&columns * (a:n - 1) / a:n)
     let col = float2nr((&columns - width) / 2)
+    let row = float2nr((&lines - height) / 2)
 
     let opts = {
                 \ 'relative': 'editor',
-                \ 'row': &lines / 4,
+                \ 'row': row,
                 \ 'col': col,
                 \ 'width': width,
                 \ 'height': height,
@@ -28,3 +26,11 @@ function! FloatingFZF()
 
     call nvim_open_win(buf, v:true, opts)
 endfunction
+
+let $FZF_DEFAULT_OPTS='--layout=reverse'
+let g:fzf_preview_window = ''
+let g:fzf_layout = { 'window': 'call FloatingFZF(2)' }
+
+command! -bang -nargs=* Rg call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
+  \   fzf#vim#with_preview({'window': 'call FloatingFZF(10)'}, 'down:40%'), <bang>0)
