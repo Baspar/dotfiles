@@ -136,7 +136,7 @@ vnoremap <leader>f :<C-u>call ag_helper#look_for_block('`<', '`>')<CR>
 " Duplicates
 nnoremap <leader>d :set opfunc=duplicate#duplicate_op<CR>g@
 nmap <leader>d<leader>d yyP
-vnoremap <leader>d :<C-u>call duplicate#duplicat('`<', '`>')<CR>
+vnoremap <leader>d :<C-u>call duplicate#duplicate('`<', '`>')<CR>
 
 " Vim-Lsp
 " nmap [a :LspNextError<CR>
