@@ -1,7 +1,10 @@
 #!/usr/bin/env fish
 function auto_complete_mode
-  set -q FZF_TMUX_HEIGHT; or set FZF_TMUX_HEIGHT 40%
-  set -gx FZF_DEFAULT_OPTS "--height $FZF_TMUX_HEIGHT $FZF_DEFAULT_OPTS --layout=reverse --header-lines=1 +m"
+  function _fzf
+    set -q FZF_TMUX_HEIGHT; or set FZF_TMUX_HEIGHT 40%
+    set FZF_DEFAULT_OPTS "--height $FZF_TMUX_HEIGHT $FZF_DEFAULT_OPTS --layout=reverse --header-lines=1 +m"
+    echo "fzf $FZF_DEFAULT_OPTS"
+  end
 
   ##########
   # Docker #
@@ -9,7 +12,7 @@ function auto_complete_mode
 
   function fzf-docker-images
     docker images \
-      | fzf \
+      | eval (_fzf) \
       | sed "s/ \{1,\}/|/g" \
       | cut -d\| -f3 \
       | read -l image; or return
@@ -18,7 +21,7 @@ function auto_complete_mode
 
   function fzf-docker-containers
     docker container ls -a \
-      | fzf \
+      | eval (_fzf) \
       | sed "s/ \{1,\}/|/g" \
       | cut -d\| -f1 \
       | read -l container; or return
@@ -28,7 +31,7 @@ function auto_complete_mode
   function fzf-docker
     echo ""
     echo -e "Docker\nImages\nContainers" \
-      | fzf \
+      | eval (_fzf) \
       | read -l mode
     switch "$mode"
       case Images
@@ -45,7 +48,7 @@ function auto_complete_mode
 
   function fzf-k8s-namespaces
     kubectl get namespace \
-      | fzf \
+      | eval (_fzf) \
       | sed "s/ \{1,\}/|/g" \
       | cut -d\| -f1 \
       | read -l namespace; or return
@@ -55,7 +58,7 @@ function auto_complete_mode
 
   function fzf-k8s-pods
     kubectl get pods -A \
-      | fzf \
+      | eval (_fzf) \
       | sed "s/ \{1,\}/|/g" \
       | cut -d\| -f1 \
       | read -l pod; or return
@@ -66,7 +69,7 @@ function auto_complete_mode
   function fzf-k8s
     echo ""
     echo -e "K8S\nPods\nNamespaces" \
-      | fzf \
+      | eval (_fzf) \
       | read -l mode
     switch "$mode"
       case Pods
