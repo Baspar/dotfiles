@@ -8,6 +8,7 @@ call plug#begin('~/.vim/plugged')
         " {{{ Syntax
         Plug 'tomtom/tcomment_vim'
         Plug 'tommcdo/vim-lion'
+        Plug 'tpope/vim-abolish'
         " }}}
         " {{{ Navigation
         Plug 'baspar/vim-cartographe'
