@@ -63,12 +63,6 @@ nnoremap <leader>w :noh<CR>:w<CR>
 nnoremap <leader>q :q<CR>
 nnoremap <leader>Q :q!<CR>
 
-" Split nav
-nnoremap <C-Down> <C-w>j
-nnoremap <C-Up> <C-w>k
-nnoremap <C-Left> <C-w>h
-nnoremap <C-Right> <C-w>l
-
 " TagBar
 map <leader>B :TagbarToggle<CR>
 
@@ -80,9 +74,14 @@ nnoremap <leader>vp :tabe $HOME/.vim/plugins.vim<CR>
 nnoremap <leader>vc :tabe $HOME/.vim/config.vim<CR>
 
 " Splits
+nnoremap <C-Down> <C-w>j
+nnoremap <C-Up> <C-w>k
+nnoremap <C-Left> <C-w>h
+nnoremap <C-Right> <C-w>l
 nnoremap <leader>\| :vs<CR>
 nnoremap <leader>_ :sp<CR>
 nnoremap <leader>- :sp<CR>
+nnoremap <C-w>z <C-w>\|<C-w>_
 
 " Remove highlight
 " nnoremap <leader><esc> :noh<CR><esc>
