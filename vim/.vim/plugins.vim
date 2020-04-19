@@ -13,6 +13,7 @@ call plug#begin('~/.vim/plugged')
         " {{{ Navigation
         Plug 'baspar/vim-cartographe'
         Plug 'scrooloose/nerdtree'
+        Plug 'easymotion/vim-easymotion'
         " }}}
         " {{{ LSP
         Plug 'neoclide/coc.nvim', {'do': 'yarn install'}
