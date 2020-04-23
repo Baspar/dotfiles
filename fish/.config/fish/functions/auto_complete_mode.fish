@@ -18,10 +18,13 @@ function auto_complete_mode
     set NB_HEADERS (count $HEADERS)
     set QUERY ""
 
+    set REPLACEMENT (printf '\e[91m')'&'(printf '\e[0m')
+
     while true
+      set HEADER "$HEADERS[$INDEX]"
       echo -e $DATA"\n" \
         | sed 's/^ //' \
-        | sed "1 s/$HEADERS[$INDEX]/"(printf '\e[91m')"&"(printf '\e[0m')"/" \
+        | sed "1 s/ $HEADER /$REPLACEMENT/; 1 s/^$HEADER /$REPLACEMENT/; 1 s/ $HEADER\$/$REPLACEMENT/;" \
         | eval (_fzf "-q \"$QUERY\" --print-query --expect=left,right --ansi --color=header:3") \
         | sed "s/ \{2,\}/|/g" \
         | cut -d\| -f$INDEX \
@@ -90,7 +93,7 @@ function auto_complete_mode
 
   function fzf-k8s-services
     set DATA (kubectl get svc -A)
-    set INDEX 1
+    set INDEX 2
     set SERVICE (fzf_search $DATA $INDEX)
 
     commandline -i -- "$SERVICE"
@@ -98,7 +101,7 @@ function auto_complete_mode
 
   function fzf-k8s-pods
     set DATA (kubectl get pods -A)
-    set INDEX 1
+    set INDEX 2
     set POD (fzf_search $DATA $INDEX)
 
     commandline -i -- "$POD"
