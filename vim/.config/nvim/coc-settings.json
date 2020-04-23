@@ -1,5 +1,4 @@
 {
-    "diagnostic.virtualText": true,
     "eslint.filetypes": ["javascript", "javascriptreact", "typescript"],
     "languageserver": {
         "clojure-lsp": {
@@ -9,8 +8,7 @@
             "rootPatterns": ["project.clj"],
             "additionalSchemes": ["jar", "zipfile"],
             "trace.server": "verbose",
-            "initializationOptions": {
-            }
+            "initializationOptions": {}
         },
         "metals": {
             "command": "metals-vim",
