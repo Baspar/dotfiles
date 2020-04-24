@@ -1,25 +1,31 @@
 {
-    "eslint.filetypes": ["javascript", "javascriptreact", "typescript"],
-    "languageserver": {
-        "clojure-lsp": {
-            "command": "bash",
-            "args": ["-c", "clojure-lsp"],
-            "filetypes": ["clojure"],
-            "rootPatterns": ["project.clj"],
-            "additionalSchemes": ["jar", "zipfile"],
-            "trace.server": "verbose",
-            "initializationOptions": {}
-        },
-        "metals": {
-            "command": "metals-vim",
-            "rootPatterns": ["build.sbt"],
-            "filetypes": ["scala", "sbt"]
-        }
+  "diagnostic": {
+    "errorSign": "! ",
+    "warningSign": "? ",
+    "infoSign": "~ ",
+    "hintSign": "- "
+  },
+  "eslint.filetypes": ["javascript", "javascriptreact", "typescript"],
+  "languageserver": {
+    "clojure-lsp": {
+      "command": "bash",
+      "args": ["-c", "clojure-lsp"],
+      "filetypes": ["clojure"],
+      "rootPatterns": ["project.clj"],
+      "additionalSchemes": ["jar", "zipfile"],
+      "trace.server": "verbose",
+      "initializationOptions": {}
     },
-    "list.normalMappings": {
-        "<C-c>": "do:exit"
-    },
-    "list.insertMappings": {
-        "<C-c>": "do:exit"
+    "metals": {
+      "command": "metals-vim",
+      "rootPatterns": ["build.sbt"],
+      "filetypes": ["scala", "sbt"]
     }
+  },
+  "list.normalMappings": {
+    "<C-c>": "do:exit"
+  },
+  "list.insertMappings": {
+    "<C-c>": "do:exit"
+  }
 }
