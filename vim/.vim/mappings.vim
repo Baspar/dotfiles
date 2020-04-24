@@ -81,7 +81,7 @@ nnoremap <C-Right> <C-w>l
 nnoremap <leader>\| :vs<CR>
 nnoremap <leader>_ :sp<CR>
 nnoremap <leader>- :sp<CR>
-nnoremap <C-w>z <C-w>\|<C-w>_
+nnoremap <C-w><C-w> <C-w>\|<C-w>_
 
 " Remove highlight
 " nnoremap <leader><esc> :noh<CR><esc>
