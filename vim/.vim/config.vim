@@ -1,21 +1,20 @@
+syntax on
+filetype plugin on
+
 set backspace=indent,eol,start
 set nocompatible
 set encoding=utf8
-syntax on
-filetype plugin on
 set number
 set relativenumber
 set mouse=a
 let mapleader=","
 let maplocalleader=" "
-set nowrap
 set hlsearch
 set incsearch
 set undofile
 set undolevels=1000
 set undoreload=10000
 set hidden
-" set foldmethod=syntax
 set foldmethod=indent
 set wildmenu
 set spelllang=en
@@ -32,7 +31,6 @@ if exists('+termguicolors')
     let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
     set termguicolors
 endif
-set t_Co=256
 
 " Function
 function! ToggleGStatus()
@@ -46,15 +44,15 @@ endfunction
 " Color
 colorscheme alduin
 augroup CustomColorChange
-  function! s:change_color ()
+  function! s:custom_colors ()
     hi! Normal ctermbg=NONE guibg=NONE
     hi! NonText ctermbg=NONE guibg=NONE
     hi! SignColumn ctermbg=233 guibg=#121212
   endfunction
 
   au!
-  au ColorScheme * call s:change_color()
-  au VimEnter * call s:change_color()
+  au ColorScheme * call s:custom_colors()
+  au VimEnter * call s:custom_colors()
 augroup END
 
 " Indentation

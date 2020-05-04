@@ -59,7 +59,10 @@ call plug#begin('~/.vim/plugged')
 
     " {{{ UI
         " {{{ Colorschemes
+        Plug 'fcpg/vim-fahrenheit'
         Plug 'AlessandroYorba/alduin'
+        Plug 'fcpg/vim-orbital'
+        Plug 'fcpg/vim-farout'
         " }}}
         " {{{ Statusline
         Plug 'itchyny/lightline.vim'
