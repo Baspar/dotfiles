@@ -44,17 +44,27 @@ function! ToggleGStatus()
 endfunction
 
 " Color
-colorscheme alduin
-hi! Normal ctermbg=NONE guibg=NONE
-hi! NonText ctermbg=NONE guibg=NONE
-hi! SignColumn ctermbg=233 guibg=#121212
+" colorscheme alduin
+colorscheme fahrenheit
+colorscheme farout
+augroup CustomColorChange
+  function! s:change_color ()
+    hi! Normal ctermbg=NONE guibg=NONE
+    hi! NonText ctermbg=NONE guibg=NONE
+    hi! SignColumn ctermbg=233 guibg=#121212
+  endfunction
+
+  au!
+  au ColorScheme * call s:change_color()
+  au VimEnter * call s:change_color()
+augroup END
 
 " Indentation
 set tabstop=2 shiftwidth=2 expandtab
 autocmd FileType sh set tabstop=4 shiftwidth=4 expandtab
 
 autocmd StdinReadPre * let s:std_in=1
-let NERDTreeMinimalUI=1
+let NERDTreeMinimalUI = 1
 let NERDTreeDirArrows = 1
 let g:closetag_filenames = "*.html,*.xhtml,*.phtml,*.php,*.jsx,*.js"
 let g:clojure_align_multiline_strings = 1
