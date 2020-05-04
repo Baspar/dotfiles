@@ -44,9 +44,7 @@ function! ToggleGStatus()
 endfunction
 
 " Color
-" colorscheme alduin
-colorscheme fahrenheit
-colorscheme farout
+colorscheme alduin
 augroup CustomColorChange
   function! s:change_color ()
     hi! Normal ctermbg=NONE guibg=NONE
