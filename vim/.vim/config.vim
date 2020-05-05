@@ -1,4 +1,3 @@
-syntax on
 filetype plugin on
 
 set backspace=indent,eol,start
@@ -26,12 +25,6 @@ set noswapfile
 set list
 set listchars=tab:▸\ ,eol:·
 
-if exists('+termguicolors')
-    let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-    let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-    set termguicolors
-endif
-
 " Function
 function! ToggleGStatus()
     if buflisted(bufname('.git/index'))
@@ -42,6 +35,12 @@ function! ToggleGStatus()
 endfunction
 
 " Color
+syntax on
+if exists('+termguicolors')
+    let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+    let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+    set termguicolors
+endif
 colorscheme alduin
 augroup CustomColorChange
   function! s:custom_colors ()
