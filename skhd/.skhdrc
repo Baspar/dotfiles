@@ -54,7 +54,9 @@ alt - s : yabai -m window --toggle zoom-fullscreen
 
 # toggle float
 alt - f: yabai -m window --toggle float; \
-         yabai -m window --toggle sticky;
+         yabai -m window --toggle sticky; \
+         yabai -m window --toggle topmost;
+
 
 # MOCP
 cmd - m ; music
