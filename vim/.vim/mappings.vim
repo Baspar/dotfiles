@@ -13,10 +13,10 @@ nnoremap j gj
 nnoremap k gk
 
 " cgn/cgN
-nnoremap c*  *Ncgn
-nnoremap c#  #NcgN
-nnoremap c>* *Ncgn<C-r>"
-nnoremap c># #NcgN<C-r>"
+nnoremap c*  *``cgn
+nnoremap c#  #``cgN
+nnoremap c>* *``cgn<C-r><C-o>"
+nnoremap c># #``cgN<C-r><C-o>"
 nnoremap <Plug>PrependText* n".P:call repeat#set("\<Plug>PrependText*")<CR>
 nnoremap c<*                *Ncgn<C-r>"<C-o>`[<C-o>:call repeat#set("\<Plug>PrependText*")<CR>
 nnoremap <Plug>PrependText# n".P:call repeat#set("\<Plug>PrependText#")<CR>
@@ -144,6 +144,10 @@ vnoremap <leader>d :<C-u>call duplicate#duplicate('`<', '`>')<CR>
 " nmap <silent> <localleader>r :LspReferences<CR>
 " nmap <silent> <localleader><localleader> :LspHover<CR>
 " nmap <silent> <localleader>R :LspRename<CR>
+
+" ALE
+" nmap [a :<C-u>ALEPreviousWrap<CR>
+" nmap ]a :<C-u>ALENextWrap<CR>
 
 " CocNvim
 nmap [a <Plug>(coc-diagnostic-prev)
