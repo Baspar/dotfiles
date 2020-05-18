@@ -17,11 +17,14 @@ call plug#begin('~/.vim/plugged')
         " }}}
         " {{{ LSP
         Plug 'neoclide/coc.nvim', {'do': 'yarn install'}
+        "
         " Plug 'prabirshrestha/async.vim'
         " Plug 'prabirshrestha/vim-lsp'
         " Plug 'mattn/vim-lsp-settings'
         " Plug 'dense-analysis/ale'
         " Plug 'prabirshrestha/asyncomplete.vim'
+        " Plug 'prabirshrestha/asyncomplete-lsp.vim'
+        "
         " Plug 'autozimu/LanguageClient-neovim'
         " }}}
     " }}}

@@ -1,5 +1,6 @@
 filetype plugin on
 
+set nowrap
 set backspace=indent,eol,start
 set nocompatible
 set encoding=utf8
@@ -72,3 +73,9 @@ let g:instant_markdown_autostart = 0
 let g:lion_squeeze_spaces = 1
 let g:netrw_liststyle = 3
 let g:netrw_banner = 0
+
+let g:fzf_colors = {
+      \ 'prompt': ['fg', 'Type'],
+      \ 'hl': ['fg', 'SpellRare'],
+      \ 'hl+': ['fg', 'SpellRare'],
+      \ }
