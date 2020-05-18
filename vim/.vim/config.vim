@@ -76,6 +76,6 @@ let g:netrw_banner = 0
 
 let g:fzf_colors = {
       \ 'prompt': ['fg', 'Type'],
-      \ 'hl': ['fg', 'SpellRare'],
-      \ 'hl+': ['fg', 'SpellRare'],
+      \ 'hl': ['fg', 'Type'],
+      \ 'hl+': ['fg', 'Number'],
       \ }
