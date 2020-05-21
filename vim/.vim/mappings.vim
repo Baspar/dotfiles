@@ -29,7 +29,6 @@ nnoremap <tab> :FZF<CR>
 " fileExplorer
 " nnoremap - :sil execute "Ex ".expand('%:h')<CR>
 map <C-e> :NERDTreeToggle<CR>
-nnoremap <leader>e :NERDTreeToggle<CR>
 
 " Undo Tree
 map <C-u> :UndotreeToggle<CR>
@@ -58,13 +57,12 @@ nnoremap <leader>< :tabN<CR>
 nnoremap <leader>> :tabn<CR>
 nnoremap <leader><CR> :tabe<CR>
 nnoremap <leader>bd :bn<CR> :bd #<CR>
+
+" Save  and exit
 nnoremap <leader>s :noh<CR>:update<CR>
 nnoremap <leader>w :noh<CR>:w<CR>
 nnoremap <leader>q :q<CR>
 nnoremap <leader>Q :q!<CR>
-
-" TagBar
-map <leader>B :TagbarToggle<CR>
 
 " Reload nvim config
 nnoremap <leader>vr :source $MYVIMRC<CR>
@@ -74,17 +72,12 @@ nnoremap <leader>vp :tabe $HOME/.vim/plugins.vim<CR>
 nnoremap <leader>vc :tabe $HOME/.vim/config.vim<CR>
 
 " Splits
-nnoremap <C-Down> <C-w>j
-nnoremap <C-Up> <C-w>k
-nnoremap <C-Left> <C-w>h
-nnoremap <C-Right> <C-w>l
 nnoremap <leader>\| :vs<CR>
 nnoremap <leader>_ :sp<CR>
 nnoremap <leader>- :sp<CR>
 nnoremap <C-w><C-w> <C-w>\|<C-w>_
 
 " Remove highlight
-" nnoremap <leader><esc> :noh<CR><esc>
 nnoremap <C-l> :noh<CR>
 
 " Plug
@@ -109,22 +102,8 @@ nnoremap <leader>go :Git checkout<Space>
 nnoremap <leader>gp :set termwinsize=10x0<CR>:term git push<CR>
 nnoremap <leader>gP :set termwinsize=10x0<CR>:term git pull<CR>
 
-" Flog
-" nnoremap <leader>F :Flog<CR>
-" nnoremap <leader>ff :Flog -path=%<CR>
-
-" GV
-nnoremap <leader>G :GV<CR>
-nnoremap <leader>gg :GV!<CR>
-
-" Goyo
-" nnoremap <leader>G :Goyo<CR>:hi Normal guibg=NONE ctermbg=NONE<CR>
-" nnoremap <leader>L :Limelight!!<CR>
-" Select line
-" nnoremap <leader>l :normal ^v$<CR>
-
 " Select all
-nnoremap <leader>a :normal ggVG<CR>
+nnoremap <leader>a ggVG
 
 " Rgs
 nnoremap <leader>F :Rg<space>
@@ -156,9 +135,6 @@ nmap <silent> <localleader>i <Plug>(coc-implementation)
 nmap <silent> <localleader>r <Plug>(coc-references)
 nmap <silent> <localleader><localleader> :call CocAction("doHover")<CR>
 nmap <silent> <localleader>R <Plug>(coc-rename)
-
-" Avent of code - CLojure
-au FileType clojure nnoremap <localleader>ct magg/dayyw`a,:!clear; lein test "
 
 " Markdown
 au FileType markdown nnoremap <localleader>n :normal o- [-]<CR>hr jk
