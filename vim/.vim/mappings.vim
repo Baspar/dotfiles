@@ -116,6 +116,11 @@ nnoremap <leader>d :set opfunc=duplicate#duplicate_op<CR>g@
 nmap <leader>d<leader>d yyP
 vnoremap <leader>d :<C-u>call duplicate#duplicate('`<', '`>')<CR>
 
+" Repl-it
+nnoremap <expr> <leader>r repl_it#normal_mode()
+vnoremap <leader>r :<C-u>call repl_it#visual_mode()<CR>
+nmap <leader>rr V<leader>r
+
 " Vim-Lsp
 " nmap [a :LspNextError<CR>
 " nmap ]a :LspPreviousError<CR>
