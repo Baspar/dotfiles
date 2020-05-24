@@ -65,10 +65,10 @@ func! Coc(field)
     endtry
 endfunc
 func! CocWarning()
-    return Coc('warning')
+    return lsp#get_buffer_diagnostics_counts().warning
 endfunc
 func! CocError()
-    return Coc('error')
+    return lsp#get_buffer_diagnostics_counts().error
 endfunc
 
 func! LineInfo()

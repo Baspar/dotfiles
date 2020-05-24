@@ -27,8 +27,8 @@ nnoremap \ :Buffers<CR>
 nnoremap <tab> :FZF<CR>
 
 " fileExplorer
-" nnoremap - :sil execute "Ex ".expand('%:h')<CR>
-map <C-e> :NERDTreeToggle<CR>
+nnoremap <C-e> :NERDTreeToggle<CR>
+au FileType nerdtree unmap <buffer> q
 
 " Undo Tree
 map <C-u> :UndotreeToggle<CR>
@@ -67,6 +67,7 @@ nnoremap <leader>Q :q!<CR>
 " Reload nvim config
 nnoremap <leader>vr :source $MYVIMRC<CR>
 nnoremap <leader>ve :tabe $MYVIMRC<CR>
+nnoremap <leader>vl :tabe $HOME/.vim/lsp.vim<CR>
 nnoremap <leader>vm :tabe $HOME/.vim/mappings.vim<CR>
 nnoremap <leader>vp :tabe $HOME/.vim/plugins.vim<CR>
 nnoremap <leader>vc :tabe $HOME/.vim/config.vim<CR>
@@ -119,27 +120,27 @@ vnoremap <leader>d :<C-u>call duplicate#duplicate('`<', '`>')<CR>
 " Repl-it
 nnoremap <expr> <leader>r repl_it#normal_mode()
 vnoremap <leader>r :<C-u>call repl_it#visual_mode()<CR>
-nmap <leader>rr V<leader>r
+" nmap <leader>rr V<leader>r
 
 " Vim-Lsp
-" nmap [a :LspNextError<CR>
-" nmap ]a :LspPreviousError<CR>
-" nmap <silent> <localleader>i :LspImplementation<CR>
-" nmap <silent> <localleader>r :LspReferences<CR>
-" nmap <silent> <localleader><localleader> :LspHover<CR>
-" nmap <silent> <localleader>R :LspRename<CR>
+nmap <silent> <localleader>] :LspNextError<CR>
+nmap <silent> <localleader>[ :LspPreviousError<CR>
+nmap <silent> <localleader>i :LspImplementation<CR>
+nmap <silent> <localleader>r :LspReferences<CR>
+nmap <silent> <localleader><localleader> :LspHover<CR>
+nmap <silent> <localleader>R :LspRename<CR>
 
 " ALE
 " nmap [a :<C-u>ALEPreviousWrap<CR>
 " nmap ]a :<C-u>ALENextWrap<CR>
 
 " CocNvim
-nmap [a <Plug>(coc-diagnostic-prev)
-nmap ]a <Plug>(coc-diagnostic-next)
-nmap <silent> <localleader>i <Plug>(coc-implementation)
-nmap <silent> <localleader>r <Plug>(coc-references)
-nmap <silent> <localleader><localleader> :call CocAction("doHover")<CR>
-nmap <silent> <localleader>R <Plug>(coc-rename)
+" nmap [a <Plug>(coc-diagnostic-prev)
+" nmap ]a <Plug>(coc-diagnostic-next)
+" nmap <silent> <localleader>i <Plug>(coc-implementation)
+" nmap <silent> <localleader>r <Plug>(coc-references)
+" nmap <silent> <localleader><localleader> :call CocAction("doHover")<CR>
+" nmap <silent> <localleader>R <Plug>(coc-rename)
 
 " Markdown
 au FileType markdown nnoremap <localleader>n :normal o- [-]<CR>hr jk
@@ -149,6 +150,9 @@ au FileType markdown nnoremap <localleader><backspace> :s/^\([^a-zA-Z0-9]*\)\[.\
 au FileType markdown vmap <localleader><backspace> :'<,'>s/^\([^a-zA-Z0-9]*\)\[.\?\]/\1\[ \]<CR>:noh<CR>
 au FileType markdown nnoremap <localleader>w :s/^\([^a-zA-Z0-9]*\)\[.\?\]/\1\[-\]<CR>:noh<CR>j
 au FileType markdown vmap <localleader>w :'<,'>s/^\([^a-zA-Z0-9]*\)\[.\?\]/\1\[-\]<CR>:noh<CR>
+
+" Netrw
+au FileType netrw nmap <buffer> o <CR>
 
 " Add Move command (Visual / normal)
 nnoremap <S-down> ddp

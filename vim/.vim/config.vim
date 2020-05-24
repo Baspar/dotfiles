@@ -59,9 +59,12 @@ augroup END
 set tabstop=2 shiftwidth=2 expandtab
 autocmd FileType sh set tabstop=4 shiftwidth=4 expandtab
 
+autocmd FileType netrw vertical resize 30
+
 autocmd StdinReadPre * let s:std_in=1
 let NERDTreeMinimalUI = 1
 let NERDTreeDirArrows = 1
+let g:NERDTreeQuitOnOpen = 1
 let g:closetag_filenames = "*.html,*.xhtml,*.phtml,*.php,*.jsx,*.js"
 let g:clojure_align_multiline_strings = 1
 let g:sexp_insert_after_wrap = 'false'
