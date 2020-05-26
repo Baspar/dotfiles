@@ -14,7 +14,7 @@ function fish_mode_prompt
     set COLOR "white"
   end
 
-  set_color "black" -b "$COLOR" -o
+  set_color "black" -b "$COLOR"
   echo -n " $LETTER "
   set_color "normal"
 
