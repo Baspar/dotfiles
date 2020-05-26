@@ -78,7 +78,7 @@ func! LineInfo()
     elseif s:is_fzf(filename)
         return ''
     else
-        return (col('.') - 1) . '/' . (col('$') - 1)
+        return line('.') . '/' . line('$') . ':' . (col('$') - 1)
     endif
 endfunc
 
