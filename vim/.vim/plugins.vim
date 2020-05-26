@@ -16,14 +16,17 @@ call plug#begin('~/.vim/plugged')
         Plug 'easymotion/vim-easymotion'
         " }}}
         " {{{ LSP
+
         " Plug 'neoclide/coc.nvim', {'do': 'yarn install'}
-        "
+
         Plug 'prabirshrestha/async.vim'
         Plug 'prabirshrestha/vim-lsp'
         Plug 'prabirshrestha/asyncomplete.vim'
         Plug 'prabirshrestha/asyncomplete-lsp.vim'
 
-        " Plug 'autozimu/LanguageClient-neovim'
+        " Plug 'neovim/nvim-lsp'
+        " Plug 'haorenW1025/completion-nvim'
+        " Plug 'haorenW1025/diagnostic-nvim'
         " }}}
     " }}}
 

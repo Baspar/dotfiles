@@ -33,17 +33,17 @@
         \ })
     endif
     " }}}
-    " {{{ TypeScript Language Server
+    " {{{ [x] TypeScript Language Server
     if executable('typescript-language-server')
         au User lsp_setup call lsp#register_server({
         \ 'name': 'typescript-language-server',
         \ 'cmd': {server_info->[&shell, &shellcmdflag, 'typescript-language-server --stdio']},
         \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'package.json'))},
-        \ 'whitelist': ['javascript', 'javascript.jsx'],
+        \ 'whitelist': ['javascript', 'javascript.jsx', 'typescript', 'typescript.jsx'],
         \ })
     endif
     " }}}
-    " {{{ Javascript Typescript STDIO
+    " {{{ [ ] Javascript Typescript STDIO
     " if executable('javascript-typescript-stdio')
     "     au User lsp_setup call lsp#register_server({
     "     \ 'name': 'javascript-typescript-stdio',
@@ -54,7 +54,7 @@
     "     \ })
     " endif
     " }}}
-    " {{{ Rust Analyzer
+    " {{{ [x] Rust Analyzer
     if executable('cargo')
         au User lsp_setup call lsp#register_server({
             \ 'name': 'rls',
