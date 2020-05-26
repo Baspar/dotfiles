@@ -24,11 +24,11 @@ if [ "$DISCHARGING" ]
 then
     if [ $PERCENTAGE -lt 10 ]
     then
-        COLOR='red'
+        COLOR='#AF5F5E'
         FONT='#3e3e3e'
     elif [ $PERCENTAGE -lt 25 ]
     then
-        COLOR='yellow'
+        COLOR='#af875f'
         FONT='#3e3e3e'
     else
         COLOR='#4e4e4e'
@@ -40,7 +40,7 @@ then
     FONT='white'
     SIGN='ϟ '
 else
-    COLOR='red'
+    COLOR='#AF5F5E'
     FONT='white'
 fi
 echo "#[bg=$BACKGROUND_COLOR,fg=$COLOR]#[bg=$COLOR,fg=$FONT] $PERCENTAGE% $SIGN"
