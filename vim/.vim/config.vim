@@ -49,6 +49,8 @@ augroup CustomColorChange
     hi! NonText ctermbg=NONE guibg=NONE
     hi! SignColumn ctermbg=233 guibg=#121212
     hi! Comment cterm=italic gui=italic
+    hi! LspErrorHighlight cterm=undercurl gui=undercurl ctermfg=131 guifg=#af5f5f
+    hi! LspWarningHighlight cterm=undercurl gui=undercurl ctermfg=180 guifg=#dfaf87
   endfunction
 
   au!

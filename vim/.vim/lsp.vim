@@ -1,5 +1,5 @@
 " {{{ LSP servers config
-    " {{{ ESLint Language Server
+    " {{{ [x] ESLint Language Server
     if filereadable(glob('~/.vim/lsp-servers/eslint-language-server/eslint-language-server'))
         au User lsp_setup call lsp#register_server({
         \ 'name': 'eslint-language-server',
@@ -62,6 +62,27 @@
             \ 'workspace_config': {'rust': {'clippy_preference': 'on'}},
             \ 'whitelist': ['rust'],
             \ })
+    endif
+    " }}}
+    " {{{ [x] Clojure LSP
+    if filereadable(glob('~/.vim/lsp-servers/clojure-lsp'))
+      au User lsp_setup call lsp#register_server({
+        \   'name': 'clojure-lsp',
+        \   'cmd': {server_info->[&shell, &shellcmdflag, '~/.vim/lsp-servers/clojure-lsp']},
+        \   'root_uri': {server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'project.clj'))},
+        \   'initialization_options': {
+        \     'project-specs': [
+        \       {'project-path': 'deps.edn', 'classpath-cmd': ["clj", "-Spath"]},
+        \     ],
+        \     'source-paths': ['src'],
+        \     'ignore-classpath-directories': ['.lsp'],
+        \     'macro-defs': {
+        \       'reagent.core/with-let': ['bindings', 'bound-elements'],
+        \       'cljs.core/..': ['elements'],
+        \     },
+        \   },
+        \   'whitelist': ['clojure'],
+        \ })
     endif
     " }}}
 " }}}
