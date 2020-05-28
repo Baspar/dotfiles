@@ -4,7 +4,7 @@
         au User lsp_setup call lsp#register_server({
         \ 'name': 'eslint-language-server',
         \ 'cmd': {server_info->[&shell, &shellcmdflag, '~/.vim/lsp-servers/eslint-language-server/eslint-language-server --stdio']},
-        \ 'whitelist': ['javascript', 'javascript.jsx'],
+        \ 'whitelist': ['javascript', 'javascript.jsx', 'typescript', 'typescript.jsx'],
         \ 'initialization_options': { 'diagnostic': 'true' },
         \ 'workspace_config': {
         \   'validate': 'probe',
@@ -64,23 +64,24 @@
             \ })
     endif
     " }}}
+    " {{{ [x] Kondo LSP
+    " if filereadable(glob('~/.vim/lsp-servers/kondo-lsp.jar'))
+    "   au User lsp_setup call lsp#register_server({
+    "     \   'name': 'kondo-lsp',
+    "     \   'cmd': {server_info->[&shell, &shellcmdflag, 'java -jar ~/.vim/lsp-servers/kondo-lsp.jar']},
+    "     \   'root_uri': {server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'project.clj'))},
+    "     \   'config': { 'diagnostics': 'true' },
+    "     \   'whitelist': ['clojure'],
+    "     \ })
+    " endif
+    " }}}
     " {{{ [x] Clojure LSP
     if filereadable(glob('~/.vim/lsp-servers/clojure-lsp'))
       au User lsp_setup call lsp#register_server({
         \   'name': 'clojure-lsp',
         \   'cmd': {server_info->[&shell, &shellcmdflag, '~/.vim/lsp-servers/clojure-lsp']},
-        \   'root_uri': {server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'project.clj'))},
-        \   'initialization_options': {
-        \     'project-specs': [
-        \       {'project-path': 'deps.edn', 'classpath-cmd': ["clj", "-Spath"]},
-        \     ],
-        \     'source-paths': ['src'],
-        \     'ignore-classpath-directories': ['.lsp'],
-        \     'macro-defs': {
-        \       'reagent.core/with-let': ['bindings', 'bound-elements'],
-        \       'cljs.core/..': ['elements'],
-        \     },
-        \   },
+        \   'root_uri': {server_info-> 'file:///Users/baspar/xxx/'},
+        \   'initialization_options': {'macro-defs': {'cljs.core/..': ['elements']}},
         \   'whitelist': ['clojure'],
         \ })
     endif
