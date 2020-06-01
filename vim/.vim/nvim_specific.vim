@@ -3,8 +3,8 @@ let &t_te.="\e[?7727l"
 set inccommand=nosplit
 set runtimepath^=~/.vim runtimepath+=~/.vim/after
 let &packpath = &runtimepath
-set winblend=10
-set pumblend=10
+set winblend=5
+set pumblend=5
 
 function! FloatingFZF(n)
     let buf = nvim_create_buf(v:false, v:true)

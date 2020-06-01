@@ -65,10 +65,20 @@ func! Coc(field)
     endtry
 endfunc
 func! CocWarning()
-    return lsp#get_buffer_diagnostics_counts().warning
+  return ''
+  let warning = lsp#get_buffer_diagnostics_counts().warning
+  if warning == 0
+    return ''
+  endif
+  return warning
 endfunc
 func! CocError()
-    return lsp#get_buffer_diagnostics_counts().error
+  return ''
+  let error = lsp#get_buffer_diagnostics_counts().error
+  if error == 0
+    return ''
+  endif
+  return error
 endfunc
 
 func! LineInfo()

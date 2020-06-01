@@ -28,7 +28,10 @@ nnoremap <tab> :FZF<CR>
 
 " fileExplorer
 nnoremap <C-e> :NERDTreeToggle<CR>
-au FileType nerdtree unmap <buffer> q
+augroup CancelNERDTreeQ
+  au!
+  au FileType nerdtree unmap <buffer> q
+augroup END
 
 " Undo Tree
 map <C-u> :UndotreeToggle<CR>
@@ -87,6 +90,13 @@ noremap <leader>pu :PlugUpdate<CR>
 noremap <leader>pc :PlugClean<CR>
 
 " Fugitive
+function! ToggleGStatus()
+    if buflisted(bufname('.git/index'))
+        bd .git/index
+    else
+        Gstatus
+    endif
+endfunction
 nnoremap <leader>ga :Git add %:p<CR><CR>
 nnoremap <leader>gs :call ToggleGStatus()<CR>
 nnoremap <leader>gc :Gcommit -v -q<CR>
