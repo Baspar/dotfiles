@@ -25,7 +25,7 @@ filetype plugin on
   set shell=/bin/bash
   set noswapfile
   set list
-  set listchars=tab:▸\ ,eol:·
+  set listchars=tab:▸\ ,eol:·,trail:✗
 " }}}
 
 " {{{ Color
@@ -72,4 +72,4 @@ hi! TrailingSpaces ctermbg=131 guibg=#af5f5f
 match TrailingSpaces / \+$/
 " }}}
 
-" vim: foldmethod=marker:foldlevel=1
+" vim: foldmethod=marker:foldlevel=0
