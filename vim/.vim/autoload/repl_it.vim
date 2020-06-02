@@ -8,6 +8,10 @@ function! repl_it#get_tmux_pane(count)
   return pane
 endfunction
 
+function! repl_it#send(pane, text)
+  execute 'silent! !tmux send-keys -t "\' . a:pane . '" "' . a:text . '" Enter'
+endfunction
+
 function! repl_it#send_to(type, ...)
   let pane = g:repl_it_pane
   if a:type == 'line'
@@ -21,7 +25,8 @@ function! repl_it#send_to(type, ...)
   let text = trim(@r)
   let text = escape(text, '"%#')
   let text = substitute(text, '\n', '" Enter "', 'g')
-  execute 'silent! !tmux send-keys -t "\' . pane . '" "' . text . '" Enter'
+
+  call repl_it#send(pane, text)
 endfunction
 
 function! repl_it#normal_mode()
@@ -37,4 +42,9 @@ function! repl_it#visual_mode()
   let g:repl_it_from_mark = '<'
   let g:repl_it_to_mark = '>'
   call repl_it#send_to(visualmode(), 1)
+endfunction
+
+function! repl_it#send_text(text)
+  let pane = repl_it#get_tmux_pane(v:count)
+  call repl_it#send(pane, a:text)
 endfunction
