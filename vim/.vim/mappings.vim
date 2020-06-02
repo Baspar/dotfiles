@@ -69,11 +69,16 @@ nnoremap <leader>Q :q!<CR>
 
 " Reload nvim config
 nnoremap <leader>vr :source $MYVIMRC<CR>
-nnoremap <leader>ve :tabe $MYVIMRC<CR>
-nnoremap <leader>vl :tabe $HOME/.vim/lsp.vim<CR>
-nnoremap <leader>vm :tabe $HOME/.vim/mappings.vim<CR>
-nnoremap <leader>vp :tabe $HOME/.vim/plugins.vim<CR>
-nnoremap <leader>vc :tabe $HOME/.vim/config.vim<CR>
+nnoremap <leader>vE :tabe $MYVIMRC<CR>
+nnoremap <leader>ve :e $MYVIMRC<CR>
+nnoremap <leader>vL :tabe $HOME/.vim/lsp.vim<CR>
+nnoremap <leader>vl :e $HOME/.vim/lsp.vim<CR>
+nnoremap <leader>vM :tabe $HOME/.vim/mappings.vim<CR>
+nnoremap <leader>vm :e $HOME/.vim/mappings.vim<CR>
+nnoremap <leader>vP :tabe $HOME/.vim/plugins.vim<CR>
+nnoremap <leader>vp :e $HOME/.vim/plugins.vim<CR>
+nnoremap <leader>vC :tabe $HOME/.vim/config.vim<CR>
+nnoremap <leader>vc :e $HOME/.vim/config.vim<CR>
 
 " Splits
 nnoremap <leader>\| :vs<CR>
@@ -130,7 +135,7 @@ vnoremap <leader>d :<C-u>call duplicate#duplicate('`<', '`>')<CR>
 " Repl-it
 nnoremap <expr> <leader>r repl_it#normal_mode()
 vnoremap <leader>r :<C-u>call repl_it#visual_mode()<CR>
-" nmap <leader>rr V<leader>r
+nmap <leader>rr V<leader>r
 
 " Vim-Lsp
 nmap <silent> ]a :LspNextDiagnostic<CR>
