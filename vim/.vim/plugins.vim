@@ -41,17 +41,20 @@ call plug#begin('~/.vim/plugged')
   let g:lsp_diagnostics_enabled = 1
   let g:lsp_diagnostics_float_cursor = 1
   let g:lsp_virtual_text_enabled = 0
+  let g:lsp_signs_error = {'text': '✗'}
+  let g:lsp_signs_warning = {'text': '‼'}
+  let g:lsp_signs_hint = {'text': '?'}
   hi! LspInformationText ctermfg=239 ctermbg=3
   hi! LspHintText ctermfg=239 ctermbg=3
   " }}}
 
-  " {{{ VimJavascript
+  " {{{ Javascript
   Plug 'pangloss/vim-javascript', {'for': ['typescript', 'javascript', 'typescriptreact', 'javascriptreact']}
   Plug 'MaxMEllon/vim-jsx-pretty', {'for': ['typescript', 'javascript', 'typescriptreact', 'javascriptreact']}
   Plug 'leafgarland/typescript-vim', {'for': ['typescript', 'javascript', 'typescriptreact', 'javascriptreact']}
   " }}}
 
-  " {{{ VimGraphql
+  " {{{ Graphql
   Plug 'jparise/vim-graphql', {'for': ['typescript', 'javascript', 'typescriptreact', 'javascriptreact']}
   " }}}
 
@@ -105,4 +108,4 @@ call plug#begin('~/.vim/plugged')
   " }}}
 call plug#end()
 
-" vim: foldmethod=marker:foldlevel=1
+" vim: foldmethod=marker:foldlevel=0
