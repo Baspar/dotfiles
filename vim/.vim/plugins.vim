@@ -58,13 +58,13 @@ call plug#begin('~/.vim/plugged')
   Plug 'jparise/vim-graphql', {'for': ['typescript', 'javascript', 'typescriptreact', 'javascriptreact']}
   " }}}
 
-  " {{{ Rust.Vim
+  " {{{ Rust
   Plug 'rust-lang/rust.vim', {'for': ['rust']}
   " }}}
 
-  " {{{ VimSexp
-  Plug 'guns/vim-sexp', {'for': ['clojure']}
+  " {{{ Clojure
   Plug 'guns/vim-clojure-static', {'for': ['clojure']}
+  Plug 'guns/vim-sexp', {'for': ['clojure']}
   Plug 'tpope/vim-sexp-mappings-for-regular-people', {'for': ['clojure']}
   let g:clojure_align_multiline_strings = 1
   let g:sexp_insert_after_wrap = 'false'
