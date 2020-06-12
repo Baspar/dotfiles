@@ -23,7 +23,7 @@ function! repl_it#send_to(type, ...)
   endif
 
   let text = trim(@r)
-  let text = escape(text, '"%#')
+  let text = escape(text, '"%#;')
   let text = substitute(text, '\n', '" Enter "', 'g')
 
   call repl_it#send(pane, text)
