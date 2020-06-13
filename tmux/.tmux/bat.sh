@@ -43,6 +43,5 @@ else
     COLOR='#AF5F5E'
     FONT='white'
 fi
-echo "#[bg=$BACKGROUND_COLOR,fg=$COLOR]#[bg=$COLOR,fg=$FONT] $PERCENTAGE% $SIGN"
+echo "#[bg=$BACKGROUND_COLOR,fg=$COLOR]$RIGHT_SEPARATOR#[bg=$COLOR,fg=$FONT] $PERCENTAGE% $SIGN"
 
-#Powerline characters: 
