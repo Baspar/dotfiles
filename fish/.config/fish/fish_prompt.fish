@@ -1,9 +1,50 @@
 #!/usr/bin/env fish
 
 # set -g FISH_SEPARATOR "░"
-set -g FISH_SEPARATOR ""
+set -g FISH_SEPARATOR "$LEFT_SEPARATOR"
+
+set -g OLD_BG ""
+set -g ELLIPSIS "·"
+set -g ELLIPSIS_AFTER "3"
+
+function block
+  # Function block
+  #
+  # @param BG: Background color of the block
+  # @param FG: Foreground color of the block
+  # @param ...TEXT: Text to display in the block
+  #
+  # @returns: A block with style and text
+
+  echo $argv | read -d ' ' -l BG FG TEXT
+
+  if [ "$OLD_BG" != "" ] && [ -z "$FISH_NO_POWERLINE" ]
+    set_color $OLD_BG -b $BG
+    echo -n $FISH_SEPARATOR
+  end
+
+  set -g SKIP_ELLIPSIS 0
+  set_color $FG -b $BG
+  for TEXT_BLOCK in (echo "$TEXT" | tr "$ELLIPSIS" '\n')
+    if [ $SKIP_ELLIPSIS  -ne 0 ]
+      set_color '#666666' -b $BG
+      echo -n "$ELLIPSIS"
+      set_color $FG -b $BG
+    end
+    echo -n "$TEXT_BLOCK"
+    set -g SKIP_ELLIPSIS 1
+  end
+  set -g OLD_BG $BG
+  set_color normal -b normal
+end
 
 function fish_mode_prompt
+  # Function fish_mode_prompt
+  #
+  # @returns Vi mode prompt
+
+  set -g OLD_BG ""
+
   if [ "$fish_bind_mode" = "insert" ]
     set LETTER "I"
     set COLOR "#AF875F"
@@ -18,44 +59,13 @@ function fish_mode_prompt
     set COLOR "white"
   end
 
-  set_color "black" -b "$COLOR"
-  echo -n " $LETTER "
-  set_color "normal"
-
-  if [ -z "$FISH_NO_POWERLINE" ]
-    set_color "$COLOR" -b "#3e3e3e"
-    echo -n $FISH_SEPARATOR
-  end
+  block "$COLOR" "black" " $LETTER "
 end
 
 function fish_prompt
   # Function fish_prompt
   #
-  # @returns A fancy prompt
-
-  set -g OLD_BG ""
-
-  function block
-    # Function block
-    #
-    # @param BG: Background color of the block
-    # @param FG: Foreground color of the block
-    # @param ...TEXT: Text to display in the block
-    #
-    # @returns: A block with style and text
-
-    echo $argv | read -d ' ' -l BG FG TEXT
-
-    if [ "$OLD_BG" != "" ] && [ -z "$FISH_NO_POWERLINE" ]
-      set_color $OLD_BG -b $BG
-      echo -n $FISH_SEPARATOR
-    end
-
-    set_color $FG -b $BG
-    echo -n "$TEXT"
-    set -g OLD_BG $BG
-    set_color normal -b normal
-  end
+  # @returns Main prompt
 
   function abbr_path
     # Function abbr_path
@@ -64,8 +74,8 @@ function fish_prompt
     #
     # @returns: An abbreviated version of the PATH_PART (one letter, but keep prefix special characters)
     #           with $HOME replaced by ~
-    echo -n $argv | sed "s#^$HOME#~#; s#\([^/]\{3\}\)[^/][^/]*/#\1…/#g"
 
+    echo -n $argv | sed "s#^$HOME#~#; s#\([^/]\{$ELLIPSIS_AFTER\}\)[^/]\{1,\}/#\1$ELLIPSIS/#g"
   end
 
   function darker_of

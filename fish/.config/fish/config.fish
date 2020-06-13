@@ -26,5 +26,6 @@ if [ -f '/Users/baspar/.gcloud/path.fish.inc' ]
     . '/Users/baspar/.gcloud/path.fish.inc'
 end
 
+source ~/.config/fish/fish_prompt.fish
 abbr java11 "set -x JAVA_HOME /Library/Java/JavaVirtualMachines/jdk-11.0.2.jdk/Contents/Home"
 abbr java8 "set -x JAVA_HOME /Library/Java/JavaVirtualMachines/jdk1.8.0_202.jdk/Contents/Home"
