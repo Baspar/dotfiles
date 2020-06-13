@@ -1,5 +1,33 @@
 #!/usr/bin/env fish
 
+# set -g FISH_SEPARATOR "░"
+set -g FISH_SEPARATOR ""
+
+function fish_mode_prompt
+  if [ "$fish_bind_mode" = "insert" ]
+    set LETTER "I"
+    set COLOR "#AF875F"
+  else if [ "$fish_bind_mode" = "visual" ]
+    set LETTER "V"
+    set COLOR "#AF5F5E"
+  else if [ "$fish_bind_mode" = "autocomplete" ]
+    set LETTER "X"
+    set COLOR "#AF5F5E"
+  else
+    set LETTER "N"
+    set COLOR "white"
+  end
+
+  set_color "black" -b "$COLOR"
+  echo -n " $LETTER "
+  set_color "normal"
+
+  if [ -z "$FISH_NO_POWERLINE" ]
+    set_color "$COLOR" -b "#3e3e3e"
+    echo -n $FISH_SEPARATOR
+  end
+end
+
 function fish_prompt
   # Function fish_prompt
   #
@@ -20,7 +48,7 @@ function fish_prompt
 
     if [ "$OLD_BG" != "" ] && [ -z "$FISH_NO_POWERLINE" ]
       set_color $OLD_BG -b $BG
-      echo -n ""
+      echo -n $FISH_SEPARATOR
     end
 
     set_color $FG -b $BG
@@ -36,8 +64,8 @@ function fish_prompt
     #
     # @returns: An abbreviated version of the PATH_PART (one letter, but keep prefix special characters)
     #           with $HOME replaced by ~
+    echo -n $argv | sed "s#^$HOME#~#; s#\([^/]\{3\}\)[^/][^/]*/#\1…/#g"
 
-    echo -n $argv | sed "s#^$HOME#~#; s#\([^/a-zA-Z0-9]*[a-zA-Z0-9]\)[^/]*/#\1/#g"
   end
 
   function darker_of
