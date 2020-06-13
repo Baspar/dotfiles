@@ -65,7 +65,6 @@ func! Coc(field)
     endtry
 endfunc
 func! CocWarning()
-  return ''
   let warning = lsp#get_buffer_diagnostics_counts().warning
   if warning == 0
     return ''
@@ -73,7 +72,6 @@ func! CocWarning()
   return warning
 endfunc
 func! CocError()
-  return ''
   let error = lsp#get_buffer_diagnostics_counts().error
   if error == 0
     return ''
@@ -157,6 +155,6 @@ let g:lightline = {
             \   'cocError': 'CocError',
             \   'readOnlyModified': 'ReadOnlyModified'
             \ },
-            \ 'separator': { 'left': '', 'right': '' },
-            \ 'subseparator': { 'left': '', 'right': '' }
+            \ 'separator': { 'left': $LEFT_SEPARATOR, 'right': $RIGHT_SEPARATOR },
+            \ 'subseparator': { 'left': $LEFT_SUB_SEPARATOR, 'right': $RIGHT_SUB_SEPARATOR }
             \ }
