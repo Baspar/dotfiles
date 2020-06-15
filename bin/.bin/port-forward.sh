@@ -1,11 +1,19 @@
 #!/usr/bin/env bash
 MODE="normal"
-for ARG in $*
+ADDRESS=""
+
+while (( "$#" ))
 do
-  if [ "$ARG" == "--mock" ]
-  then
-    MODE="mock"
-  fi
+    case "$1" in
+        "--mock") 
+            MODE="mock"
+            shift
+            ;;
+        "--address") 
+            ADDRESS="--address=$2"
+            shift 2
+            ;;
+    esac
 done
 
 [ "$FZF_TMUX_HEIGHT" ] || {
@@ -59,7 +67,7 @@ do
 done
 [ "$PORT_PARAM" ] || exit 1
 
-echo "kubectl port-forward --namespace $NAMESPACE $POD$PORT_PARAM"
+echo "kubectl port-forward $ADDRESS --namespace $NAMESPACE $POD$PORT_PARAM"
 [ "$MODE" == "normal" ] && {
-  kubectl port-forward --namespace $NAMESPACE $POD$PORT_PARAM
+  kubectl port-forward $ADDRESS --namespace $NAMESPACE $POD$PORT_PARAM
 }
