@@ -2,7 +2,8 @@
 :: music @ : yabai -m config active_window_border_color 0xffffffff
 
 # open terminal, blazingly fast compared to iTerm/Hyper
-alt - w : open /Applications/Alacritty.app/ -n
+# alt - w : open /Applications/Alacritty.app/ -n
+alt - w : /Applications/Kitty.app/Contents/MacOS/kitty --single-instance -d ~
 
 # close focused window
 # alt - d : chunkc tiling::window --close
