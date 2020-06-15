@@ -9,10 +9,10 @@ set -Ux FZF_DEFAULT_COMMAND 'rg -l .'
 # set -Ux LEFT_SUB_SEPARATOR ""
 # set -Ux RIGHT_SUB_SEPARATOR ""
 
-set -Ux LEFT_SEPARATOR "░"
-set -Ux RIGHT_SEPARATOR "░"
-set -Ux LEFT_SUB_SEPARATOR "░"
-set -Ux RIGHT_SUB_SEPARATOR "░"
+set -Ux LEFT_SEPARATOR "▒"
+set -Ux RIGHT_SEPARATOR "▒"
+set -Ux LEFT_SUB_SEPARATOR "▒"
+set -Ux RIGHT_SUB_SEPARATOR "▒"
 
 set -Ux NVM_DIR "$HOME/.nvm"
 set PATH "$HOME/.bin" "$HOME/.rvm/bin" "$HOME/.yarn/bin" "$HOME/.cargo/bin/" $PATH
