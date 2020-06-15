@@ -61,7 +61,7 @@ PS1='\[\e[43m\e[30m \u@\h \e[100m \W \$\[\e[m\] '
 # Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
 export PATH="$PATH:$HOME/.rvm/bin"
 
-export LEFT_SEPARATOR=""
-export RIGHT_SEPARATOR=""
-export LEFT_SUB_SEPARATOR=""
-export RIGHT_SUB_SEPARATOR=""
+export LEFT_SEPARATOR="▒"
+export RIGHT_SEPARATOR="▒"
+export LEFT_SUB_SEPARATOR="▒"
+export RIGHT_SUB_SEPARATOR="▒"
