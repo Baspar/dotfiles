@@ -9,7 +9,8 @@ function! repl_it#get_tmux_pane(count)
 endfunction
 
 function! repl_it#send(pane, text)
-  execute 'silent! !tmux send-keys -t "\' . a:pane . '" "' . a:text . '" Enter'
+  execute 'silent! !tmux send-keys -l -t "\' . a:pane . '" "' . a:text . '"'
+  execute 'silent! !tmux send-keys -t "\' . a:pane . '" Enter'
 endfunction
 
 function! repl_it#send_to(type, ...)
@@ -23,10 +24,11 @@ function! repl_it#send_to(type, ...)
   endif
 
   let text = trim(@r)
-  let text = escape(text, '"%#;')
-  let text = substitute(text, '\n', '" Enter "', 'g')
+  let text = escape(text, '$"%#;')
 
-  call repl_it#send(pane, text)
+  for block in split(text, '\n')
+    call repl_it#send(pane, block)
+  endfor
 endfunction
 
 function! repl_it#normal_mode()
