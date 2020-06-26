@@ -2,6 +2,7 @@ filetype plugin on
 
 " {{{ General options
   set nowrap
+  set noemoji
   set backspace=indent,eol,start
   set nocompatible
   set encoding=utf8
@@ -70,6 +71,10 @@ filetype plugin on
 " {{{ Trailing spaces
 hi! TrailingSpaces ctermbg=131 guibg=#af5f5f
 match TrailingSpaces / \+$/
+" }}}
+
+" {{{ Change default SQL mapping
+let g:ftplugin_sql_omni_key = '<C-s>'
 " }}}
 
 " vim: foldmethod=marker:foldlevel=0
