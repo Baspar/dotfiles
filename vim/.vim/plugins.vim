@@ -41,7 +41,7 @@ call plug#begin('~/.vim/plugged')
   let g:lsp_diagnostics_enabled = 1
   let g:lsp_diagnostics_float_cursor = 1
   let g:lsp_virtual_text_enabled = 0
-  let g:lsp_documentation_float = 0
+  " let g:lsp_documentation_float = 0
   let g:lsp_signs_error = {'text': '✗'}
   let g:lsp_signs_warning = {'text': '‼'}
   let g:lsp_signs_hint = {'text': '?'}
