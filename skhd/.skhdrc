@@ -54,7 +54,7 @@ shift + cmd - 0 : yabai -m window --space 10
 alt - s : yabai -m window --toggle zoom-fullscreen
 
 # toggle float
-alt - f: yabai -m window --toggle float; \
+alt - g: yabai -m window --toggle float; \
          yabai -m window --toggle sticky; \
          yabai -m window --toggle topmost;
 
