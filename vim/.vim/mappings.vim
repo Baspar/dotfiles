@@ -86,9 +86,6 @@ nnoremap <leader>_ :sp<CR>
 nnoremap <leader>- :sp<CR>
 nnoremap <C-w><C-w> <C-w>\|<C-w>_
 
-" Remove highlight
-nnoremap <C-l> :noh<CR>
-
 " Plug
 noremap <leader>pi :PlugInstall<CR>
 noremap <leader>pu :PlugUpdate<CR>
@@ -162,3 +159,11 @@ nnoremap <S-down> ddp
 vnoremap <S-down> dpV`]
 vnoremap <S-up> dkPV`]
 nnoremap <S-up> ddkP
+
+" VimSneak
+nnoremap <C-l> :nohlsearch<bar>call sneak#cancel()<cr><c-l>
+nnoremap <C-c> :call sneak#cancel()<cr><C-c>
+nmap f <Plug>Sneak_f
+nmap F <Plug>Sneak_F
+nmap t <Plug>Sneak_t
+nmap T <Plug>Sneak_T

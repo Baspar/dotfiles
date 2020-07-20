@@ -77,4 +77,5 @@ match TrailingSpaces / \+$/
 let g:ftplugin_sql_omni_key = '<C-s>'
 " }}}
 
+hi! Sneak ctermfg=237 ctermbg=3 guifg=#3A3A3A guibg=#AF875F
 " vim: foldmethod=marker:foldlevel=0

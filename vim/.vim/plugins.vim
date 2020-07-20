@@ -28,8 +28,9 @@ call plug#begin('~/.vim/plugged')
   Plug 'baspar/vim-cartographe'
   " }}}
 
-  " {{{ VimEasymotion
-  Plug 'easymotion/vim-easymotion'
+  " {{{ VimSneak
+  Plug 'justinmk/vim-sneak'
+  let g:sneak#s_next = 1
   " }}}
 
   " {{{ VimLSP
