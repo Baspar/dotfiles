@@ -64,6 +64,14 @@ call plug#begin('~/.vim/plugged')
   Plug 'rust-lang/rust.vim', {'for': ['rust']}
   " }}}
 
+  " {{{ Fish
+  Plug 'dag/vim-fish'
+  " }}}
+
+  " {{ Smarty
+  Plug 'blueyed/smarty.vim'
+  " }}
+
   " {{{ Clojure
   Plug 'guns/vim-clojure-static', {'for': ['clojure']}
   Plug 'guns/vim-sexp', {'for': ['clojure']}
