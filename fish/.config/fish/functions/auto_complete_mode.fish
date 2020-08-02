@@ -80,6 +80,52 @@ function auto_complete_mode
   end
 
   #######
+  # K3S #
+  #######
+
+  function fzf-k3s-namespaces
+    set DATA (env KUBECONFIG="$HOME/.kube/config-multipass" kubectl get namespace)
+    set INDEX 1
+    set NAMESPACE (fzf_search $DATA $INDEX)
+
+    commandline -i -- "$NAMESPACE"
+  end
+
+  function fzf-k3s-services
+    set DATA (env KUBECONFIG="$HOME/.kube/config-multipass" kubectl get svc -A)
+    set INDEX 2
+    set SERVICE (fzf_search $DATA $INDEX)
+
+    commandline -i -- "$SERVICE"
+  end
+
+  function fzf-k3s-pods
+    set DATA (env KUBECONFIG="$HOME/.kube/config-multipass" kubectl get pods -A)
+    set INDEX 2
+    set POD (fzf_search $DATA $INDEX)
+
+    commandline -i -- "$POD"
+  end
+
+  function fzf-k3s
+    echo ""
+    echo -e "K3S\nPods\nNamespaces\nServices" \
+      | eval (_fzf) \
+      | read -l MODE; or return
+
+    switch "$MODE"
+      case Pods
+        fzf-k3s-pods
+      case Namespaces
+        fzf-k3s-namespaces
+      case Services
+        fzf-k3s-services
+    end
+
+    commandline -f repaint
+  end
+
+  #######
   # K8S #
   #######
 
@@ -135,6 +181,8 @@ function auto_complete_mode
     bind \e  -M autocomplete --sets-mode insert force-repaint
     bind d   -M autocomplete --sets-mode insert fzf-docker
     bind k   -M autocomplete --sets-mode insert fzf-k8s
+    bind K   -M autocomplete --sets-mode insert fzf-k3s
+    # bind K   -M autocomplete --sets-mode insert "fzf-k8s \"
   end
 
   if bind -M insert > /dev/null 2>&1
