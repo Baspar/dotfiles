@@ -31,6 +31,7 @@ filetype plugin on
 
 " {{{ Color
   syntax on
+  set synmaxcol=300
   colorscheme alduin
   if exists('+termguicolors')
     let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
