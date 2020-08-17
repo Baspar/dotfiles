@@ -50,7 +50,7 @@ call plug#begin('~/.vim/plugged')
   " }}}
 
   " {{{ Javascript
-  Plug 'yuezk/vim-js'
+  Plug 'pangloss/vim-javascript', {'for': ['typescript', 'javascript', 'typescriptreact', 'javascriptreact']}
   Plug 'HerringtonDarkholme/yats.vim'
   Plug 'maxmellon/vim-jsx-pretty'
   " }}}
