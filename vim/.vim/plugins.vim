@@ -50,9 +50,9 @@ call plug#begin('~/.vim/plugged')
   " }}}
 
   " {{{ Javascript
-  Plug 'pangloss/vim-javascript', {'for': ['typescript', 'javascript', 'typescriptreact', 'javascriptreact']}
-  Plug 'MaxMEllon/vim-jsx-pretty', {'for': ['typescript', 'javascript', 'typescriptreact', 'javascriptreact']}
-  Plug 'leafgarland/typescript-vim', {'for': ['typescript', 'javascript', 'typescriptreact', 'javascriptreact']}
+  Plug 'yuezk/vim-js'
+  Plug 'HerringtonDarkholme/yats.vim'
+  Plug 'maxmellon/vim-jsx-pretty'
   " }}}
 
   " {{{ Graphql
