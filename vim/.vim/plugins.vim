@@ -33,20 +33,21 @@ call plug#begin('~/.vim/plugged')
   " }}}
 
   " {{{ VimLSP
-  Plug 'prabirshrestha/vim-lsp'
-  Plug 'prabirshrestha/async.vim'
-  Plug 'prabirshrestha/asyncomplete.vim'
-  Plug 'prabirshrestha/asyncomplete-lsp.vim'
-  let g:lsp_diagnostics_echo_cursor = 1
-  let g:lsp_diagnostics_enabled = 1
-  let g:lsp_diagnostics_float_cursor = 1
-  let g:lsp_virtual_text_enabled = 0
-  " let g:lsp_documentation_float = 0
-  let g:lsp_signs_error = {'text': '✗'}
-  let g:lsp_signs_warning = {'text': '‼'}
-  let g:lsp_signs_hint = {'text': '?'}
-  hi! LspInformationText ctermfg=239 ctermbg=3
-  hi! LspHintText ctermfg=239 ctermbg=3
+  " Plug 'prabirshrestha/vim-lsp'
+  " Plug 'prabirshrestha/async.vim'
+  " Plug 'prabirshrestha/asyncomplete.vim'
+  " Plug 'prabirshrestha/asyncomplete-lsp.vim'
+  " let g:lsp_diagnostics_echo_cursor = 1
+  " let g:lsp_diagnostics_enabled = 1
+  " let g:lsp_diagnostics_float_cursor = 1
+  " let g:lsp_virtual_text_enabled = 0
+  " " let g:lsp_documentation_float = 0
+  " let g:lsp_signs_error = {'text': '✗'}
+  " let g:lsp_signs_warning = {'text': '‼'}
+  " let g:lsp_signs_hint = {'text': '?'}
+  " hi! LspInformationText ctermfg=239 ctermbg=3
+  " hi! LspHintText ctermfg=239 ctermbg=3
+  Plug 'neoclide/coc.nvim'
   " }}}
 
   " {{{ Javascript

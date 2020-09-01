@@ -135,11 +135,11 @@ vnoremap <leader>r :<C-u>call repl_it#visual_mode()<CR>
 nmap <leader>rr V<leader>r
 
 " Vim-Lsp
-nmap <silent> ]a :LspNextDiagnostic<CR>
-nmap <silent> [a :LspPreviousDiagnostic<CR>
-nmap <silent> <localleader>i :LspImplementation<CR>
-nmap <silent> <localleader>r :LspReferences<CR>
-nmap <silent> <localleader><localleader> :LspHover<CR>
+nmap <silent> [a <Plug>(coc-diagnostic-prev)
+nmap <silent> ]a <Plug>(coc-diagnostic-next)
+nmap <silent> <localleader>i <Plug>(coc-implementation)
+nmap <silent> <localleader>r <Plug>(coc-references)
+nmap <silent> <localleader><localleader> :call CocAction('doHover')<CR>
 nmap <silent> <localleader>R :LspRename<CR>
 
 " Markdown
