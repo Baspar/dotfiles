@@ -65,16 +65,14 @@ func! Coc(field)
     endtry
 endfunc
 func! CocWarning()
-  " let warning = lsp#get_buffer_diagnostics_counts().warning
-  let warning = 0
+  let warning = Coc('warning')
   if warning == 0
     return ''
   endif
   return warning
 endfunc
 func! CocError()
-  " let error = lsp#get_buffer_diagnostics_counts().error
-  let error = 0
+  let error = Coc('error')
   if error == 0
     return ''
   endif
