@@ -135,6 +135,17 @@ bindsym $mod+Shift+8 move container to workspace $desktop8
 bindsym $mod+Shift+9 move container to workspace $desktop9
 bindsym $mod+Shift+0 move container to workspace $desktop10
 
+workspace $desktop1 output eDP1
+workspace $desktop2 output eDP1
+workspace $desktop3 output eDP1
+workspace $desktop4 output HDMI2
+workspace $desktop5 output HDMI2
+workspace $desktop6 output HDMI2
+workspace $desktop7 output HDMI2
+workspace $desktop8 output HDMI2
+workspace $desktop9 output HDMI2
+workspace $desktop10 output HDMI2
+
 # reload the configuration file
 bindsym $mod+Shift+c reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
