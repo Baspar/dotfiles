@@ -1,0 +1,17 @@
+anchor=bottom-right
+background-color=#202020
+border-color=#DFAF8F
+border-size=4
+progress-color=#DFAF8F
+
+# default-timeout=3000
+
+
+[app-name="Telegram Desktop"]
+group-by=summary
+
+[app-name="discord"]
+group-by=summary
+
+[category="MUTED"]
+progress-color=#DFAF8F77
