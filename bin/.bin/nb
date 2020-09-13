@@ -12,7 +12,6 @@ RELATIVE_SELECTED_FILE=$(echo -e "$FILES" | rofi \
     -dmenu \
     -p "Notes> " \
     -fullscreen \
-    -font 'MonofurForPowerline Nerd Font 30' \
     -theme '/home/baspar/.config/rofi/baspar.rasi' \
     -mesg 'Type your note name' \
     -matching fuzzy \
@@ -31,7 +30,6 @@ then
             -i \
             -dmenu \
             -fullscreen \
-            -font 'MonofurForPowerline Nerd Font 30' \
             -theme '/home/baspar/.config/rofi/baspar.rasi' \
             -mesg "Do you want to remove '$RELATIVE_SELECTED_FILE'")
 

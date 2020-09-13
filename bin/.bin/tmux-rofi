@@ -7,7 +7,6 @@ RELATIVE_SELECTED_FILE=$(echo -e "$SESSIONS" | rofi \
     -p "Tmux Name> " \
     -dmenu \
     -fullscreen \
-    -font 'MonofurForPowerline Nerd Font 30' \
     -theme '/home/baspar/.config/rofi/baspar.rasi' \
     -mesg 'Tmux list' \
     -matching fuzzy)

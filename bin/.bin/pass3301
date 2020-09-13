@@ -17,7 +17,6 @@ function CREATE_PASSWORD () {
             -dmenu \
             -fullscreen \
             -password \
-            -font 'MonofurForPowerline Nerd Font 30' \
             -theme '/home/baspar/.config/rofi/baspar.rasi' \
             -mesg "${TEXT}" \
             -matching fuzzy)
@@ -28,7 +27,6 @@ function CREATE_PASSWORD () {
             -dmenu \
             -fullscreen \
             -password \
-            -font 'MonofurForPowerline Nerd Font 30' \
             -theme '/home/baspar/.config/rofi/baspar.rasi' \
             -mesg 'Type a second time' \
             -matching fuzzy)
@@ -51,7 +49,6 @@ function CREATE_PASSWORD () {
             -dmenu \
             -fullscreen \
             -filter "$REGEXP" \
-            -font 'MonofurForPowerline Nerd Font 30' \
             -theme '/home/baspar/.config/rofi/baspar.rasi' \
             -mesg "$TEXT" \
             -matching fuzzy)
@@ -67,7 +64,6 @@ function CREATE_PASSWORD () {
                 -dmenu \
                 -fullscreen \
                 -filter "$LENGTH" \
-                -font 'MonofurForPowerline Nerd Font 30' \
                 -theme '/home/baspar/.config/rofi/baspar.rasi' \
                 -mesg "$TEXT" \
                 -matching fuzzy)
@@ -106,7 +102,6 @@ function DECODE_FILE () {
             -p "Password> " \
             -fullscreen \
             -password \
-            -font 'MonofurForPowerline Nerd Font 30' \
             -theme '/home/baspar/.config/rofi/baspar.rasi' \
             -mesg "${TEXT}" \
             -matching fuzzy)
@@ -145,7 +140,6 @@ function HELP () {
             -p "Help> " \
             -fullscreen \
             -password \
-            -font 'MonofurForPowerline Nerd Font 30' \
             -theme '/home/baspar/.config/rofi/baspar.rasi' \
             -matching fuzzy >> /dev/null
     [ $? -ne 0 ] && exit 0
@@ -161,7 +155,6 @@ function REGENERATE_PASSWORD () {
             -p "Password> " \
             -fullscreen \
             -password \
-            -font 'MonofurForPowerline Nerd Font 30' \
             -theme '/home/baspar/.config/rofi/baspar.rasi' \
             -mesg "${TEXT}" \
             -matching fuzzy)
@@ -185,7 +178,6 @@ function REGENERATE_PASSWORD () {
             -dmenu \
             -fullscreen \
             -filter "$REGEXP" \
-            -font 'MonofurForPowerline Nerd Font 30' \
             -theme '/home/baspar/.config/rofi/baspar.rasi' \
             -mesg "$TEXT" \
             -matching fuzzy)
@@ -201,7 +193,6 @@ function REGENERATE_PASSWORD () {
                 -dmenu \
                 -fullscreen \
                 -filter "$LENGTH" \
-                -font 'MonofurForPowerline Nerd Font 30' \
                 -theme '/home/baspar/.config/rofi/baspar.rasi' \
                 -mesg "$TEXT" \
                 -matching fuzzy)
@@ -241,7 +232,6 @@ function CHANGE_PASSWORD () {
             -p "Password> " \
             -fullscreen \
             -password \
-            -font 'MonofurForPowerline Nerd Font 30' \
             -theme '/home/baspar/.config/rofi/baspar.rasi' \
             -mesg "${TEXT}" \
             -matching fuzzy)
@@ -263,7 +253,6 @@ function CHANGE_PASSWORD () {
             -dmenu \
             -fullscreen \
             -password \
-            -font 'MonofurForPowerline Nerd Font 30' \
             -theme '/home/baspar/.config/rofi/baspar.rasi' \
             -mesg "${TEXT}" \
             -matching fuzzy)
@@ -274,7 +263,6 @@ function CHANGE_PASSWORD () {
             -dmenu \
             -fullscreen \
             -password \
-            -font 'MonofurForPowerline Nerd Font 30' \
             -theme '/home/baspar/.config/rofi/baspar.rasi' \
             -mesg 'Type a second time' \
             -matching fuzzy)
@@ -305,7 +293,6 @@ do
         -p "Search> " \
         -dmenu \
         -fullscreen \
-        -font 'MonofurForPowerline Nerd Font 30' \
         -theme '/home/baspar/.config/rofi/baspar.rasi' \
         -mesg 'Which password do you want? (Alt-h: Help)' \
         -matching fuzzy \
