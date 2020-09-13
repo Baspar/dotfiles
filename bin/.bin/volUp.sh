@@ -1,11 +1,5 @@
 #!/bin/bash
 FILE=~/.bin/pid/volume
-pid=$(cat $FILE)
-if [[ $pid == "" ]]
-then
-    pid=$RANDOM
-    echo "$pid" > $FILE
-fi
 
 # pulseaudio-ctl up 5
 SINK_ID=$(ponymix list --sink | grep "^sink" | head -n $(($1 + 1)) | tail -n 1 | grep -o "sink [0-9]" | grep -o "[0-9]")
@@ -18,15 +12,24 @@ do
     INFO_SINK=$(echo "$INFO" | cut -d \n -f $((i * 2 + 1))-$((i * 2 + 2)))
     STATE=$(echo "$INFO" | head -n $((i * 2)) | tail -n 1 | grep "Muted")
     PERCENTAGE=$(echo "$INFO" | head -n $((i * 2)) | tail -n 1 | grep -o "[0-9]\+%" | sed 's#%##')
+
     if [ "$STATE" ]
     then
-        CHAR="░"
+        CATEGORY="MUTED"
     else
-        CHAR="█"
+        CATEGORY="UNMUTED"
     fi
 
-    notify-send \
+    PID=$(cat "$FILE-$i")
+
+    PID=$(notify-send.sh \
         -t 1000 \
-        -r $((pid + i)) \
-        "$(~/.bin/indicBattery.sh $PERCENTAGE $NAME -w 50 -c $CHAR)"
+        -r $PID \
+        -p \
+        --category=$CATEGORY \
+        --hint=int:value:$PERCENTAGE \
+        "$NAME"
+    )
+
+    echo "$PID" > "$FILE-$i"
 done
