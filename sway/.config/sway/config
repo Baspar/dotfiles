@@ -1,0 +1,309 @@
+# Default config for sway
+#
+# Copy this to ~/.config/sway/config and edit it to your liking.
+#
+# Read `man 5 sway` for a complete reference.
+
+# for_window [class="^.*"] border pixel 0
+
+default_border pixel 3
+
+### Variables
+#
+# Logo key. Use Mod1 for Alt.
+set $mod Mod1
+set $desktop1 "1"
+set $desktop2 "2"
+set $desktop3 "3"
+set $desktop4 "4"
+set $desktop5 "5"
+set $desktop6 "6"
+set $desktop7 "7"
+set $desktop8 "8"
+set $desktop9 "9"
+set $desktop10 "10"
+
+font pango:Fira Code 10
+
+# Home row direction keys, like vim
+set $left h
+set $down j
+set $up k
+set $right l
+# Your preferred terminal emulator
+set $term kitty
+
+floating_modifier $mod
+
+# start a terminal
+bindsym $mod+Return exec kitty
+bindsym $mod+w exec kitty
+
+# kill focused window
+bindsym $mod+d kill
+
+# start dmenu (a program launcher)
+bindsym $mod+e exec ~/.bin/exec.sh
+bindsym $mod+space exec ~/.bin/exec.sh
+bindsym XF86Search exec ~/.bin/exec.sh
+
+# start tmux-rofi
+bindsym $mod+b exec ~/.bin/tmux-rofi
+
+# start nb
+bindsym $mod+n exec ~/.bin/nb
+
+# start pass3301
+bindsym $mod+p exec ~/.bin/pass3301
+
+# alternatively, you can use the cursor keys:
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+# alternatively, you can use the cursor keys:
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+# split in horizontal orientation
+# bindsym $mod+h split h
+
+# split in vertical orientation
+# bindsym $mod+v split v
+bindsym $mod+q split toggle
+
+# enter fullscreen mode for the focused container
+bindsym $mod+s fullscreen toggle
+
+# change container layout (stacked, tabbed, toggle split)
+#bindsym $mod+s layout stacking
+#bindsym $mod+w layout tabbed
+#bindsym $mod+e layout toggle split
+
+# toggle tiling / floating
+bindsym $mod+Shift+space floating toggle
+
+# change focus between tiling / floating windows
+# bindsym $mod+space focus mode_toggle
+
+# focus the parent container
+bindsym $mod+a focus child
+
+# focus the child container
+bindsym $mod+Shift+a focus parent
+
+# switch to workspace
+bindsym $mod+1 workspace $desktop1
+bindsym $mod+2 workspace $desktop2
+bindsym $mod+3 workspace $desktop3
+bindsym $mod+4 workspace $desktop4
+bindsym $mod+5 workspace $desktop5
+bindsym $mod+6 workspace $desktop6
+bindsym $mod+7 workspace $desktop7
+bindsym $mod+8 workspace $desktop8
+bindsym $mod+9 workspace $desktop9
+bindsym $mod+0 workspace $desktop10
+
+# move focused container to workspace
+bindsym $mod+Shift+1 move container to workspace $desktop1
+bindsym $mod+Shift+2 move container to workspace $desktop2
+bindsym $mod+Shift+3 move container to workspace $desktop3
+bindsym $mod+Shift+4 move container to workspace $desktop4
+bindsym $mod+Shift+5 move container to workspace $desktop5
+bindsym $mod+Shift+6 move container to workspace $desktop6
+bindsym $mod+Shift+7 move container to workspace $desktop7
+bindsym $mod+Shift+8 move container to workspace $desktop8
+bindsym $mod+Shift+9 move container to workspace $desktop9
+bindsym $mod+Shift+0 move container to workspace $desktop10
+
+### Output configuration
+#
+# Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
+output * bg ~/.walls/4.jpg fill
+#
+# Example configuration:
+#
+output eDP-1 resolution 2560x1600 pos 0 0 scale 1.5
+output HDMI-A-2 resolution 1920x1080 pos 1706 0
+
+workspace $desktop1 output HDMI-A-2
+workspace $desktop2 output HDMI-A-2
+workspace $desktop3 output HDMI-A-2
+workspace $desktop4 output HDMI-A-2
+workspace $desktop5 output HDMI-A-2
+workspace $desktop6 output HDMI-A-2
+workspace $desktop7 output HDMI-A-2
+workspace $desktop8 output HDMI-A-2
+workspace $desktop9 output HDMI-A-2
+workspace $desktop10 output eDP-1
+
+# You can get the names of your outputs by running: swaymsg -t get_outputs
+
+### Idle configuration
+#
+# Example configuration:
+#
+# exec swayidle -w \
+#          timeout 300 'swaylock -f -c 000000' \
+#          timeout 600 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"' \
+#          before-sleep 'swaylock -f -c 000000'
+#
+# This will lock your screen after 300 seconds of inactivity, then turn off
+# your displays after another 300 seconds, and turn your screens back on when
+# resumed. It will also lock your screen before your computer goes to sleep.
+
+### Input configuration
+#
+# Example configuration:
+#
+#   input "2:14:SynPS/2_Synaptics_TouchPad" {
+#       dwt enabled
+#       tap enabled
+#       natural_scroll enabled
+#       middle_emulation enabled
+#   }
+#
+# You can get the names of your inputs by running: swaymsg -t get_inputs
+# Read `man 5 sway-input` for more information about this section.
+
+### Key bindings
+#
+# Basics:
+#
+    # Drag floating windows by holding down $mod and left mouse button.
+    # Resize them with right mouse button + $mod.
+    # Despite the name, also works for non-floating windows.
+    # Change normal to inverse to use left mouse button for resizing and right
+    # mouse button for dragging.
+    floating_modifier $mod normal
+
+    # Reload the configuration file
+    bindsym $mod+Shift+r reload
+
+    # Exit sway (logs you out of your Wayland session)
+    bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'
+#
+# Moving around:
+#
+    # Move the currently focused window to the scratchpad
+    bindsym $mod+Shift+minus move scratchpad
+
+    # Show the next scratchpad window or hide the focused scratchpad window.
+    # If there are multiple scratchpad windows, this command cycles through them.
+    bindsym $mod+Shift+plus scratchpad show
+#
+# Resizing containers:
+#
+
+
+bindsym $mod+Shift+b bar mode toggle
+
+mode "container" {
+        bindsym q layout toggle split
+        bindsym w layout stacking
+        bindsym e layout tabbed
+
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+mode "resize" {
+        bindsym j resize shrink height 10 px or 10 ppt
+        bindsym k resize grow height 10 px or 10 ppt
+        bindsym l resize shrink width 10 px or 10 ppt
+        bindsym h resize grow width 10 px or 10 ppt
+        bindsym Left resize shrink width 10 px or 10 ppt
+        bindsym Down resize grow height 10 px or 10 ppt
+        bindsym Up resize shrink height 10 px or 10 ppt
+        bindsym Right resize grow width 10 px or 10 ppt
+
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+mode "volume" {
+        bindsym Up exec ~/.bin/volUp.sh
+        bindsym Down exec ~/.bin/volDown.sh
+        bindsym space exec ~/.bin/volToggle.sh
+
+        bindsym Return exec kitty -e pulsemixer; mode "default"
+        bindsym $mod+v exec kitty -e pulsemixer; mode "default"
+        bindsym Escape mode "default"
+}
+mode "mocp" {
+        bindsym     Shift+f exec ~/.bin/PrevMOCP.sh
+        bindsym           f exec ~/.bin/NextMOCP.sh
+        bindsym           h exec ~/.bin/reverseMOCP.sh
+        bindsym           l exec ~/.bin/forwardMOCP.sh
+        bindsym       space exec ~/.bin/PPMOCP.sh
+        bindsym Shift+slash exec ~/.bin/sayMOCPSong.sh && sleep 1 && ~/.bin/sayMOCP.sh
+
+        bindsym Return exec kitty --title "MOCP - Music Player" mocp && i3-msg workspace back_and_forth; mode "default"
+        bindsym Escape mode "default"
+}
+
+
+bindsym $mod+r mode "resize"
+bindsym $mod+t mode "container"
+bindsym $mod+m mode "mocp"
+bindsym $mod+v mode "volume"
+bindsym $mod+Tab workspace back_and_forth
+
+# Keyboard brightness control
+bindsym XF86KbdBrightnessDown exec ~/.bin/keyboardBrightDown.sh
+bindsym XF86KbdBrightnessUp exec ~/.bin/keyboardBrightUp.sh
+
+# Volume control
+bindsym XF86AudioRaiseVolume exec ~/.bin/volUp.sh 0
+bindsym XF86AudioLowerVolume exec ~/.bin/volDown.sh 0
+bindsym XF86AudioMute exec ~/.bin/volToggle.sh 0
+bindsym Shift+XF86AudioRaiseVolume exec ~/.bin/volUp.sh 1
+bindsym Shift+XF86AudioLowerVolume exec ~/.bin/volDown.sh 1
+bindsym Shift+XF86AudioMute exec ~/.bin/volToggle.sh 1
+
+# Brightness Control
+bindsym XF86MonBrightnessUp exec ~/.bin/brightUp.sh
+bindsym XF86MonBrightnessDown exec  ~/.bin/brightDown.sh
+# bindsym XF86MonBrightnessUp exec xbacklight + 5
+# bindsym XF86MonBrightnessDown exec xbacklight - 5
+
+# Notification center
+bindsym $mod+Escape exec makoctl dismiss -a
+
+bar {
+    colors {
+        background #202020
+        focused_workspace #000000 #202020 #DFAF8F
+        active_workspace #000000 #202020 #998774
+        inactive_workspace #000000 #202020 #998774
+        urgent_workspace #000000 #DFAF8F #000000
+    }
+    mode hide
+    # status_command while :; do date; done
+    status_command i3blocks
+}
+
+# input {           # or input <identifier> 
+#     # xkb_layout us
+#     # xkb_options caps:escape
+# }
+
+
+gaps outer 10
+gaps inner 10
+
+client.focused #000000 #AF875F #000000 #936343
+
+exec --no-startup-id kanshi
+exec --no-startup-id mako
+
+include /etc/sway/config.d/*
