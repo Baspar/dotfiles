@@ -276,6 +276,10 @@ bindsym XF86MonBrightnessDown exec  ~/.bin/brightDown.sh
 # bindsym XF86MonBrightnessUp exec xbacklight + 5
 # bindsym XF86MonBrightnessDown exec xbacklight - 5
 
+# Screenshot
+bindsym Print exec ~/.bin/screenshot.sh --clipboard
+bindsym Shift+Print exec ~/.bin/screenshot.sh
+
 # Notification center
 bindsym $mod+Escape exec makoctl dismiss -a
 
