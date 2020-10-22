@@ -27,6 +27,8 @@ abbr gclone "git clone --recursive gh:"
 
 abbr y "yarn"
 abbr yd "yarn dev"
+abbr ys "yarn start"
+abbr yb "yarn build"
 abbr yt "yarn test"
 abbr yl "yarn lint"
 
