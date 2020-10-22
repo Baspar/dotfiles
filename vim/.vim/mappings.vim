@@ -67,6 +67,9 @@ nnoremap <leader>w :noh<CR>:w<CR>
 nnoremap <leader>q :q<CR>
 nnoremap <leader>Q :q!<CR>
 
+" Clear highlight
+nnoremap <C-l> :noh<CR>
+
 " Reload nvim config
 nnoremap <leader>vr :source $MYVIMRC<CR>
 nnoremap <leader>vE :tabe $MYVIMRC<CR>
