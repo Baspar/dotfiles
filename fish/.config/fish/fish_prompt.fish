@@ -56,10 +56,10 @@ function fish_mode_prompt
     set COLOR "#AF5F5E"
   else
     set LETTER "N"
-    set COLOR "white"
+    set COLOR "#FFFFFF"
   end
 
-  block "$COLOR" "black" " $LETTER "
+  block "$COLOR" "#000000" " $LETTER "
 end
 
 function fish_prompt
@@ -157,7 +157,7 @@ function fish_prompt
   end
 
 
-  set_color white -b '#3e3e3e'
+  set_color "#FFFFFF" -b '#3e3e3e'
 
   set TOTAL_PATH ''
   set ACCUMULATED_PATH ''
@@ -177,14 +177,14 @@ function fish_prompt
       set TOTAL_PATH "$TOTAL_PATH$ACCUMULATED_PATH"
 
       set ACCUMULATED_PATH (abbr_path "$ACCUMULATED_PATH")
-      block "#3e3e3e" "white" " $ACCUMULATED_PATH "
+      block "#3e3e3e" "#FFFFFF" " $ACCUMULATED_PATH "
 
       if [ "$GIT_AHEAD_OF" != "" ]
         set GIT_DARKER_BG (darker_of $GIT_BG_COLOR)
-        block "$GIT_DARKER_BG" "black" " $GIT_AHEAD_OF "
+        block "$GIT_DARKER_BG" "#000000" " $GIT_AHEAD_OF "
       end
 
-      block "$GIT_BG_COLOR" "black" " $GIT_STATUS "
+      block "$GIT_BG_COLOR" "#000000" " $GIT_STATUS "
       set ACCUMULATED_PATH ''
     end
   end
@@ -192,7 +192,7 @@ function fish_prompt
   [ "$ACCUMULATED_PATH" ] || set ACCUMULATED_PATH '/'
   set ACCUMULATED_PATH (abbr_path "$ACCUMULATED_PATH")
 
-  block "#3e3e3e" "white" " $ACCUMULATED_PATH "
+  block "#3e3e3e" "#FFFFFF" " $ACCUMULATED_PATH "
 
   block "normal" "normal" " "
 end
