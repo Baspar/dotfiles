@@ -1,6 +1,6 @@
 ls --color 1>/dev/null 2>/dev/null && alias ls='ls --color' || alias ls='ls -G'
-abbr l 'exa -l'
-abbr ll 'exa -la'
+command -v exa 1>/dev/null 2>/dev/null && abbr l 'exa -l'
+command -v exa 1>/dev/null 2>/dev/null && abbr ll 'exa -la'
 
 abbr gm 'git merge'
 abbr gd 'git diff'
