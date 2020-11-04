@@ -44,6 +44,7 @@ filetype plugin on
       hi! NonText ctermbg=NONE guibg=NONE
       hi! SignColumn ctermbg=233 guibg=#121212
       hi! Comment cterm=italic gui=italic
+      hi! Sneak ctermfg=237 ctermbg=3 guifg=#3A3A3A guibg=#AF875F
       hi! LspErrorHighlight cterm=undercurl gui=undercurl ctermfg=131 guifg=#af5f5f
       hi! LspWarningHighlight cterm=undercurl gui=undercurl ctermfg=180 guifg=#dfaf87
     endfunction
@@ -78,5 +79,4 @@ match TrailingSpaces / \+$/
 let g:ftplugin_sql_omni_key = '<C-s>'
 " }}}
 
-hi! Sneak ctermfg=237 ctermbg=3 guifg=#3A3A3A guibg=#AF875F
 " vim: foldmethod=marker:foldlevel=0
