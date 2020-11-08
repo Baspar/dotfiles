@@ -1,4 +1,8 @@
 call plug#begin('~/.vim/plugged')
+  " {{{ Vimspector
+  Plug 'puremourning/vimspector'
+  " }}}
+
   " {{{ AutoPairs
   Plug 'jiangmiao/auto-pairs'
   Plug 'alvan/vim-closetag'
@@ -69,9 +73,9 @@ call plug#begin('~/.vim/plugged')
   Plug 'dag/vim-fish'
   " }}}
 
-  " {{ Smarty
+  " {{{ Smarty
   Plug 'blueyed/smarty.vim'
-  " }}
+  " }}}
 
   " {{{ Clojure
   Plug 'guns/vim-clojure-static', {'for': ['clojure']}
