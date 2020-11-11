@@ -7,3 +7,8 @@ profile laptop_only {
   output eDP-1 mode 2560x1600 position 0,0 scale 1.5
   output HDMI-A-2 disable
 }
+
+profile output_only {
+  output eDP-1 disable
+  output HDMI-A-2 mode 1920x1080
+}

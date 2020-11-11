@@ -1,7 +1,8 @@
 anchor=bottom-right
 background-color=#202020
 border-color=#DFAF8F
-border-size=4
+border-size=2
+padding=10
 progress-color=#DFAF8F
 
 # default-timeout=3000
@@ -12,6 +13,9 @@ group-by=summary
 
 [app-name="discord"]
 group-by=summary
+
+[app-name="VOLUME"]
+layer=overlay
 
 [category="MUTED"]
 progress-color=#DFAF8F77

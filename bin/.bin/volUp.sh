@@ -26,6 +26,7 @@ do
         -t 1000 \
         -r $PID \
         -p \
+        --app-name=VOLUME \
         --category=$CATEGORY \
         --hint=int:value:$PERCENTAGE \
         "$NAME"

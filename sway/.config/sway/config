@@ -137,6 +137,9 @@ output * bg ~/.walls/4.jpg fill
 output eDP-1 resolution 2560x1600 pos 0 0 scale 1.5
 output HDMI-A-2 resolution 1920x1080 pos 1706 0
 
+bindswitch --reload --locked lid:on output eDP-1 disable
+bindswitch --reload --locked lid:off output eDP-1 enable
+
 workspace $desktop1 output HDMI-A-2
 workspace $desktop2 output HDMI-A-2
 workspace $desktop3 output HDMI-A-2

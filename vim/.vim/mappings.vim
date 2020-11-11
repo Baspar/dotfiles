@@ -162,3 +162,6 @@ nnoremap <S-down> ddp
 vnoremap <S-down> dpV`]
 vnoremap <S-up> dkPV`]
 nnoremap <S-up> ddkP
+
+" No Highlight + clear trailing space
+nnoremap <C-l> :noh<CR>
