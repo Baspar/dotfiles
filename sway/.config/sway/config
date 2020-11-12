@@ -54,7 +54,7 @@ bindsym $mod+b exec ~/.bin/tmux-rofi
 bindsym $mod+n exec ~/.bin/nb
 
 # start pass3301
-bindsym $mod+p exec ~/.bin/pass3301
+# bindsym $mod+p exec ~/.bin/pass3301
 
 # alternatively, you can use the cursor keys:
 bindsym $mod+h focus left
@@ -282,6 +282,8 @@ bindsym XF86MonBrightnessDown exec  ~/.bin/brightDown.sh
 # Screenshot
 bindsym Print exec ~/.bin/screenshot.sh --clipboard
 bindsym Shift+Print exec ~/.bin/screenshot.sh
+bindsym $mod+p exec ~/.bin/screenshot.sh --clipboard
+bindsym $mod+Shift+p exec ~/.bin/screenshot.sh
 
 # Notification center
 bindsym $mod+Escape exec makoctl dismiss -a
