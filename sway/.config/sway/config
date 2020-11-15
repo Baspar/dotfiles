@@ -53,9 +53,6 @@ bindsym $mod+b exec ~/.bin/tmux-rofi
 # start nb
 bindsym $mod+n exec ~/.bin/nb
 
-# start pass3301
-# bindsym $mod+p exec ~/.bin/pass3301
-
 # alternatively, you can use the cursor keys:
 bindsym $mod+h focus left
 bindsym $mod+j focus down
@@ -93,6 +90,7 @@ bindsym $mod+s fullscreen toggle
 
 # toggle tiling / floating
 bindsym $mod+Shift+space floating toggle
+bindsym $mod+f sticky toggle
 
 # change focus between tiling / floating windows
 # bindsym $mod+space focus mode_toggle
@@ -284,6 +282,7 @@ bindsym Print exec ~/.bin/screenshot.sh --clipboard
 bindsym Shift+Print exec ~/.bin/screenshot.sh
 bindsym $mod+p exec ~/.bin/screenshot.sh --clipboard
 bindsym $mod+Shift+p exec ~/.bin/screenshot.sh
+bindsym $mod+Shift+s exec ~/.bin/screenshot.sh --clipboard
 
 # Notification center
 bindsym $mod+Escape exec makoctl dismiss -a
