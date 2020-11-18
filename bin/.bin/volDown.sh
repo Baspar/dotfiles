@@ -20,6 +20,9 @@ do
     fi
 
     PID=$(cat "$FILE-$i")
+    [ "$PID" ] || {
+        PID=$RANDOM
+    }
 
     PID=$(notify-send.sh \
         -t 1000 \
