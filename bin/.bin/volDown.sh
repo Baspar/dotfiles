@@ -31,7 +31,7 @@ do
         --app-name=VOLUME \
         --category=$CATEGORY \
         --hint=int:value:$PERCENTAGE \
-        "$NAME"
+        "$NAME ($PERCENTAGE%)"
     )
 
     echo "$PID" > "$FILE-$i"

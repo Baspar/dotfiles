@@ -1,15 +1,19 @@
 FILE=~/.bin/pid/brightness
-pid=$(cat $FILE)
-if [[ $pid == "" ]]
-then
-    pid=$RANDOM
-    echo "$pid" > $FILE
-fi
+PID=$(cat $FILE)
+[ "$PID" ] || {
+    PID=$RANDOM
+}
 
-xbacklight + 10
+light -A 5
 
-
-notify-send \
-    -r $pid \
+PERCENTAGE=$(light -G | sed 's/\..*$//')
+PID=$(notify-send.sh \
+    -r $PID \
     -t 1000 \
-    "$(~/.bin/indicBattery.sh $(xbacklight | cut -d. -f1) -w 50)"
+    -p \
+    --app-name=BRIGHTNESS \
+    --hint=int:value:$PERCENTAGE \
+    "BRIGHTNESS ($PERCENTAGE%)"
+)
+
+echo "$PID" > "$FILE"
