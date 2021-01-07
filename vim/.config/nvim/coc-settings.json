@@ -1,4 +1,5 @@
 {
+  "coc.preferences.formatOnSaveFiletypes": ["scala"],
   "diagnostic": {
     "errorSign": "! ",
     "warningSign": "? ",
@@ -15,11 +16,6 @@
       "additionalSchemes": ["jar", "zipfile"],
       "trace.server": "verbose",
       "initializationOptions": {}
-    },
-    "metals": {
-      "command": "metals-vim",
-      "rootPatterns": ["build.sbt"],
-      "filetypes": ["scala", "sbt"]
     }
   },
   "list.normalMappings": {

@@ -142,8 +142,21 @@ nmap <silent> [a <Plug>(coc-diagnostic-prev)
 nmap <silent> ]a <Plug>(coc-diagnostic-next)
 nmap <silent> <localleader>i <Plug>(coc-implementation)
 nmap <silent> <localleader>r <Plug>(coc-references)
-nmap <silent> <localleader><localleader> :call CocAction('doHover')<CR>
+nmap <silent> <localleader><localleader> :CocAction<CR>
+xmap <silent> <localleader>f <Plug>(coc-format-selected)
+nmap <silent> <localleader>f <Plug>(coc-format-selected)
 nmap <silent> <localleader>R :LspRename<CR>
+" Use K to show documentation in preview window.
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
+  else
+    execute '!' . &keywordprg . " " . expand('<cword>')
+  endif
+endfunction
 
 " Markdown
 au FileType markdown nnoremap <localleader>n :normal o- [-]<CR>hr jk
