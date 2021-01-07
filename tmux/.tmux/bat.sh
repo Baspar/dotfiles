@@ -17,7 +17,7 @@ then
 fi
 
 [ "$PERCENTAGE" ] || {
-    return
+    return ""
 }
 
 if [ "$DISCHARGING" ]
@@ -38,10 +38,23 @@ elif [ "$CHARGING" ] ||[ "$CHARGED" ]
 then
     COLOR='#4e4e4e'
     FONT='white'
-    SIGN='ϟ '
 else
     COLOR='#AF5F5E'
     FONT='white'
 fi
-echo "#[bg=$BACKGROUND_COLOR,fg=$COLOR]$RIGHT_SEPARATOR#[bg=$COLOR,fg=$FONT] $PERCENTAGE% $SIGN"
+declare -A ICONS
+ICONS["0"]=""
+ICONS["10"]=""
+ICONS["20"]=""
+ICONS["30"]=""
+ICONS["40"]=""
+ICONS["50"]=""
+ICONS["60"]=""
+ICONS["70"]=""
+ICONS["80"]=""
+ICONS["90"]=""
+ICONS["100"]=""
+
+ICON=${ICONS[$(echo "$PERCENTAGE/10*10")]}
+echo "#[bg=$BACKGROUND_COLOR,fg=$COLOR]$RIGHT_SEPARATOR#[bg=$COLOR,fg=$FONT] $PERCENTAGE%%$ICON "
 
