@@ -1,6 +1,6 @@
 call plug#begin('~/.vim/plugged')
   " {{{ Vimspector
-  Plug 'puremourning/vimspector'
+  " Plug 'puremourning/vimspector'
   " }}}
 
   " {{{ AutoPairs
@@ -51,7 +51,8 @@ call plug#begin('~/.vim/plugged')
   " let g:lsp_signs_hint = {'text': '?'}
   " hi! LspInformationText ctermfg=239 ctermbg=3
   " hi! LspHintText ctermfg=239 ctermbg=3
-  Plug 'neoclide/coc.nvim'
+  Plug 'scalameta/coc-metals', {'do': 'yarn install --frozen-lockfile'}
+  Plug 'neoclide/coc.nvim', {'branch': 'release'}
   " }}}
 
   " {{{ Javascript
