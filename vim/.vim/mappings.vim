@@ -146,7 +146,6 @@ nmap <silent> <localleader><localleader> :CocAction<CR>
 xmap <silent> <localleader>f <Plug>(coc-format-selected)
 nmap <silent> <localleader>f <Plug>(coc-format-selected)
 nmap <silent> <localleader>R :LspRename<CR>
-" Use K to show documentation in preview window.
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 function! s:show_documentation()
   if (index(['vim','help'], &filetype) >= 0)
@@ -178,3 +177,7 @@ nnoremap <S-up> ddkP
 
 " No Highlight + clear trailing space
 nnoremap <C-l> :noh<CR>
+
+map <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
+\ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
+\ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
