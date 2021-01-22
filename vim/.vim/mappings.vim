@@ -58,7 +58,7 @@ noremap <leader>cd "+d
 " Buffer navigation
 nnoremap <leader>< :tabN<CR>
 nnoremap <leader>> :tabn<CR>
-nnoremap <leader><CR> :tabe<CR>
+nnoremap <leader><CR> :tabe<CR>:bp<CR>
 nnoremap <leader>bd :bn<CR> :bd #<CR>
 
 " Save  and exit
@@ -142,6 +142,7 @@ nmap <silent> [a <Plug>(coc-diagnostic-prev)
 nmap <silent> ]a <Plug>(coc-diagnostic-next)
 nmap <silent> <localleader>i <Plug>(coc-implementation)
 nmap <silent> <localleader>r <Plug>(coc-references)
+nmap <silent> <localleader>d <Plug>(coc-definition)
 nmap <silent> <localleader><localleader> :CocAction<CR>
 xmap <silent> <localleader>f <Plug>(coc-format-selected)
 nmap <silent> <localleader>f <Plug>(coc-format-selected)
@@ -175,8 +176,8 @@ au FileType netrw nmap <buffer> o <CR>
 " Add Move command (Visual / normal)
 nnoremap <S-down> ddp
 vnoremap <S-down> dpV`]
-vnoremap <S-up> dkPV`]
 nnoremap <S-up> ddkP
+vnoremap <S-up> dkPV`]
 
 " No Highlight + clear trailing space
 nnoremap <C-l> :noh<CR>
