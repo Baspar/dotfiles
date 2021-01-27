@@ -6,6 +6,7 @@ set -g FISH_SEPARATOR "$LEFT_SEPARATOR"
 set -g OLD_BG ""
 set -g ELLIPSIS "·"
 set -g ELLIPSIS_AFTER "3"
+set -g CR_AFTER_GIT 0
 
 function block
   # Function block
@@ -195,6 +196,12 @@ function fish_prompt
 
       block "$GIT_BG_COLOR" "#000000" " $GIT_STATUS "
       set ACCUMULATED_PATH ''
+
+      if [ $CR_AFTER_GIT -eq 1 ]
+        block "normal" "normal" " "
+        set -g OLD_BG ""
+        echo ""
+      end
     end
   end
 
