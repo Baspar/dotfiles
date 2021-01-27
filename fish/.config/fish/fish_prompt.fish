@@ -69,6 +69,8 @@ function fish_prompt
   #
   # @returns Main prompt
 
+  set -l _display_status $status
+
   function abbr_path
     # Function abbr_path
     #
@@ -159,7 +161,12 @@ function fish_prompt
   end
 
 
-  set_color "#FFFFFF" -b '#3e3e3e'
+  set -g OLD_BG ""
+
+  if [ "$_display_status" != "0" ]
+    set_color -o
+    block "#AF5F5E" "#000000" " $_display_status "
+  end
 
   set TOTAL_PATH ''
   set ACCUMULATED_PATH ''
