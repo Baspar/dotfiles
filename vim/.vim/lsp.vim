@@ -1,9 +1,10 @@
+" {{{ Typescript/Javascript
 " {{{ [x] ESLint Language Server
 if filereadable(glob('~/.vim/lsp-servers/eslint-language-server/eslint-language-server'))
   au User lsp_setup call lsp#register_server({
         \ 'name': 'eslint-language-server',
         \ 'cmd': {server_info->[&shell, &shellcmdflag, '~/.vim/lsp-servers/eslint-language-server/eslint-language-server --stdio']},
-        \ 'whitelist': ['javascript', 'javascript.jsx', 'typescript', 'typescript.jsx'],
+        \ 'whitelist': ['javascriptreact', 'javascript', 'javascript.jsx', 'typescriptreact', 'typescript', 'typescript.jsx'],
         \ 'initialization_options': { 'diagnostic': 'true' },
         \ 'workspace_config': {
         \   'validate': 'probe',
@@ -32,18 +33,16 @@ if filereadable(glob('~/.vim/lsp-servers/eslint-language-server/eslint-language-
         \ })
 endif
 " }}}
-
 " {{{ [x] TypeScript Language Server
 if executable('typescript-language-server')
   au User lsp_setup call lsp#register_server({
         \ 'name': 'typescript-language-server',
         \ 'cmd': {server_info->[&shell, &shellcmdflag, 'typescript-language-server --stdio']},
         \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'package.json'))},
-        \ 'whitelist': ['javascript', 'javascript.jsx', 'typescript', 'typescript.jsx'],
+        \ 'whitelist': ['javascriptreact', 'javascript', 'javascript.jsx', 'typescriptreact', 'typescript', 'typescript.jsx']
         \ })
 endif
 " }}}
-
 " {{{ [ ] Javascript Typescript STDIO
 " if filereadable(glob('~/.vim/lsp-servers/javascript-typescript-langserver/lib/language-server-stdio.js'))
 "     au User lsp_setup call lsp#register_server({
@@ -55,7 +54,9 @@ endif
 "     \ })
 " endif
 " }}}
+" }}}
 
+" {{{ Rust
 " {{{ [x] Rust Analyzer
 if executable('cargo')
   au User lsp_setup call lsp#register_server({
@@ -66,7 +67,9 @@ if executable('cargo')
         \ })
 endif
 " }}}
+" }}}
 
+" {{{ Clojure
 " {{{ [x] Kondo LSP
 if filereadable(glob('~/.vim/lsp-servers/kondo-lsp.jar'))
   au User lsp_setup call lsp#register_server({
@@ -77,7 +80,6 @@ if filereadable(glob('~/.vim/lsp-servers/kondo-lsp.jar'))
     \ })
 endif
 " }}}
-
 " {{{ [x] Clojure LSP
 if filereadable(glob('~/.vim/lsp-servers/clojure-lsp'))
   au User lsp_setup call lsp#register_server({
@@ -89,5 +91,19 @@ if filereadable(glob('~/.vim/lsp-servers/clojure-lsp'))
         \ })
 endif
 " }}}
+" }}}
 
+" {{{ Scala
+" {{{ [x] Metals
+if filereadable(glob('~/.vim/lsp-servers/metals'))
+  au User lsp_setup call lsp#register_server({
+        \   'name': 'metals',
+        \   'cmd': {server_info->[&shell, &shellcmdflag, '~/.vim/lsp-servers/metals']},
+        \   'root_uri': {server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'deps.edn'))},
+        \   'initialization_options': {'isHttpEnabled': 'true'},
+        \   'whitelist': ['scala', 'sbt'],
+        \ })
+endif
+" }}}
+" }}}
 " vim: foldmethod=marker:foldlevel=1

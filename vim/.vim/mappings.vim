@@ -58,7 +58,7 @@ noremap <leader>cd "+d
 " Buffer navigation
 nnoremap <leader>< :tabN<CR>
 nnoremap <leader>> :tabn<CR>
-nnoremap <leader><CR> :tabe<CR>:bp<CR>
+nnoremap <leader><CR> :tabe %<CR>
 nnoremap <leader>bd :bn<CR> :bd #<CR>
 
 " Save  and exit
@@ -137,7 +137,17 @@ nnoremap <expr> <leader>r repl_it#normal_mode()
 vnoremap <leader>r :<C-u>call repl_it#visual_mode()<CR>
 nmap <leader>rr V<leader>r
 
-" Vim-Lsp
+" Vim-LSP
+" nmap <silent> [a <Plug>(lsp-previous-diagnostic)
+" nmap <silent> ]a <Plug>(lsp-next-diagnostic)
+" nmap <silent> <localleader>i <Plug>(lsp-implementation)
+" nmap <silent> <localleader>r <Plug>(lsp-references)
+" nmap <silent> <localleader>d <Plug>(lsp-definition)
+" nmap <silent> <localleader><localleader> :LspCodeAction<CR>
+" nmap <silent> <localleader>R :LspRename<CR>
+" nnoremap <silent> K <plug>(lsp-hover)
+
+" CoC
 nmap <silent> [a <Plug>(coc-diagnostic-prev)
 nmap <silent> ]a <Plug>(coc-diagnostic-next)
 nmap <silent> <localleader>i <Plug>(coc-implementation)
