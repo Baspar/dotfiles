@@ -1,5 +1,5 @@
 source ~/.bash_aliases
-[ -e "~/.env.vandebron" ]; and bass source ~/.env.vandebron
+[ -e "$HOME/.env.vandebron" ]; and bass source ~/.env.vandebron
 set -Ux EDITOR nvim
 set -Ux LANG en_US.UTF-8
 set -Ux LC_CTYPE en_US.UTF-8
@@ -42,3 +42,7 @@ set fish_color_search_match --background='333'
 source ~/.config/fish/fish_prompt.fish
 abbr java11 "set -x JAVA_HOME /Library/Java/JavaVirtualMachines/jdk-11.0.2.jdk/Contents/Home"
 abbr java8 "set -x JAVA_HOME /Library/Java/JavaVirtualMachines/jdk1.8.0_202.jdk/Contents/Home"
+
+alias npm "functions --erase npm yarn node; load_nvm; npm $argv"
+alias yarn "functions --erase npm yarn node; load_nvm; yarn $argv"
+alias node "functions --erase npm yarn node; load_nvm; node $argv"

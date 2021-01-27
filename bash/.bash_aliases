@@ -48,8 +48,9 @@ abbr free 'free -h'
 abbr f 'free'
 
 command -v nvim > /dev/null && abbr vim 'nvim'
+
 command -v nvim > /dev/null && abbr vi  'nvim' || abbr vi 'vim'
-command -v nvim > /dev/null && abbr v   'nvim' || abbr vi 'vim'
+command -v nvim > /dev/null && abbr v   'nvim' || abbr v 'vim'
 
 abbr o 'xdg-open'
 
@@ -59,6 +60,5 @@ command -v pbcopy > /dev/null  || abbr pbcopy 'xsel --clipboard --input'
 command -v pbpaste > /dev/null || abbr pbpaste 'xsel --clipboard --output'
 
 abbr se 'sudoedit'
-abbr nvm 'bass source /usr/local/opt/nvm/nvm.sh --no-use ";" nvm'
 
 abbr fhf 'fzf --header-lines 1'

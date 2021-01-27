@@ -56,7 +56,7 @@ fs() {
 		| xargs tmux switch-client -t
 }
 
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+# [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
 PS1='\[\e[43m\e[30m \u@\h \e[100m \W \$\[\e[m\] '
 # Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
@@ -66,5 +66,13 @@ export LEFT_SEPARATOR="▒"
 export RIGHT_SEPARATOR="▒"
 export LEFT_SUB_SEPARATOR="▒"
 export RIGHT_SUB_SEPARATOR="▒"
+
 source "$HOME/.cargo/env"
-[ -e "~/.env.vandebron" ] && source ~/.env.vandebron
+[ -e "$HOME/.env.vandebron" ] && source ~/.env.vandebron
+
+export NVM_DIR="$HOME/.nvm"
+
+[ -s "$NVM_DIR/nvm.sh" ] && alias  nvm="unalias npm yarn node nvm; . \"$NVM_DIR/nvm.sh\"; nvm $@"
+[ -s "$NVM_DIR/nvm.sh" ] && alias  npm="unalias npm yarn node nvm; . \"$NVM_DIR/nvm.sh\"; npm $@"
+[ -s "$NVM_DIR/nvm.sh" ] && alias yarn="unalias npm yarn node nvm; . \"$NVM_DIR/nvm.sh\"; yarn $@"
+[ -s "$NVM_DIR/nvm.sh" ] && alias node="unalias npm yarn node nvm; . \"$NVM_DIR/nvm.sh\"; node $@"
