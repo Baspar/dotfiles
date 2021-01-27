@@ -39,11 +39,13 @@ function block
 end
 
 function fish_mode_prompt
+  # Disable default Vi prompt
+end
+
+function fish_mode_prompt_2
   # Function fish_mode_prompt
   #
   # @returns Vi mode prompt
-
-  set -g OLD_BG ""
 
   if [ "$fish_bind_mode" = "insert" ]
     set LETTER "I"
@@ -193,6 +195,11 @@ function fish_prompt
   set ACCUMULATED_PATH (abbr_path "$ACCUMULATED_PATH")
 
   block "#3e3e3e" "#FFFFFF" " $ACCUMULATED_PATH "
+  block "normal" "normal" ""
+  echo ""
 
+
+  set -g OLD_BG ""
+  echo -ne (fish_mode_prompt_2)
   block "normal" "normal" " "
 end
