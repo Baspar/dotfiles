@@ -1,5 +1,5 @@
 source ~/.bash_aliases
-[ -e "$HOME/.env.vandebron" ]; and bass source ~/.env.vandebron
+[ -e "$HOME/.env.vandebron" ]; and source ~/.env.vandebron
 set -Ux EDITOR nvim
 set -Ux LANG en_US.UTF-8
 set -Ux LC_CTYPE en_US.UTF-8
@@ -18,15 +18,13 @@ set -Ux RIGHT_SUB_SEPARATOR "▒"
 set -Ux NVM_DIR "$HOME/.nvm"
 set PATH "/Users/bastien/Library/Application Support/Coursier/bin" "$HOME/.bin" "$HOME/.rvm/bin" "$HOME/.yarn/bin" "$HOME/.cargo/bin/" $PATH
 [ -e ~/.config/ripgrep/rc ] && set -Ux RIPGREP_CONFIG_PATH "$HOME/.config/ripgrep/rc"
-# [ -s "/usr/local/opt/nvm/nvm.sh" ] && source "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
-# [ -s "/usr/local/opt/nvm/etc/bash_completion" ] && source "/usr/local/opt/nvm/etc/"
-# rvm default
 
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/Users/baspar/.gcloud/path.fish.inc' ]
     . '/Users/baspar/.gcloud/path.fish.inc'
 end
 
+# Import colorscheme
 if test -e ~/.dircolors
     switch (uname)
         case Darwin
