@@ -7,6 +7,7 @@ set -g OLD_BG ""
 set -g ELLIPSIS "·"
 set -g ELLIPSIS_AFTER "3"
 set -g CR_AFTER_GIT 0
+set -g NO_UNTRACKED 0
 
 function block
   # Function block
@@ -160,7 +161,9 @@ function fish_prompt
     set -l dirtystate (math (count $changedFiles) - (count (string match -r "U" -- $changedFiles)))
     set -l invalidstate (count (string match -r "U" -- $stagedFiles))
     set -l stagedstate (math (count $stagedFiles) - $invalidstate)
-    set -l untrackedfiles (command git -C "$GIT_ROOT" ls-files --others --exclude-standard :/ --directory --no-empty-directory | count)
+    if [ $NO_UNTRACKED -eq 0 ]
+      set untrackedfiles (command git -C "$GIT_ROOT" ls-files --others --exclude-standard :/ --directory --no-empty-directory | count)
+    end
 
     echo "$dirtystate|$invalidstate|$stagedstate|$untrackedfiles"
   end
@@ -206,11 +209,11 @@ function fish_prompt
     end
 
     # Icons
-    [ $GIT_STAGED -ge 1 ] && set ICONS "$ICONS+"
-    [ $GIT_DIRTY -ge 1 ] && set ICONS "$ICONS~"
-    [ $GIT_UNTRACKED -ge 1 ] && set ICONS "$ICONS?"
-    [ -n "$GIT_AHEAD" ] && [ $GIT_AHEAD -ge 1 ] && set ICONS "$ICONS↑"
-    [ -n "$GIT_BEHIND" ] && [ $GIT_BEHIND -ge 1 ] && set ICONS "$ICONS↓"
+    [ -n "$GIT_STAGED"    ] && [ $GIT_STAGED -ge 1    ] && set ICONS "$ICONS+"
+    [ -n "$GIT_DIRTY"     ] && [ $GIT_DIRTY -ge 1     ] && set ICONS "$ICONS~"
+    [ -n "$GIT_UNTRACKED" ] && [ $GIT_UNTRACKED -ge 1 ] && set ICONS "$ICONS?"
+    [ -n "$GIT_AHEAD"     ] && [ $GIT_AHEAD -ge 1     ] && set ICONS "$ICONS↑"
+    [ -n "$GIT_BEHIND"    ] && [ $GIT_BEHIND -ge 1    ] && set ICONS "$ICONS↓"
 
     # Build git string
     echo -n "$COLOR|$GIT_BRANCH|$GIT_OPERATION|$ICONS" | sed 's# $##'
