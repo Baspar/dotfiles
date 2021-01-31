@@ -212,15 +212,6 @@ function fish_prompt
     [ -n "$GIT_AHEAD" ] && [ $GIT_AHEAD -ge 1 ] && set ICONS "$ICONS↑"
     [ -n "$GIT_BEHIND" ] && [ $GIT_BEHIND -ge 1 ] && set ICONS "$ICONS↓"
 
-    if [ -n "$GIT_AHEAD" ] && [ $GIT_AHEAD -ge 1 ]
-      set ICONS "$ICONS↑"
-    end
-
-    if [ -n "$GIT_BEHIND" ] && [ $GIT_BEHIND -ge 1 ]
-      set ICONS "$ICONS↓"
-    end
-
-
     # Build git string
     echo -n "$COLOR|$GIT_BRANCH|$GIT_OPERATION|$ICONS" | sed 's# $##'
   end
