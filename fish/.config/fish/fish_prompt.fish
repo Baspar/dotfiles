@@ -1,6 +1,7 @@
 #!/usr/bin/env fish
 
 set -g FISH_SEPARATOR "$LEFT_SEPARATOR"
+set -g FISH_SUB_SEPARATOR "$LEFT_SUB_SEPARATOR"
 set -g OLD_BG ""
 set -g ELLIPSIS "·"
 set -g ELLIPSIS_AFTER "3"
@@ -19,8 +20,13 @@ function block
   echo $argv | read -d ' ' -l BG FG TEXT
 
   if [ "$OLD_BG" != "" ] && [ -z "$FISH_NO_POWERLINE" ]
-    set_color $OLD_BG -b $BG
-    echo -n $FISH_SEPARATOR
+    if [ "$OLD_BG" = "$BG" ]
+      set_color black -b $BG
+      echo -n $FISH_SUB_SEPARATOR
+    else
+      set_color $OLD_BG -b $BG
+      echo -n $FISH_SEPARATOR
+    end
   end
 
   set -g SKIP_ELLIPSIS 0
