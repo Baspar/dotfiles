@@ -1,8 +1,6 @@
 #!/usr/bin/env fish
 
-# set -g FISH_SEPARATOR "░"
 set -g FISH_SEPARATOR "$LEFT_SEPARATOR"
-
 set -g OLD_BG ""
 set -g ELLIPSIS "·"
 set -g ELLIPSIS_AFTER "3"
@@ -66,159 +64,183 @@ function fish_mode_prompt_2
   block "$COLOR" "#000000" " $LETTER "
 end
 
+
+function abbr_path
+  # Function abbr_path
+  #
+  # @param PATH_PART a part of the PATH
+  #
+  # @returns: An abbreviated version of the PATH_PART (one letter, but keep prefix special characters)
+  #           with $HOME replaced by ~
+
+  echo -n $argv | sed "s#^$HOME#~#; s#\([^/]\{$ELLIPSIS_AFTER\}\)[^/]\{1,\}/#\1$ELLIPSIS/#g"
+end
+
+function darker_of
+  # Function darker_of
+  #
+  # @param COLOR a color part of the list
+  #
+  # @returns: A darker shade of this color
+
+  if [ "$argv" = "#AF5F5E" ]
+    echo -n "#703D3D"
+  else if [ "$argv" = "#AF875F" ]
+    echo -n "#926E49"
+  else if [ "$argv" = "#4B8252" ]
+    echo -n "#38623E"
+  else
+    echo -n ""
+  end
+end
+
+
+function git_branch_name
+  # Function git_branch_name
+  #
+  # @param GIT_ROOT location of .git folder
+  #
+  # @returns:
+  echo $argv | read -d ' ' -l GIT_ROOT
+
+  [ -d "$GIT_ROOT/rebase-merge" ] && {
+    cat "$GIT_ROOT/rebase-merge/head-name" 2>/dev/null
+    return
+  }
+
+  set x (git -C "$GIT_ROOT" symbolic-ref HEAD 2> /dev/null)
+  if [ $status -eq 0 ]
+    echo $x | \
+      sed 's|refs/[^/]*/||g' | \
+      tr -d '\n'
+    return
+  end
+
+  echo (git -C "$GIT_ROOT" rev-parse HEAD | string match -r '^.{8}')…
+end
+
+function git_operation
+  # Function git_operation
+  #
+  # @param GIT_ROOT location of .git folder
+  #
+  # @returns: a symbol corresponding to the current operation
+  set GIT_ROOT $argv/.git
+
+  if test -d $GIT_ROOT/rebase-merge
+      set step (cat $GIT_ROOT/rebase-merge/msgnum 2>/dev/null)
+      set total (cat $GIT_ROOT/rebase-merge/end 2>/dev/null)
+      set GIT_OPERATION " "
+  else if test -d $GIT_ROOT/rebase-apply
+    set step (cat $GIT_ROOT/rebase-apply/next 2>/dev/null)
+    set total (cat $GIT_ROOT/rebase-apply/last 2>/dev/null)
+    set GIT_OPERATION " "
+  else if test -f $GIT_ROOT/MERGE_HEAD
+      set GIT_OPERATION " "
+  else if test -f $GIT_ROOT/CHERRY_PICK_HEAD
+      set GIT_OPERATION " "
+  else if test -f $GIT_ROOT/REVERT_HEAD
+      set GIT_OPERATION " "
+  else if test -f $GIT_ROOT/BISECT_LOG
+      set GIT_OPERATION "÷"
+  end
+
+  if test -n "$step" -a -n "$total"
+      set GIT_OPERATION "$GIT_OPERATION $step/$total"
+  end
+
+  echo $GIT_OPERATION
+end
+
+function git_status
+  # Function git_status
+  #
+  # @param GIT_ROOT location of .git folder
+  #
+  # @returns:
+  echo $argv | read -d ' ' -l GIT_ROOT
+
+  # set -l GIT_STATUS (command git -C "$GIT_ROOT" status --porcelain)
+
+  set -l changedFiles (command git -C "$GIT_ROOT" diff --name-status 2>/dev/null | string match -r \\w)
+  set -l stagedFiles (command git -C "$GIT_ROOT" diff --staged --name-status | string match -r \\w)
+
+  set -l dirtystate (math (count $changedFiles) - (count (string match -r "U" -- $changedFiles)))
+  set -l invalidstate (count (string match -r "U" -- $stagedFiles))
+  set -l stagedstate (math (count $stagedFiles) - $invalidstate)
+  if [ $NO_UNTRACKED -eq 0 ]
+    set untrackedfiles (command git -C "$GIT_ROOT" ls-files --others --exclude-standard :/ --directory --no-empty-directory | count)
+  else
+    set untrackedfiles 0
+  end
+
+  echo "$dirtystate|$invalidstate|$stagedstate|$untrackedfiles"
+end
+
+function git_ahead_behind
+  # Function git_ahead_behind
+  #
+  # @param GIT_ROOT location of .git folder
+  #
+  # @returns:
+  echo $argv | read -d ' ' -l GIT_ROOT
+
+  set GIT_AHEAD 0
+  set GIT_BEHIND 0
+  set GIT_UPSTREAM (command git -C "$GIT_ROOT" rev-parse --abbrev-ref --symbolic-full-name @{u} 2> /dev/null)
+
+  if [ -n $GIT_UPSTREAM ]
+    command git -C "$GIT_ROOT" rev-list --count --left-right $GIT_UPSTREAM...HEAD 2>/dev/null | tr '\t' '|' | read -d '|' GIT_BEHIND GIT_AHEAD 
+  end
+
+  echo "$GIT_AHEAD|$GIT_BEHIND"
+end
+
+function git_block_info
+  # Function git_block_info
+  #
+  # @param GIT_CONFIG: Absolute path of the .git folder
+  #
+  # @returns: The color and status of the git information at given GIT_ROOT
+
+  echo $argv | read -d ' ' -l GIT_ROOT
+
+  git_branch_name "$GIT_ROOT"  | read -d '|' -l GIT_BRANCH
+  git_operation "$GIT_ROOT"    | read -d '|' -l GIT_OPERATION
+  git_status "$GIT_ROOT"       | read -d '|' -l GIT_DIRTY GIT_INVALID GIT_STAGED GIT_UNTRACKED
+  git_ahead_behind "$GIT_ROOT" | read -d '|' -l GIT_AHEAD GIT_BEHIND
+
+  # Default color
+  set ICONS ""
+
+  # Colors
+  if [ -n "$GIT_OPERATION" ]
+    set COLOR "#AF5F5E"
+  else if [ $GIT_DIRTY -ge 1 ] || [ $GIT_UNTRACKED -ge 1 ]
+    set COLOR "#AF875F"
+  else
+    set COLOR "#4B8252"
+  end
+
+  # Icons
+  [ -n "$GIT_STAGED"    ] && [ $GIT_STAGED -ge 1    ] && set ICONS "$ICONS+"
+  [ -n "$GIT_DIRTY"     ] && [ $GIT_DIRTY -ge 1     ] && set ICONS "$ICONS~"
+  [ -n "$GIT_UNTRACKED" ] && [ $GIT_UNTRACKED -ge 1 ] && set ICONS "$ICONS?"
+
+  # Left icons
+  [ -n "$GIT_AHEAD"     ] && [ $GIT_AHEAD -ge 1     ] && set GIT_OPERATION "$GIT_OPERATION$GIT_AHEAD↑"
+  [ -n "$GIT_BEHIND"    ] && [ $GIT_BEHIND -ge 1    ] && set GIT_OPERATION "$GIT_OPERATION$GIT_BEHIND↓"
+
+  # Build git string
+  echo -n "$COLOR|$GIT_BRANCH|$GIT_OPERATION|$ICONS" | sed 's# $##'
+end
+
 function fish_prompt
   # Function fish_prompt
   #
   # @returns Main prompt
 
   set -l _display_status $status
-
-  function abbr_path
-    # Function abbr_path
-    #
-    # @param PATH_PART a part of the PATH
-    #
-    # @returns: An abbreviated version of the PATH_PART (one letter, but keep prefix special characters)
-    #           with $HOME replaced by ~
-
-    echo -n $argv | sed "s#^$HOME#~#; s#\([^/]\{$ELLIPSIS_AFTER\}\)[^/]\{1,\}/#\1$ELLIPSIS/#g"
-  end
-
-  function darker_of
-    # Function darker_of
-    #
-    # @param COLOR a color part of the list
-    #
-    # @returns: A darker shade of this color
-
-    if [ "$argv" = "#AF5F5E" ]
-      echo -n "#703D3D"
-    else if [ "$argv" = "#AF875F" ]
-      echo -n "#926E49"
-    else if [ "$argv" = "#4B8252" ]
-      echo -n "#38623E"
-    else
-      echo -n ""
-    end
-  end
-
-
-  function git_branch_name
-    echo $argv | read -d ' ' -l GIT_ROOT
-
-    [ -d "$GIT_ROOT/rebase-merge" ] && {
-      cat "$GIT_ROOT/rebase-merge/head-name" 2>/dev/null
-      return
-    }
-
-    set x (git -C "$GIT_ROOT" symbolic-ref HEAD 2> /dev/null)
-    if [ $status -eq 0 ]
-      echo $x | \
-        sed 's|refs/[^/]*/||g' | \
-        tr -d '\n'
-      return
-    end
-
-    echo (git -C "$GIT_ROOT" rev-parse HEAD | string match -r '^.{8}')…
-  end
-
-  function git_operation
-    set GIT_ROOT $argv/.git
-
-    if test -d $GIT_ROOT/rebase-merge
-        set step (cat $GIT_ROOT/rebase-merge/msgnum 2>/dev/null)
-        set total (cat $GIT_ROOT/rebase-merge/end 2>/dev/null)
-        set GIT_OPERATION " "
-    else if test -d $GIT_ROOT/rebase-apply
-      set step (cat $GIT_ROOT/rebase-apply/next 2>/dev/null)
-      set total (cat $GIT_ROOT/rebase-apply/last 2>/dev/null)
-      set GIT_OPERATION " "
-    else if test -f $GIT_ROOT/MERGE_HEAD
-        set GIT_OPERATION " "
-    else if test -f $GIT_ROOT/CHERRY_PICK_HEAD
-        set GIT_OPERATION " "
-    else if test -f $GIT_ROOT/REVERT_HEAD
-        set GIT_OPERATION " "
-    else if test -f $GIT_ROOT/BISECT_LOG
-        set GIT_OPERATION "÷"
-    end
-
-    if test -n "$step" -a -n "$total"
-        set GIT_OPERATION "$GIT_OPERATION $step/$total"
-    end
-
-    echo $GIT_OPERATION
-  end
-
-  function git_status
-    echo $argv | read -d ' ' -l GIT_ROOT
-
-    # set -l GIT_STATUS (command git -C "$GIT_ROOT" status --porcelain)
-
-    set -l changedFiles (command git -C "$GIT_ROOT" diff --name-status 2>/dev/null | string match -r \\w)
-    set -l stagedFiles (command git -C "$GIT_ROOT" diff --staged --name-status | string match -r \\w)
-
-    set -l dirtystate (math (count $changedFiles) - (count (string match -r "U" -- $changedFiles)))
-    set -l invalidstate (count (string match -r "U" -- $stagedFiles))
-    set -l stagedstate (math (count $stagedFiles) - $invalidstate)
-    if [ $NO_UNTRACKED -eq 0 ]
-      set untrackedfiles (command git -C "$GIT_ROOT" ls-files --others --exclude-standard :/ --directory --no-empty-directory | count)
-    end
-
-    echo "$dirtystate|$invalidstate|$stagedstate|$untrackedfiles"
-  end
-
-  function git_ahead_behind
-    echo $argv | read -d ' ' -l GIT_ROOT
-
-    set GIT_AHEAD 0
-    set GIT_BEHIND 0
-    set GIT_UPSTREAM (command git -C "$GIT_ROOT" rev-parse --abbrev-ref --symbolic-full-name @{u} 2> /dev/null)
-
-    if [ -n $GIT_UPSTREAM ]
-      command git -C "$GIT_ROOT" rev-list --count --left-right $GIT_UPSTREAM...HEAD 2>/dev/null | tr '\t' '|' | read -d '|' GIT_BEHIND GIT_AHEAD 
-    end
-
-    echo "$GIT_AHEAD|$GIT_BEHIND"
-  end
-
-  function git_block_info
-    # Function git_block_info
-    #
-    # @param GIT_CONFIG: Absolute path of the .git folder
-    #
-    # @returns: The color and status of the git information at given GIT_ROOT
-
-    echo $argv | read -d ' ' -l GIT_ROOT
-
-    git_branch_name "$GIT_ROOT"  | read -d '|' -l GIT_BRANCH
-    git_operation "$GIT_ROOT"    | read -d '|' -l GIT_OPERATION
-    git_status "$GIT_ROOT"       | read -d '|' -l GIT_DIRTY GIT_INVALID GIT_STAGED GIT_UNTRACKED
-    git_ahead_behind "$GIT_ROOT" | read -d '|' -l GIT_AHEAD GIT_BEHIND
-
-    # Default color
-    set ICONS ""
-
-    # Colors
-    if [ -n "$GIT_OPERATION" ]
-      set COLOR "#AF5F5E"
-    else if [ $GIT_DIRTY -ge 1 ] || [ $GIT_UNTRACKED -ge 1 ]
-      set COLOR "#AF875F"
-    else
-      set COLOR "#4B8252"
-    end
-
-    # Icons
-    [ -n "$GIT_STAGED"    ] && [ $GIT_STAGED -ge 1    ] && set ICONS "$ICONS+"
-    [ -n "$GIT_DIRTY"     ] && [ $GIT_DIRTY -ge 1     ] && set ICONS "$ICONS~"
-    [ -n "$GIT_UNTRACKED" ] && [ $GIT_UNTRACKED -ge 1 ] && set ICONS "$ICONS?"
-    [ -n "$GIT_AHEAD"     ] && [ $GIT_AHEAD -ge 1     ] && set ICONS "$ICONS↑"
-    [ -n "$GIT_BEHIND"    ] && [ $GIT_BEHIND -ge 1    ] && set ICONS "$ICONS↓"
-
-    # Build git string
-    echo -n "$COLOR|$GIT_BRANCH|$GIT_OPERATION|$ICONS" | sed 's# $##'
-  end
-
 
   set -g OLD_BG ""
 
