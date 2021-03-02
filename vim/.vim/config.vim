@@ -80,4 +80,5 @@ match TrailingSpaces / \+$/
 let g:ftplugin_sql_omni_key = '<C-s>'
 " }}}
 
+set completeopt=menuone,noselect
 " vim: foldmethod=marker:foldlevel=0

@@ -37,9 +37,13 @@ call plug#begin('~/.vim/plugged')
   " }}}
 
   " {{{ VimLSP
+  Plug 'neovim/nvim-lspconfig'
+  Plug 'hrsh7th/nvim-compe'
+  " Plug 'RishabhRD/popfix'
+  " Plug 'RishabhRD/nvim-lsputils'
   " Plug 'prabirshrestha/vim-lsp'
   " Plug 'mattn/vim-lsp-settings'
-  " Plug 'prabirshrestha/async.vim'
+  Plug 'prabirshrestha/async.vim'
   " Plug 'prabirshrestha/asyncomplete.vim'
   " Plug 'prabirshrestha/asyncomplete-lsp.vim'
   " let g:lsp_diagnostics_echo_cursor = 1
@@ -52,8 +56,8 @@ call plug#begin('~/.vim/plugged')
   " let g:lsp_signs_hint = {'text': '?'}
   " hi! LspInformationText ctermfg=239 ctermbg=3
   " hi! LspHintText ctermfg=239 ctermbg=3
-  Plug 'scalameta/coc-metals', {'do': 'yarn install --frozen-lockfile'}
-  Plug 'neoclide/coc.nvim', {'branch': 'release'}
+  " Plug 'scalameta/coc-metals', {'do': 'yarn install --frozen-lockfile'}
+  " Plug 'neoclide/coc.nvim', {'branch': 'release'}
   " }}}
 
   " {{{ Javascript

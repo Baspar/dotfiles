@@ -8,9 +8,12 @@ source ~/.vim/plugins.vim
 source ~/.vim/config.vim
 source ~/.vim/mappings.vim
 source ~/.vim/statusline.vim
-source ~/.vim/lsp.vim
 
 set exrc
 if filereadable(getcwd().'/.git/vimrc')
     execute "source" getcwd().'/.git/vimrc'
+endif
+
+if has('nvim')
+    luafile ~/.vim/lsp.lua
 endif

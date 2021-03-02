@@ -28,6 +28,7 @@ nnoremap <tab> :FZF<CR>
 
 " fileExplorer
 nnoremap <C-e> :NERDTreeToggle<CR>
+nnoremap - :NERDTreeFind<CR>
 augroup CancelNERDTreeQ
   au!
   au FileType nerdtree unmap <buffer> q
@@ -74,8 +75,8 @@ nnoremap <C-l> :noh<CR>
 nnoremap <leader>vr :source $MYVIMRC<CR>
 nnoremap <leader>vE :tabe $MYVIMRC<CR>
 nnoremap <leader>ve :e $MYVIMRC<CR>
-nnoremap <leader>vL :tabe $HOME/.vim/lsp.vim<CR>
-nnoremap <leader>vl :e $HOME/.vim/lsp.vim<CR>
+nnoremap <leader>vL :tabe $HOME/.vim/lsp.lua<CR>
+nnoremap <leader>vl :e $HOME/.vim/lsp.lua<CR>
 nnoremap <leader>vM :tabe $HOME/.vim/mappings.vim<CR>
 nnoremap <leader>vm :e $HOME/.vim/mappings.vim<CR>
 nnoremap <leader>vP :tabe $HOME/.vim/plugins.vim<CR>
@@ -137,36 +138,36 @@ nnoremap <expr> <leader>r repl_it#normal_mode()
 vnoremap <leader>r :<C-u>call repl_it#visual_mode()<CR>
 nmap <leader>rr V<leader>r
 
-" Vim-LSP
-" nmap <silent> [a <Plug>(lsp-previous-diagnostic)
-" nmap <silent> ]a <Plug>(lsp-next-diagnostic)
-" nmap <silent> <localleader>i <Plug>(lsp-implementation)
-" nmap <silent> <localleader>r <Plug>(lsp-references)
-" nmap <silent> <localleader>d <Plug>(lsp-definition)
-" nmap <silent> <localleader><localleader> :LspCodeAction<CR>
-" nmap <silent> <localleader>R :LspRename<CR>
-" nnoremap <silent> K <plug>(lsp-hover)
+" Neovim LSP
+nmap <silent> ]a :lua vim.lsp.diagnostic.goto_next()<CR>
+nmap <silent> [a :lua vim.lsp.diagnostic.goto_prev()<CR>
+nmap <silent> <localleader>i :lua vim.lsp.buf.implementation()<CR>
+nmap <silent> <localleader>r :lua vim.lsp.buf.references()<CR>
+nmap <silent> <localleader>d :lua vim.lsp.buf.definition()<CR>
+nmap <silent> <localleader><localleader> :lua vim.lsp.buf.code_action()<CR>
+nmap <silent> <localleader>R :lua vim.lsp.buf.rename()<CR>
+nnoremap <silent> K :lua vim.lsp.buf.hover()<CR>
 
 " CoC
-nmap <silent> [a <Plug>(coc-diagnostic-prev)
-nmap <silent> ]a <Plug>(coc-diagnostic-next)
-nmap <silent> <localleader>i <Plug>(coc-implementation)
-nmap <silent> <localleader>r <Plug>(coc-references)
-nmap <silent> <localleader>d <Plug>(coc-definition)
-nmap <silent> <localleader><localleader> :CocAction<CR>
-xmap <silent> <localleader>f <Plug>(coc-format-selected)
-nmap <silent> <localleader>f <Plug>(coc-format-selected)
-nmap <silent> <localleader>R :LspRename<CR>
-nnoremap <silent> K :call <SID>show_documentation()<CR>
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  elseif (coc#rpc#ready())
-    call CocActionAsync('doHover')
-  else
-    execute '!' . &keywordprg . " " . expand('<cword>')
-  endif
-endfunction
+" nmap <silent> [a <Plug>(coc-diagnostic-prev)
+" nmap <silent> ]a <Plug>(coc-diagnostic-next)
+" nmap <silent> <localleader>i <Plug>(coc-implementation)
+" nmap <silent> <localleader>r <Plug>(coc-references)
+" nmap <silent> <localleader>d <Plug>(coc-definition)
+" nmap <silent> <localleader><localleader> :CocAction<CR>
+" xmap <silent> <localleader>f <Plug>(coc-format-selected)
+" nmap <silent> <localleader>f <Plug>(coc-format-selected)
+" nmap <silent> <localleader>R :LspRename<CR>
+" nnoremap <silent> K :call <SID>show_documentation()<CR>
+" function! s:show_documentation()
+"   if (index(['vim','help'], &filetype) >= 0)
+"     execute 'h '.expand('<cword>')
+"   elseif (coc#rpc#ready())
+"     call CocActionAsync('doHover')
+"   else
+"     execute '!' . &keywordprg . " " . expand('<cword>')
+"   endif
+" endfunction
 
 " Markdown
 augroup MarkdownManipulation
