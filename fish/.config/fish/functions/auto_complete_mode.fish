@@ -171,6 +171,21 @@ function auto_complete_mode
     commandline -f repaint
   end
 
+
+  #######
+  # PID #
+  #######
+
+  function fzf-pid
+    set DATA (ps aux)
+    set INDEX 2
+    set PID (fzf_search $DATA $INDEX)
+
+    commandline -i -- "$PID"
+
+    commandline -f repaint
+  end
+
   # Remove existing <C-x> mapping
   bind --erase --preset -M insert \cx fish_clipboard_copy
   bind --erase --preset \cx fish_clipboard_copy
@@ -180,6 +195,7 @@ function auto_complete_mode
     bind \ce -M autocomplete --sets-mode insert edit_command_buffer
     bind \cc -M autocomplete --sets-mode insert force-repaint
     bind \e  -M autocomplete --sets-mode insert force-repaint
+    bind p   -M autocomplete --sets-mode insert fzf-pid
     bind d   -M autocomplete --sets-mode insert fzf-docker
     bind k   -M autocomplete --sets-mode insert fzf-k8s
     bind K   -M autocomplete --sets-mode insert fzf-k3s
