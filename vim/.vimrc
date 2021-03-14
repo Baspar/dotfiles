@@ -16,4 +16,5 @@ endif
 
 if has('nvim')
     luafile ~/.vim/lsp.lua
+    luafile ~/.vim/nvim_specific.lua
 endif
