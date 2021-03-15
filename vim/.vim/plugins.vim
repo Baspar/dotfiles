@@ -1,6 +1,14 @@
+function! Cond(cond, ...)
+  let opts = get(a:000, 0, {})
+  return a:cond ? opts : extend(opts, { 'on': [], 'for': [] })
+endfunction
+
 call plug#begin('~/.vim/plugged')
-  " {{{ Vimspector
-  " Plug 'puremourning/vimspector'
+
+  " {{{ Vim-test
+  Plug 'vim-test/vim-test'
+  let test#strategy = "dispatch"
+  let test#scala#runner = 'blooptest'
   " }}}
 
   " {{{ AutoPairs
@@ -37,28 +45,13 @@ call plug#begin('~/.vim/plugged')
   " }}}
 
   " {{{ VimLSP
-  Plug 'neovim/nvim-lspconfig'
-  Plug 'hrsh7th/nvim-compe'
-  " Plug 'RishabhRD/popfix'
-  " Plug 'RishabhRD/nvim-lsputils'
-  " Plug 'prabirshrestha/vim-lsp'
-  " Plug 'mattn/vim-lsp-settings'
-  Plug 'prabirshrestha/async.vim'
-  " Plug 'prabirshrestha/asyncomplete.vim'
-  " Plug 'prabirshrestha/asyncomplete-lsp.vim'
-  " let g:lsp_diagnostics_echo_cursor = 1
-  " let g:lsp_diagnostics_enabled = 1
-  " let g:lsp_diagnostics_float_cursor = 1
-  " let g:lsp_virtual_text_enabled = 0
-  " " let g:lsp_documentation_float = 0
-  " let g:lsp_signs_error = {'text': '✗'}
-  " let g:lsp_signs_warning = {'text': '‼'}
-  " let g:lsp_signs_hint = {'text': '?'}
-  " hi! LspInformationText ctermfg=239 ctermbg=3
-  " hi! LspHintText ctermfg=239 ctermbg=3
-  " Plug 'scalameta/coc-metals', {'do': 'yarn install --frozen-lockfile'}
-  " Plug 'neoclide/coc.nvim', {'branch': 'release'}
+  Plug 'neovim/nvim-lspconfig', Cond(has('nvim'))
+  Plug 'hrsh7th/nvim-compe', Cond(has('nvim'))
   " }}}
+
+  "{{{ Nvim-TreeSitter
+  Plug 'nvim-treesitter/nvim-treesitter', Cond(has('nvim'), {'do': ':TSUpdate'})
+  "}}}
 
   " {{{ Javascript
   Plug 'HerringtonDarkholme/yats.vim'
@@ -93,21 +86,24 @@ call plug#begin('~/.vim/plugged')
   " }}}
 
   " {{{ FZF
-  Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+  Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
   Plug 'junegunn/fzf.vim'
   let g:fzf_colors = {
       \ 'prompt': ['fg', 'Type'],
+      \ 'bg':      ['bg', 'Pmenu'],
       \ 'hl': ['fg', 'Type'],
       \ 'hl+': ['fg', 'Number'],
       \ }
-  " }}}
+  let g:fzf_preview_window = ''
+  let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.5 } }
 
   " {{{ VimFugitive
   Plug 'tpope/vim-fugitive'
   " }}}
 
-  " {{{ VimDispatch
+  " {{{ VimDispatch & Async
   Plug 'tpope/vim-dispatch'
+  Plug 'prabirshrestha/async.vim'
   " }}}
 
   " {{{ VimSandwich

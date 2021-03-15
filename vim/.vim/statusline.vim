@@ -65,14 +65,14 @@ func! Coc(field)
         return ''
     endtry
 endfunc
-func! CocWarning()
+func! LSPWarning()
   let warning = Coc('warning')
   if warning == 0
     return ''
   endif
   return warning
 endfunc
-func! CocError()
+func! LSPError()
   let error = Coc('error')
   if error == 0
     return ''
@@ -156,8 +156,8 @@ let g:lightline = {
             \   'lineinfo': 'LineInfo',
             \   'fugitive': 'Fugitive',
             \   'filename': 'FileName',
-            \   'cocWarning': 'CocWarning',
-            \   'cocError': 'CocError',
+            \   'cocWarning': 'LSPWarning',
+            \   'cocError': 'LSPError',
             \   'readOnlyModified': 'ReadOnlyModified'
             \ },
             \ 'separator': { 'left': $LEFT_SEPARATOR, 'right': $RIGHT_SEPARATOR },

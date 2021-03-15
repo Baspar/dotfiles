@@ -148,27 +148,6 @@ nmap <silent> <localleader><localleader> :lua vim.lsp.buf.code_action()<CR>
 nmap <silent> <localleader>R :lua vim.lsp.buf.rename()<CR>
 nnoremap <silent> K :lua vim.lsp.buf.hover()<CR>
 
-" CoC
-" nmap <silent> [a <Plug>(coc-diagnostic-prev)
-" nmap <silent> ]a <Plug>(coc-diagnostic-next)
-" nmap <silent> <localleader>i <Plug>(coc-implementation)
-" nmap <silent> <localleader>r <Plug>(coc-references)
-" nmap <silent> <localleader>d <Plug>(coc-definition)
-" nmap <silent> <localleader><localleader> :CocAction<CR>
-" xmap <silent> <localleader>f <Plug>(coc-format-selected)
-" nmap <silent> <localleader>f <Plug>(coc-format-selected)
-" nmap <silent> <localleader>R :LspRename<CR>
-" nnoremap <silent> K :call <SID>show_documentation()<CR>
-" function! s:show_documentation()
-"   if (index(['vim','help'], &filetype) >= 0)
-"     execute 'h '.expand('<cword>')
-"   elseif (coc#rpc#ready())
-"     call CocActionAsync('doHover')
-"   else
-"     execute '!' . &keywordprg . " " . expand('<cword>')
-"   endif
-" endfunction
-
 " Markdown
 augroup MarkdownManipulation
   au!
@@ -193,6 +172,13 @@ vnoremap <S-up> dkPV`]
 " No Highlight + clear trailing space
 nnoremap <C-l> :noh<CR>
 
+" Highlight helper
 map <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
 \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
 \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
+
+" vim-test
+nmap <silent> <localleader>tn :TestNearest<CR>
+nmap <silent> <localleader>tf :TestFile<CR>
+nmap <silent> <localleader>ts :TestSuite<CR>
+nmap <silent> <localleader>tt :let g:test#scala#blooptest#project_name = ''<Left>
