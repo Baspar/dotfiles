@@ -3,6 +3,9 @@ function! Cond(cond, ...)
   return a:cond ? opts : extend(opts, { 'on': [], 'for': [] })
 endfunction
 
+set runtimepath^=~/.vim runtimepath+=~/.vim/after
+let &packpath = &runtimepath
+
 call plug#begin('~/.vim/plugged')
 
   " {{{ Vim-test
@@ -44,9 +47,10 @@ call plug#begin('~/.vim/plugged')
   Plug 'easymotion/vim-easymotion'
   " }}}
 
-  " {{{ VimLSP
+  " {{{ LSP
   Plug 'neovim/nvim-lspconfig', Cond(has('nvim'))
   Plug 'hrsh7th/nvim-compe', Cond(has('nvim'))
+  Plug 'glepnir/lspsaga.nvim', Cond(has('nvim'))
   " }}}
 
   "{{{ Nvim-TreeSitter
@@ -66,7 +70,7 @@ call plug#begin('~/.vim/plugged')
   " }}}
 
   " {{{ Fish
-  Plug 'dag/vim-fish'
+  Plug 'dag/vim-fish', {'for': ['fish']}
   " }}}
 
   " {{{ Smarty
@@ -96,6 +100,7 @@ call plug#begin('~/.vim/plugged')
       \ }
   let g:fzf_preview_window = ''
   let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.5 } }
+  " }}}
 
   " {{{ VimFugitive
   Plug 'tpope/vim-fugitive'
@@ -119,6 +124,7 @@ call plug#begin('~/.vim/plugged')
   Plug 'AlessandroYorba/alduin'
   Plug 'fcpg/vim-orbital'
   Plug 'fcpg/vim-farout'
+  Plug 'habamax/vim-gruvbit'
   " }}}
 call plug#end()
 

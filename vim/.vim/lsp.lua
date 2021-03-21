@@ -1,8 +1,48 @@
 local lspconfig = require"lspconfig"
 local compe = require"compe"
+local saga = require"lspsaga"
 
-vim.lsp.set_log_level("debug")
+-- vim.lsp.set_log_level("debug")
+-- {{{ LSP Saga
+saga.init_lsp_saga {
+  -- add your config value here
+  -- default value
+  -- use_saga_diagnostic_sign = true
+  -- error_sign = '',
+  -- warn_sign = '',
+  -- hint_sign = '',
+  -- infor_sign = '',
+  -- dianostic_header_icon = '   ',
+  -- code_action_icon = ' ',
+  code_action_prompt = {
+    enable = true,
+    sign = false,
+    virtual_text = true,
+  },
+  -- finder_definition_icon = '  ',
+  -- finder_reference_icon = '  ',
+  -- max_preview_lines = 10, -- preview lines of lsp_finder and definition preview
+  finder_action_keys = {
+    open = 'o', vsplit = 'v', split = 's',quit = { '<C-c>', 'q' },scroll_down = '<C-f>', scroll_up = '<C-b>' -- quit can be a table
+  },
+  code_action_keys = {
+    quit = { 'q', '<C-c>' }, exec = { '<CR>', 'o' }
+  },
+  rename_action_keys = {
+    quit = '<C-c>',exec = '<CR>'  -- quit can be a table
+  },
+  -- definition_preview_icon = '  '
+  -- 1: thin border | 2: rounded border | 3: thick border | 4: ascii border
+  border_style = 2
+  -- rename_prompt_prefix = '➤',
+  -- if you don't use nvim-lspconfig you must pass your server name and
+  -- the related filetypes into this table
+  -- like server_filetype_map = {metals = {'sbt', 'scala'}}
+  -- server_filetype_map = {}
+}
+-- }}}
 
+-- {{{ Compe
 compe.setup {
   enabled = true;
   autocomplete = true;
@@ -30,16 +70,9 @@ compe.setup {
     treesitter = true;
   };
 }
+--- }}}
 
-local function exists_glob(glob)
-  return vim.fn.glob(glob) ~= ""
-end
-
-function eslint_config_exists()
-  return exists_glob(".eslintrc*") or exists_package_json_field("eslintConfig")
-end
-
-
+-- {{{ Nvim LSP
 -- {{{ Typescript/Javascript
 lspconfig.tsserver.setup{
   on_attach = function(client)
@@ -58,26 +91,26 @@ local eslint = {
   lintStdin = true,
   lintFormats = {'%f: line %l, col %c, %trror - %m', '%f: line %l, col %c, %tarning - %m'},
 }
+local prettier = {
+  formatCommand = "prettier --stdin-filepath ${INPUT}",
+  formatStdin = true
+}
 
 lspconfig.efm.setup {
   on_attach = function(client)
     client.resolved_capabilities.document_formatting = true
     client.resolved_capabilities.goto_definition = false
   end,
-  root_dir = function()
-    if not eslint_config_exists() then
-      return nil
-    end
-    return vim.fn.getcwd()
-  end,
+  root_dir = lspconfig.util.root_pattern("yarn.lock", "lerna.json", ".git"),
+  init_options = {documentFormatting = true, codeAction = true},
   settings = {
     languages = {
-      javascript = {eslint},
-      javascriptreact = {eslint},
-      ["javascript.jsx"] = {eslint},
-      typescript = {eslint},
-      ["typescript.tsx"] = {eslint},
-      typescriptreact = {eslint}
+      javascript = {eslint, prettier},
+      javascriptreact = {eslint, prettier},
+      ["javascript.jsx"] = {eslint, prettier},
+      typescript = {eslint, prettier},
+      ["typescript.tsx"] = {eslint, prettier},
+      typescriptreact = {eslint, prettier}
     }
   },
   filetypes = {
@@ -99,6 +132,11 @@ lspconfig.rls.setup{}
 lspconfig.metals.setup{
   root_dir = lspconfig.util.find_git_ancestor;
 }
+-- }}}
+
+-- {{{ Python
+lspconfig.pyright.setup{}
+-- }}}
 -- }}}
 
 -- vim: foldmethod=marker:foldlevel=1

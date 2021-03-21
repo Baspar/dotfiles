@@ -11,12 +11,6 @@ function! s:load_files (path)
   endif
 endfunction
 
-if has("nvim")
-  call s:load_files("nvim_specific")
-else
-  call s:load_files("vim_specific")
-endif
-
 call s:load_files("plugins")
 call s:load_files("config")
 call s:load_files("mappings")
@@ -24,6 +18,12 @@ call s:load_files("statusline")
 
 call s:load_files("lsp")
 call s:load_files("treesitter")
+
+if has("nvim")
+  call s:load_files("nvim_specific")
+else
+  call s:load_files("vim_specific")
+endif
 
 set exrc
 if filereadable(getcwd()."/.git/vimrc")

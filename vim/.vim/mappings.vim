@@ -105,15 +105,9 @@ function! ToggleGStatus()
 endfunction
 nnoremap <leader>ga :Git add %:p<CR><CR>
 nnoremap <leader>gs :call ToggleGStatus()<CR>
-nnoremap <leader>gc :Gcommit -v -q<CR>
-nnoremap <leader>gt :Gcommit -v -q %:p<CR>
-nnoremap <leader>gd :Gvdiff<CR>
-nnoremap <leader>ge :Gedit<CR>
-nnoremap <leader>gr :Gread<CR>
-nnoremap <leader>gw :Gwrite<CR><CR>
 nnoremap <leader>gl :silent! Glog<CR>:bot copen<CR>
-nnoremap <leader>gm :Gmove<Space>
-nnoremap <leader>gb :Gblame<CR>
+nnoremap <leader>gm :Git move<Space>
+nnoremap <leader>gb :Git blame<CR>
 nnoremap <leader>gB :Git branch<Space>
 nnoremap <leader>go :Git checkout<Space>
 nnoremap <leader>gp :set termwinsize=10x0<CR>:term git push<CR>
@@ -139,14 +133,16 @@ vnoremap <leader>r :<C-u>call repl_it#visual_mode()<CR>
 nmap <leader>rr V<leader>r
 
 " Neovim LSP
-nmap <silent> ]a :lua vim.lsp.diagnostic.goto_next()<CR>
-nmap <silent> [a :lua vim.lsp.diagnostic.goto_prev()<CR>
-nmap <silent> <localleader>i :lua vim.lsp.buf.implementation()<CR>
-nmap <silent> <localleader>r :lua vim.lsp.buf.references()<CR>
-nmap <silent> <localleader>d :lua vim.lsp.buf.definition()<CR>
-nmap <silent> <localleader><localleader> :lua vim.lsp.buf.code_action()<CR>
-nmap <silent> <localleader>R :lua vim.lsp.buf.rename()<CR>
-nnoremap <silent> K :lua vim.lsp.buf.hover()<CR>
+nnoremap <silent> [a :Lspsaga diagnostic_jump_next<CR>
+nnoremap <silent> ]a :Lspsaga diagnostic_jump_prev<CR>
+nnoremap <silent> <localleader>i :Lspsaga lsp_finder<CR>
+nnoremap <silent> <localleader>r :lua vim.lsp.buf.references()<CR>
+nnoremap <silent> <localleader>d :lua vim.lsp.buf.definition()<CR>
+nnoremap <silent> <localleader>f :lua vim.lsp.buf.formatting()<CR>
+nnoremap <silent> <localleader><localleader> :Lspsaga code_action<CR>
+vnoremap <silent> <localleader><localleader> :<C-U>Lspsaga range_code_action<CR>
+nnoremap <silent> <localleader>R :Lspsaga rename<CR>
+nnoremap <silent>K :Lspsaga hover_doc<CR>
 
 " Markdown
 augroup MarkdownManipulation
