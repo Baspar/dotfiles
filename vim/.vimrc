@@ -11,6 +11,12 @@ function! s:load_files (path)
   endif
 endfunction
 
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync
+endif
+
 call s:load_files("plugins")
 call s:load_files("config")
 call s:load_files("mappings")
