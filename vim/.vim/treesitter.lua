@@ -1,10 +1,11 @@
 local treesitter = require'nvim-treesitter.configs'
 
 treesitter.setup {
-  ensure_installed = "all", -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+  ensure_installed = "all",
+  ignore_install = { "haskell" },
   highlight = {
     enable = true,
-    disable = { },  -- list of language that will be disabled
+    disable = { },
   },
 }
 --
