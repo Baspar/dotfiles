@@ -62,3 +62,5 @@ command -v pbpaste > /dev/null || abbr pbpaste 'xsel --clipboard --output'
 abbr se 'sudoedit'
 
 abbr fhf 'fzf --header-lines 1'
+abbr python 'python3'
+abbr py 'python3'
