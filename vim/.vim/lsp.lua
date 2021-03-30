@@ -73,6 +73,17 @@ compe.setup {
 --- }}}
 
 -- {{{ Nvim LSP
+-- {{{ Filetypes
+local tsFamily = {
+  "javascript",
+  "javascriptreact",
+  "javascript.jsx",
+  "typescript",
+  "typescript.tsx",
+  "typescriptreact"
+}
+-- }}}
+
 -- {{{ Typescript/Javascript
 lspconfig.tsserver.setup{
   on_attach = function(client)
@@ -80,7 +91,8 @@ lspconfig.tsserver.setup{
       client.config.flags.allow_incremental_sync = true
     end
     client.resolved_capabilities.document_formatting = false
-  end
+  end,
+  filetypes = tsFamily,
 }
 -- }}}
 
@@ -102,7 +114,6 @@ lspconfig.efm.setup {
     client.resolved_capabilities.goto_definition = false
   end,
   root_dir = lspconfig.util.root_pattern("yarn.lock", "lerna.json", ".git"),
-  init_options = {documentFormatting = true, codeAction = true},
   settings = {
     languages = {
       javascript = {eslint, prettier},
@@ -113,14 +124,7 @@ lspconfig.efm.setup {
       typescriptreact = {eslint, prettier}
     }
   },
-  filetypes = {
-    "javascript",
-    "javascriptreact",
-    "javascript.jsx",
-    "typescript",
-    "typescript.tsx",
-    "typescriptreact"
-  },
+  filetypes = tsFamily,
 }
 -- }}}
 
@@ -139,4 +143,4 @@ lspconfig.pyright.setup{}
 -- }}}
 -- }}}
 
--- vim: foldmethod=marker:foldlevel=1
+-- vim: foldmethod=marker:foldlevel=0
