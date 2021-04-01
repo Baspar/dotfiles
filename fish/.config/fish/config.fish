@@ -4,6 +4,7 @@ set -Ux EDITOR nvim
 set -Ux LANG en_US.UTF-8
 set -Ux LC_CTYPE en_US.UTF-8
 set -Ux FZF_DEFAULT_COMMAND 'rg -l .'
+set -Ux VIRTUAL_ENV_DISABLE_PROMPT 'true'
 
 # set -Ux LEFT_SEPARATOR ""
 # set -Ux RIGHT_SEPARATOR ""

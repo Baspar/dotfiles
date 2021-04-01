@@ -255,6 +255,12 @@ function fish_prompt
     block "#AF5F5E" "#000000" " $_display_status "
   end
 
+  # Virtual env
+  if set -q VIRTUAL_ENV
+    set VENV_NAME (basename $VIRTUAL_ENV)
+    block "#4B8252" "#000000" " $VENV_NAME "
+  end
+
   set TOTAL_PATH ''
   set ACCUMULATED_PATH ''
 
