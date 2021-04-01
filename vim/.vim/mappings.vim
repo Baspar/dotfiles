@@ -133,8 +133,8 @@ vnoremap <leader>r :<C-u>call repl_it#visual_mode()<CR>
 nmap <leader>rr V<leader>r
 
 " Neovim LSP
-nnoremap <silent> [a :Lspsaga diagnostic_jump_next<CR>
-nnoremap <silent> ]a :Lspsaga diagnostic_jump_prev<CR>
+nnoremap <silent> ]a :Lspsaga diagnostic_jump_next<CR>
+nnoremap <silent> [a :Lspsaga diagnostic_jump_prev<CR>
 nnoremap <silent> <localleader>i :Lspsaga lsp_finder<CR>
 nnoremap <silent> <localleader>r :lua vim.lsp.buf.references()<CR>
 nnoremap <silent> <localleader>d :lua vim.lsp.buf.definition()<CR>
