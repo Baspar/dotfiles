@@ -8,6 +8,8 @@ set -g ELLIPSIS_AFTER "3"
 set -g CR_AFTER_GIT 0
 set -g NO_UNTRACKED 0
 
+bind -M insert \ce 'touch /tmp/FISH_NO_ABBR; commandline -f repaint'
+
 function block
   # Function block
   #
@@ -79,7 +81,11 @@ function abbr_path
   # @returns: An abbreviated version of the PATH_PART (one letter, but keep prefix special characters)
   #           with $HOME replaced by ~
 
-  echo -n $argv | sed "s#^$HOME#~#; s#\([^/]\{$ELLIPSIS_AFTER\}\)[^/]\{1,\}/#\1$ELLIPSIS/#g"
+  if [ -z $NO_ABBR ]
+    echo -n $argv | sed "s#^$HOME#~#; s#\([^/]\{$ELLIPSIS_AFTER\}\)[^/]\{1,\}/#\1$ELLIPSIS/#g"
+  else
+    echo -n $argv | sed "s#^$HOME#~#"
+  end
 end
 
 function darker_of
@@ -250,6 +256,11 @@ function fish_prompt
 
   set -g OLD_BG ""
 
+  if [ -e /tmp/FISH_NO_ABBR ]
+    set -g NO_ABBR 'true'
+  end
+
+  # Command error status
   if [ "$_display_status" != "0" ]
     set_color -o
     block "#AF5F5E" "#000000" " $_display_status "
@@ -304,4 +315,9 @@ function fish_prompt
   set -g OLD_BG ""
   echo -ne (fish_mode_prompt_2)
   block "normal" "normal" " "
+
+  if ! [ -z NO_ABBR ]
+    rm -rf /tmp/FISH_NO_ABBR
+    set -g NO_ABBR ''
+  end
 end
