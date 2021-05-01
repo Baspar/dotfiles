@@ -66,15 +66,21 @@ func! Coc(field)
     endtry
 endfunc
 func! LSPWarning()
-  " if has('nvim') && luaeval('not vim.tbl_isempty(vim.lsp.buf_get_clients(0))')
-  "   return luaeval("vim.lsp.util.buf_diagnostics_count([[Warning]])")
-  " endif
+  if has('nvim') && luaeval('not vim.tbl_isempty(vim.lsp.buf_get_clients(0))')
+    let count = luaeval("vim.lsp.diagnostic.get_count(0, [[Warning]])")
+    if count != 0
+      return count
+    endif
+  endif
   return ''
 endfunc
 func! LSPError()
-  " if has('nvim') && luaeval('not vim.tbl_isempty(vim.lsp.buf_get_clients(0))')
-  "   return luaeval("vim.lsp.util.buf_diagnostics_count([[Error]])")
-  " endif
+  if has('nvim') && luaeval('not vim.tbl_isempty(vim.lsp.buf_get_clients(0))')
+    let count = luaeval("vim.lsp.diagnostic.get_count(0, [[Error]])")
+    if count != 0
+      return count
+    endif
+  endif
   return ''
 endfunc
 
