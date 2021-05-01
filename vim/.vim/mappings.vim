@@ -59,7 +59,7 @@ noremap <leader>cd "+d
 " Buffer navigation
 nnoremap <leader>< :tabN<CR>
 nnoremap <leader>> :tabn<CR>
-nnoremap <leader><CR> :tabe %<CR>
+nnoremap <leader><CR> m0:tabe %<CR>`0
 nnoremap <leader>bd :bn<CR> :bd #<CR>
 
 " Save  and exit
@@ -142,6 +142,7 @@ nnoremap <silent> <localleader>f :lua vim.lsp.buf.formatting()<CR>
 nnoremap <silent> <localleader><localleader> :Lspsaga code_action<CR>
 vnoremap <silent> <localleader><localleader> :<C-U>Lspsaga range_code_action<CR>
 nnoremap <silent> <localleader>R :Lspsaga rename<CR>
+nnoremap <silent> <localleader>p :Lspsaga preview_definition<CR>
 nnoremap <silent>K :Lspsaga hover_doc<CR>
 
 " Markdown

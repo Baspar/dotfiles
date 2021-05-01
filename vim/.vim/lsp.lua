@@ -12,16 +12,18 @@ saga.init_lsp_saga {
   -- warn_sign = '',
   -- hint_sign = '',
   -- infor_sign = '',
-  -- dianostic_header_icon = '   ',
-  -- code_action_icon = ' ',
+
+  dianostic_header_icon = '',
+  code_action_icon = '',
+  finder_definition_icon = '',
+  finder_reference_icon = '',
+
   code_action_prompt = {
     enable = true,
     sign = false,
     virtual_text = true,
   },
-  -- finder_definition_icon = '  ',
-  -- finder_reference_icon = '  ',
-  -- max_preview_lines = 10, -- preview lines of lsp_finder and definition preview
+  max_preview_lines = 10, -- preview lines of lsp_finder and definition preview
   finder_action_keys = {
     open = 'o', vsplit = 'v', split = 's',quit = { '<C-c>', 'q' },scroll_down = '<C-f>', scroll_up = '<C-b>' -- quit can be a table
   },
@@ -33,7 +35,7 @@ saga.init_lsp_saga {
   },
   -- definition_preview_icon = '  '
   -- 1: thin border | 2: rounded border | 3: thick border | 4: ascii border
-  border_style = 2
+  border_style = 'round'
   -- rename_prompt_prefix = '➤',
   -- if you don't use nvim-lspconfig you must pass your server name and
   -- the related filetypes into this table
