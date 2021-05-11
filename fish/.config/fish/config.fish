@@ -5,6 +5,7 @@ set -Ux LANG en_US.UTF-8
 set -Ux LC_CTYPE en_US.UTF-8
 set -Ux FZF_DEFAULT_COMMAND 'rg -l .'
 set -Ux VIRTUAL_ENV_DISABLE_PROMPT 'true'
+set -x GPG_TTY (tty)
 
 # set -Ux LEFT_SEPARATOR ""
 # set -Ux RIGHT_SEPARATOR ""
@@ -17,7 +18,7 @@ set -Ux LEFT_SUB_SEPARATOR "▒"
 set -Ux RIGHT_SUB_SEPARATOR "▒"
 
 set -Ux NVM_DIR "$HOME/.nvm"
-set PATH "/Users/bastien/Library/Application Support/Coursier/bin" "$HOME/.bin" "$HOME/.rvm/bin" "$HOME/.yarn/bin" "$HOME/.cargo/bin/" $PATH
+set PATH "/Users/bastien/Library/Application Support/Coursier/bin" "$HOME/.bin" "$HOME/.rvm/bin" "$HOME/.yarn/bin" "$HOME/.cargo/bin/" $PATH "/usr/local/opt/llvm/bin"
 [ -e ~/.config/ripgrep/rc ] && set -Ux RIPGREP_CONFIG_PATH "$HOME/.config/ripgrep/rc"
 
 # The next line updates PATH for the Google Cloud SDK.
