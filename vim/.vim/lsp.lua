@@ -143,6 +143,10 @@ lspconfig.metals.setup{
 -- {{{ Python
 lspconfig.pyright.setup{}
 -- }}}
+--
+-- {{{ C++
+lspconfig.clangd.setup{}
+-- }}}
 -- }}}
 
 -- vim: foldmethod=marker:foldlevel=0
