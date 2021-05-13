@@ -5,6 +5,7 @@ set -Ux LANG en_US.UTF-8
 set -Ux LC_CTYPE en_US.UTF-8
 set -Ux FZF_DEFAULT_COMMAND 'rg -l .'
 set -Ux VIRTUAL_ENV_DISABLE_PROMPT 'true'
+set -Ux fish_greeting
 set -x GPG_TTY (tty)
 
 # set -Ux LEFT_SEPARATOR ""
@@ -40,7 +41,7 @@ end
 set fish_color_search_match --background='333'
 
 source ~/.config/fish/fish_prompt.fish
-source ~/.config/fish/completions/*.fish
+[ -d ~/.config/fish/completions ] && source ~/.config/fish/completions/*.fish
 abbr java11 "set -x JAVA_HOME /Library/Java/JavaVirtualMachines/jdk-11.0.2.jdk/Contents/Home"
 abbr java8 "set -x JAVA_HOME /Library/Java/JavaVirtualMachines/jdk1.8.0_202.jdk/Contents/Home"
 
