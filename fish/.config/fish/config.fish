@@ -7,6 +7,7 @@ set -Ux FZF_DEFAULT_COMMAND 'rg -l .'
 set -Ux VIRTUAL_ENV_DISABLE_PROMPT 'true'
 set -Ux fish_greeting
 set -x GPG_TTY (tty)
+set -Ux TERM "xterm-256color"
 
 # set -Ux LEFT_SEPARATOR ""
 # set -Ux RIGHT_SEPARATOR ""
