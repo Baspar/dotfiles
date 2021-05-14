@@ -34,6 +34,7 @@ abbr yt "yarn test"
 abbr yl "yarn lint"
 
 abbr h 'head'
+alias tmux='env TERM="xterm-256color" tmux'
 abbr t 'tmux'
 abbr ta 'tmux a'
 abbr tat 'tmux a -t'
