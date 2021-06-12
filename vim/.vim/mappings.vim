@@ -107,6 +107,7 @@ nnoremap <leader>ga :Git add %:p<CR><CR>
 nnoremap <leader>gs :call ToggleGStatus()<CR>
 nnoremap <leader>gl :silent! Glog<CR>:bot copen<CR>
 nnoremap <leader>gm :Git move<Space>
+nnoremap <leader>gd :Gdiff<Space>
 nnoremap <leader>gb :Git blame<CR>
 nnoremap <leader>gB :Git branch<Space>
 nnoremap <leader>go :Git checkout<Space>
