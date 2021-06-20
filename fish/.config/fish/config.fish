@@ -8,6 +8,8 @@ set -Ux VIRTUAL_ENV_DISABLE_PROMPT 'true'
 set -Ux fish_greeting
 set -x GPG_TTY (tty)
 
+set -Ux GOPATH ~/.go
+
 # set -Ux LEFT_SEPARATOR ""
 # set -Ux RIGHT_SEPARATOR ""
 # set -Ux LEFT_SUB_SEPARATOR ""
@@ -19,7 +21,7 @@ set -Ux LEFT_SUB_SEPARATOR "▒"
 set -Ux RIGHT_SUB_SEPARATOR "▒"
 
 set -Ux NVM_DIR "$HOME/.nvm"
-set PATH "/Users/bastien/Library/Application Support/Coursier/bin" "$HOME/.bin" "$HOME/.rvm/bin" "$HOME/.yarn/bin" "$HOME/.cargo/bin/" $PATH "/usr/local/opt/llvm/bin"
+set PATH "/Users/bastien/Library/Application Support/Coursier/bin" "$HOME/.bin" "$HOME/.rvm/bin" "$HOME/.yarn/bin" "$HOME/.cargo/bin/" "$GOPATH/bin" $PATH "/usr/local/opt/llvm/bin"
 [ -e ~/.config/ripgrep/rc ] && set -Ux RIPGREP_CONFIG_PATH "$HOME/.config/ripgrep/rc"
 
 # The next line updates PATH for the Google Cloud SDK.

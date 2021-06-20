@@ -27,14 +27,13 @@ source ~/.bash_aliases
 export EDITOR='nvim'
 export GOPATH="$HOME/.go"
 
-export GOPATH=$(go env GOPATH 2&> /dev/null)
-
 ANDROID_HOME=~/.android/sdk/
 PATH="$PATH:~/.bin:$GOPATH/bin:~/.gem/ruby/2.4.0/bin:~/.gem/ruby/2.5.0/bin:$HOME/.cargo/bin"
 TERM=xterm-256color
 PATH=$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$HOME/.cargo/bin
 PATH=$PATH:"$HOME/Library/Application Support/Coursier/bin"
 PATH=$PATH:"/usr/local/opt/llvm/bin"
+PATH=$PATH:"$GOPATH/bin"
 [ -e ~/.config/ripgrep/rc ] && export RIPGREP_CONFIG_PATH="$HOME/.config/ripgrep/rc"
 
 [ -e "~/.local/share/Steam/ubuntu12_32/steam-runtime/amd64/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0" ] && {
