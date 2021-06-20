@@ -147,6 +147,10 @@ lspconfig.pyright.setup{}
 -- {{{ C++
 lspconfig.clangd.setup{}
 -- }}}
+
+-- {{{ Go
+lspconfig.gopls.setup{}
+-- }}}
 -- }}}
 
 -- vim: foldmethod=marker:foldlevel=0
