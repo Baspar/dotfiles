@@ -7,7 +7,7 @@ local saga = require"lspsaga"
 saga.init_lsp_saga {
   -- add your config value here
   -- default value
-  -- use_saga_diagnostic_sign = true
+  use_saga_diagnostic_sign = true,
   -- error_sign = '',
   -- warn_sign = '',
   -- hint_sign = '',
@@ -33,8 +33,6 @@ saga.init_lsp_saga {
   rename_action_keys = {
     quit = '<C-c>',exec = '<CR>'  -- quit can be a table
   },
-  -- definition_preview_icon = '  '
-  -- 1: thin border | 2: rounded border | 3: thick border | 4: ascii border
   border_style = 'round'
   -- rename_prompt_prefix = '➤',
   -- if you don't use nvim-lspconfig you must pass your server name and
@@ -135,8 +133,27 @@ lspconfig.rls.setup{}
 -- }}}
 
 -- {{{ Scala
+local scala_capabilities = vim.lsp.protocol.make_client_capabilities()
+scala_capabilities.textDocument.codeAction = {
+  dynamicRegistration = false;
+  codeActionLiteralSupport = {
+    codeActionKind = {
+      valueSet = {
+        "",
+        "quickfix",
+        "refactor",
+        "refactor.extract",
+        "refactor.inline",
+        "refactor.rewrite",
+        "source",
+        "source.organizeImports",
+      };
+    };
+  };
+}
 lspconfig.metals.setup{
   root_dir = lspconfig.util.find_git_ancestor;
+  capabilities = scala_capabilities;
 }
 -- }}}
 
