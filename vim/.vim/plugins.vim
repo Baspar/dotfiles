@@ -8,12 +8,6 @@ let &packpath = &runtimepath
 
 call plug#begin('~/.vim/plugged')
 
-  " {{{ Vim-test
-  Plug 'vim-test/vim-test'
-  let test#strategy = "dispatch"
-  let test#scala#runner = 'blooptest'
-  " }}}
-
   " {{{ AutoPairs
   Plug 'jiangmiao/auto-pairs'
   Plug 'alvan/vim-closetag'
@@ -57,24 +51,12 @@ call plug#begin('~/.vim/plugged')
   Plug 'nvim-treesitter/nvim-treesitter', Cond(has('nvim'), {'do': ':TSUpdate'})
   "}}}
 
-  " {{{ Javascript
-  Plug 'HerringtonDarkholme/yats.vim'
-  " }}}
-
-  " {{{ Graphql
-  Plug 'jparise/vim-graphql', {'for': ['typescript', 'javascript', 'typescriptreact', 'javascriptreact']}
-  " }}}
-
-  " {{{ Rust
-  Plug 'rust-lang/rust.vim', {'for': ['rust']}
+  " {{{ Polyglot
+  Plug 'sheerun/vim-polyglot'
   " }}}
 
   " {{{ Fish
   Plug 'dag/vim-fish', {'for': ['fish']}
-  " }}}
-
-  " {{{ Smarty
-  Plug 'blueyed/smarty.vim'
   " }}}
 
   " {{{ Clojure
