@@ -168,6 +168,12 @@ lspconfig.clangd.setup{}
 -- {{{ Go
 lspconfig.gopls.setup{}
 -- }}}
+
+--{{{ Groovy
+lspconfig.groovyls.setup{
+  cmd = { "java", "-jar", "/Users/bastien/.vim/lsp-servers/groovy-language-server-all.jar" },
+}
+--}}}
 -- }}}
 
 -- vim: foldmethod=marker:foldlevel=0
