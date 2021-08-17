@@ -15,11 +15,14 @@ function block
   #
   # @param BG: Background color of the block
   # @param FG: Foreground color of the block
-  # @param ...TEXT: Text to display in the block
+  # @param TEXT: Text to display in the block
+  # @param ...FLAGS: 0+ Flags for set_color
   #
   # @returns: A block with style and text
 
-  echo $argv | read -d ' ' -l BG FG TEXT
+  echo $argv | read -l BG FG TEXT FLAGS
+
+  [ -z $FLAGS ] || eval set_color $FLAGS
 
   if [ "$OLD_BG" != "" ] && [ -z "$FISH_NO_POWERLINE" ]
     if [ "$OLD_BG" = "$BG" ]
@@ -31,16 +34,18 @@ function block
     end
   end
 
-  set -g SKIP_ELLIPSIS 0
-  set_color $FG -b $BG
-  for TEXT_BLOCK in (echo "$TEXT" | tr "$ELLIPSIS" '\n')
-    if [ $SKIP_ELLIPSIS  -ne 0 ]
-      set_color '#666666' -b $BG
-      echo -n "$ELLIPSIS"
-      set_color $FG -b $BG
+  if [ ! -z $TEXT ]
+    set -g SKIP_ELLIPSIS 0
+    set_color $FG -b $BG
+    for TEXT_BLOCK in (echo " $TEXT " | tr "$ELLIPSIS" '\n')
+      if [ $SKIP_ELLIPSIS  -ne 0 ]
+        set_color '#666666' -b $BG
+        echo -n "$ELLIPSIS"
+        set_color $FG -b $BG
+      end
+      echo -n "$TEXT_BLOCK"
+      set -g SKIP_ELLIPSIS 1
     end
-    echo -n "$TEXT_BLOCK"
-    set -g SKIP_ELLIPSIS 1
   end
   set -g OLD_BG $BG
   set_color normal -b normal
@@ -69,7 +74,7 @@ function fish_mode_prompt_2
     set COLOR "#FFFFFF"
   end
 
-  block "$COLOR" "#000000" " $LETTER "
+  block "$COLOR" "#000000" "$LETTER"
 end
 
 
@@ -262,14 +267,13 @@ function fish_prompt
 
   # Command error status
   if [ "$_display_status" != "0" ]
-    set_color -o
-    block "#AF5F5E" "#000000" " $_display_status "
+    block "#AF5F5E" "#000000" "$_display_status" -o
   end
 
   # Virtual env
   if set -q VIRTUAL_ENV
     set VENV_NAME (basename $VIRTUAL_ENV)
-    block "#4B8252" "#000000" " $VENV_NAME "
+    block "#4B8252" "#3e3e3e" "$VENV_NAME" -i -o
   end
 
   set TOTAL_PATH ''
@@ -288,11 +292,11 @@ function fish_prompt
       set TOTAL_PATH "$TOTAL_PATH$ACCUMULATED_PATH"
 
       set ACCUMULATED_PATH (abbr_path "$ACCUMULATED_PATH")
-      block "#3e3e3e" "#FFFFFF" " $ACCUMULATED_PATH "
+      block "#3e3e3e" "#FFFFFF" "$ACCUMULATED_PATH"
 
-      [ -n "$GIT_OPERATION" ] && block (darker_of $GIT_BG_COLOR) "#000000" " $GIT_OPERATION "
-      block "$GIT_BG_COLOR" "#000000" " $GIT_BRANCH "
-      [ -n "$GIT_ICONS" ] && block (darker_of $GIT_BG_COLOR) "#000000" " $GIT_ICONS "
+      [ -n "$GIT_OPERATION" ] && block (darker_of $GIT_BG_COLOR) "#3e3e3e" "$GIT_OPERATION" -o -i
+      block "$GIT_BG_COLOR" "#3e3e3e" " $GIT_BRANCH " -o -i
+      [ -n "$GIT_ICONS" ] && block (darker_of $GIT_BG_COLOR) "#3e3e3e" "$GIT_ICONS" -o -i
 
       set ACCUMULATED_PATH ''
 
@@ -307,14 +311,15 @@ function fish_prompt
   [ "$ACCUMULATED_PATH" ] || set ACCUMULATED_PATH '/'
   set ACCUMULATED_PATH (abbr_path "$ACCUMULATED_PATH")
 
-  block "#3e3e3e" "#FFFFFF" " $ACCUMULATED_PATH "
+  block "#3e3e3e" "#FFFFFF" "$ACCUMULATED_PATH"
+
   block "normal" "normal" ""
   echo ""
 
-
   set -g OLD_BG ""
   echo -ne (fish_mode_prompt_2)
-  block "normal" "normal" " "
+  block "normal" "normal" ""
+  echo " "
 
   if ! [ -z NO_ABBR ]
     rm -rf /tmp/FISH_NO_ABBR
