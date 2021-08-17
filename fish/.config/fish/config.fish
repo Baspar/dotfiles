@@ -10,6 +10,8 @@ set -x GPG_TTY (tty)
 
 set -Ux GOPATH ~/.go
 
+set -x JAVA_HOME "/Library/Java/JavaVirtualMachines/graalvm-ce-java8-21.0.0.2/Contents/Home/bin"
+
 # set -Ux LEFT_SEPARATOR ""
 # set -Ux RIGHT_SEPARATOR ""
 # set -Ux LEFT_SUB_SEPARATOR ""
@@ -21,7 +23,17 @@ set -Ux LEFT_SUB_SEPARATOR "▒"
 set -Ux RIGHT_SUB_SEPARATOR "▒"
 
 set -Ux NVM_DIR "$HOME/.nvm"
-set PATH "/Users/bastien/Library/Application Support/Coursier/bin" "$HOME/.bin" "$HOME/.rvm/bin" "$HOME/.yarn/bin" "$HOME/.cargo/bin/" "$GOPATH/bin" $PATH "/usr/local/opt/llvm/bin"
+set PATH \
+    "/Users/bastien/Library/Application Support/Coursier/bin" \
+    "/Library/Java/JavaVirtualMachines/graalvm-ce-java8-21.0.0.2/Contents/Home/bin" \
+    "$HOME/.bin" \
+    "$HOME/.rvm/bin" \
+    "$HOME/.yarn/bin" \
+    "$HOME/.cargo/bin/" \
+    "$GOPATH/bin" \
+    $PATH \
+    "/usr/local/opt/llvm/bin"
+
 [ -e ~/.config/ripgrep/rc ] && set -Ux RIPGREP_CONFIG_PATH "$HOME/.config/ripgrep/rc"
 
 # The next line updates PATH for the Google Cloud SDK.
@@ -44,8 +56,10 @@ set fish_color_search_match --background='333'
 
 source ~/.config/fish/fish_prompt.fish
 [ -d ~/.config/fish/completions ] && source ~/.config/fish/completions/*.fish
-abbr java11 "set -x JAVA_HOME /Library/Java/JavaVirtualMachines/jdk-11.0.2.jdk/Contents/Home"
-abbr java8 "set -x JAVA_HOME /Library/Java/JavaVirtualMachines/jdk1.8.0_202.jdk/Contents/Home"
+alias java11 "set -x JAVA_HOME /Library/Java/JavaVirtualMachines/jdk-11.0.2.jdk/Contents/Home"
+alias java8 "set -x JAVA_HOME /Library/Java/JavaVirtualMachines/jdk1.8.0_212.jdk/Contents/Home"
+alias graal8 "set -x JAVA_HOME /Library/Java/JavaVirtualMachines/graalvm-ce-java8-21.0.0.2/Contents/Home"
+[ -e "/Library/Java/JavaVirtualMachines/graalvm-ce-java8-21.0.0.2/Contents/Home" ]; and graal8
 
 alias npm "functions --erase npm yarn node; load_nvm; npm $argv"
 alias yarn "functions --erase npm yarn node; load_nvm; yarn $argv"
