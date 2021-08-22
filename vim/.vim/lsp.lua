@@ -84,6 +84,10 @@ local tsFamily = {
 }
 -- }}}
 
+-- {{{ HTML/CSS
+lspconfig.html.setup{}
+-- }}}
+
 -- {{{ Typescript/Javascript
 lspconfig.tsserver.setup{
   on_attach = function(client)
