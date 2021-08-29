@@ -77,5 +77,6 @@ export PATH=$PATH:"$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$HOME/.cargo
 export PATH=$PATH:"$HOME/Library/Application Support/Coursier/bin"
 export PATH=$PATH:"/usr/local/opt/llvm/bin"
 export PATH=$PATH:"$GOPATH/bin"
-export PATH=$PATH:"/Library/Java/JavaVirtualMachines/graalvm-ce-java8-21.0.0.2/Contents/Home/bin"
+export PATH=$PATH:"$JAVA_HOME/bin"
 export PATH=$PATH:"$HOME/.rvm/bin"
+export PATH="/usr/local/opt/curl/bin":$PATH
