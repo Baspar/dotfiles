@@ -23,8 +23,17 @@ nnoremap <Plug>PrependText# n".P:call repeat#set("\<Plug>PrependText#")<CR>
 nnoremap c<#                #cgN<C-r>"<C-o>`[<C-o>:call repeat#set("\<Plug>PrependText#")<CR>
 
 " FZF
+function! OpenGitFilesIfGit()
+  silent! !git rev-parse --is-inside-work-tree
+  if v:shell_error == 0
+    return ":GitFiles"
+  else
+    return ":FZF"
+  endif
+endfunction
 nnoremap \ :Buffers<CR>
-nnoremap <tab> :FZF<CR>
+nnoremap <expr> <tab> OpenGitFilesIfGit()
+nnoremap <s-tab> :FZF<CR>
 
 " fileExplorer
 nnoremap <C-e> :NERDTreeToggle<CR>
