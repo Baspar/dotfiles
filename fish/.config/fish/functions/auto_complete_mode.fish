@@ -25,7 +25,7 @@ function auto_complete_mode
       echo -e $DATA"\n" \
         | sed 's/^ //' \
         | sed "1 s/ $HEADER /$REPLACEMENT/; 1 s/^$HEADER /$REPLACEMENT/; 1 s/ $HEADER\$/$REPLACEMENT/;" \
-        | eval (_fzf "-q \"$QUERY\" --print-query --expect=left,right --ansi --color=header:3") \
+        | eval (_fzf "-q \"$QUERY\" --print-query --expect=home,end --ansi --color=header:3") \
         | sed "s/ \{2,\}/|/g" \
         | cut -d\| -f$INDEX \
         | read -L -l Q COMMAND RES; or return
@@ -34,9 +34,9 @@ function auto_complete_mode
         return
       end
 
-      if [ $COMMAND = "left" ]
+      if [ $COMMAND = "home" ]
         set INDEX (math "($INDEX + $NB_HEADERS - 2) % $NB_HEADERS + 1")
-      else if [ $COMMAND = "right" ]
+      else if [ $COMMAND = "end" ]
         set INDEX (math "$INDEX % $NB_HEADERS + 1")
       end
       set QUERY $Q
@@ -84,7 +84,7 @@ function auto_complete_mode
   #######
 
   function fzf-k8s-namespaces
-    set DATA (kubectl get namespace)
+    set DATA (env KUBECONFIG=$argv[1] kubectl get namespace)
     set INDEX 1
     set NAMESPACE (fzf_search $DATA $INDEX)
 
@@ -92,7 +92,7 @@ function auto_complete_mode
   end
 
   function fzf-k8s-services
-    set DATA (kubectl get svc -A)
+    set DATA (env KUBECONFIG=$argv[1] kubectl get svc -A)
     set INDEX 2
     set SERVICE (fzf_search $DATA $INDEX)
 
@@ -100,7 +100,7 @@ function auto_complete_mode
   end
 
   function fzf-k8s-pods
-    set DATA (kubectl get pods -A)
+    set DATA (env KUBECONFIG=$argv[1] kubectl get pods -A)
     set INDEX 2
     set POD (fzf_search $DATA $INDEX)
 
@@ -108,7 +108,7 @@ function auto_complete_mode
   end
 
   function fzf-k8s-cronjobs
-    set DATA (kubectl get cronjobs -A)
+    set DATA (env KUBECONFIG=$argv[1] kubectl get cronjobs -A)
     set INDEX 2
     set POD (fzf_search $DATA $INDEX)
 
@@ -116,7 +116,7 @@ function auto_complete_mode
   end
 
   function fzf-k8s-jobs
-    set DATA (kubectl get jobs -A)
+    set DATA (env KUBECONFIG=$argv[1] kubectl get jobs -A)
     set INDEX 2
     set POD (fzf_search $DATA $INDEX)
 
@@ -125,24 +125,40 @@ function auto_complete_mode
 
   function fzf-k8s
     echo ""
-    echo -e "K8S\nPods\nNamespaces\nServices\nCronjobs\nJobs" \
-      | eval (_fzf) \
-      | read -l MODE; or return
+    set INDEX 1
+    set CONFIGS (ls ~/.kube | grep "config")
+    set NB_CONFIGS (count $CONFIGS)
+    while true
+      set HI_CONFIGS $CONFIGS
+      set HI_CONFIGS[$INDEX] (set_color -o; echo -n "$HI_CONFIGS[$INDEX]"; set_color normal)
+      set PRETTY_CONFIG (string join ", " $HI_CONFIGS)
+      echo -e "K8S ($PRETTY_CONFIG)\nPods\nNamespaces\nServices\nCronjobs\nJobs" \
+        | eval (_fzf "--expect=home,end") \
+        | read -L -l COMMAND MODE; or return
 
-    switch "$MODE"
-      case Jobs
-        fzf-k8s-jobs
-      case Cronjobs
-        fzf-k8s-cronjobs
-      case Pods
-        fzf-k8s-pods
-      case Namespaces
-        fzf-k8s-namespaces
-      case Services
-        fzf-k8s-services
+      if [ $COMMAND = "home" ]
+        set INDEX (math "($INDEX + $NB_CONFIGS - 2) % $NB_CONFIGS + 1")
+      else if [ $COMMAND = "end" ]
+        set INDEX (math "$INDEX % $NB_CONFIGS + 1")
+      else
+        set CONFIG "$HOME/.kube/"$CONFIGS[$INDEX]
+        switch "$MODE"
+          case Jobs
+            fzf-k8s-jobs $CONFIG
+          case Cronjobs
+            fzf-k8s-cronjobs $CONFIG
+          case Pods
+            fzf-k8s-pods $CONFIG
+          case Namespaces
+            fzf-k8s-namespaces $CONFIG
+          case Services
+            fzf-k8s-services $CONFIG
+        end
+
+        commandline -f repaint
+        return
+      end
     end
-
-    commandline -f repaint
   end
 
 
