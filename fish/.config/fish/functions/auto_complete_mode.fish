@@ -1,79 +1,54 @@
 #!/usr/bin/env fish
 function auto_complete_mode
-  function _get_headers
-    echo -e (echo -e $argv"\n" | head -n 1 | sed 's/ \{2,\}/\\\\n/g')
-  end
+  function _fzf_search
+    set PROMPT $argv[1]
+    set COMMAND $argv[2]
+    set INDEX $argv[3]
 
-  function _fzf
-    set -q FZF_TMUX_HEIGHT; or set FZF_TMUX_HEIGHT 40%
-    set FZF_DEFAULT_OPTS "--height $FZF_TMUX_HEIGHT $FZF_DEFAULT_OPTS --layout=reverse --header-lines=1"
-    echo "fzf $FZF_DEFAULT_OPTS $argv"
-  end
+    set TMP_DATA (mktemp)
+    set TMP_INDEX (mktemp)
 
-  function fzf_search
-    set DATA $argv[1..-2]
-    set INDEX $argv[-1]
+    set RELOAD_LEFT "fish -c 'fzf_fetch_and_stdout $TMP_DATA $TMP_INDEX -1'"
+    set RELOAD_RIGHT "fish -c 'fzf_fetch_and_stdout $TMP_DATA $TMP_INDEX +1'"
+    set OUT (fzf_fetch_and_stdout "$TMP_DATA" "$TMP_INDEX"  0 "$COMMAND" "$INDEX" | \
+      fzf --prompt="$PROMPT> " --height=20 --layout=reverse --header-lines=1 --bind="home:reload($RELOAD_LEFT),end:reload($RELOAD_RIGHT)")
 
-    set HEADERS (_get_headers $DATA)
-    set NB_HEADERS (count $HEADERS)
-    set QUERY ""
-
-    set REPLACEMENT (printf '\e[91m')'&'(printf '\e[0m')
-
-    while true
-      set HEADER "$HEADERS[$INDEX]"
-      echo -e $DATA"\n" \
-        | sed 's/^ //' \
-        | sed "1 s/ $HEADER /$REPLACEMENT/; 1 s/^$HEADER /$REPLACEMENT/; 1 s/ $HEADER\$/$REPLACEMENT/;" \
-        | eval (_fzf "-q \"$QUERY\" --print-query --expect=home,end --ansi --color=header:3") \
-        | sed "s/ \{2,\}/|/g" \
-        | cut -d\| -f$INDEX \
-        | read -L -l Q COMMAND RES; or return
-      if [ ! $COMMAND ]
-        echo $RES
-        return
-      end
-
-      if [ $COMMAND = "home" ]
-        set INDEX (math "($INDEX + $NB_HEADERS - 2) % $NB_HEADERS + 1")
-      else if [ $COMMAND = "end" ]
-        set INDEX (math "$INDEX % $NB_HEADERS + 1")
-      end
-      set QUERY $Q
-    end
+    echo $OUT | \
+      sed 's/ \{2,\}/\t/g' | \
+      cut -d \t -f (cat $TMP_INDEX); or return
   end
 
   ##########
   # Docker #
   ##########
 
-  function fzf-docker-images
-    set DATA (docker images)
+  function _fzf-docker-images
+    set COMMAND "docker images"
     set INDEX 3
-    set IMAGE (fzf_search $DATA $INDEX)
+    set IMAGE (_fzf_search Images $COMMAND $INDEX)
 
     commandline -i -- "$IMAGE"
   end
 
-  function fzf-docker-containers
-    set DATA (docker container ls -a)
+  function _fzf-docker-containers
+    set COMMAND "docker container ls -a"
     set INDEX 1
-    set CONTAINER (fzf_search $DATA $INDEX)
+    set CONTAINER (_fzf_search Containers $COMMAND $INDEX)
 
     commandline -i -- "$CONTAINER"
   end
 
-  function fzf-docker
+  function _fzf-docker
     echo ""
     echo -e "Docker\nImages\nContainers" \
-      | eval (_fzf) \
+      | fzf --height=20 --layout=reverse --header-lines=1 \
       | read -l MODE; or return
 
     switch "$MODE"
       case Images
-        fzf-docker-images
+        _fzf-docker-images
       case Containers
-        fzf-docker-containers
+        _fzf-docker-containers
     end
 
     commandline -f repaint
@@ -83,47 +58,47 @@ function auto_complete_mode
   # K8S #
   #######
 
-  function fzf-k8s-namespaces
-    set DATA (env KUBECONFIG=$argv[1] kubectl get namespace)
+  function _fzf-k8s-namespaces
+    set COMMAND "env KUBECONFIG=$argv[1] kubectl get namespace"
     set INDEX 1
-    set NAMESPACE (fzf_search $DATA $INDEX)
+    set NAMESPACE (_fzf_search Namespaces $COMMAND $INDEX)
 
     commandline -i -- "$NAMESPACE"
   end
 
-  function fzf-k8s-services
-    set DATA (env KUBECONFIG=$argv[1] kubectl get svc -A)
+  function _fzf-k8s-services
+    set COMMAND "env KUBECONFIG=$argv[1] kubectl get svc -A"
     set INDEX 2
-    set SERVICE (fzf_search $DATA $INDEX)
+    set SERVICE (_fzf_search Services $COMMAND $INDEX)
 
     commandline -i -- "$SERVICE"
   end
 
-  function fzf-k8s-pods
-    set DATA (env KUBECONFIG=$argv[1] kubectl get pods -A)
+  function _fzf-k8s-pods
+    set COMMAND "env KUBECONFIG=$argv[1] kubectl get pods -A"
     set INDEX 2
-    set POD (fzf_search $DATA $INDEX)
+    set POD (_fzf_search Pods $COMMAND $INDEX)
 
     commandline -i -- "$POD"
   end
 
-  function fzf-k8s-cronjobs
-    set DATA (env KUBECONFIG=$argv[1] kubectl get cronjobs -A)
+  function _fzf-k8s-cronjobs
+    set COMMAND "env KUBECONFIG=$argv[1] kubectl get cronjobs -A"
     set INDEX 2
-    set POD (fzf_search $DATA $INDEX)
+    set POD (_fzf_search Cronjobs $COMMAND $INDEX)
 
     commandline -i -- "$POD"
   end
 
-  function fzf-k8s-jobs
-    set DATA (env KUBECONFIG=$argv[1] kubectl get jobs -A)
+  function _fzf-k8s-jobs
+    set COMMAND "env KUBECONFIG=$argv[1] kubectl get jobs -A"
     set INDEX 2
-    set POD (fzf_search $DATA $INDEX)
+    set POD (_fzf_search Jobs $COMMAND $INDEX)
 
     commandline -i -- "$POD"
   end
 
-  function fzf-k8s
+  function _fzf-k8s
     echo ""
     set INDEX 1
     set CONFIGS (ls ~/.kube | grep "config")
@@ -133,7 +108,7 @@ function auto_complete_mode
       set HI_CONFIGS[$INDEX] (set_color -o; echo -n "$HI_CONFIGS[$INDEX]"; set_color normal)
       set PRETTY_CONFIG (string join ", " $HI_CONFIGS)
       echo -e "K8S ($PRETTY_CONFIG)\nPods\nNamespaces\nServices\nCronjobs\nJobs" \
-        | eval (_fzf "--expect=home,end") \
+        | fzf --height=20 --layout=reverse --header-lines=1 --expect=home,end \
         | read -L -l COMMAND MODE; or return
 
       if [ $COMMAND = "home" ]
@@ -144,15 +119,15 @@ function auto_complete_mode
         set CONFIG "$HOME/.kube/"$CONFIGS[$INDEX]
         switch "$MODE"
           case Jobs
-            fzf-k8s-jobs $CONFIG
+            _fzf-k8s-jobs $CONFIG
           case Cronjobs
-            fzf-k8s-cronjobs $CONFIG
+            _fzf-k8s-cronjobs $CONFIG
           case Pods
-            fzf-k8s-pods $CONFIG
+            _fzf-k8s-pods $CONFIG
           case Namespaces
-            fzf-k8s-namespaces $CONFIG
+            _fzf-k8s-namespaces $CONFIG
           case Services
-            fzf-k8s-services $CONFIG
+            _fzf-k8s-services $CONFIG
         end
 
         commandline -f repaint
@@ -166,10 +141,10 @@ function auto_complete_mode
   # PID #
   #######
 
-  function fzf-pid
-    set DATA (ps aux)
+  function _fzf-pid
+    set CMD "ps aux"
     set INDEX 2
-    set PID (fzf_search $DATA $INDEX)
+    set PID (_fzf_search $CMD $INDEX)
 
     commandline -i -- "$PID"
 
@@ -185,9 +160,9 @@ function auto_complete_mode
     bind \ce -M autocomplete --sets-mode insert edit_command_buffer
     bind \cc -M autocomplete --sets-mode insert force-repaint
     bind \e  -M autocomplete --sets-mode insert force-repaint
-    bind p   -M autocomplete --sets-mode insert fzf-pid
-    bind d   -M autocomplete --sets-mode insert fzf-docker
-    bind k   -M autocomplete --sets-mode insert fzf-k8s
+    bind p   -M autocomplete --sets-mode insert _fzf-pid
+    bind d   -M autocomplete --sets-mode insert _fzf-docker
+    bind k   -M autocomplete --sets-mode insert _fzf-k8s
   end
 
   if bind -M insert > /dev/null 2>&1
