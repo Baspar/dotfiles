@@ -31,11 +31,11 @@ UNINSTALL_DOT () {
         echo -e -n "  $FILE...\r"
         if [ -L "$DEST_FILE" ] && [ -e "$DEST_FILE" ] && [ "$SOURCE_FILE" -ef "$DEST_FILE" ]; then
             rm -rf "$DEST_FILE"
-            echo -e "\r  \e[32m$FILE...\e[0m Removed"
+            echo -e "\r  \033[32m$FILE...\033[0m Removed"
         elif [ -e "$DEST_FILE" ]; then
-            echo -e "\r  \e[31m$FILE...\e[0m Error, file was not set by deploy.bash"
+            echo -e "\r  \033[31m$FILE...\033[0m Error, file was not set by deploy.bash"
         else
-            echo -e "\r  \e[33m$FILE...\e[0m Is not linked"
+            echo -e "\r  \033[33m$FILE...\033[0m Is not linked"
         fi
     done
 
@@ -70,12 +70,12 @@ INSTALL_DOT () {
         DEST_FILE=$(echo "$HOME/$FILE" | sed 's#\(/\.\.\)\+/#/#g; s#/\./#/#g')
         echo -e -n "  $FILE...\r"
         if [ -L "$DEST_FILE" ] && [ -e "$DEST_FILE" ] && [ "$SOURCE_FILE" -ef "$DEST_FILE" ]; then
-            echo -e "\r  \e[33m$FILE...\e[0m Already linked"
+            echo -e "\r  \033[33m$FILE...\033[0m Already linked"
         elif [ -e "$DEST_FILE" ]; then
-            echo -e "\r  \e[31m$FILE...\e[0m Error, file already exists"
+            echo -e "\r  \033[31m$FILE...\033[0m Error, file already exists"
         else
             ln -s "$SOURCE_FILE" "$DEST_FILE"
-            echo -e "\r  \e[32m$FILE...\e[0m OK"
+            echo -e "\r  \033[32m$FILE...\033[0m OK"
         fi
     done
 
