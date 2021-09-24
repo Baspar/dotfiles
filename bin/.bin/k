@@ -1,0 +1,322 @@
+#!/usr/bin/env bash
+
+###########
+# Helpers #
+###########
+function WARNING() {
+    CMD="$1"
+
+    echo ''
+    echo $'\e[31mWarning\e[0m: Double check your command'
+    echo "$CMD"
+
+    echo ''
+    echo 'Are you sure this is correct ? [yN]'
+    read -p '> ' CONFIRM
+
+    echo ''
+
+    [[ $? -eq 0 && ( $CONFIRM = "Y" || $CONFIRM = "y" ) ]] || {
+        echo "Cancelling"
+        return
+    }
+
+    echo "$CMD"
+}
+function _fzf_tabular() {
+    CMD="$1"
+    shift
+    eval "$CMD" | fzf --prompt="$NAME> " --height=20 --layout=reverse --header-lines=1 $* | \
+        sed 's/ \{2,\}/\n/g'
+}
+function _fzf_kubectl() {
+    KUBECONFIG="$1"
+    TYPE="$2"
+    NAME="$3"
+    shift 3
+
+    CMD="KUBECONFIG='$KUBECONFIG' kubectl get '$TYPE' -A"
+    _fzf_tabular "$CMD" $*
+}
+
+#######
+# Job #
+#######
+function _jobs_actions() {
+    KUBECONFIG="$1"
+    NAMESPACE="$2"
+    JOB="$3"
+
+    OPTIONS=( "Logs" "Logs -f" "Describe" "Create job" )
+    OUT=$(printf "%s\n" "${OPTIONS[@]}" | fzf --prompt="Action> " --height=20 --layout=reverse)
+
+    case "$OUT" in
+        "Logs")
+            KUBECONFIG="$KUBECONFIG" kubectl logs -n "$NAMESPACE" "jobs/$JOB"
+            ;;
+        "Logs -f")
+            KUBECONFIG="$KUBECONFIG" kubectl logs -n "$NAMESPACE" "jobs/$JOB" -f
+            ;;
+        "Describe")
+            KUBECONFIG="$KUBECONFIG" kubectl describe -n "$NAMESPACE" "jobs/$JOB"
+            ;;
+        "Create job")
+            read -p $'\e[1mNew name\e[0m> ' NEWNAME
+
+            [ $? -eq 0 ] && [ -n "$NEWNAME" ] || return
+
+            WARNING "KUBECONFIG='$KUBECONFIG' kubectl create job -n '$NAMESPACE' --from='jobs/$JOB' '$NEWNAME'"
+            ;;
+    esac
+}
+function _fzf-k8s-jobs() {
+    OUT=$(_fzf_kubectl "$1" "jobs" "Jobs")
+
+    [ $? -eq 0 ] && [ -n "$OUT" ] || return
+
+    NAMESPACE=$(echo "$OUT" | head -n 1)
+    JOB=$(echo "$OUT" | head -n 2 | tail -n 1)
+
+    _jobs_actions "$1" "$NAMESPACE" "$JOB"
+}
+
+###########
+# Cronjob #
+###########
+function _cronjobs_actions() {
+    KUBECONFIG="$1"
+    NAMESPACE="$2"
+    CRONJOB="$3"
+
+    OPTIONS=( "Jobs" "Describe" "Create job" )
+    OUT=$(printf "%s\n" "${OPTIONS[@]}" | fzf --prompt="Action> " --height=20 --layout=reverse)
+
+    case "$OUT" in
+        "Jobs")
+            OUT=$(_fzf_tabular "kubectl get jobs -n '$NAMESPACE'" -q "^$CRONJOB")
+
+            [ $? -eq 0 ] && [ -n "$OUT" ] || return
+
+            JOB=$(echo "$OUT" | head -n 1)
+            _jobs_actions "$KUBECONFIG" "$NAMESPACE" "$JOB"
+            ;;
+        "Describe")
+            KUBECONFIG="$KUBECONFIG" kubectl describe -n "$NAMESPACE" "cronjobs/$CRONJOB"
+            ;;
+        "Create job")
+            read -p $'\e[1mNew name\e[0m> '$CRONJOB'-' POSTFIX
+
+
+            [ $? -eq 0 ] && [ -n "$POSTFIX" ] || return
+
+            WARNING "KUBECONFIG='$KUBECONFIG' kubectl create job -n '$NAMESPACE' --from='cronjobs/$CRONJOB' '$CRONJOB-$POSTFIX'"
+            ;;
+    esac
+}
+function _fzf-k8s-cronjobs() {
+    OUT=$(_fzf_kubectl "$1" "cronjobs" "Cronjobs")
+
+    [ $? -eq 0 ] && [ -n "$OUT" ] || return
+
+    NAMESPACE=$(echo "$OUT" | head -n 1)
+    CRONJOB=$(echo "$OUT" | head -n 2 | tail -n 1)
+    _cronjobs_actions "$1" "$NAMESPACE" "$CRONJOB"
+}
+
+########
+# Pods #
+########
+function _pods_actions() {
+    KUBECONFIG="$1"
+    NAMESPACE="$2"
+    POD="$3"
+
+    OPTIONS=( "Logs" "Logs -f" "Describe" "Sh" "Execute" )
+    OUT=$(printf "%s\n" "${OPTIONS[@]}" | fzf --prompt="Action> " --height=20 --layout=reverse)
+
+    case "$OUT" in
+        "Logs")
+            KUBECONFIG="$1" kubectl logs -n "$NAMESPACE" "pods/$POD"
+            ;;
+        "Logs -f")
+            KUBECONFIG="$1" kubectl logs -n "$NAMESPACE" "pods/$POD" -f
+            ;;
+        "Describe")
+            KUBECONFIG="$1" kubectl describe -n "$NAMESPACE" "pods/$POD"
+            ;;
+        "Sh")
+            KUBECONFIG="$1" kubectl exec -it -n "$NAMESPACE" "pods/$POD" -- sh
+            ;;
+        "Execute")
+            read -p $'\e[1mCommand\e[0m> ' COMMAND
+
+            [ $? -eq 0 ] && [ -n "$COMMAND" ] || return
+
+            KUBECONFIG="$1" kubectl exec -it -n "$NAMESPACE" "pods/$POD" -- $COMMAND
+            ;;
+    esac
+}
+function _fzf-k8s-pods() {
+    OUT=$(_fzf_kubectl "$1" "pods" "Pods")
+
+    [ $? -eq 0 ] && [ -n "$OUT" ] || return
+
+    NAMESPACE=$(echo "$OUT" | head -n 1)
+    POD=$(echo "$OUT" | head -n 2 | tail -n 1)
+
+    _pods_actions "$1" "$NAMESPACE" "$POD"
+}
+
+##############
+# Namespaces #
+##############
+function _fzf-k8s-namespaces() {
+    OUT=$(_fzf_kubectl "$1" "namespaces" "Namespaces")
+
+    [ $? -eq 0 ] && [ -n "$OUT" ] || return
+}
+
+############
+# Services #
+############
+function _services_actions() {
+    KUBECONFIG="$1"
+    NAMESPACE="$2"
+    SERVICE="$3"
+    PORTS="$4"
+
+    OPTIONS=( "Logs" "Logs -f" "Describe" "Port forward" )
+    OUT=$(printf "%s\n" "${OPTIONS[@]}" | fzf --prompt="Action> " --height=20 --layout=reverse)
+
+    case "$OUT" in
+        "Port forward")
+            OUT=$(_fzf_tabular "kubectl get pods -n '$NAMESPACE'" -q "^$SERVICE")
+            [ $? -eq 0 ] && [ -n "$OUT" ] || return
+
+            POD=$(echo "$OUT" | head -n 1)
+
+            PORTS_FORWARD=$(echo $PORTS | tr , '\n' | fzf -m --height=20 --layout=reverse --prompt="Select ports to forward (Tab for multi-select)> " | sed 's#[:/].*##g')
+            [ $? -eq 0 ] && [ -n "$PORTS_FORWARD" ] || return
+
+
+            PORT_PARAM=""
+            for PORT in $PORTS_FORWARD; do
+              while :
+              do
+                echo -e -n "\033[32mForward $PORT to (Keep empty to use $PORT)> \033[0m"
+                read PORT_FORWARD
+                if [ -z "$PORT_FORWARD" ]
+                then
+                  echo "Using $PORT"
+                  PORT_FORWARD=$PORT
+                  break
+                elif $(echo $PORT_FORWARD | grep -q -E '^[0-9]+$')
+                then
+                  break
+                else
+                  echo " Please enter a valid port"
+                fi
+              done
+              PORT_PARAM="$PORT_PARAM $PORT_FORWARD:$PORT"
+            done
+            [ -n "$PORT_PARAM" ] || return
+
+            kubectl port-forward $ADDRESS --namespace $NAMESPACE $POD$PORT_PARAM
+            ;;
+        "Logs")
+            KUBECONFIG="$1" kubectl logs -n "$NAMESPACE" "svc/$SERVICE"
+            ;;
+        "Logs -f")
+            KUBECONFIG="$1" kubectl logs -n "$NAMESPACE" "svc/$SERVICE" -f
+            ;;
+        "Describe")
+            KUBECONFIG="$1" kubectl describe -n "$NAMESPACE" "svc/$SERVICE"
+            ;;
+    esac
+}
+function _fzf-k8s-services() {
+    OUT=$(_fzf_kubectl "$1" "svc" "Services")
+
+    [ $? -eq 0 ] && [ -n "$OUT" ] || return
+
+    NAMESPACE=$(echo "$OUT" | head -n 1)
+    SERVICE=$(echo "$OUT" | head -n 2 | tail -n 1)
+    PORTS=$(echo "$OUT" | head -n 6 | tail -n 1)
+
+    _services_actions "$1" "$NAMESPACE" "$SERVICE" "$PORTS"
+}
+
+###############
+# Deployments #
+###############
+function _fzf-k8s-deployments() {
+    OUT=$(_fzf_kubectl "$1" "deploy" "Deployments")
+
+    [ $? -eq 0 ] && [ -n "$OUT" ] || return
+
+    NAMESPACE=$(echo "$OUT" | head -n 1)
+    DEPLOY=$(echo "$OUT" | head -n 2 | tail -n 1)
+
+    OPTIONS=( "Logs" "Logs -f" "Describe" )
+    OUT=$(printf "%s\n" "${OPTIONS[@]}" | fzf --prompt="Action> " --height=20 --layout=reverse)
+
+    case "$OUT" in
+        "Logs")
+            KUBECONFIG="$1" kubectl logs -n "$NAMESPACE" "deploy/$DEPLOY"
+            ;;
+        "Logs -f")
+            KUBECONFIG="$1" kubectl logs -n "$NAMESPACE" "deploy/$DEPLOY" -f
+            ;;
+        "Describe")
+            KUBECONFIG="$1" kubectl describe -n "$NAMESPACE" "deploy/$DEPLOY"
+            ;;
+    esac
+}
+
+function _fzf_k8s () {
+    INDEX=0
+    CONFIGS=( $(ls ~/.kube | grep "config") )
+    NB_CONFIGS="${#CONFIGS[@]}"
+    while :;do
+      HI_CONFIGS=( ${CONFIGS[*]} )
+      HI_CONFIGS[$INDEX]="\033[1m${HI_CONFIGS[$INDEX]}\033[0m"
+
+      OUT=$(echo -e "Config [${HI_CONFIGS[*]}] \033[3m(Home / End to change config)\033[0m\nPods\nNamespaces\nServices\nCronjobs\nJobs\nDeployments" \
+          | fzf --prompt="K8S> " --height=20 --layout=reverse --header-lines=1 --expect=home,end)
+
+      [ $? -eq 0 ] || return
+
+      COMMAND=$(echo "$OUT" | head -n 1)
+      MODE=$(echo "$OUT" | tail -n 1)
+
+      if [[ "$COMMAND" = "home" ]]; then
+        INDEX=$(echo "($INDEX + $NB_CONFIGS - 1) % $NB_CONFIGS" | bc)
+      elif [[ "$COMMAND" = "end" ]]; then
+        INDEX=$(echo "($INDEX + 1) % $NB_CONFIGS" | bc)
+      else
+        CONFIG="$HOME/.kube/"${CONFIGS[$INDEX]}
+        case "$MODE" in
+            Jobs)
+                _fzf-k8s-jobs $CONFIG
+                ;;
+            Cronjobs)
+                _fzf-k8s-cronjobs $CONFIG
+                ;;
+            Pods)
+                _fzf-k8s-pods $CONFIG
+                ;;
+            Namespaces)
+                _fzf-k8s-namespaces $CONFIG
+                ;;
+            Services)
+                _fzf-k8s-services $CONFIG
+                ;;
+            Deployments)
+                _fzf-k8s-deployments $CONFIG
+                ;;
+        esac
+          exit
+      fi
+    done
+}
+_fzf_k8s
