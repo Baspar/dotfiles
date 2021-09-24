@@ -273,7 +273,7 @@ function _fzf-k8s-deployments() {
     esac
 }
 
-function _fzf_k8s () {
+function main() {
     INDEX=0
     CONFIGS=( $(ls ~/.kube | grep "config") )
     NB_CONFIGS="${#CONFIGS[@]}"
@@ -319,4 +319,13 @@ function _fzf_k8s () {
       fi
     done
 }
-_fzf_k8s
+
+COMMANDS=( "fzf" "kubectl" )
+for COMMAND in ${COMMANDS[*]}; do
+    command -v "$COMMAND" 2&>1 > /dev/null || {
+        echo "$COMMAND not found. Please install it"
+        exit 1
+    }
+done
+
+main
