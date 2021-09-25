@@ -21,7 +21,7 @@ function WARNING() {
         return
     }
 
-    echo "$CMD"
+    eval "$CMD"
 }
 function _fzf_tabular() {
     CMD="$1"
@@ -47,10 +47,13 @@ function _jobs_actions() {
     NAMESPACE="$2"
     JOB="$3"
 
-    OPTIONS=( "Logs" "Logs -f" "Describe" "Create job" )
+    OPTIONS=( "Logs" "Logs -f" "Describe" "Create job" "YAML" )
     OUT=$(printf "%s\n" "${OPTIONS[@]}" | fzf --prompt="Action> " --height=20 --layout=reverse)
 
     case "$OUT" in
+        "YAML")
+            KUBECONFIG="$1" kubectl get -n "$NAMESPACE" "jobs/$JOB" -o yaml
+            ;;
         "Logs")
             KUBECONFIG="$KUBECONFIG" kubectl logs -n "$NAMESPACE" "jobs/$JOB"
             ;;
@@ -88,10 +91,13 @@ function _cronjobs_actions() {
     NAMESPACE="$2"
     CRONJOB="$3"
 
-    OPTIONS=( "Jobs" "Describe" "Create job" )
+    OPTIONS=( "Jobs" "Describe" "Create job" "YAML" )
     OUT=$(printf "%s\n" "${OPTIONS[@]}" | fzf --prompt="Action> " --height=20 --layout=reverse)
 
     case "$OUT" in
+        "YAML")
+            KUBECONFIG="$1" kubectl get -n "$NAMESPACE" "cronjobs/$CRONJOB" -o yaml
+            ;;
         "Jobs")
             OUT=$(_fzf_tabular "kubectl get jobs -n '$NAMESPACE'" -q "^$CRONJOB")
 
@@ -131,10 +137,13 @@ function _pods_actions() {
     NAMESPACE="$2"
     POD="$3"
 
-    OPTIONS=( "Logs" "Logs -f" "Describe" "Sh" "Execute" )
+    OPTIONS=( "Logs" "Logs -f" "Describe" "Sh" "Execute" "YAML" )
     OUT=$(printf "%s\n" "${OPTIONS[@]}" | fzf --prompt="Action> " --height=20 --layout=reverse)
 
     case "$OUT" in
+        "YAML")
+            KUBECONFIG="$1" kubectl get -n "$NAMESPACE" "pods/$POD" -o yaml
+            ;;
         "Logs")
             KUBECONFIG="$1" kubectl logs -n "$NAMESPACE" "pods/$POD"
             ;;
@@ -185,10 +194,13 @@ function _services_actions() {
     SERVICE="$3"
     PORTS="$4"
 
-    OPTIONS=( "Logs" "Logs -f" "Describe" "Port forward" )
+    OPTIONS=( "Logs" "Logs -f" "Describe" "Port forward" "YAML" )
     OUT=$(printf "%s\n" "${OPTIONS[@]}" | fzf --prompt="Action> " --height=20 --layout=reverse)
 
     case "$OUT" in
+        "YAML")
+            KUBECONFIG="$1" kubectl get -n "$NAMESPACE" "svc/$SERVICE" -o yaml
+            ;;
         "Port forward")
             OUT=$(_fzf_tabular "kubectl get pods -n '$NAMESPACE'" -q "^$SERVICE")
             [ $? -eq 0 ] && [ -n "$OUT" ] || return
@@ -249,18 +261,18 @@ function _fzf-k8s-services() {
 ###############
 # Deployments #
 ###############
-function _fzf-k8s-deployments() {
-    OUT=$(_fzf_kubectl "$1" "deploy" "Deployments")
+function _deployments_actions() {
+    KUBECONFIG="$1"
+    NAMESPACE="$2"
+    DEPLOY="$3"
 
-    [ $? -eq 0 ] && [ -n "$OUT" ] || return
-
-    NAMESPACE=$(echo "$OUT" | head -n 1)
-    DEPLOY=$(echo "$OUT" | head -n 2 | tail -n 1)
-
-    OPTIONS=( "Logs" "Logs -f" "Describe" )
+    OPTIONS=( "Logs" "Logs -f" "Describe" "YAML" )
     OUT=$(printf "%s\n" "${OPTIONS[@]}" | fzf --prompt="Action> " --height=20 --layout=reverse)
 
     case "$OUT" in
+        "YAML")
+            KUBECONFIG="$1" kubectl get -n "$NAMESPACE" "deploy/$DEPLOY" -o yaml
+            ;;
         "Logs")
             KUBECONFIG="$1" kubectl logs -n "$NAMESPACE" "deploy/$DEPLOY"
             ;;
@@ -271,6 +283,16 @@ function _fzf-k8s-deployments() {
             KUBECONFIG="$1" kubectl describe -n "$NAMESPACE" "deploy/$DEPLOY"
             ;;
     esac
+}
+function _fzf-k8s-deployments() {
+    OUT=$(_fzf_kubectl "$1" "deploy" "Deployments")
+
+    [ $? -eq 0 ] && [ -n "$OUT" ] || return
+
+    NAMESPACE=$(echo "$OUT" | head -n 1)
+    DEPLOY=$(echo "$OUT" | head -n 2 | tail -n 1)
+
+    _deployments_actions "$1" "$NAMESPACE" "$DEPLOY"
 }
 
 function main() {
