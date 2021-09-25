@@ -26,7 +26,7 @@ nnoremap c<#                #cgN<C-r>"<C-o>`[<C-o>:call repeat#set("\<Plug>Prepe
 function! OpenGitFilesIfGit()
   silent! !git rev-parse --is-inside-work-tree
   if v:shell_error == 0
-    return ":GitFiles"
+    return ":GitFiles ."
   else
     return ":FZF"
   endif
