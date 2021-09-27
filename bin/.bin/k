@@ -344,7 +344,7 @@ function main() {
 
 COMMANDS=( "fzf" "kubectl" )
 for COMMAND in ${COMMANDS[*]}; do
-    command -v "$COMMAND" 2&>1 > /dev/null || {
+    command -v "$COMMAND" &> /dev/null || {
         echo "$COMMAND not found. Please install it"
         exit 1
     }
