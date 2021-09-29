@@ -25,7 +25,9 @@ function WARNING() {
 }
 function _fzf_tabular() {
     CMD="$1"
-    shift
+    NAME="$2"
+    shift 2
+
     eval "$CMD" | fzf --prompt="$NAME> " --height=20 --layout=reverse --header-lines=1 $* | \
         sed 's/ \{2,\}/\n/g'
 }
@@ -33,10 +35,17 @@ function _fzf_kubectl() {
     KUBECONFIG="$1"
     TYPE="$2"
     NAME="$3"
-    shift 3
+    NAMESPACE="$4"
 
-    CMD="KUBECONFIG='$KUBECONFIG' kubectl get '$TYPE' -A"
-    _fzf_tabular "$CMD" $*
+    CMD="KUBECONFIG='$KUBECONFIG' kubectl get '$TYPE'"
+
+    if [ -n "$NAMESPACE" ]; then
+        CMD="$CMD -n '$NAMESPACE'"
+    else
+        CMD="$CMD -A"
+    fi
+
+    _fzf_tabular "$CMD" "$NAME"
 }
 
 #######
@@ -73,12 +82,18 @@ function _jobs_actions() {
     esac
 }
 function _fzf-k8s-jobs() {
-    OUT=$(_fzf_kubectl "$1" "jobs" "Jobs")
+    MAYBE_NAMESPACE="$2"
+    OUT=$(_fzf_kubectl "$1" "jobs" "Jobs" "$MAYBE_NAMESPACE")
 
     [ $? -eq 0 ] && [ -n "$OUT" ] || return
 
-    NAMESPACE=$(echo "$OUT" | head -n 1)
-    JOB=$(echo "$OUT" | head -n 2 | tail -n 1)
+    if [ -n "$MAYBE_NAMESPACE" ]; then
+        NAMESPACE="$MAYBE_NAMESPACE"
+        JOB=$(echo "$OUT" | head -n 1)
+    else
+        NAMESPACE=$(echo "$OUT" | head -n 1)
+        JOB=$(echo "$OUT" | head -n 2 | tail -n 1)
+    fi
 
     _jobs_actions "$1" "$NAMESPACE" "$JOB"
 }
@@ -99,7 +114,7 @@ function _cronjobs_actions() {
             KUBECONFIG="$1" kubectl get -n "$NAMESPACE" "cronjobs/$CRONJOB" -o yaml
             ;;
         "Jobs")
-            OUT=$(_fzf_tabular "kubectl get jobs -n '$NAMESPACE'" -q "^$CRONJOB")
+            OUT=$(_fzf_tabular "kubectl get jobs -n '$NAMESPACE'" "Job" -q "^$CRONJOB")
 
             [ $? -eq 0 ] && [ -n "$OUT" ] || return
 
@@ -120,12 +135,18 @@ function _cronjobs_actions() {
     esac
 }
 function _fzf-k8s-cronjobs() {
-    OUT=$(_fzf_kubectl "$1" "cronjobs" "Cronjobs")
+    MAYBE_NAMESPACE="$2"
+    OUT=$(_fzf_kubectl "$1" "cronjobs" "Cronjobs" "$MAYBE_NAMESPACE")
 
     [ $? -eq 0 ] && [ -n "$OUT" ] || return
 
-    NAMESPACE=$(echo "$OUT" | head -n 1)
-    CRONJOB=$(echo "$OUT" | head -n 2 | tail -n 1)
+    if [ -n "$MAYBE_NAMESPACE" ]; then
+        NAMESPACE=$(echo "$OUT" | head -n 1)
+        CRONJOB=$(echo "$OUT" | head -n 2 | tail -n 1)
+    else
+        NAMESPACE="$MAYBE_NAMESPACE"
+        CRONJOB=$(echo "$OUT" | head -n 1)
+    fi
     _cronjobs_actions "$1" "$NAMESPACE" "$CRONJOB"
 }
 
@@ -166,12 +187,18 @@ function _pods_actions() {
     esac
 }
 function _fzf-k8s-pods() {
-    OUT=$(_fzf_kubectl "$1" "pods" "Pods")
+    MAYBE_NAMESPACE="$2"
+    OUT=$(_fzf_kubectl "$1" "pods" "Pods" "$MAYBE_NAMESPACE")
 
     [ $? -eq 0 ] && [ -n "$OUT" ] || return
 
-    NAMESPACE=$(echo "$OUT" | head -n 1)
-    POD=$(echo "$OUT" | head -n 2 | tail -n 1)
+    if [ -n "$MAYBE_NAMESPACE" ]; then
+        NAMESPACE="$MAYBE_NAMESPACE"
+        POD=$(echo "$OUT" | head -n 1)
+    else
+        NAMESPACE=$(echo "$OUT" | head -n 1)
+        POD=$(echo "$OUT" | head -n 2 | tail -n 1)
+    fi
 
     _pods_actions "$1" "$NAMESPACE" "$POD"
 }
@@ -179,10 +206,50 @@ function _fzf-k8s-pods() {
 ##############
 # Namespaces #
 ##############
+function _namespaces_actions() {
+    KUBECONFIG="$1"
+    NAMESPACE="$2"
+
+    OPTIONS=( "Pods" "Services" "Cronjobs" "Jobs" "Deployments" )
+
+    OUT=$(printf "\n%s" "${OPTIONS[@]}" | \
+        tail -n +2 | \
+        fzf --prompt="K8S (Namespace $NAMESPACE)> " --height=20 --header-lines=1 --layout=reverse )
+
+    [ $? -eq 0 ] || return
+
+    MODE=$(echo "$OUT" | tail -n 1)
+
+    CONFIG="$HOME/.kube/"${CONFIGS[$INDEX]}
+    case "$MODE" in
+        Jobs)
+            _fzf-k8s-jobs "$CONFIG" "$NAMESPACE"
+            ;;
+        Cronjobs)
+            _fzf-k8s-cronjobs "$CONFIG" "$NAMESPACE"
+            ;;
+        Pods)
+            _fzf-k8s-pods "$CONFIG" "$NAMESPACE"
+            ;;
+        Namespaces)
+            _fzf-k8s-namespaces "$CONFIG" "$NAMESPACE"
+            ;;
+        Services)
+            _fzf-k8s-services "$CONFIG" "$NAMESPACE"
+            ;;
+        Deployments)
+            _fzf-k8s-deployments "$CONFIG" "$NAMESPACE"
+            ;;
+    esac
+}
 function _fzf-k8s-namespaces() {
     OUT=$(_fzf_kubectl "$1" "namespaces" "Namespaces")
 
     [ $? -eq 0 ] && [ -n "$OUT" ] || return
+
+    NAMESPACE=$(echo "$OUT" | head -n 1)
+
+    _namespaces_actions "$1" "$NAMESPACE"
 }
 
 ############
@@ -202,7 +269,7 @@ function _services_actions() {
             KUBECONFIG="$1" kubectl get -n "$NAMESPACE" "svc/$SERVICE" -o yaml
             ;;
         "Port forward")
-            OUT=$(_fzf_tabular "kubectl get pods -n '$NAMESPACE'" -q "^$SERVICE")
+            OUT=$(_fzf_tabular "kubectl get pods -n '$NAMESPACE'" "Pod" -q "^$SERVICE")
             [ $? -eq 0 ] && [ -n "$OUT" ] || return
 
             POD=$(echo "$OUT" | head -n 1)
@@ -247,12 +314,18 @@ function _services_actions() {
     esac
 }
 function _fzf-k8s-services() {
-    OUT=$(_fzf_kubectl "$1" "svc" "Services")
+    MAYBE_NAMESPACE="$2"
+    OUT=$(_fzf_kubectl "$1" "svc" "Services" "$MAYBE_NAMESPACE")
 
     [ $? -eq 0 ] && [ -n "$OUT" ] || return
 
-    NAMESPACE=$(echo "$OUT" | head -n 1)
-    SERVICE=$(echo "$OUT" | head -n 2 | tail -n 1)
+    if [ -n "$MAYBE_NAMESPACE" ]; then
+        NAMESPACE="$MAYBE_NAMESPACE"
+        SERVICE=$(echo "$OUT" | head -n 1)
+    else
+        NAMESPACE=$(echo "$OUT" | head -n 1)
+        SERVICE=$(echo "$OUT" | head -n 2 | tail -n 1)
+    fi
     PORTS=$(echo "$OUT" | head -n 6 | tail -n 1)
 
     _services_actions "$1" "$NAMESPACE" "$SERVICE" "$PORTS"
@@ -285,12 +358,18 @@ function _deployments_actions() {
     esac
 }
 function _fzf-k8s-deployments() {
-    OUT=$(_fzf_kubectl "$1" "deploy" "Deployments")
+    MAYBE_NAMESPACE="$2"
+    OUT=$(_fzf_kubectl "$1" "deploy" "Deployments" "$MAYBE_NAMESPACE")
 
     [ $? -eq 0 ] && [ -n "$OUT" ] || return
 
-    NAMESPACE=$(echo "$OUT" | head -n 1)
-    DEPLOY=$(echo "$OUT" | head -n 2 | tail -n 1)
+    if [ -n "$NAMESPACE" ]; then
+        NAMESPACE="$MAYBE_NAMESPACE"
+        DEPLOY=$(echo "$OUT" | head -n 1)
+    else
+        NAMESPACE=$(echo "$OUT" | head -n 1)
+        DEPLOY=$(echo "$OUT" | head -n 2 | tail -n 1)
+    fi
 
     _deployments_actions "$1" "$NAMESPACE" "$DEPLOY"
 }
@@ -303,7 +382,9 @@ function main() {
       HI_CONFIGS=( ${CONFIGS[*]} )
       HI_CONFIGS[$INDEX]="\033[1m${HI_CONFIGS[$INDEX]}\033[0m"
 
-      OUT=$(echo -e "Config [${HI_CONFIGS[*]}] \033[3m(Home / End to change config)\033[0m\nPods\nNamespaces\nServices\nCronjobs\nJobs\nDeployments" \
+      OPTIONS=( "Pods" "Namespaces" "Services" "Cronjobs" "Jobs" "Deployments" )
+
+      OUT=$(echo -e "Config [${HI_CONFIGS[*]}] \033[3m(Home / End to change config)\033[0m$(printf "\n%s" "${OPTIONS[@]}")" \
           | fzf --prompt="K8S> " --height=20 --layout=reverse --header-lines=1 --expect=home,end)
 
       [ $? -eq 0 ] || return
@@ -337,7 +418,7 @@ function main() {
                 _fzf-k8s-deployments $CONFIG
                 ;;
         esac
-          exit
+        exit
       fi
     done
 }
