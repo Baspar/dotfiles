@@ -141,11 +141,11 @@ function _fzf-k8s-cronjobs() {
     [ $? -eq 0 ] && [ -n "$OUT" ] || return
 
     if [ -n "$MAYBE_NAMESPACE" ]; then
-        NAMESPACE=$(echo "$OUT" | head -n 1)
-        CRONJOB=$(echo "$OUT" | head -n 2 | tail -n 1)
-    else
         NAMESPACE="$MAYBE_NAMESPACE"
         CRONJOB=$(echo "$OUT" | head -n 1)
+    else
+        NAMESPACE=$(echo "$OUT" | head -n 1)
+        CRONJOB=$(echo "$OUT" | head -n 2 | tail -n 1)
     fi
     _cronjobs_actions "$1" "$NAMESPACE" "$CRONJOB"
 }
