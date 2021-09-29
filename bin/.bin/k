@@ -28,24 +28,38 @@ function _fzf_tabular() {
     NAME="$2"
     shift 2
 
-    eval "$CMD" | fzf --prompt="$NAME> " --height=20 --layout=reverse --header-lines=1 $* | \
-        sed 's/ \{2,\}/\n/g'
+    OUT=$(eval "$CMD" | fzf --prompt="$NAME> " --height=20 --expect=ctrl-c --layout=reverse --header-lines=1 $*)
+    [ $? -eq 0 ] || return $?
+    echo "$OUT" | head -n 1 | grep "ctrl-c" &> /dev/null && exit
+
+    echo "$OUT" | tail -n 1 | sed 's/ \{2,\}/\n/g'
 }
 function _fzf_kubectl() {
     KUBECONFIG="$1"
     TYPE="$2"
     NAME="$3"
-    NAMESPACE="$4"
+    MAYBE_NAMESPACE="$4"
 
     CMD="KUBECONFIG='$KUBECONFIG' kubectl get '$TYPE'"
 
-    if [ -n "$NAMESPACE" ]; then
-        CMD="$CMD -n '$NAMESPACE'"
+    if [ -n "$MAYBE_NAMESPACE" ]; then
+        CMD+=" -n '$MAYBE_NAMESPACE'"
     else
-        CMD="$CMD -A"
+        CMD+=" -A"
     fi
 
     _fzf_tabular "$CMD" "$NAME"
+}
+function _fzf_options() {
+    PROMPT="$1"
+    shift
+    OPTIONS=("$@")
+
+    OUT=$(printf "%s\n" "${OPTIONS[@]}" | fzf --prompt="${PROMPT}> " --expect=ctrl-c --height=20 --layout=reverse)
+    [ $? -eq 0 ] || return $?
+    echo "$OUT" | head -n 1 | grep "ctrl-c" &> /dev/null && exit
+
+    echo "$OUT" | tail -n +2
 }
 
 #######
@@ -57,7 +71,9 @@ function _jobs_actions() {
     JOB="$3"
 
     OPTIONS=( "Logs" "Logs -f" "Describe" "Create job" "YAML" )
-    OUT=$(printf "%s\n" "${OPTIONS[@]}" | fzf --prompt="Action> " --height=20 --layout=reverse)
+
+    OUT=$(_fzf_options "Actions" "${OPTIONS[@]}")
+    [ $? -eq 0 ] || return $?
 
     case "$OUT" in
         "YAML")
@@ -75,7 +91,7 @@ function _jobs_actions() {
         "Create job")
             read -p $'\e[1mNew name\e[0m> ' NEWNAME
 
-            [ $? -eq 0 ] && [ -n "$NEWNAME" ] || return
+            [ $? -eq 0 ] || return $?
 
             WARNING "KUBECONFIG='$KUBECONFIG' kubectl create job -n '$NAMESPACE' --from='jobs/$JOB' '$NEWNAME'"
             ;;
@@ -83,19 +99,21 @@ function _jobs_actions() {
 }
 function _fzf-k8s-jobs() {
     MAYBE_NAMESPACE="$2"
-    OUT=$(_fzf_kubectl "$1" "jobs" "Jobs" "$MAYBE_NAMESPACE")
 
-    [ $? -eq 0 ] && [ -n "$OUT" ] || return
+    while :; do
+        OUT=$(_fzf_kubectl "$1" "jobs" "Jobs" "$MAYBE_NAMESPACE")
+        [ $? -eq 0 ] || return $?
 
-    if [ -n "$MAYBE_NAMESPACE" ]; then
-        NAMESPACE="$MAYBE_NAMESPACE"
-        JOB=$(echo "$OUT" | head -n 1)
-    else
-        NAMESPACE=$(echo "$OUT" | head -n 1)
-        JOB=$(echo "$OUT" | head -n 2 | tail -n 1)
-    fi
+        if [ -n "$MAYBE_NAMESPACE" ]; then
+            NAMESPACE="$MAYBE_NAMESPACE"
+            JOB=$(echo "$OUT" | head -n 1)
+        else
+            NAMESPACE=$(echo "$OUT" | head -n 1)
+            JOB=$(echo "$OUT" | head -n 2 | tail -n 1)
+        fi
 
-    _jobs_actions "$1" "$NAMESPACE" "$JOB"
+        _jobs_actions "$1" "$NAMESPACE" "$JOB" && return
+    done
 }
 
 ###########
@@ -107,7 +125,9 @@ function _cronjobs_actions() {
     CRONJOB="$3"
 
     OPTIONS=( "Jobs" "Describe" "Create job" "YAML" )
-    OUT=$(printf "%s\n" "${OPTIONS[@]}" | fzf --prompt="Action> " --height=20 --layout=reverse)
+
+    OUT=$(_fzf_options "Actions" "${OPTIONS[@]}")
+    [ $? -eq 0 ] || return $?
 
     case "$OUT" in
         "YAML")
@@ -115,8 +135,7 @@ function _cronjobs_actions() {
             ;;
         "Jobs")
             OUT=$(_fzf_tabular "kubectl get jobs -n '$NAMESPACE'" "Job" -q "^$CRONJOB")
-
-            [ $? -eq 0 ] && [ -n "$OUT" ] || return
+            [ $? -eq 0 ] || return $?
 
             JOB=$(echo "$OUT" | head -n 1)
             _jobs_actions "$KUBECONFIG" "$NAMESPACE" "$JOB"
@@ -126,9 +145,7 @@ function _cronjobs_actions() {
             ;;
         "Create job")
             read -p $'\e[1mNew name\e[0m> '$CRONJOB'-' POSTFIX
-
-
-            [ $? -eq 0 ] && [ -n "$POSTFIX" ] || return
+            [ $? -eq 0 ] || return $?
 
             WARNING "KUBECONFIG='$KUBECONFIG' kubectl create job -n '$NAMESPACE' --from='cronjobs/$CRONJOB' '$CRONJOB-$POSTFIX'"
             ;;
@@ -136,18 +153,21 @@ function _cronjobs_actions() {
 }
 function _fzf-k8s-cronjobs() {
     MAYBE_NAMESPACE="$2"
-    OUT=$(_fzf_kubectl "$1" "cronjobs" "Cronjobs" "$MAYBE_NAMESPACE")
 
-    [ $? -eq 0 ] && [ -n "$OUT" ] || return
+    while :; do
+        OUT=$(_fzf_kubectl "$1" "cronjobs" "Cronjobs" "$MAYBE_NAMESPACE")
 
-    if [ -n "$MAYBE_NAMESPACE" ]; then
-        NAMESPACE="$MAYBE_NAMESPACE"
-        CRONJOB=$(echo "$OUT" | head -n 1)
-    else
-        NAMESPACE=$(echo "$OUT" | head -n 1)
-        CRONJOB=$(echo "$OUT" | head -n 2 | tail -n 1)
-    fi
-    _cronjobs_actions "$1" "$NAMESPACE" "$CRONJOB"
+        [ $? -eq 0 ] || return $?
+
+        if [ -n "$MAYBE_NAMESPACE" ]; then
+            NAMESPACE="$MAYBE_NAMESPACE"
+            CRONJOB=$(echo "$OUT" | head -n 1)
+        else
+            NAMESPACE=$(echo "$OUT" | head -n 1)
+            CRONJOB=$(echo "$OUT" | head -n 2 | tail -n 1)
+        fi
+        _cronjobs_actions "$1" "$NAMESPACE" "$CRONJOB" && return
+    done
 }
 
 ########
@@ -158,8 +178,10 @@ function _pods_actions() {
     NAMESPACE="$2"
     POD="$3"
 
-    OPTIONS=( "Logs" "Logs -f" "Describe" "Sh" "Execute" "YAML" )
-    OUT=$(printf "%s\n" "${OPTIONS[@]}" | fzf --prompt="Action> " --height=20 --layout=reverse)
+    OPTIONS=( "Logs" "Logs -f" "Describe" "Shell" "Execute" "YAML" )
+
+    OUT=$(_fzf_options "Actions" "${OPTIONS[@]}")
+    [ $? -eq 0 ] || return $?
 
     case "$OUT" in
         "YAML")
@@ -174,7 +196,7 @@ function _pods_actions() {
         "Describe")
             KUBECONFIG="$1" kubectl describe -n "$NAMESPACE" "pods/$POD"
             ;;
-        "Sh")
+        "Shell")
             KUBECONFIG="$1" kubectl exec -it -n "$NAMESPACE" "pods/$POD" -- sh
             ;;
         "Execute")
@@ -188,19 +210,22 @@ function _pods_actions() {
 }
 function _fzf-k8s-pods() {
     MAYBE_NAMESPACE="$2"
-    OUT=$(_fzf_kubectl "$1" "pods" "Pods" "$MAYBE_NAMESPACE")
 
-    [ $? -eq 0 ] && [ -n "$OUT" ] || return
+    while :; do
+        OUT=$(_fzf_kubectl "$1" "pods" "Pods" "$MAYBE_NAMESPACE")
 
-    if [ -n "$MAYBE_NAMESPACE" ]; then
-        NAMESPACE="$MAYBE_NAMESPACE"
-        POD=$(echo "$OUT" | head -n 1)
-    else
-        NAMESPACE=$(echo "$OUT" | head -n 1)
-        POD=$(echo "$OUT" | head -n 2 | tail -n 1)
-    fi
+        [ $? -eq 0 ] || return
 
-    _pods_actions "$1" "$NAMESPACE" "$POD"
+        if [ -n "$MAYBE_NAMESPACE" ]; then
+            NAMESPACE="$MAYBE_NAMESPACE"
+            POD=$(echo "$OUT" | head -n 1)
+        else
+            NAMESPACE=$(echo "$OUT" | head -n 1)
+            POD=$(echo "$OUT" | head -n 2 | tail -n 1)
+        fi
+
+        _pods_actions "$1" "$NAMESPACE" "$POD" && return
+    done
 }
 
 ##############
@@ -212,44 +237,48 @@ function _namespaces_actions() {
 
     OPTIONS=( "Pods" "Services" "Cronjobs" "Jobs" "Deployments" )
 
-    OUT=$(printf "\n%s" "${OPTIONS[@]}" | \
-        tail -n +2 | \
-        fzf --prompt="K8S (Namespace $NAMESPACE)> " --height=20 --header-lines=1 --layout=reverse )
+    while :; do
 
-    [ $? -eq 0 ] || return
+        OUT=$(_fzf_options "Actions (In $NAMESPACE)" "${OPTIONS[@]}")
+        [ $? -eq 0 ] || return $?
 
-    MODE=$(echo "$OUT" | tail -n 1)
+        MODE=$(echo "$OUT" | tail -n 1)
 
-    CONFIG="$HOME/.kube/"${CONFIGS[$INDEX]}
-    case "$MODE" in
-        Jobs)
-            _fzf-k8s-jobs "$CONFIG" "$NAMESPACE"
-            ;;
-        Cronjobs)
-            _fzf-k8s-cronjobs "$CONFIG" "$NAMESPACE"
-            ;;
-        Pods)
-            _fzf-k8s-pods "$CONFIG" "$NAMESPACE"
-            ;;
-        Namespaces)
-            _fzf-k8s-namespaces "$CONFIG" "$NAMESPACE"
-            ;;
-        Services)
-            _fzf-k8s-services "$CONFIG" "$NAMESPACE"
-            ;;
-        Deployments)
-            _fzf-k8s-deployments "$CONFIG" "$NAMESPACE"
-            ;;
-    esac
+        CONFIG="$HOME/.kube/"${CONFIGS[$INDEX]}
+        case "$MODE" in
+            Jobs)
+                _fzf-k8s-jobs "$CONFIG" "$NAMESPACE"
+                ;;
+            Cronjobs)
+                _fzf-k8s-cronjobs "$CONFIG" "$NAMESPACE"
+                ;;
+            Pods)
+                _fzf-k8s-pods "$CONFIG" "$NAMESPACE"
+                ;;
+            Namespaces)
+                _fzf-k8s-namespaces "$CONFIG" "$NAMESPACE"
+                ;;
+            Services)
+                _fzf-k8s-services "$CONFIG" "$NAMESPACE"
+                ;;
+            Deployments)
+                _fzf-k8s-deployments "$CONFIG" "$NAMESPACE"
+                ;;
+        esac
+
+        [ $? -eq 0 ] && return
+    done
 }
 function _fzf-k8s-namespaces() {
-    OUT=$(_fzf_kubectl "$1" "namespaces" "Namespaces")
+    while :; do
+        OUT=$(_fzf_kubectl "$1" "namespaces" "Namespaces")
 
-    [ $? -eq 0 ] && [ -n "$OUT" ] || return
+        [ $? -eq 0 ] || return $?
 
-    NAMESPACE=$(echo "$OUT" | head -n 1)
+        NAMESPACE=$(echo "$OUT" | head -n 1)
 
-    _namespaces_actions "$1" "$NAMESPACE"
+        _namespaces_actions "$1" "$NAMESPACE" && return
+    done
 }
 
 ############
@@ -262,7 +291,9 @@ function _services_actions() {
     PORTS="$4"
 
     OPTIONS=( "Logs" "Logs -f" "Describe" "Port forward" "YAML" )
-    OUT=$(printf "%s\n" "${OPTIONS[@]}" | fzf --prompt="Action> " --height=20 --layout=reverse)
+
+    OUT=$(_fzf_options "Actions" "${OPTIONS[@]}")
+    [ $? -eq 0 ] || return $?
 
     case "$OUT" in
         "YAML")
@@ -270,13 +301,12 @@ function _services_actions() {
             ;;
         "Port forward")
             OUT=$(_fzf_tabular "kubectl get pods -n '$NAMESPACE'" "Pod" -q "^$SERVICE")
-            [ $? -eq 0 ] && [ -n "$OUT" ] || return
+            [ $? -eq 0 ] || return $?
 
             POD=$(echo "$OUT" | head -n 1)
 
             PORTS_FORWARD=$(echo $PORTS | tr , '\n' | fzf -m --height=20 --layout=reverse --prompt="Select ports to forward (Tab for multi-select)> " | sed 's#[:/].*##g')
-            [ $? -eq 0 ] && [ -n "$PORTS_FORWARD" ] || return
-
+            [ $? -eq 0 ] || return $?
 
             PORT_PARAM=""
             for PORT in $PORTS_FORWARD; do
@@ -298,7 +328,7 @@ function _services_actions() {
               done
               PORT_PARAM="$PORT_PARAM $PORT_FORWARD:$PORT"
             done
-            [ -n "$PORT_PARAM" ] || return
+            [ -n "$PORT_PARAM" ] || return 1
 
             kubectl port-forward $ADDRESS --namespace $NAMESPACE $POD$PORT_PARAM
             ;;
@@ -315,20 +345,23 @@ function _services_actions() {
 }
 function _fzf-k8s-services() {
     MAYBE_NAMESPACE="$2"
-    OUT=$(_fzf_kubectl "$1" "svc" "Services" "$MAYBE_NAMESPACE")
 
-    [ $? -eq 0 ] && [ -n "$OUT" ] || return
+    while :; do
+        OUT=$(_fzf_kubectl "$1" "svc" "Services" "$MAYBE_NAMESPACE")
 
-    if [ -n "$MAYBE_NAMESPACE" ]; then
-        NAMESPACE="$MAYBE_NAMESPACE"
-        SERVICE=$(echo "$OUT" | head -n 1)
-    else
-        NAMESPACE=$(echo "$OUT" | head -n 1)
-        SERVICE=$(echo "$OUT" | head -n 2 | tail -n 1)
-    fi
-    PORTS=$(echo "$OUT" | head -n 6 | tail -n 1)
+        [ $? -eq 0 ] || return $?
 
-    _services_actions "$1" "$NAMESPACE" "$SERVICE" "$PORTS"
+        if [ -n "$MAYBE_NAMESPACE" ]; then
+            NAMESPACE="$MAYBE_NAMESPACE"
+            SERVICE=$(echo "$OUT" | head -n 1)
+        else
+            NAMESPACE=$(echo "$OUT" | head -n 1)
+            SERVICE=$(echo "$OUT" | head -n 2 | tail -n 1)
+        fi
+        PORTS=$(echo "$OUT" | head -n 6 | tail -n 1)
+
+        _services_actions "$1" "$NAMESPACE" "$SERVICE" "$PORTS" && return
+    done
 }
 
 ###############
@@ -340,7 +373,9 @@ function _deployments_actions() {
     DEPLOY="$3"
 
     OPTIONS=( "Logs" "Logs -f" "Describe" "YAML" )
-    OUT=$(printf "%s\n" "${OPTIONS[@]}" | fzf --prompt="Action> " --height=20 --layout=reverse)
+
+    OUT=$(_fzf_options "Actions" "${OPTIONS[@]}")
+    [ $? -eq 0 ] || return $?
 
     case "$OUT" in
         "YAML")
@@ -359,21 +394,52 @@ function _deployments_actions() {
 }
 function _fzf-k8s-deployments() {
     MAYBE_NAMESPACE="$2"
-    OUT=$(_fzf_kubectl "$1" "deploy" "Deployments" "$MAYBE_NAMESPACE")
 
-    [ $? -eq 0 ] && [ -n "$OUT" ] || return
+    while :; do
+        OUT=$(_fzf_kubectl "$1" "deploy" "Deployments" "$MAYBE_NAMESPACE")
 
-    if [ -n "$NAMESPACE" ]; then
-        NAMESPACE="$MAYBE_NAMESPACE"
-        DEPLOY=$(echo "$OUT" | head -n 1)
-    else
-        NAMESPACE=$(echo "$OUT" | head -n 1)
-        DEPLOY=$(echo "$OUT" | head -n 2 | tail -n 1)
-    fi
+        [ $? -eq 0 ] || return $?
 
-    _deployments_actions "$1" "$NAMESPACE" "$DEPLOY"
+        if [ -n "$NAMESPACE" ]; then
+            NAMESPACE="$MAYBE_NAMESPACE"
+            DEPLOY=$(echo "$OUT" | head -n 1)
+        else
+            NAMESPACE=$(echo "$OUT" | head -n 1)
+            DEPLOY=$(echo "$OUT" | head -n 2 | tail -n 1)
+        fi
+
+        _deployments_actions "$1" "$NAMESPACE" "$DEPLOY" && return
+    done
 }
 
+########
+# Main #
+########
+function _main_actions() {
+    CONFIG="$1"
+    MODE="$2"
+
+    case "$MODE" in
+        Jobs)
+            _fzf-k8s-jobs $CONFIG || return $?
+            ;;
+        Cronjobs)
+            _fzf-k8s-cronjobs $CONFIG || return $?
+            ;;
+        Pods)
+            _fzf-k8s-pods $CONFIG || return $?
+            ;;
+        Namespaces)
+            _fzf-k8s-namespaces $CONFIG || return $?
+            ;;
+        Services)
+            _fzf-k8s-services $CONFIG || return $?
+            ;;
+        Deployments)
+            _fzf-k8s-deployments $CONFIG || return $?
+            ;;
+    esac
+}
 function main() {
     INDEX=0
     CONFIGS=( $(ls ~/.kube | grep "config") )
@@ -392,34 +458,18 @@ function main() {
       COMMAND=$(echo "$OUT" | head -n 1)
       MODE=$(echo "$OUT" | tail -n 1)
 
-      if [[ "$COMMAND" = "home" ]]; then
-        INDEX=$(echo "($INDEX + $NB_CONFIGS - 1) % $NB_CONFIGS" | bc)
-      elif [[ "$COMMAND" = "end" ]]; then
-        INDEX=$(echo "($INDEX + 1) % $NB_CONFIGS" | bc)
-      else
-        CONFIG="$HOME/.kube/"${CONFIGS[$INDEX]}
-        case "$MODE" in
-            Jobs)
-                _fzf-k8s-jobs $CONFIG
-                ;;
-            Cronjobs)
-                _fzf-k8s-cronjobs $CONFIG
-                ;;
-            Pods)
-                _fzf-k8s-pods $CONFIG
-                ;;
-            Namespaces)
-                _fzf-k8s-namespaces $CONFIG
-                ;;
-            Services)
-                _fzf-k8s-services $CONFIG
-                ;;
-            Deployments)
-                _fzf-k8s-deployments $CONFIG
-                ;;
-        esac
-        exit
-      fi
+      case "$COMMAND" in
+          "home")
+              INDEX=$(echo "($INDEX + $NB_CONFIGS - 1) % $NB_CONFIGS" | bc)
+              ;;
+          "end")
+              INDEX=$(echo "($INDEX + 1) % $NB_CONFIGS" | bc)
+              ;;
+          *)
+              _main_actions "$HOME/.kube/${CONFIGS[$INDEX]}" "$MODE"
+              [ $? -eq 0 ] || continue
+              exit
+      esac
     done
 }
 
