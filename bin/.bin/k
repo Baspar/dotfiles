@@ -30,9 +30,8 @@ function _fzf_tabular() {
 
     OUT=$(eval "$CMD" | fzf --prompt="$NAME> " --height=20 --expect=ctrl-c --layout=reverse --header-lines=1 $*)
     S=$?
-    [ $S -eq 0 ] || return $S
-
     echo "$OUT" | head -n 1 | grep "ctrl-c" &> /dev/null && return 42
+    [ $S -eq 0 ] || return $S
 
     echo "$OUT" | tail -n +2 | sed 's/ \{2,\}/\n/g'
 }
@@ -59,9 +58,9 @@ function _fzf_options() {
 
     OUT=$(printf "%s\n" "${OPTIONS[@]}" | fzf --prompt="${PROMPT}> " --expect=ctrl-c --height=20 --layout=reverse)
     S=$?
+    echo "$OUT" | head -n 1 | grep "ctrl-c" &> /dev/null && exit
     [ $S -eq 0 ] || return $S
 
-    echo "$OUT" | head -n 1 | grep "ctrl-c" &> /dev/null && exit
 
     echo "$OUT" | tail -n +2
 }
