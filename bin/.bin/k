@@ -399,6 +399,7 @@ function _deployments_actions() {
     KUBECONFIG="$1"
     NAMESPACE="$2"
     DEPLOY="$3"
+    REPLICAS="$4"
 
     OPTIONS=( "Logs" "Logs -f" "Describe" "Redeploy" "YAML" )
 
@@ -411,10 +412,10 @@ function _deployments_actions() {
             KUBECONFIG="$1" kubectl get -n "$NAMESPACE" "deploy/$DEPLOY" -o yaml
             ;;
         "Redeploy")
-            echo "Scale down"
+            echo "Scale down to 0 replicas"
             KUBECONFIG="$1" kubectl scale "deploy/$DEPLOY" -n "$NAMESPACE" --replicas=0
-            echo "Scale up"
-            KUBECONFIG="$1" kubectl scale "deploy/$DEPLOY" -n "$NAMESPACE" --replicas=1
+            echo "Scale up to $REPLICAS replicas"
+            KUBECONFIG="$1" kubectl scale "deploy/$DEPLOY" -n "$NAMESPACE" --replicas="$REPLICAS"
             ;;
         "Logs")
             KUBECONFIG="$1" kubectl logs -n "$NAMESPACE" "deploy/$DEPLOY"
@@ -438,13 +439,15 @@ function _fzf-k8s-deployments() {
 
         if [ -n "$NAMESPACE" ]; then
             NAMESPACE="$MAYBE_NAMESPACE"
-            DEPLOY=$(echo "$OUT" | head -n 1)
+            DEPLOY=$(echo "$OUT" | head -n 1 | tail -n 1)
+            REPLICAS=$(echo "$OUT" | head -n 3 | tail -n 1)
         else
-            NAMESPACE=$(echo "$OUT" | head -n 1)
+            NAMESPACE=$(echo "$OUT" | head -n 1 | tail -n 1)
             DEPLOY=$(echo "$OUT" | head -n 2 | tail -n 1)
+            REPLICAS=$(echo "$OUT" | head -n 4 | tail -n 1)
         fi
 
-        _deployments_actions "$1" "$NAMESPACE" "$DEPLOY"
+        _deployments_actions "$1" "$NAMESPACE" "$DEPLOY" "$REPLICAS"
         S=$?
         [[ $S -eq 0 || $S -eq 42 ]] && return $S
     done
