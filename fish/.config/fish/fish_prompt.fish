@@ -115,17 +115,17 @@ end
 function git_branch_name
   # Function git_branch_name
   #
-  # @param GIT_ROOT location of .git folder
+  # @param GIT_DIR location of .git folder
   #
   # @returns:
-  echo $argv | read -d ' ' -l GIT_ROOT
+  echo $argv | read -d ' ' -l GIT_CONFIG GIT_WORKTREE
 
-  [ -d "$GIT_ROOT/rebase-merge" ] && {
-    cat "$GIT_ROOT/rebase-merge/head-name" 2>/dev/null
+  [ -d "$GIT_WORKTREE/rebase-merge" ] && {
+    cat "$GIT_WORKTREE/rebase-merge/head-name" 2>/dev/null
     return
   }
 
-  set x (git -C "$GIT_ROOT" symbolic-ref HEAD 2> /dev/null)
+  set x (git -C "$GIT_WORKTREE" symbolic-ref HEAD 2> /dev/null)
   if [ $status -eq 0 ]
     echo $x | \
       sed 's|refs/[^/]*/||g' | \
@@ -133,32 +133,32 @@ function git_branch_name
     return
   end
 
-  echo (git -C "$GIT_ROOT" rev-parse HEAD | string match -r '^.{8}')…
+  echo (git -C "$GIT_WORKTREE" rev-parse HEAD | string match -r '^.{8}')…
 end
 
 function git_operation
   # Function git_operation
   #
-  # @param GIT_ROOT location of .git folder
+  # @param GIT_DIR location of .git folder
   #
   # @returns: a symbol corresponding to the current operation
-  set GIT_ROOT $argv/.git
+  echo $argv | read -d ' ' -l GIT_CONFIG GIT_WORKTREE
 
-  if test -d $GIT_ROOT/rebase-merge
-      set step (cat $GIT_ROOT/rebase-merge/msgnum 2>/dev/null)
-      set total (cat $GIT_ROOT/rebase-merge/end 2>/dev/null)
+  if test -d $GIT_CONFIG/rebase-merge
+      set step (cat $GIT_CONFIG/rebase-merge/msgnum 2>/dev/null)
+      set total (cat $GIT_CONFIG/rebase-merge/end 2>/dev/null)
       set GIT_OPERATION " "
-  else if test -d $GIT_ROOT/rebase-apply
-    set step (cat $GIT_ROOT/rebase-apply/next 2>/dev/null)
-    set total (cat $GIT_ROOT/rebase-apply/last 2>/dev/null)
+  else if test -d $GIT_CONFIG/rebase-apply
+    set step (cat $GIT_CONFIG/rebase-apply/next 2>/dev/null)
+    set total (cat $GIT_CONFIG/rebase-apply/last 2>/dev/null)
     set GIT_OPERATION " "
-  else if test -f $GIT_ROOT/MERGE_HEAD
+  else if test -f $GIT_CONFIG/MERGE_HEAD
       set GIT_OPERATION " "
-  else if test -f $GIT_ROOT/CHERRY_PICK_HEAD
+  else if test -f $GIT_CONFIG/CHERRY_PICK_HEAD
       set GIT_OPERATION " "
-  else if test -f $GIT_ROOT/REVERT_HEAD
+  else if test -f $GIT_CONFIG/REVERT_HEAD
       set GIT_OPERATION " "
-  else if test -f $GIT_ROOT/BISECT_LOG
+  else if test -f $GIT_CONFIG/BISECT_LOG
       set GIT_OPERATION "÷"
   end
 
@@ -172,21 +172,24 @@ end
 function git_status
   # Function git_status
   #
-  # @param GIT_ROOT location of .git folder
+  # @param GIT_DIR location of .git folder
   #
   # @returns:
-  echo $argv | read -d ' ' -l GIT_ROOT
+  echo $argv | read -d ' ' -l GIT_DIR GIT_WORKTREE
 
-  # set -l GIT_STATUS (command git -C "$GIT_ROOT" status --porcelain)
+  set -l GIT_STATUS (command git -C "$GIT_WORKTREE" status --porcelain)
 
-  set -l changedFiles (command git -C "$GIT_ROOT" diff --name-status 2>/dev/null | string match -r \\w)
-  set -l stagedFiles (command git -C "$GIT_ROOT" diff --staged --name-status | string match -r \\w)
+
+  set -l changedFiles (command git -C "$GIT_WORKTREE" diff --name-status 2>/dev/null | string match -r \\w)
+  set -l stagedFiles (command git -C "$GIT_WORKTREE" diff --staged --name-status | string match -r \\w)
 
   set -l dirtystate (math (count $changedFiles) - (count (string match -r "U" -- $changedFiles)))
   set -l invalidstate (count (string match -r "U" -- $stagedFiles))
   set -l stagedstate (math (count $stagedFiles) - $invalidstate)
+
   if [ $NO_UNTRACKED -eq 0 ]
-    set untrackedfiles (command git -C "$GIT_ROOT" ls-files --others --exclude-standard :/ --directory --no-empty-directory | count)
+    set untrackedfiles (command git -C "$GIT_WORKTREE" ls-files --others --exclude-standard :/ --directory --no-empty-directory | count)
+
   else
     set untrackedfiles 0
   end
@@ -197,17 +200,17 @@ end
 function git_ahead_behind
   # Function git_ahead_behind
   #
-  # @param GIT_ROOT location of .git folder
+  # @param GIT_DIR location of .git folder
   #
   # @returns:
-  echo $argv | read -d ' ' -l GIT_ROOT
+  echo $argv | read -d ' ' -l GIT_DIR GIT_WORKTREE
 
   set GIT_AHEAD 0
   set GIT_BEHIND 0
-  set GIT_UPSTREAM (command git -C "$GIT_ROOT" rev-parse --abbrev-ref --symbolic-full-name @{u} 2> /dev/null)
+  set GIT_UPSTREAM (command git -C "$GIT_WORKTREE" rev-parse --abbrev-ref --symbolic-full-name @{u})
 
   if [ -n $GIT_UPSTREAM ]
-    command git -C "$GIT_ROOT" rev-list --count --left-right $GIT_UPSTREAM...HEAD 2>/dev/null | tr '\t' '|' | read -d '|' GIT_BEHIND GIT_AHEAD 
+    command git -C "$GIT_WORKTREE" rev-list --count --left-right $GIT_UPSTREAM...HEAD 2>/dev/null | tr '\t' '|' | read -d '|' GIT_BEHIND GIT_AHEAD 
   end
 
   echo "$GIT_AHEAD|$GIT_BEHIND"
@@ -218,14 +221,14 @@ function git_block_info
   #
   # @param GIT_CONFIG: Absolute path of the .git folder
   #
-  # @returns: The color and status of the git information at given GIT_ROOT
+  # @returns: The color and status of the git information at given GIT_DIR
 
-  echo $argv | read -d ' ' -l GIT_ROOT
+  echo $argv | read -d ' ' -l GIT_DIR GIT_WORKTREE
 
-  git_branch_name "$GIT_ROOT"  | read -d '|' -l GIT_BRANCH
-  git_operation "$GIT_ROOT"    | read -d '|' -l GIT_OPERATION
-  git_status "$GIT_ROOT"       | read -d '|' -l GIT_DIRTY GIT_INVALID GIT_STAGED GIT_UNTRACKED
-  git_ahead_behind "$GIT_ROOT" | read -d '|' -l GIT_AHEAD GIT_BEHIND
+  git_branch_name "$GIT_DIR" "$GIT_WORKTREE"  | read -d '|' -l GIT_BRANCH
+  git_operation "$GIT_DIR" "$GIT_WORKTREE"    | read -d '|' -l GIT_OPERATION
+  git_status "$GIT_DIR" "$GIT_WORKTREE"       | read -d '|' -l GIT_DIRTY GIT_INVALID GIT_STAGED GIT_UNTRACKED
+  git_ahead_behind "$GIT_DIR" "$GIT_WORKTREE" | read -d '|' -l GIT_AHEAD GIT_BEHIND
 
   # Default color
   set ICONS ""
@@ -282,12 +285,17 @@ function fish_prompt
   for PWD_PART in (echo $PWD | sed 's#^/##; s#/$##' |  tr '/' '\n')
     set ACCUMULATED_PATH "$ACCUMULATED_PATH/$PWD_PART"
     if [ -e "$TOTAL_PATH$ACCUMULATED_PATH/.git" ]
-      if [ -f "$TOTAL_PATH$ACCUMULATED_PATH/.git" ]
-        set GIT_CONFIG (cat "$TOTAL_PATH$ACCUMULATED_PATH/.git" | grep "^gitdir" | sed 's#^gitdir: *##')
+      set GIT_WORKTREE "$TOTAL_PATH$ACCUMULATED_PATH"
+      if [ -f "$GIT_WORKTREE/.git" ]
+        set GIT_CONFIG (cat "$GIT_WORKTREE/.git" | grep "^gitdir" | sed 's#^gitdir: *##')
+        if ! string match -r "^/" "$GIT_CONFIG" &> /dev/null
+          set GIT_CONFIG "$GIT_WORKTREE/$GIT_CONFIG"
+        end
       else
-        set GIT_CONFIG ""
+        set GIT_CONFIG "$GIT_WORKTREE/.git"
       end
-      git_block_info "$TOTAL_PATH$ACCUMULATED_PATH/$GIT_CONFIG" | read -d '|' GIT_BG_COLOR GIT_BRANCH GIT_OPERATION GIT_ICONS
+
+      git_block_info "$GIT_CONFIG" "$GIT_WORKTREE" | read -d '|' GIT_BG_COLOR GIT_BRANCH GIT_OPERATION GIT_ICONS
 
       set TOTAL_PATH "$TOTAL_PATH$ACCUMULATED_PATH"
 
