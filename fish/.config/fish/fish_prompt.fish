@@ -6,7 +6,6 @@ set -g OLD_BG ""
 set -g ELLIPSIS "·"
 set -g ELLIPSIS_AFTER "3"
 set -g CR_AFTER_GIT 0
-set -g NO_UNTRACKED 0
 
 bind -M insert \ce 'touch /tmp/FISH_NO_ABBR; commandline -f repaint'
 
@@ -180,9 +179,6 @@ function git_status
   # @returns:
   echo $argv | read -d ' ' -l GIT_DIR GIT_WORKTREE
 
-  set -l GIT_STATUS (command git -C "$GIT_WORKTREE" status --porcelain)
-
-
   set -l changedFiles (command git -C "$GIT_WORKTREE" diff --name-status 2>/dev/null | string match -r \\w)
   set -l stagedFiles (command git -C "$GIT_WORKTREE" diff --staged --name-status | string match -r \\w)
 
@@ -190,12 +186,7 @@ function git_status
   set -l invalidstate (count (string match -r "U" -- $stagedFiles))
   set -l stagedstate (math (count $stagedFiles) - $invalidstate)
 
-  if [ $NO_UNTRACKED -eq 0 ]
-    set untrackedfiles (command git -C "$GIT_WORKTREE" ls-files --others --exclude-standard :/ --directory --no-empty-directory | count)
-
-  else
-    set untrackedfiles 0
-  end
+  set -l untrackedfiles (command git -C "$GIT_WORKTREE" status --porcelain | grep "^??" | count)
 
   echo "$dirtystate|$invalidstate|$stagedstate|$untrackedfiles"
 end
@@ -213,7 +204,7 @@ function git_ahead_behind
   set GIT_UPSTREAM (command git -C "$GIT_WORKTREE" rev-parse --abbrev-ref --symbolic-full-name @{u} 2> /dev/null)
 
   if [ -n $GIT_UPSTREAM ]
-    command git -C "$GIT_WORKTREE" rev-list --count --left-right $GIT_UPSTREAM...HEAD 2>/dev/null | tr '\t' '|' | read -d '|' GIT_BEHIND GIT_AHEAD 
+    command git -C "$GIT_WORKTREE" rev-list --count --left-right $GIT_UPSTREAM...HEAD 2>/dev/null | tr '\t' '|' | read -d '|' GIT_BEHIND GIT_AHEAD
   end
 
   echo "$GIT_AHEAD|$GIT_BEHIND"
