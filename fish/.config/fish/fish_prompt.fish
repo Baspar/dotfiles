@@ -20,7 +20,10 @@ function block
   #
   # @returns: A block with style and text
 
-  echo $argv | read -l BG FG TEXT FLAGS
+  set BG "$argv[1]"
+  set FG "$argv[2]"
+  set TEXT "$argv[3]"
+  set FLAGS "$argv[4..-1]"
 
   [ -z $FLAGS ] || eval set_color $FLAGS
 
@@ -144,21 +147,21 @@ function git_operation
   # @returns: a symbol corresponding to the current operation
   echo $argv | read -d ' ' -l GIT_CONFIG GIT_WORKTREE
 
-  if test -d $GIT_CONFIG/rebase-merge
-      set step (cat $GIT_CONFIG/rebase-merge/msgnum 2>/dev/null)
-      set total (cat $GIT_CONFIG/rebase-merge/end 2>/dev/null)
+  if test -d "$GIT_CONFIG/rebase-merge"
+      set step (cat "$GIT_CONFIG/rebase-merge/msgnum" 2>/dev/null)
+      set total (cat "$GIT_CONFIG/rebase-merge/end" 2>/dev/null)
       set GIT_OPERATION " "
-  else if test -d $GIT_CONFIG/rebase-apply
-    set step (cat $GIT_CONFIG/rebase-apply/next 2>/dev/null)
-    set total (cat $GIT_CONFIG/rebase-apply/last 2>/dev/null)
+  else if test -d "$GIT_CONFIG/rebase-apply"
+    set step (cat "$GIT_CONFIG/rebase-apply/next" 2>/dev/null)
+    set total (cat "$GIT_CONFIG/rebase-apply/last" 2>/dev/null)
     set GIT_OPERATION " "
-  else if test -f $GIT_CONFIG/MERGE_HEAD
+  else if test -f "$GIT_CONFIG/MERGE_HEAD"
       set GIT_OPERATION " "
-  else if test -f $GIT_CONFIG/CHERRY_PICK_HEAD
+  else if test -f "$GIT_CONFIG/CHERRY_PICK_HEAD"
       set GIT_OPERATION " "
-  else if test -f $GIT_CONFIG/REVERT_HEAD
+  else if test -f "$GIT_CONFIG/REVERT_HEAD"
       set GIT_OPERATION " "
-  else if test -f $GIT_CONFIG/BISECT_LOG
+  else if test -f "$GIT_CONFIG/BISECT_LOG"
       set GIT_OPERATION "÷"
   end
 
@@ -166,7 +169,7 @@ function git_operation
       set GIT_OPERATION "$GIT_OPERATION $step/$total"
   end
 
-  echo $GIT_OPERATION
+  echo "$GIT_OPERATION"
 end
 
 function git_status
@@ -207,7 +210,7 @@ function git_ahead_behind
 
   set GIT_AHEAD 0
   set GIT_BEHIND 0
-  set GIT_UPSTREAM (command git -C "$GIT_WORKTREE" rev-parse --abbrev-ref --symbolic-full-name @{u})
+  set GIT_UPSTREAM (command git -C "$GIT_WORKTREE" rev-parse --abbrev-ref --symbolic-full-name @{u} 2> /dev/null)
 
   if [ -n $GIT_UPSTREAM ]
     command git -C "$GIT_WORKTREE" rev-list --count --left-right $GIT_UPSTREAM...HEAD 2>/dev/null | tr '\t' '|' | read -d '|' GIT_BEHIND GIT_AHEAD 
@@ -225,8 +228,8 @@ function git_block_info
 
   echo $argv | read -d ' ' -l GIT_DIR GIT_WORKTREE
 
-  git_branch_name "$GIT_DIR" "$GIT_WORKTREE"  | read -d '|' -l GIT_BRANCH
-  git_operation "$GIT_DIR" "$GIT_WORKTREE"    | read -d '|' -l GIT_OPERATION
+  git_branch_name "$GIT_DIR" "$GIT_WORKTREE"  | read -l GIT_BRANCH
+  git_operation "$GIT_DIR" "$GIT_WORKTREE"    | read -l GIT_OPERATION
   git_status "$GIT_DIR" "$GIT_WORKTREE"       | read -d '|' -l GIT_DIRTY GIT_INVALID GIT_STAGED GIT_UNTRACKED
   git_ahead_behind "$GIT_DIR" "$GIT_WORKTREE" | read -d '|' -l GIT_AHEAD GIT_BEHIND
 
