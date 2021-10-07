@@ -202,12 +202,13 @@ function git_ahead_behind
   set GIT_AHEAD 0
   set GIT_BEHIND 0
   set GIT_UPSTREAM (command git -C "$GIT_WORKTREE" rev-parse --abbrev-ref --symbolic-full-name @{u} 2> /dev/null)
+  set GIT_HAS_UPSTREAM $status
 
   if [ -n $GIT_UPSTREAM ]
     command git -C "$GIT_WORKTREE" rev-list --count --left-right $GIT_UPSTREAM...HEAD 2>/dev/null | tr '\t' '|' | read -d '|' GIT_BEHIND GIT_AHEAD
   end
 
-  echo "$GIT_AHEAD|$GIT_BEHIND"
+  echo "$GIT_HAS_UPSTREAM|$GIT_AHEAD|$GIT_BEHIND"
 end
 
 function git_block_info
@@ -222,7 +223,7 @@ function git_block_info
   git_branch_name "$GIT_DIR" "$GIT_WORKTREE"  | read -l GIT_BRANCH
   git_operation "$GIT_DIR" "$GIT_WORKTREE"    | read -l GIT_OPERATION
   git_status "$GIT_DIR" "$GIT_WORKTREE"       | read -d '|' -l GIT_DIRTY GIT_INVALID GIT_STAGED GIT_UNTRACKED
-  git_ahead_behind "$GIT_DIR" "$GIT_WORKTREE" | read -d '|' -l GIT_AHEAD GIT_BEHIND
+  git_ahead_behind "$GIT_DIR" "$GIT_WORKTREE" | read -d '|' -l GIT_HAS_UPSTREAM GIT_AHEAD GIT_BEHIND
 
   # Default color
   set ICONS ""
@@ -242,8 +243,9 @@ function git_block_info
   [ -n "$GIT_UNTRACKED" ] && [ $GIT_UNTRACKED -ge 1 ] && set ICONS "$ICONS?"
 
   # Left icons
-  [ -n "$GIT_AHEAD"     ] && [ $GIT_AHEAD -ge 1     ] && set GIT_OPERATION "$GIT_OPERATION$GIT_AHEAD↑"
-  [ -n "$GIT_BEHIND"    ] && [ $GIT_BEHIND -ge 1    ] && set GIT_OPERATION "$GIT_OPERATION$GIT_BEHIND↓"
+  [ -n "$GIT_HAS_UPSTREAM" ] && [ $GIT_HAS_UPSTREAM -ne 0 ] && set GIT_OPERATION "$GIT_OPERATION "
+  [ -n "$GIT_AHEAD"        ] && [ $GIT_AHEAD -ge 1        ] && set GIT_OPERATION "$GIT_OPERATION$GIT_AHEAD↑"
+  [ -n "$GIT_BEHIND"       ] && [ $GIT_BEHIND -ge 1       ] && set GIT_OPERATION "$GIT_OPERATION$GIT_BEHIND↓"
 
   # Build git string
   echo -n "$COLOR|$GIT_BRANCH|$GIT_OPERATION|$ICONS" | sed 's# $##'
@@ -297,7 +299,7 @@ function fish_prompt
       block "#3e3e3e" "#FFFFFF" "$ACCUMULATED_PATH"
 
       [ -n "$GIT_OPERATION" ] && block (darker_of $GIT_BG_COLOR) "#3e3e3e" "$GIT_OPERATION" -o -i
-      block "$GIT_BG_COLOR" "#3e3e3e" " $GIT_BRANCH " -o -i
+      block "$GIT_BG_COLOR" "#3e3e3e" "$GIT_BRANCH" -o -i
       [ -n "$GIT_ICONS" ] && block (darker_of $GIT_BG_COLOR) "#3e3e3e" "$GIT_ICONS" -o -i
 
       set ACCUMULATED_PATH ''
