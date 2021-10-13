@@ -73,7 +73,7 @@ function _jobs_actions() {
     NAMESPACE="$2"
     JOB="$3"
 
-    OPTIONS=( "Logs" "Logs -f" "Describe" "Create job" "YAML" )
+    OPTIONS=( "Logs" "Logs -f" "Describe" "Duplicate job" "YAML" )
 
     OUT=$(_fzf_options "Actions" "${OPTIONS[@]}")
     S=$?
@@ -92,13 +92,23 @@ function _jobs_actions() {
         "Describe")
             KUBECONFIG="$KUBECONFIG" kubectl describe -n "$NAMESPACE" "jobs/$JOB"
             ;;
-        "Create job")
-            read -p $'\e[1mNew name\e[0m> ' NEWNAME
+        "Duplicate job")
+            YAML_FILE="$(mktemp).yaml"
+            KUBECONFIG="$KUBECONFIG" kubectl get job -n "$NAMESPACE" "$JOB" -o yaml | yq -y 'del(.status, .spec.selector, .spec.template.metadata.labels) | .metadata = {generateName: (.metadata.name + "-")}' >> "$YAML_FILE"
 
             S=$?
             [ $S -eq 0 ] || return $S
 
-            WARNING "KUBECONFIG='$KUBECONFIG' kubectl create job -n '$NAMESPACE' --from='jobs/$JOB' '$NEWNAME'"
+            [ "$EDITOR" ] || {
+                EDITOR="vim"
+            }
+
+            $EDITOR "$YAML_FILE"
+
+            S=$?
+            [ $S -eq 0 ] || return $S
+
+            WARNING "yq . '$YAML_FILE' | KUBECONFIG='$KUBECONFIG' kubectl create -n '$NAMESPACE' -f -"
             ;;
     esac
 }
