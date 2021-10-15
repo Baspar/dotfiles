@@ -501,8 +501,8 @@ function main() {
 
       OPTIONS=( "Pods" "Namespaces" "Services" "Cronjobs" "Jobs" "Deployments" )
 
-      OUT=$(echo -e "Config [${HI_CONFIGS[*]}] \033[3m(Home / End to change config)\033[0m$(printf "\n%s" "${OPTIONS[@]}")" \
-          | fzf --prompt="K8S> " --height=20 --layout=reverse --header-lines=1 --expect=home,end)
+      OUT=$(echo -e "Config [${HI_CONFIGS[*]}] \033[3m(Left / Right to change config)\033[0m$(printf "\n%s" "${OPTIONS[@]}")" \
+          | fzf --prompt="K8S> " --height=20 --layout=reverse --header-lines=1 --expect=left,right)
 
       S=$?
       [ $S -eq 0 ] || return $S
@@ -511,10 +511,10 @@ function main() {
       MODE=$(echo "$OUT" | tail -n 1)
 
       case "$COMMAND" in
-          "home")
+          "left")
               INDEX=$(echo "($INDEX + $NB_CONFIGS - 1) % $NB_CONFIGS" | bc)
               ;;
-          "end")
+          "right")
               INDEX=$(echo "($INDEX + 1) % $NB_CONFIGS" | bc)
               ;;
           *)
