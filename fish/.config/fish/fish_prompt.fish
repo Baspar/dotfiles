@@ -204,6 +204,12 @@ function git_ahead_behind
   set GIT_UPSTREAM (command git -C "$GIT_WORKTREE" rev-parse --abbrev-ref --symbolic-full-name @{u} 2> /dev/null)
   set GIT_HAS_UPSTREAM $status
 
+  set GIT_BRANCH (command  git -C "$GIT_WORKTREE" rev-parse --abbrev-ref HEAD )
+  if [ "$GIT_BRANCH" = "HEAD" ]
+    set GIT_HAS_UPSTREAM 0
+  end
+
+
   if [ -n $GIT_UPSTREAM ]
     command git -C "$GIT_WORKTREE" rev-list --count --left-right $GIT_UPSTREAM...HEAD 2>/dev/null | tr '\t' '|' | read -d '|' GIT_BEHIND GIT_AHEAD
   end
@@ -243,7 +249,7 @@ function git_block_info
   [ -n "$GIT_UNTRACKED" ] && [ $GIT_UNTRACKED -ge 1 ] && set ICONS "$ICONS?"
 
   # Left icons
-  [ -n "$GIT_HAS_UPSTREAM" ] && [ $GIT_HAS_UPSTREAM -ne 0 ] && set GIT_OPERATION "$GIT_OPERATION "
+  [ -n "$GIT_HAS_UPSTREAM" ] && [ $GIT_HAS_UPSTREAM -ne 0 ] && set GIT_OPERATION " $GIT_OPERATION"
   [ -n "$GIT_AHEAD"        ] && [ $GIT_AHEAD -ge 1        ] && set GIT_OPERATION "$GIT_OPERATION$GIT_AHEAD↑"
   [ -n "$GIT_BEHIND"       ] && [ $GIT_BEHIND -ge 1       ] && set GIT_OPERATION "$GIT_OPERATION$GIT_BEHIND↓"
 
