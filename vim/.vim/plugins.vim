@@ -43,12 +43,15 @@ call plug#begin('~/.vim/plugged')
 
   " {{{ LSP
   Plug 'neovim/nvim-lspconfig', Cond(has('nvim'))
-  Plug 'hrsh7th/nvim-compe', Cond(has('nvim'))
+  Plug 'ms-jpq/coq_nvim', Cond(has('nvim'), {'branch': 'coq'})
+  Plug 'ms-jpq/coq.artifacts', Cond(has('nvim'), {'branch': 'artifacts'})
   Plug 'glepnir/lspsaga.nvim', Cond(has('nvim'))
+  Plug 'folke/trouble.nvim', Cond(has('nvim'))
   " }}}
 
   "{{{ Nvim-TreeSitter
   Plug 'nvim-treesitter/nvim-treesitter', Cond(has('nvim'), {'do': ':TSUpdate'})
+  Plug 'romgrk/nvim-treesitter-context', Cond(has('nvim'))
   "}}}
 
   " {{{ Polyglot

@@ -1,6 +1,6 @@
-local lspconfig = require"lspconfig"
-local compe = require"compe"
-local saga = require"lspsaga"
+local lspconfig = require'lspconfig'
+local coq = require'coq'
+local saga = require'lspsaga'
 
 -- vim.lsp.set_log_level("debug")
 -- {{{ LSP Saga
@@ -42,38 +42,17 @@ saga.init_lsp_saga {
 }
 -- }}}
 
--- {{{ Compe
-compe.setup {
-  enabled = true;
-  autocomplete = true;
-  debug = false;
-  min_length = 1;
-  preselect = 'enable';
-  throttle_time = 80;
-  source_timeout = 200;
-  incomplete_delay = 400;
-  max_abbr_width = 100;
-  max_kind_width = 100;
-  max_menu_width = 100;
-  documentation = true;
-
-  source = {
-    path = true;
-    buffer = true;
-    calc = true;
-    vsnip = true;
-    nvim_lsp = true;
-    nvim_lua = true;
-    spell = true;
-    tags = true;
-    snippets_nvim = true;
-    treesitter = true;
-  };
-}
---- }}}
+-- {{{ Coq-nvim
+-- }}}
 
 -- {{{ Nvim LSP
--- {{{ Filetypes
+local configs = {}
+
+-- {{{ HTML/CSS
+configs['html'] = {}
+-- }}}
+
+-- {{{ Typescript/Javascript/ESlint
 local tsFamily = {
   "javascript",
   "javascriptreact",
@@ -82,25 +61,6 @@ local tsFamily = {
   "typescript.tsx",
   "typescriptreact"
 }
--- }}}
-
--- {{{ HTML/CSS
-lspconfig.html.setup{}
--- }}}
-
--- {{{ Typescript/Javascript
-lspconfig.tsserver.setup{
-  on_attach = function(client)
-    if client.config.flags then
-      client.config.flags.allow_incremental_sync = true
-    end
-    client.resolved_capabilities.document_formatting = false
-  end,
-  filetypes = tsFamily,
-}
--- }}}
-
--- {{{ ESlint
 local eslint = {
   lintCommand = "eslint_d -f compact --stdin --stdin-filename ${INPUT}",
   lintIgnoreExitCode = true,
@@ -112,7 +72,16 @@ local prettier = {
   formatStdin = true
 }
 
-lspconfig.efm.setup {
+configs['tsserver'] = {
+  on_attach = function(client)
+    if client.config.flags then
+      client.config.flags.allow_incremental_sync = true
+    end
+    client.resolved_capabilities.document_formatting = false
+  end,
+  filetypes = tsFamily,
+}
+configs['efm'] = {
   on_attach = function(client)
     client.resolved_capabilities.document_formatting = true
     client.resolved_capabilities.goto_definition = false
@@ -133,7 +102,7 @@ lspconfig.efm.setup {
 -- }}}
 
 -- {{{ Rust
-lspconfig.rls.setup{}
+configs['rls'] = {}
 -- }}}
 
 -- {{{ Scala
@@ -155,29 +124,33 @@ scala_capabilities.textDocument.codeAction = {
     };
   };
 }
-lspconfig.metals.setup{
+configs['metals'] = {
   root_dir = lspconfig.util.find_git_ancestor;
   capabilities = scala_capabilities;
 }
 -- }}}
 
 -- {{{ Python
-lspconfig.pyright.setup{}
+configs['pyright'] = {}
 -- }}}
 --
 -- {{{ C++
-lspconfig.clangd.setup{}
+configs['clangd'] = {}
 -- }}}
 
 -- {{{ Go
-lspconfig.gopls.setup{}
+configs['gopls'] = {}
 -- }}}
 
 --{{{ Groovy
-lspconfig.groovyls.setup{
+configs['groovyls'] = {
   cmd = { "java", "-jar", "/Users/bastien/.vim/lsp-servers/groovy-language-server-all.jar" },
 }
 --}}}
+
+for name, config in pairs(configs) do
+  lspconfig[name].setup(coq.lsp_ensure_capabilities(config))
+end
 -- }}}
 
 -- vim: foldmethod=marker:foldlevel=0

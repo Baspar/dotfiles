@@ -2,6 +2,7 @@ filetype plugin on
 
 " {{{ General options
 set nowrap
+set completeopt=menu,menuone,noselect
 set noemoji
 set backspace=indent,eol,start
 set nocompatible
@@ -80,6 +81,20 @@ match TrailingSpaces / \+$/
 
 " {{{ Change default SQL mapping
 let g:ftplugin_sql_omni_key = '<C-s>'
+" }}}
+
+" {{{
+let g:coq_settings = {
+  \   'auto_start': 'shut-up',
+  \   'display': {
+  \     'pum': {
+  \       'fast_close': v:false
+  \     },
+  \     'preview': {
+  \       'positions': { "north": 1, "west": 2, "south": 3, "east": 4 }
+  \     }
+  \   }
+  \ }
 " }}}
 
 " vim: foldmethod=marker:foldlevel=0
