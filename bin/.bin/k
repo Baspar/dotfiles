@@ -36,12 +36,12 @@ function _fzf_tabular() {
     echo "$OUT" | tail -n +2 | sed 's/ \{2,\}/\n/g'
 }
 function _fzf_kubectl() {
-    KUBECONFIG="$1"
+    CONTEXT="$1"
     TYPE="$2"
     NAME="$3"
     MAYBE_NAMESPACE="$4"
 
-    CMD="KUBECONFIG='$KUBECONFIG' kubectl get '$TYPE'"
+    CMD="kubectl get --context='$CONTEXT' '$TYPE'"
 
     if [ -n "$MAYBE_NAMESPACE" ]; then
         CMD+=" -n '$MAYBE_NAMESPACE'"
@@ -69,7 +69,7 @@ function _fzf_options() {
 # Job #
 #######
 function _jobs_actions() {
-    KUBECONFIG="$1"
+    CONTEXT="$1"
     NAMESPACE="$2"
     JOB="$3"
 
@@ -81,20 +81,20 @@ function _jobs_actions() {
 
     case "$OUT" in
         "YAML")
-            KUBECONFIG="$1" kubectl get -n "$NAMESPACE" "jobs/$JOB" -o yaml
+            kubectl get --context "$CONTEXT" -n "$NAMESPACE" "jobs/$JOB" -o yaml
             ;;
         "Logs")
-            KUBECONFIG="$KUBECONFIG" kubectl logs -n "$NAMESPACE" "jobs/$JOB"
+            kubectl logs --context "$CONTEXT" -n "$NAMESPACE" "jobs/$JOB"
             ;;
         "Logs -f")
-            KUBECONFIG="$KUBECONFIG" kubectl logs -n "$NAMESPACE" "jobs/$JOB" -f
+            kubectl logs --context "$CONTEXT" -n "$NAMESPACE" "jobs/$JOB" -f
             ;;
         "Describe")
-            KUBECONFIG="$KUBECONFIG" kubectl describe -n "$NAMESPACE" "jobs/$JOB"
+            kubectl describe --context "$CONTEXT" -n "$NAMESPACE" "jobs/$JOB"
             ;;
         "Duplicate job")
             YAML_FILE="$(mktemp).yaml"
-            KUBECONFIG="$KUBECONFIG" kubectl get job -n "$NAMESPACE" "$JOB" -o yaml | yq -y 'del(.status, .spec.selector, .spec.template.metadata.labels) | .metadata = {generateName: (.metadata.name + "-")}' >> "$YAML_FILE"
+            kubectl get --context "$CONTEXT" job -n "$NAMESPACE" "$JOB" -o yaml | yq -y 'del(.status, .spec.selector, .spec.template.metadata.labels) | .metadata = {generateName: (.metadata.name + "-")}' >> "$YAML_FILE"
 
             S=$?
             [ $S -eq 0 ] || return $S
@@ -108,7 +108,7 @@ function _jobs_actions() {
             S=$?
             [ $S -eq 0 ] || return $S
 
-            WARNING "yq . '$YAML_FILE' | KUBECONFIG='$KUBECONFIG' kubectl create -n '$NAMESPACE' -f -"
+            WARNING "yq . '$YAML_FILE' | kubectl create --context "$CONTEXT" -n '$NAMESPACE' -f -"
             ;;
     esac
 }
@@ -138,7 +138,7 @@ function _fzf-k8s-jobs() {
 # Cronjob #
 ###########
 function _cronjobs_actions() {
-    KUBECONFIG="$1"
+    CONTEXT="$1"
     NAMESPACE="$2"
     CRONJOB="$3"
 
@@ -150,7 +150,7 @@ function _cronjobs_actions() {
 
     case "$OUT" in
         "YAML")
-            KUBECONFIG="$1" kubectl get -n "$NAMESPACE" "cronjobs/$CRONJOB" -o yaml
+            kubectl get --context "$CONTEXT" -n "$NAMESPACE" "cronjobs/$CRONJOB" -o yaml
             ;;
         "Jobs")
             OUT=$(_fzf_tabular "kubectl get jobs -n '$NAMESPACE'" "Job" -q "^$CRONJOB")
@@ -158,17 +158,17 @@ function _cronjobs_actions() {
             [ $S -eq 0 ] || return $S
 
             JOB=$(echo "$OUT" | head -n 1)
-            _jobs_actions "$KUBECONFIG" "$NAMESPACE" "$JOB"
+            _jobs_actions "$CONTEXT" "$NAMESPACE" "$JOB"
             ;;
         "Describe")
-            KUBECONFIG="$KUBECONFIG" kubectl describe -n "$NAMESPACE" "cronjobs/$CRONJOB"
+            kubectl describe --context "$CONTEXT" -n "$NAMESPACE" "cronjobs/$CRONJOB"
             ;;
         "Create job")
             read -p $'\e[1mNew name\e[0m> '$CRONJOB'-' POSTFIX
             S=$?
             [ $S -eq 0 ] || return $S
 
-            WARNING "KUBECONFIG='$KUBECONFIG' kubectl create job -n '$NAMESPACE' --from='cronjobs/$CRONJOB' '$CRONJOB-$POSTFIX'"
+            WARNING "kubectl create --context "$CONTEXT" job -n '$NAMESPACE' --from='cronjobs/$CRONJOB' '$CRONJOB-$POSTFIX'"
             ;;
     esac
 }
@@ -197,7 +197,7 @@ function _fzf-k8s-cronjobs() {
 # Pods #
 ########
 function _pods_actions() {
-    KUBECONFIG="$1"
+    CONTEXT="$1"
     NAMESPACE="$2"
     POD="$3"
 
@@ -209,26 +209,26 @@ function _pods_actions() {
 
     case "$OUT" in
         "YAML")
-            KUBECONFIG="$1" kubectl get -n "$NAMESPACE" "pods/$POD" -o yaml
+            kubectl get --context "$CONTEXT" -n "$NAMESPACE" "pods/$POD" -o yaml
             ;;
         "Logs")
-            KUBECONFIG="$1" kubectl logs -n "$NAMESPACE" "pods/$POD"
+            kubectl logs --context "$CONTEXT" -n "$NAMESPACE" "pods/$POD"
             ;;
         "Logs -f")
-            KUBECONFIG="$1" kubectl logs -n "$NAMESPACE" "pods/$POD" -f
+            kubectl logs --context "$CONTEXT" -n "$NAMESPACE" "pods/$POD" -f
             ;;
         "Describe")
-            KUBECONFIG="$1" kubectl describe -n "$NAMESPACE" "pods/$POD"
+            kubectl describe --context "$CONTEXT" -n "$NAMESPACE" "pods/$POD"
             ;;
         "Shell")
-            KUBECONFIG="$1" kubectl exec -it -n "$NAMESPACE" "pods/$POD" -- sh
+            kubectl exec --context "$CONTEXT" -it -n "$NAMESPACE" "pods/$POD" -- sh
             ;;
         "Execute")
             read -p $'\e[1mCommand\e[0m> ' COMMAND
 
             [ $? -eq 0 ] && [ -n "$COMMAND" ] || return
 
-            KUBECONFIG="$1" kubectl exec -it -n "$NAMESPACE" "pods/$POD" -- $COMMAND
+            kubectl exec --context "$CONTEXT" -it -n "$NAMESPACE" "pods/$POD" -- $COMMAND
             ;;
     esac
 }
@@ -259,7 +259,7 @@ function _fzf-k8s-pods() {
 # Namespaces #
 ##############
 function _namespaces_actions() {
-    KUBECONFIG="$1"
+    CONTEXT="$1"
     NAMESPACE="$2"
 
     OPTIONS=( "Pods" "Services" "Cronjobs" "Jobs" "Deployments" )
@@ -316,7 +316,7 @@ function _fzf-k8s-namespaces() {
 # Services #
 ############
 function _services_actions() {
-    KUBECONFIG="$1"
+    CONTEXT="$1"
     NAMESPACE="$2"
     SERVICE="$3"
     PORTS="$4"
@@ -329,7 +329,7 @@ function _services_actions() {
 
     case "$OUT" in
         "YAML")
-            KUBECONFIG="$1" kubectl get -n "$NAMESPACE" "svc/$SERVICE" -o yaml
+            kubectl get --context "$CONTEXT" -n "$NAMESPACE" "svc/$SERVICE" -o yaml
             ;;
         "Port forward")
             OUT=$(_fzf_tabular "kubectl get pods -n '$NAMESPACE'" "Pod" -q "^$SERVICE")
@@ -367,13 +367,13 @@ function _services_actions() {
             kubectl port-forward $ADDRESS --namespace $NAMESPACE $POD$PORT_PARAM
             ;;
         "Logs")
-            KUBECONFIG="$1" kubectl logs -n "$NAMESPACE" "svc/$SERVICE"
+            kubectl logs --context "$CONTEXT" -n "$NAMESPACE" "svc/$SERVICE"
             ;;
         "Logs -f")
-            KUBECONFIG="$1" kubectl logs -n "$NAMESPACE" "svc/$SERVICE" -f
+            kubectl logs --context "$CONTEXT" -n "$NAMESPACE" "svc/$SERVICE" -f
             ;;
         "Describe")
-            KUBECONFIG="$1" kubectl describe -n "$NAMESPACE" "svc/$SERVICE"
+            kubectl describe --context "$CONTEXT" -n "$NAMESPACE" "svc/$SERVICE"
             ;;
     esac
 }
@@ -405,7 +405,7 @@ function _fzf-k8s-services() {
 # Deployments #
 ###############
 function _deployments_actions() {
-    KUBECONFIG="$1"
+    CONTEXT="$1"
     NAMESPACE="$2"
     DEPLOY="$3"
     REPLICAS="$4"
@@ -418,7 +418,7 @@ function _deployments_actions() {
 
     case "$OUT" in
         "YAML")
-            KUBECONFIG="$1" kubectl get -n "$NAMESPACE" "deploy/$DEPLOY" -o yaml
+            kubectl get --context "$CONTEXT" -n "$NAMESPACE" "deploy/$DEPLOY" -o yaml
             ;;
         "Scale")
             read -p $'\e[1mScale to\e[0m> ' SCALE
@@ -426,22 +426,22 @@ function _deployments_actions() {
             [ $S -eq 0 ] || return $S
 
             echo "Scale down to $SCALE replicas"
-            KUBECONFIG="$1" kubectl scale "deploy/$DEPLOY" -n "$NAMESPACE" --replicas=$SCALE
+            kubectl scale --context "$CONTEXT" "deploy/$DEPLOY" -n "$NAMESPACE" --replicas=$SCALE
             ;;
         "Redeploy")
             echo "Scale down to 0 replicas"
-            KUBECONFIG="$1" kubectl scale "deploy/$DEPLOY" -n "$NAMESPACE" --replicas=0
+            kubectl scale --context "$CONTEXT" "deploy/$DEPLOY" -n "$NAMESPACE" --replicas=0
             echo "Scale up to $REPLICAS replicas"
-            KUBECONFIG="$1" kubectl scale "deploy/$DEPLOY" -n "$NAMESPACE" --replicas="$REPLICAS"
+            kubectl scale --context "$CONTEXT" "deploy/$DEPLOY" -n "$NAMESPACE" --replicas="$REPLICAS"
             ;;
         "Logs")
-            KUBECONFIG="$1" kubectl logs -n "$NAMESPACE" "deploy/$DEPLOY"
+            kubectl logs --context "$CONTEXT" -n "$NAMESPACE" "deploy/$DEPLOY"
             ;;
         "Logs -f")
-            KUBECONFIG="$1" kubectl logs -n "$NAMESPACE" "deploy/$DEPLOY" -f
+            kubectl logs --context "$CONTEXT" -n "$NAMESPACE" "deploy/$DEPLOY" -f
             ;;
         "Describe")
-            KUBECONFIG="$1" kubectl describe -n "$NAMESPACE" "deploy/$DEPLOY"
+            kubectl describe --context "$CONTEXT" -n "$NAMESPACE" "deploy/$DEPLOY"
             ;;
     esac
 }
@@ -474,42 +474,42 @@ function _fzf-k8s-deployments() {
 # Main #
 ########
 function _main_actions() {
-    CONFIG="$1"
+    CONTEXT="$1"
     MODE="$2"
 
     case "$MODE" in
         Jobs)
-            _fzf-k8s-jobs $CONFIG
+            _fzf-k8s-jobs $CONTEXT
             ;;
         Cronjobs)
-            _fzf-k8s-cronjobs $CONFIG
+            _fzf-k8s-cronjobs $CONTEXT
             ;;
         Pods)
-            _fzf-k8s-pods $CONFIG
+            _fzf-k8s-pods $CONTEXT
             ;;
         Namespaces)
-            _fzf-k8s-namespaces $CONFIG
+            _fzf-k8s-namespaces $CONTEXT
             ;;
         Services)
-            _fzf-k8s-services $CONFIG
+            _fzf-k8s-services $CONTEXT
             ;;
         Deployments)
-            _fzf-k8s-deployments $CONFIG
+            _fzf-k8s-deployments $CONTEXT
             ;;
     esac
 
 }
 function main() {
     INDEX=0
-    CONFIGS=( $(ls ~/.kube | grep "config") )
-    NB_CONFIGS="${#CONFIGS[@]}"
+    CONTEXTS=( $(kubectl config get-contexts --no-headers=true | tr -s ' ' | cut -d ' ' -f 2) )
+    NB_CONTEXTS="${#CONTEXTS[@]}"
     while :;do
-      HI_CONFIGS=( ${CONFIGS[*]} )
-      HI_CONFIGS[$INDEX]="\033[1m${HI_CONFIGS[$INDEX]}\033[0m"
+      HI_CONTEXTS=( ${CONTEXTS[*]} )
+      HI_CONTEXTS[$INDEX]="\033[1m${HI_CONTEXTS[$INDEX]}\033[0m"
 
       OPTIONS=( "Pods" "Namespaces" "Services" "Cronjobs" "Jobs" "Deployments" )
 
-      OUT=$(echo -e "Config [${HI_CONFIGS[*]}] \033[3m(Left / Right to change config)\033[0m$(printf "\n%s" "${OPTIONS[@]}")" \
+      OUT=$(echo -e "Config [${HI_CONTEXTS[*]}] \033[3m(Left / Right to change config)\033[0m$(printf "\n%s" "${OPTIONS[@]}")" \
           | fzf --prompt="K8S> " --height=20 --layout=reverse --header-lines=1 --expect=left,right,ctrl-h,ctrl-l)
 
       S=$?
@@ -520,13 +520,13 @@ function main() {
 
       case "$COMMAND" in
           "left"|"ctrl-h" )
-              INDEX=$(echo "($INDEX + $NB_CONFIGS - 1) % $NB_CONFIGS" | bc)
+              INDEX=$(echo "($INDEX + $NB_CONTEXTS - 1) % $NB_CONTEXTS" | bc)
               ;;
           "right"|"ctrl-l")
-              INDEX=$(echo "($INDEX + 1) % $NB_CONFIGS" | bc)
+              INDEX=$(echo "($INDEX + 1) % $NB_CONTEXTS" | bc)
               ;;
           *)
-              _main_actions "$HOME/.kube/${CONFIGS[$INDEX]}" "$MODE"
+              _main_actions ${CONTEXTS[$INDEX]} "$MODE"
               [[ $? -eq 0 || $? -eq 42 ]] && exit
       esac
     done
