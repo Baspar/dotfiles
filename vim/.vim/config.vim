@@ -47,7 +47,9 @@ augroup CustomColorChange
     hi! Comment cterm=italic gui=italic
     hi! Sneak ctermfg=237 ctermbg=3 guifg=#3A3A3A guibg=#AF875F
     hi! LspErrorHighlight cterm=undercurl gui=undercurl ctermfg=131 guifg=#af5f5f
+    hi! LspDiagnosticsDefaultError guifg=red ctermfg=red
     hi! LspWarningHighlight cterm=undercurl gui=undercurl ctermfg=180 guifg=#dfaf87
+    hi! LspDiagnosticsDefaultWarning ctermfg=180 guifg=#dfaf87
     hi! LspSagaDiagnosticBorder ctermbg=NONE guibg=NONE ctermfg=180 guifg=#dfaf87
     hi! link LspSagaDiagnosticTruncateLine LspSagaDiagnosticBorder
     hi! link htmlTagName Function
