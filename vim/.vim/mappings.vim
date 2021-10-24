@@ -143,17 +143,15 @@ vnoremap <leader>r :<C-u>call repl_it#visual_mode()<CR>
 nmap <leader>rr V<leader>r
 
 " Neovim LSP
-nnoremap <silent> ]a :Lspsaga diagnostic_jump_next<CR>
-nnoremap <silent> [a :Lspsaga diagnostic_jump_prev<CR>
-nnoremap <silent> <localleader>i :Lspsaga lsp_finder<CR>
+nnoremap <silent> ]a :lua vim.lsp.diagnostic.goto_next({popup_opts = {max_width = 50, focusable = false, border = "rounded"}})<CR>
+nnoremap <silent> [a :lua vim.lsp.diagnostic.goto_prev({popup_opts = {max_width = 50, focusable = false, border = "rounded"}})<CR>
 nnoremap <silent> <localleader>r :lua vim.lsp.buf.references()<CR>
 nnoremap <silent> <localleader>d :lua vim.lsp.buf.definition()<CR>
 nnoremap <silent> <localleader>f :lua vim.lsp.buf.formatting()<CR>
-nnoremap <silent> <localleader><localleader> :Lspsaga code_action<CR>
-vnoremap <silent> <localleader><localleader> :<C-U>Lspsaga range_code_action<CR>
-nnoremap <silent> <localleader>R :Lspsaga rename<CR>
-nnoremap <silent> <localleader>p :Lspsaga preview_definition<CR>
-nnoremap <silent>K :Lspsaga hover_doc<CR>
+vnoremap <silent> <localleader>f :lua vim.lsp.buf.range_formatting()<CR>
+nnoremap <silent> <localleader>R :lua vim.lsp.buf.rename()<CR>
+nnoremap <silent> <localleader><localleader> :lua vim.lsp.buf.code_action()<CR>
+nnoremap <silent> K :lua vim.lsp.buf.hover()<CR>
 
 " Markdown
 augroup MarkdownManipulation

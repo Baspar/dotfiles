@@ -1,53 +1,9 @@
 local lspconfig = require'lspconfig'
 local coq = require'coq'
-local saga = require'lspsaga'
 
--- vim.lsp.set_log_level("debug")
--- {{{ LSP Saga
-saga.init_lsp_saga {
-  -- add your config value here
-  -- default value
-  use_saga_diagnostic_sign = true,
-  -- error_sign = '',
-  -- warn_sign = '',
-  -- hint_sign = '',
-  -- infor_sign = '',
-
-  dianostic_header_icon = '',
-  code_action_icon = '',
-  finder_definition_icon = '',
-  finder_reference_icon = '',
-
-  code_action_prompt = {
-    enable = true,
-    sign = false,
-    virtual_text = true,
-  },
-  max_preview_lines = 10, -- preview lines of lsp_finder and definition preview
-  finder_action_keys = {
-    open = 'o', vsplit = 'v', split = 's',quit = { '<C-c>', 'q' },scroll_down = '<C-f>', scroll_up = '<C-b>' -- quit can be a table
-  },
-  code_action_keys = {
-    quit = { 'q', '<C-c>' }, exec = { '<CR>', 'o' }
-  },
-  rename_action_keys = {
-    quit = '<C-c>',exec = '<CR>'  -- quit can be a table
-  },
-  border_style = 'round'
-  -- rename_prompt_prefix = '➤',
-  -- if you don't use nvim-lspconfig you must pass your server name and
-  -- the related filetypes into this table
-  -- like server_filetype_map = {metals = {'sbt', 'scala'}}
-  -- server_filetype_map = {}
-}
--- }}}
-
--- {{{ Coq-nvim
--- }}}
-
--- {{{ Nvim LSP
 local configs = {}
 
+-- {{{ Nvim LSP
 -- {{{ HTML/CSS
 configs['html'] = {}
 -- }}}
@@ -147,10 +103,30 @@ configs['groovyls'] = {
   cmd = { "java", "-jar", "/Users/bastien/.vim/lsp-servers/groovy-language-server-all.jar" },
 }
 --}}}
+-- }}}
 
+-- {{{ Coq-nvim
 for name, config in pairs(configs) do
   lspconfig[name].setup(coq.lsp_ensure_capabilities(config))
 end
+-- }}}
+
+-- {{{ Custom handler
+vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
+  vim.lsp.handlers.hover, {
+    border = "rounded",
+    focusable = false,
+    max_width = 150
+  }
+)
+vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+ vim.lsp.diagnostic.on_publish_diagnostics, {
+    underline = true,
+    virtual_text = {
+      spacing = 4,
+    }
+  }
+)
 -- }}}
 
 -- vim: foldmethod=marker:foldlevel=0

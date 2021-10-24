@@ -45,7 +45,6 @@ call plug#begin('~/.vim/plugged')
   Plug 'neovim/nvim-lspconfig', Cond(has('nvim'))
   Plug 'ms-jpq/coq_nvim', Cond(has('nvim'), {'branch': 'coq'})
   Plug 'ms-jpq/coq.artifacts', Cond(has('nvim'), {'branch': 'artifacts'})
-  Plug 'glepnir/lspsaga.nvim', Cond(has('nvim'))
   Plug 'folke/trouble.nvim', Cond(has('nvim'))
   " }}}
 
