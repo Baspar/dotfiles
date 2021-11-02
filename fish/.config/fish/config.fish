@@ -8,6 +8,8 @@ set -Ux VIRTUAL_ENV_DISABLE_PROMPT 'true'
 set -Ux fish_greeting
 set -x GPG_TTY (tty)
 
+set -g SHELL "fish"
+
 set -Ux GOPATH ~/.go
 
 set -x JAVA_HOME "/Library/Java/JavaVirtualMachines/graalvm-ce-java8-21.0.0.2/Contents/Home/bin"
@@ -30,8 +32,10 @@ alias graal8 "set -x JAVA_HOME /Library/Java/JavaVirtualMachines/graalvm-ce-java
 set -Ux NVM_DIR "$HOME/.nvm"
 
 set PATH \
+    "/opt/homebrew/bin" \
     "/Users/bastien/Library/Application Support/Coursier/bin" \
     "/usr/local/opt/curl/bin" \
+    "$HOME/.toolbox/bin" \
     "$HOME/.bin" \
     "$HOME/.rvm/bin" \
     "$HOME/.cargo/bin/" \
