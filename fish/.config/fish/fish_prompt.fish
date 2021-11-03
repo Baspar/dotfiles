@@ -281,6 +281,11 @@ function fish_prompt
     block "#4B8252" "#3e3e3e" "$VENV_NAME" -i -o
   end
 
+  # In SSH
+  if set -q SSH_CLIENT
+    block "#4B8252" "#3e3e3e" " "
+  end
+
   set TOTAL_PATH ''
   set ACCUMULATED_PATH ''
 
