@@ -67,7 +67,7 @@ set fish_color_search_match --background='333'
 
 source ~/.config/fish/fish_prompt.fish
 
-[ -d ~/.config/fish/completions ] && source ~/.config/fish/completions/*.fish
+# [ -d ~/.config/fish/completions ] && source ~/.config/fish/completions/*.fish
 alias npm "functions --erase npm yarn node; load_nvm; npm $argv"
 alias yarn "functions --erase npm yarn node; load_nvm; yarn $argv"
 alias node "functions --erase npm yarn node; load_nvm; node $argv"

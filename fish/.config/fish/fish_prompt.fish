@@ -10,6 +10,15 @@ set -g CR_AFTER_GIT 0
 bind -M insert \ce 'touch /tmp/FISH_NO_ABBR; commandline -f repaint'
 
 function block
+  set BG "$argv[1]"
+  set FG "$argv[2]"
+  set TEXT "$argv[3]"
+  set FLAGS "$argv[4..-1]"
+
+  _block "$BG" "$FG" " $TEXT " $FLAGS
+end
+
+function _block
   # Function block
   #
   # @param BG: Background color of the block
@@ -39,7 +48,7 @@ function block
   if [ ! -z $TEXT ]
     set -g SKIP_ELLIPSIS 0
     set_color $FG -b $BG
-    for TEXT_BLOCK in (echo " $TEXT " | tr "$ELLIPSIS" '\n')
+    for TEXT_BLOCK in (echo "$TEXT" | tr "$ELLIPSIS" '\n')
       if [ $SKIP_ELLIPSIS  -ne 0 ]
         set_color '#666666' -b $BG
         echo -n "$ELLIPSIS"
@@ -61,22 +70,31 @@ function fish_mode_prompt_2
   # Function fish_mode_prompt
   #
   # @returns Vi mode prompt
+  set LETTER ""
+
+  # In SSH
+  if set -q SSH_CLIENT
+    set LETTER "$LETTER "
+  else
+    set LETTER "$LETTER "
+  end
+
+  # Root
+  if [ (id -u) = "0" ]
+    set LETTER "$LETTER "
+  end
 
   if [ "$fish_bind_mode" = "insert" ]
-    set LETTER "I"
     set COLOR "#AF875F"
   else if [ "$fish_bind_mode" = "visual" ]
-    set LETTER "V"
     set COLOR "#AF5F5E"
   else if [ "$fish_bind_mode" = "autocomplete" ]
-    set LETTER "X"
     set COLOR "#AF5F5E"
   else
-    set LETTER "N"
     set COLOR "#FFFFFF"
   end
 
-  block "$COLOR" "#000000" "$LETTER"
+  _block "$COLOR" "#000000" " $LETTER "
 end
 
 
@@ -281,11 +299,6 @@ function fish_prompt
     block "#4B8252" "#3e3e3e" "$VENV_NAME" -i -o
   end
 
-  # In SSH
-  if set -q SSH_CLIENT
-    block "#4B8252" "#3e3e3e" " "
-  end
-
   set TOTAL_PATH ''
   set ACCUMULATED_PATH ''
 
@@ -328,12 +341,12 @@ function fish_prompt
 
   block "#3e3e3e" "#FFFFFF" "$ACCUMULATED_PATH"
 
-  block "normal" "normal" ""
+  _block "normal" "normal" ""
   echo ""
 
   set -g OLD_BG ""
   echo -ne (fish_mode_prompt_2)
-  block "normal" "normal" ""
+  _block "normal" "normal" ""
   echo " "
 
   if ! [ -z NO_ABBR ]
