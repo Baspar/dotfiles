@@ -43,9 +43,17 @@ call plug#begin('~/.vim/plugged')
 
   " {{{ LSP
   Plug 'neovim/nvim-lspconfig', Cond(has('nvim'))
-  Plug 'ms-jpq/coq_nvim', Cond(has('nvim'), {'branch': 'coq'})
-  Plug 'ms-jpq/coq.artifacts', Cond(has('nvim'), {'branch': 'artifacts'})
+  Plug 'hrsh7th/cmp-path', Cond(has('nvim'))
+  Plug 'hrsh7th/cmp-buffer', Cond(has('nvim'))
+  Plug 'hrsh7th/cmp-nvim-lsp', Cond(has('nvim'))
+  Plug 'hrsh7th/nvim-cmp', Cond(has('nvim'))
   Plug 'folke/trouble.nvim', Cond(has('nvim'))
+  " }}}
+
+  " {{{ Snippets
+  Plug 'hrsh7th/cmp-vsnip'
+  Plug 'hrsh7th/vim-vsnip'
+  Plug 'rafamadriz/friendly-snippets'
   " }}}
 
   "{{{ Nvim-TreeSitter

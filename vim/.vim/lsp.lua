@@ -1,5 +1,6 @@
 local lspconfig = require'lspconfig'
-local coq = require'coq'
+local cmp = require'cmp'
+local cmp_lsp = require'cmp_nvim_lsp'
 
 local configs = {}
 
@@ -89,7 +90,7 @@ configs['metals'] = {
 -- {{{ Python
 configs['pyright'] = {}
 -- }}}
---
+
 -- {{{ C++
 configs['clangd'] = {}
 -- }}}
@@ -98,16 +99,49 @@ configs['clangd'] = {}
 configs['gopls'] = {}
 -- }}}
 
---{{{ Groovy
+-- {{{ Groovy
 configs['groovyls'] = {
   cmd = { "java", "-jar", "/Users/bastien/.vim/lsp-servers/groovy-language-server-all.jar" },
 }
---}}}
+-- }}}
 -- }}}
 
--- {{{ Coq-nvim
+-- {{{ nvim-cmp
+cmp.setup({
+  sources = cmp.config.sources({
+    { name = 'nvim_lsp' },
+    { name = 'vsnip' },
+  }, {
+    { name = 'buffer' },
+  }),
+  snippet = {
+    expand = function(args)
+      vim.fn["vsnip#anonymous"](args.body)
+    end,
+  }
+})
+
+-- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
+cmp.setup.cmdline('/', {
+  sources = {
+    { name = 'buffer' }
+  }
+})
+
+-- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+cmp.setup.cmdline(':', {
+  sources = cmp.config.sources({
+    { name = 'path' }
+  }, {
+    { name = 'cmdline' }
+  })
+})
+
+local capabilities = cmp_lsp.update_capabilities(vim.lsp.protocol.make_client_capabilities())
 for name, config in pairs(configs) do
-  lspconfig[name].setup(coq.lsp_ensure_capabilities(config))
+  lspconfig[name].setup {
+    capabilities = capabilities
+  }
 end
 -- }}}
 
