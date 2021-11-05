@@ -1,5 +1,5 @@
 configuration {
-  font: "Haskplex Nerd 15";
+	font: "Haskplex Nerd 15";
 }
 
 * {
@@ -7,37 +7,34 @@ configuration {
 	text-color: #dfaf8f;
 }
 
-#window {
-    location: center;
-    anchor:   center;
-    padding:  1px;
+window {
+	fullscreen: true;
+	location: center;
+	anchor:   center;
+	padding: 25% 10%;
 	background-color: rgba(32, 32, 32, 85%);
 }
 
-#mainbox {
-	padding: 25%;
-}
-
-#inputbar {
+inputbar {
 	text-color: #dfaf8f;
 	padding: 4px 4px 10px 4px;
 }
 
-#textbox {
-    border: 0px 0px 2px 0px;
+textbox {
+	border: 0px 0px 2px 0px;
 }
 
-#mainbox {
-    spacing: 0.3em;
+element-text {
+    background-color: inherit;
+    text-color:       inherit;
 }
 
-#element {
-	text-color: #dfaf8f;
-}
-
-#element.selected {
-    text-color: black;
+element.selected {
+	text-color: black;
 	background-color: #dfaf8f;
 }
 
+element.normal, element.alternate {
+	text-color: #dfaf8f;
+}
 
