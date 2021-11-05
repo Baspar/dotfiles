@@ -110,6 +110,7 @@ configs['groovyls'] = {
 cmp.setup({
   sources = cmp.config.sources({
     { name = 'nvim_lsp' },
+    { name = 'path' },
     { name = 'vsnip' },
   }, {
     { name = 'buffer' },
@@ -119,22 +120,6 @@ cmp.setup({
       vim.fn["vsnip#anonymous"](args.body)
     end,
   }
-})
-
--- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
-cmp.setup.cmdline('/', {
-  sources = {
-    { name = 'buffer' }
-  }
-})
-
--- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
-cmp.setup.cmdline(':', {
-  sources = cmp.config.sources({
-    { name = 'path' }
-  }, {
-    { name = 'cmdline' }
-  })
 })
 
 local capabilities = cmp_lsp.update_capabilities(vim.lsp.protocol.make_client_capabilities())
