@@ -1,15 +1,21 @@
 #!/usr/bin/env fish
 
+# Settings
 set -g FISH_SEPARATOR "$LEFT_SEPARATOR"
 set -g FISH_SUB_SEPARATOR "$LEFT_SUB_SEPARATOR"
-set -g OLD_BG ""
 set -g ELLIPSIS "·"
 set -g ELLIPSIS_AFTER "3"
-set -g CR_AFTER_GIT 0
 
-bind -M insert \ce 'touch /tmp/FISH_NO_ABBR; commandline -f repaint'
+# Mappings
+bind -M insert \ce 'set -g __baspar_no_abbr "true"; commandline -f repaint'
+
+# Internal variables
+set -g __baspar_no_abbr ''
+set -g __baspar_old_bg ""
+set -g __baspar_fish_promp_count 0
 
 function block
+  # Same as _block, but wrap text with spaces
   set BG "$argv[1]"
   set FG "$argv[2]"
   set TEXT "$argv[3]"
@@ -19,7 +25,7 @@ function block
 end
 
 function _block
-  # Function block
+  # Function _block
   #
   # @param BG: Background color of the block
   # @param FG: Foreground color of the block
@@ -35,12 +41,12 @@ function _block
 
   [ -z $FLAGS ] || eval set_color $FLAGS
 
-  if [ "$OLD_BG" != "" ] && [ -z "$FISH_NO_POWERLINE" ]
-    if [ "$OLD_BG" = "$BG" ]
+  if [ "$__baspar_old_bg" != "" ] && [ -z "$FISH_NO_POWERLINE" ]
+    if [ "$__baspar_old_bg" = "$BG" ]
       set_color black -b $BG
       echo -n $FISH_SUB_SEPARATOR
     else
-      set_color $OLD_BG -b $BG
+      set_color $__baspar_old_bg -b $BG
       echo -n $FISH_SEPARATOR
     end
   end
@@ -58,7 +64,7 @@ function _block
       set -g SKIP_ELLIPSIS 1
     end
   end
-  set -g OLD_BG $BG
+  set -g __baspar_old_bg $BG
   set_color normal -b normal
 end
 
@@ -66,7 +72,7 @@ function fish_mode_prompt
   # Disable default Vi prompt
 end
 
-function fish_mode_prompt_2
+function fish_custom_mode_prompt
   # Function fish_mode_prompt
   #
   # @returns Vi mode prompt
@@ -97,24 +103,23 @@ function fish_mode_prompt_2
   _block "$COLOR" "#000000" " $LETTER "
 end
 
-
-function abbr_path
-  # Function abbr_path
+function __baspar_abbr_path
+  # Function __baspar_abbr_path
   #
   # @param PATH_PART a part of the PATH
   #
   # @returns: An abbreviated version of the PATH_PART (one letter, but keep prefix special characters)
   #           with $HOME replaced by ~
 
-  if [ -z $NO_ABBR ]
+  if [ -z $__baspar_no_abbr ]
     echo -n $argv | sed "s#^$HOME#~#; s#\([^/]\{$ELLIPSIS_AFTER\}\)[^/]\{1,\}/#\1$ELLIPSIS/#g"
   else
     echo -n $argv | sed "s#^$HOME#~#"
   end
 end
 
-function darker_of
-  # Function darker_of
+function __baspar_darker_of
+  # Function __baspar_darker_of
   #
   # @param COLOR a color part of the list
   #
@@ -132,8 +137,8 @@ function darker_of
 end
 
 
-function git_branch_name
-  # Function git_branch_name
+function __baspar_git_branch_name
+  # Function __baspar_git_branch_name
   #
   # @param GIT_DIR location of .git folder
   #
@@ -156,8 +161,8 @@ function git_branch_name
   echo (git -C "$GIT_WORKTREE" rev-parse HEAD | string match -r '^.{8}')…
 end
 
-function git_operation
-  # Function git_operation
+function __baspar_git_operation
+  # Function __baspar_git_operation
   #
   # @param GIT_DIR location of .git folder
   #
@@ -189,8 +194,8 @@ function git_operation
   echo "$GIT_OPERATION"
 end
 
-function git_status
-  # Function git_status
+function __baspar_git_status
+  # Function __baspar_git_status
   #
   # @param GIT_DIR location of .git folder
   #
@@ -209,8 +214,8 @@ function git_status
   echo "$dirtystate|$invalidstate|$stagedstate|$untrackedfiles"
 end
 
-function git_ahead_behind
-  # Function git_ahead_behind
+function __baspar_git_ahead_behind
+  # Function __baspar_git_ahead_behind
   #
   # @param GIT_DIR location of .git folder
   #
@@ -235,8 +240,8 @@ function git_ahead_behind
   echo "$GIT_HAS_UPSTREAM|$GIT_AHEAD|$GIT_BEHIND"
 end
 
-function git_block_info
-  # Function git_block_info
+function __baspar_git_block_info
+  # Function __baspar_git_block_info
   #
   # @param GIT_CONFIG: Absolute path of the .git folder
   #
@@ -244,10 +249,10 @@ function git_block_info
 
   echo $argv | read -d ' ' -l GIT_DIR GIT_WORKTREE
 
-  git_branch_name "$GIT_DIR" "$GIT_WORKTREE"  | read -l GIT_BRANCH
-  git_operation "$GIT_DIR" "$GIT_WORKTREE"    | read -l GIT_OPERATION
-  git_status "$GIT_DIR" "$GIT_WORKTREE"       | read -d '|' -l GIT_DIRTY GIT_INVALID GIT_STAGED GIT_UNTRACKED
-  git_ahead_behind "$GIT_DIR" "$GIT_WORKTREE" | read -d '|' -l GIT_HAS_UPSTREAM GIT_AHEAD GIT_BEHIND
+  __baspar_git_branch_name "$GIT_DIR" "$GIT_WORKTREE"  | read -l GIT_BRANCH
+  __baspar_git_operation "$GIT_DIR" "$GIT_WORKTREE"    | read -l GIT_OPERATION
+  __baspar_git_status "$GIT_DIR" "$GIT_WORKTREE"       | read -d '|' -l GIT_DIRTY GIT_INVALID GIT_STAGED GIT_UNTRACKED
+  __baspar_git_ahead_behind "$GIT_DIR" "$GIT_WORKTREE" | read -d '|' -l GIT_HAS_UPSTREAM GIT_AHEAD GIT_BEHIND
 
   # Default color
   set ICONS ""
@@ -275,6 +280,10 @@ function git_block_info
   echo -n "$COLOR|$GIT_BRANCH|$GIT_OPERATION|$ICONS" | sed 's# $##'
 end
 
+function __baspar_set_fish_promp_count --on-event fish_prompt
+  set __baspar_fish_promp_count (math $__baspar_fish_promp_count + 1)
+end
+
 function fish_prompt
   # Function fish_prompt
   #
@@ -282,11 +291,7 @@ function fish_prompt
 
   set -l _display_status $status
 
-  set -g OLD_BG ""
-
-  if [ -e /tmp/FISH_NO_ABBR ]
-    set -g NO_ABBR 'true'
-  end
+  set -g __baspar_old_bg ""
 
   # Command error status
   if [ "$_display_status" != "0" ]
@@ -315,42 +320,36 @@ function fish_prompt
         set GIT_CONFIG "$GIT_WORKTREE/.git"
       end
 
-      git_block_info "$GIT_CONFIG" "$GIT_WORKTREE" | read -d '|' GIT_BG_COLOR GIT_BRANCH GIT_OPERATION GIT_ICONS
+      __baspar_git_block_info "$GIT_CONFIG" "$GIT_WORKTREE" | read -d '|' GIT_BG_COLOR GIT_BRANCH GIT_OPERATION GIT_ICONS
 
       set TOTAL_PATH "$TOTAL_PATH$ACCUMULATED_PATH"
 
-      set ACCUMULATED_PATH (abbr_path "$ACCUMULATED_PATH")
+      set ACCUMULATED_PATH (__baspar_abbr_path "$ACCUMULATED_PATH")
       block "#3e3e3e" "#FFFFFF" "$ACCUMULATED_PATH"
 
-      [ -n "$GIT_OPERATION" ] && block (darker_of $GIT_BG_COLOR) "#3e3e3e" "$GIT_OPERATION" -o -i
+      [ -n "$GIT_OPERATION" ] && block (__baspar_darker_of $GIT_BG_COLOR) "#3e3e3e" "$GIT_OPERATION" -o -i
       block "$GIT_BG_COLOR" "#3e3e3e" "$GIT_BRANCH" -o -i
-      [ -n "$GIT_ICONS" ] && block (darker_of $GIT_BG_COLOR) "#3e3e3e" "$GIT_ICONS" -o -i
+      [ -n "$GIT_ICONS" ] && block (__baspar_darker_of $GIT_BG_COLOR) "#3e3e3e" "$GIT_ICONS" -o -i
 
       set ACCUMULATED_PATH ''
 
-      if [ $CR_AFTER_GIT -eq 1 ]
-        block "normal" "normal" " "
-        set -g OLD_BG ""
-        echo ""
-      end
     end
   end
 
   [ "$ACCUMULATED_PATH" ] || set ACCUMULATED_PATH '/'
-  set ACCUMULATED_PATH (abbr_path "$ACCUMULATED_PATH")
+  set ACCUMULATED_PATH (__baspar_abbr_path "$ACCUMULATED_PATH")
 
   block "#3e3e3e" "#FFFFFF" "$ACCUMULATED_PATH"
 
   _block "normal" "normal" ""
   echo ""
 
-  set -g OLD_BG ""
-  echo -ne (fish_mode_prompt_2)
+  set -g __baspar_old_bg ""
+  fish_custom_mode_prompt
   _block "normal" "normal" ""
   echo " "
 
-  if ! [ -z NO_ABBR ]
-    rm -rf /tmp/FISH_NO_ABBR
-    set -g NO_ABBR ''
+  if ! [ -z __baspar_no_abbr ]
+    set -g __baspar_no_abbr ''
   end
 end
