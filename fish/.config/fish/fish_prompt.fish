@@ -14,10 +14,10 @@ set -g __baspar_no_abbr ''
 set -g __baspar_old_bg ""
 set -g __baspar_fish_promp_count 0
 set -g __baspar_fish_last_promp_count 0
-set -g __baspar_dirtystate -1
-set -g __baspar_invalidstate -1
-set -g __baspar_stagedstate -1
-set -g __baspar_untrackedfiles -1
+set -g __baspar_has_dirty -1
+set -g __baspar_has_invalid -1
+set -g __baspar_has_staged -1
+set -g __baspar_has_untracked -1
 # set -g __baspar_git_status_pid -1
 
 function block
@@ -264,8 +264,13 @@ function __baspar_git_block_info
   __baspar_git_operation "$GIT_DIR" "$GIT_WORKTREE"    | read -l GIT_OPERATION
   __baspar_git_ahead_behind "$GIT_DIR" "$GIT_WORKTREE" | read -d '|' -l GIT_HAS_UPSTREAM GIT_AHEAD GIT_BEHIND
 
-  if [ $NEED_GIT_STATUS_UPDATE ] && ! set -q __baspar_git_status_pid
-    set -g __baspar_git_status_pid 0
+  # TODO: Use `string escape --style=var $GIT_DIR`
+  if [ $NEED_GIT_STATUS_UPDATE ]
+    if set -q __baspar_git_status_pid
+      command kill -9 $__baspar_git_status_pid 2>&1 > /dev/null
+      functions -e __baspar_on_finish_git_status_$__baspar_git_status_pid
+    end
+
     command fish --private --command "__baspar_git_status '$GIT_DIR' '$GIT_WORKTREE'" &
     set -l pid (jobs --last --pid)
     set -g __baspar_git_status_pid $pid
@@ -276,10 +281,10 @@ function __baspar_git_block_info
       if [ $pid -eq $__baspar_git_status_pid ]
         set -g -e __baspar_git_status_pid
         set exit_code $argv[3]
-        set -g __baspar_dirtystate (math "$exit_code % 2")
-        set -g __baspar_invalidstate (math "floor($exit_code / 2) % 2")
-        set -g __baspar_stagedstate (math "floor($exit_code / 4) % 2")
-        set -g __baspar_untrackedfiles (math "floor($exit_code / 8) % 2")
+        set -g __baspar_has_dirty (math "$exit_code % 2")
+        set -g __baspar_has_invalid (math "floor($exit_code / 2) % 2")
+        set -g __baspar_has_staged (math "floor($exit_code / 4) % 2")
+        set -g __baspar_has_untracked (math "floor($exit_code / 8) % 2")
         commandline -f repaint
       end
     end
@@ -291,16 +296,16 @@ function __baspar_git_block_info
   # Colors
   if [ -n "$GIT_OPERATION" ]
     set COLOR "#AF5F5E"
-  else if [ $__baspar_dirtystate -eq 1 ] || [ $__baspar_untrackedfiles -eq 1 ]
+  else if [ $__baspar_has_dirty -eq 1 ] || [ $__baspar_has_untracked -eq 1 ]
     set COLOR "#AF875F"
   else
     set COLOR "#4B8252"
   end
 
   # Icons
-  [ $__baspar_stagedstate -eq 1    ] && set ICONS "$ICONS+"
-  [ $__baspar_dirtystate -eq 1     ] && set ICONS "$ICONS~"
-  [ $__baspar_untrackedfiles -eq 1 ] && set ICONS "$ICONS?"
+  [ $__baspar_has_staged -eq 1    ] && set ICONS "$ICONS+"
+  [ $__baspar_has_dirty -eq 1     ] && set ICONS "$ICONS~"
+  [ $__baspar_has_untracked -eq 1 ] && set ICONS "$ICONS?"
 
   # Left icons
   [ -n "$GIT_HAS_UPSTREAM" ] && [ $GIT_HAS_UPSTREAM -ne 0 ] && set GIT_OPERATION " $GIT_OPERATION"
