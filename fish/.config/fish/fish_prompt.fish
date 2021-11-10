@@ -15,17 +15,14 @@ set -g __baspar_old_bg ""
 set -g __baspar_fish_promp_count 0
 set -g __baspar_fish_last_promp_count 0
 
-function block
+function block -a BG FG TEXT
   # Same as _block, but wrap text with spaces
-  set BG "$argv[1]"
-  set FG "$argv[2]"
-  set TEXT "$argv[3]"
   set FLAGS "$argv[4..-1]"
 
   _block "$BG" "$FG" " $TEXT " $FLAGS
 end
 
-function _block
+function _block -a BG FG TEXT
   # Function _block
   #
   # @param BG: Background color of the block
@@ -35,9 +32,6 @@ function _block
   #
   # @returns: A block with style and text
 
-  set BG "$argv[1]"
-  set FG "$argv[2]"
-  set TEXT "$argv[3]"
   set FLAGS "$argv[4..-1]"
 
   [ -z $FLAGS ] || eval set_color $FLAGS
@@ -77,6 +71,7 @@ function fish_custom_mode_prompt
   # Function fish_mode_prompt
   #
   # @returns Vi mode prompt
+
   set LETTER ""
 
   # In SSH
@@ -91,20 +86,22 @@ function fish_custom_mode_prompt
     set LETTER "$LETTER "
   end
 
-  if [ "$fish_bind_mode" = "insert" ]
-    set COLOR "#AF875F"
-  else if [ "$fish_bind_mode" = "visual" ]
-    set COLOR "#AF5F5E"
-  else if [ "$fish_bind_mode" = "autocomplete" ]
-    set COLOR "#AF5F5E"
-  else
-    set COLOR "#FFFFFF"
+  # Vim mode
+  switch $fish_bind_mode
+    case "insert"
+      set BG_COLOR "#AF875F"
+    case "visual"
+      set BG_COLOR "#AF5F5E"
+    case "autocomplete"
+      set BG_COLOR "#AF5F5E"
+    case '*'
+      set BG_COLOR "#FFFFFF"
   end
 
-  _block "$COLOR" "#000000" " $LETTER "
+  _block "$BG_COLOR" "#000000" " $LETTER "
 end
 
-function __baspar_abbr_path
+function __baspar_abbr_path -a PATH_PART
   # Function __baspar_abbr_path
   #
   # @param PATH_PART a part of the PATH
@@ -113,26 +110,26 @@ function __baspar_abbr_path
   #           with $HOME replaced by ~
 
   if [ -z $__baspar_no_abbr ]
-    echo -n $argv | sed "s#^$HOME#~#; s#\([^/]\{$ELLIPSIS_AFTER\}\)[^/]\{1,\}/#\1$ELLIPSIS/#g"
+    echo -n "$PATH_PART" | sed "s#^$HOME#~#; s#\([^/]\{$ELLIPSIS_AFTER\}\)[^/]\{1,\}/#\1$ELLIPSIS/#g"
   else
-    echo -n $argv | sed "s#^$HOME#~#"
+    echo -n "$PATH_PART" | sed "s#^$HOME#~#"
   end
 end
 
-function __baspar_darker_of
+function __baspar_darker_of -a COLOR
   # Function __baspar_darker_of
   #
   # @param COLOR a color part of the list
   #
   # @returns: A darker shade of this color
 
-  if [ "$argv" = "#AF5F5E" ]
+  if [ "$COLOR" = "#AF5F5E" ]
     echo -n "#703D3D"
-    else if [ "$argv" = "#888888" ]
+  else if [ "$COLOR" = "#888888" ]
     echo -n "#555555"
-  else if [ "$argv" = "#AF875F" ]
+  else if [ "$COLOR" = "#AF875F" ]
     echo -n "#926E49"
-  else if [ "$argv" = "#4B8252" ]
+  else if [ "$COLOR" = "#4B8252" ]
     echo -n "#38623E"
   else
     echo -n ""
@@ -140,13 +137,12 @@ function __baspar_darker_of
 end
 
 
-function __baspar_git_branch_name
+function __baspar_git_branch_name -a GIT_DIR GIT_WORKTREE
   # Function __baspar_git_branch_name
   #
   # @param GIT_DIR location of .git folder
   #
   # @returns:
-  echo $argv | read -d ' ' -l GIT_CONFIG GIT_WORKTREE
 
   [ -d "$GIT_WORKTREE/rebase-merge" ] && {
     cat "$GIT_WORKTREE/rebase-merge/head-name" 2>/dev/null
@@ -164,29 +160,28 @@ function __baspar_git_branch_name
   echo (git -C "$GIT_WORKTREE" rev-parse HEAD | string match -r '^.{8}')…
 end
 
-function __baspar_git_operation
+function __baspar_git_operation -a GIT_DIR GIT_WORKTREE
   # Function __baspar_git_operation
   #
   # @param GIT_DIR location of .git folder
   #
   # @returns: a symbol corresponding to the current operation
-  echo $argv | read -d ' ' -l GIT_CONFIG GIT_WORKTREE
 
-  if test -d "$GIT_CONFIG/rebase-merge"
-      set step (cat "$GIT_CONFIG/rebase-merge/msgnum" 2>/dev/null)
-      set total (cat "$GIT_CONFIG/rebase-merge/end" 2>/dev/null)
+  if test -d "$GIT_DIR/rebase-merge"
+      set step (cat "$GIT_DIR/rebase-merge/msgnum" 2>/dev/null)
+      set total (cat "$GIT_DIR/rebase-merge/end" 2>/dev/null)
       set GIT_OPERATION " "
-  else if test -d "$GIT_CONFIG/rebase-apply"
-    set step (cat "$GIT_CONFIG/rebase-apply/next" 2>/dev/null)
-    set total (cat "$GIT_CONFIG/rebase-apply/last" 2>/dev/null)
+  else if test -d "$GIT_DIR/rebase-apply"
+    set step (cat "$GIT_DIR/rebase-apply/next" 2>/dev/null)
+    set total (cat "$GIT_DIR/rebase-apply/last" 2>/dev/null)
     set GIT_OPERATION " "
-  else if test -f "$GIT_CONFIG/MERGE_HEAD"
+  else if test -f "$GIT_DIR/MERGE_HEAD"
       set GIT_OPERATION " "
-  else if test -f "$GIT_CONFIG/CHERRY_PICK_HEAD"
+  else if test -f "$GIT_DIR/CHERRY_PICK_HEAD"
       set GIT_OPERATION " "
-  else if test -f "$GIT_CONFIG/REVERT_HEAD"
+  else if test -f "$GIT_DIR/REVERT_HEAD"
       set GIT_OPERATION " "
-  else if test -f "$GIT_CONFIG/BISECT_LOG"
+  else if test -f "$GIT_DIR/BISECT_LOG"
       set GIT_OPERATION "÷"
   end
 
@@ -197,13 +192,12 @@ function __baspar_git_operation
   echo "$GIT_OPERATION"
 end
 
-function __baspar_git_status
-  # Function __baspar_git_status
+function __baspar_async_git_status -a GIT_DIR GIT_WORKTREE
+  # Function __baspar_async_git_status
   #
   # @param GIT_DIR location of .git folder
   #
   # @returns:
-  echo $argv | read -d ' ' -l GIT_DIR GIT_WORKTREE
 
   set -l changedFiles (command git -C "$GIT_WORKTREE" diff --name-status 2>/dev/null | string match -r \\w)
   set -l stagedFiles (command git -C "$GIT_WORKTREE" diff --staged --name-status | string match -r \\w)
@@ -222,13 +216,12 @@ function __baspar_git_status
   exit $exit_code
 end
 
-function __baspar_git_ahead_behind
+function __baspar_git_ahead_behind -a GIT_DIR GIT_WORKTREE
   # Function __baspar_git_ahead_behind
   #
   # @param GIT_DIR location of .git folder
   #
   # @returns:
-  echo $argv | read -d ' ' -l GIT_DIR GIT_WORKTREE
 
   set GIT_AHEAD 0
   set GIT_BEHIND 0
@@ -248,14 +241,14 @@ function __baspar_git_ahead_behind
   echo "$GIT_HAS_UPSTREAM|$GIT_AHEAD|$GIT_BEHIND"
 end
 
-function __baspar_git_block_info
+function __baspar_git_block_info -a GIT_DIR GIT_WORKTREE NEED_GIT_STATUS_UPDATE
   # Function __baspar_git_block_info
   #
-  # @param GIT_CONFIG: Absolute path of the .git folder
+  # @param GIT_DIR: Absolute path of the .git folder
   #
   # @returns: The color and status of the git information at given GIT_DIR
 
-  echo $argv | read -d ' ' -l GIT_DIR GIT_WORKTREE NEED_GIT_STATUS_UPDATE
+  set SAFE_GIT_DIR (string escape --style=var "$GIT_DIR")
 
   __baspar_git_branch_name "$GIT_DIR" "$GIT_WORKTREE"  | read -l GIT_BRANCH
   __baspar_git_operation "$GIT_DIR" "$GIT_WORKTREE"    | read -l GIT_OPERATION
@@ -263,25 +256,30 @@ function __baspar_git_block_info
 
   # TODO: Use `string escape --style=var $GIT_DIR`
   if [ $NEED_GIT_STATUS_UPDATE ]
-    if set -q __baspar_git_status_pid
-      command kill -9 $__baspar_git_status_pid 2>&1 > /dev/null
-      functions -e __baspar_on_finish_git_status_$__baspar_git_status_pid
+    if set -q __baspar_git_status_pid_$SAFE_GIT_DIR
+      eval command kill -9 \$__baspar_git_status_pid_$SAFE_GIT_DIR 2>&1 > /dev/null
+      eval functions -e __baspar_on_finish_git_status_\$__baspar_git_status_pid_$SAFE_GIT_DIR
     end
 
-    command fish --private --command "__baspar_git_status '$GIT_DIR' '$GIT_WORKTREE'" &
+    command fish --private --command "__baspar_async_git_status '$GIT_DIR' '$GIT_WORKTREE'" &
     set -l pid (jobs --last --pid)
-    set -g __baspar_git_status_pid $pid
+    set -g __baspar_git_status_pid_$SAFE_GIT_DIR $pid
 
-    function __baspar_on_finish_git_status_$pid --inherit-variable pid --on-process-exit $pid
+    function __baspar_on_finish_git_status_$pid -V pid -V SAFE_GIT_DIR --on-process-exit $pid
       functions -e __baspar_on_finish_git_status_$pid
 
-      set -g -e __baspar_git_status_pid
-      set exit_code $argv[3]
-      set -g __baspar_has_dirty (math "$exit_code % 2")
-      set -g __baspar_has_invalid (math "floor($exit_code / 2) % 2")
-      set -g __baspar_has_staged (math "floor($exit_code / 4) % 2")
-      set -g __baspar_has_untracked (math "floor($exit_code / 8) % 2")
-      commandline -f repaint
+      if [ (eval echo \$__baspar_git_status_pid_$SAFE_GIT_DIR) = $pid ]
+        set -e __baspar_git_status_pid_$SAFE_GIT_DIR
+        set exit_code $argv[3]
+        # Exit code 130 is given when <C-c> is pressed
+        if [ $exit_code -lt 16 ]
+          set -g __baspar_has_dirty_$SAFE_GIT_DIR (math "$exit_code % 2")
+          set -g __baspar_has_invalid_$SAFE_GIT_DIR (math "floor($exit_code / 2) % 2")
+          set -g __baspar_has_staged_$SAFE_GIT_DIR (math "floor($exit_code / 4) % 2")
+          set -g __baspar_has_untracked_$SAFE_GIT_DIR (math "floor($exit_code / 8) % 2")
+        end
+        commandline -f repaint
+      end
     end
   end
 
@@ -291,18 +289,18 @@ function __baspar_git_block_info
   # Colors
   if [ -n "$GIT_OPERATION" ]
     set COLOR "#AF5F5E"
-  else if ! set -q __baspar_has_dirty && ! set -q __baspar_has_untracked
+  else if ! set -q __baspar_has_dirty_$SAFE_GIT_DIR && ! set -q __baspar_has_untracked_$SAFE_GIT_DIR
     set COLOR "#888888"
-  else if [ $__baspar_has_dirty -eq 1 ] || [ $__baspar_has_untracked -eq 1 ]
+  else if [ (eval echo \$__baspar_has_dirty_$SAFE_GIT_DIR) = "1" ] || [ (eval echo \$__baspar_has_untracked_$SAFE_GIT_DIR) = "1" ]
     set COLOR "#AF875F"
   else
     set COLOR "#4B8252"
   end
 
   # Icons
-  set -q __baspar_has_staged    && [ $__baspar_has_staged -eq 1 ]    && set ICONS "$ICONS+"
-  set -q __baspar_has_dirty     && [ $__baspar_has_dirty -eq 1 ]     && set ICONS "$ICONS~"
-  set -q __baspar_has_untracked && [ $__baspar_has_untracked -eq 1 ] && set ICONS "$ICONS?"
+  set -q __baspar_has_staged_$SAFE_GIT_DIR    && [ (eval echo \$__baspar_has_staged_$SAFE_GIT_DIR) = "1" ]    && set ICONS "$ICONS+"
+  set -q __baspar_has_dirty_$SAFE_GIT_DIR     && [ (eval echo \$__baspar_has_dirty_$SAFE_GIT_DIR) = "1" ]     && set ICONS "$ICONS~"
+  set -q __baspar_has_untracked_$SAFE_GIT_DIR && [ (eval echo \$__baspar_has_untracked_$SAFE_GIT_DIR) = "1" ] && set ICONS "$ICONS?"
 
   # Left icons
   [ -n "$GIT_HAS_UPSTREAM" ] && [ $GIT_HAS_UPSTREAM -ne 0 ] && set GIT_OPERATION " $GIT_OPERATION"
@@ -315,6 +313,25 @@ end
 
 function __baspar_set_fish_promp_count --on-event fish_prompt
   set -g __baspar_fish_promp_count (math $__baspar_fish_promp_count + 1)
+end
+
+function __baspar_get_git_dir -a GIT_WORKTREE
+  # Function __baspar_get_git_dir
+  #
+  # @param GIT_WORKTREE: root path of git worktree
+  #
+  # @returns: Actual location of the git config folder
+
+  if [ -f "$GIT_WORKTREE/.git" ]
+    set GIT_DIR (cat "$GIT_WORKTREE/.git" | grep "^gitdir" | sed 's#^gitdir: *##')
+    if ! string match -r "^/" "$GIT_DIR" &> /dev/null
+      set GIT_DIR "$GIT_WORKTREE/$GIT_DIR"
+    end
+  else
+    set GIT_DIR "$GIT_WORKTREE/.git"
+  end
+
+  echo $GIT_DIR
 end
 
 function fish_prompt
@@ -350,16 +367,9 @@ function fish_prompt
     set ACCUMULATED_PATH "$ACCUMULATED_PATH/$PWD_PART"
     if [ -e "$TOTAL_PATH$ACCUMULATED_PATH/.git" ]
       set GIT_WORKTREE "$TOTAL_PATH$ACCUMULATED_PATH"
-      if [ -f "$GIT_WORKTREE/.git" ]
-        set GIT_CONFIG (cat "$GIT_WORKTREE/.git" | grep "^gitdir" | sed 's#^gitdir: *##')
-        if ! string match -r "^/" "$GIT_CONFIG" &> /dev/null
-          set GIT_CONFIG "$GIT_WORKTREE/$GIT_CONFIG"
-        end
-      else
-        set GIT_CONFIG "$GIT_WORKTREE/.git"
-      end
+      set GIT_DIR (__baspar_get_git_dir "$GIT_WORKTREE")
 
-      __baspar_git_block_info "$GIT_CONFIG" "$GIT_WORKTREE" "$NEED_GIT_STATUS_UPDATE" | read -d '|' GIT_BG_COLOR GIT_BRANCH GIT_OPERATION GIT_ICONS
+      __baspar_git_block_info "$GIT_DIR" "$GIT_WORKTREE" "$NEED_GIT_STATUS_UPDATE" | read -d '|' GIT_BG_COLOR GIT_BRANCH GIT_OPERATION GIT_ICONS
 
       set TOTAL_PATH "$TOTAL_PATH$ACCUMULATED_PATH"
 
@@ -367,7 +377,8 @@ function fish_prompt
       block "#3e3e3e" "#FFFFFF" "$ACCUMULATED_PATH"
 
       set GIT_FG_COLOR "#3e3e3e"
-      if [ "$__baspar_git_status_pid" ]
+      set SAFE_GIT_DIR (string escape --style=var "$GIT_DIR")
+      if set -q __baspar_git_status_pid_$SAFE_GIT_DIR
         set GIT_FG_COLOR "#666666"
       end
 
