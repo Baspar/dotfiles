@@ -8,12 +8,53 @@ set -g ELLIPSIS_AFTER "3"
 
 # Mappings
 bind -M insert \ce 'set -g __baspar_no_abbr "true"; commandline -f repaint'
+bind -M insert ' ' 'commandline -i " "; commandline -f expand-abbr; emit __baspar_new_word'
+bind -M insert \c] 'emit __baspar_cycle_indicator'
 
 # Internal variables
 set -g __baspar_no_abbr ''
 set -g __baspar_old_bg ""
 set -g __baspar_fish_promp_count 0
 set -g __baspar_fish_last_promp_count 0
+
+function __baspar_cycle_indicator --on-event __baspar_cycle_indicator
+  if set -q AWS_PROFILE && ! set -q __baspar_hide_aws
+    set count (count $AWS_PROFILES)
+    for i in (seq $count)
+      if [ $AWS_PROFILES[$i] = $AWS_PROFILE ]
+        set next (math $i % $count + 1)
+        set -gx AWS_PROFILE $AWS_PROFILES[$next]
+        break
+      end
+    end
+    commandline -f repaint
+  end
+end
+
+function __baspar_aws_indicator_fn --on-event __baspar_aws_indicator
+  set -g AWS_PROFILES (cat ~/.aws/credentials | sed '/^\[.*\]$/!d; s/\[\(.*\)\]/\1/')
+  if ! set -q AWS_PROFILE
+    set -gx AWS_PROFILE $AWS_PROFILES[1]
+  end
+
+  set -e __baspar_hide_aws
+  commandline -f repaint
+end
+
+function fish_right_prompt
+  set -g __baspar_old_bg "black"
+
+  if set -q AWS_PROFILE && ! set -q __baspar_hide_aws
+    block "#AF875F" "#000000" " $AWS_PROFILE"
+  end
+end
+
+function __baspar_listen_to_special_command --on-event __baspar_new_word
+  switch (commandline | cut -d' ' -f1)
+    case "aws"
+      emit __baspar_aws_indicator
+  end
+end
 
 function block -a BG FG TEXT
   # Same as _block, but wrap text with spaces
@@ -311,8 +352,13 @@ function __baspar_git_block_info -a GIT_DIR GIT_WORKTREE NEED_GIT_STATUS_UPDATE
   echo -n "$COLOR|$GIT_BRANCH|$GIT_OPERATION|$ICONS" | sed 's# $##'
 end
 
+function __baspar_cleanup --on-event fish_cancel
+  set -g __baspar_hide_aws 'true'
+end
+
 function __baspar_set_fish_promp_count --on-event fish_prompt
   set -g __baspar_fish_promp_count (math $__baspar_fish_promp_count + 1)
+  set -g __baspar_hide_aws 'true'
 end
 
 function __baspar_get_git_dir -a GIT_WORKTREE
