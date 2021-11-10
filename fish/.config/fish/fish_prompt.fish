@@ -19,22 +19,20 @@ set -g __baspar_fish_last_promp_count 0
 
 function __baspar_cycle_indicator --on-event __baspar_cycle_indicator
   if set -q AWS_PROFILE && ! set -q __baspar_hide_aws
+    set AWS_PROFILES (cat ~/.aws/credentials | sed '/^\[.*\]$/!d; s/\[\(.*\)\]/\1/')
     set count (count $AWS_PROFILES)
-    for i in (seq $count)
-      if [ $AWS_PROFILES[$i] = $AWS_PROFILE ]
-        set next (math $i % $count + 1)
-        set -gx AWS_PROFILE $AWS_PROFILES[$next]
-        break
-      end
-    end
+    set -g __baspar_aws_id (math $__baspar_aws_id % $count + 1)
+    set -gx AWS_PROFILE $AWS_PROFILES[$__baspar_aws_id]
     commandline -f repaint
   end
 end
 
 function __baspar_aws_indicator_fn --on-event __baspar_aws_indicator
-  set -g AWS_PROFILES (cat ~/.aws/credentials | sed '/^\[.*\]$/!d; s/\[\(.*\)\]/\1/')
+  set AWS_PROFILES ([ -f ~/.aws/credentials ] && cat ~/.aws/credentials | sed '/^\[.*\]$/!d; s/\[\(.*\)\]/\1/'); or return
+
   if ! set -q AWS_PROFILE
-    set -gx AWS_PROFILE $AWS_PROFILES[1]
+    set -g __baspar_aws_id 1
+    set -gx AWS_PROFILE $AWS_PROFILES[$__baspar_aws_id]
   end
 
   set -e __baspar_hide_aws
@@ -45,7 +43,10 @@ function fish_right_prompt
   set -g __baspar_old_bg "black"
 
   if set -q AWS_PROFILE && ! set -q __baspar_hide_aws
-    block "#AF875F" "#000000" " $AWS_PROFILE"
+    set AWS_PROFILES (cat ~/.aws/credentials | sed '/^\[.*\]$/!d; s/\[\(.*\)\]/\1/')
+    set count (count $AWS_PROFILES)
+    block "#AF875F" "#000000" " $AWS_PROFILE" -o -i
+    block (__baspar_darker_of "#AF875F") "#3e3e3e" "$__baspar_aws_id/$count" -o
   end
 end
 
