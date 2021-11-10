@@ -14,11 +14,6 @@ set -g __baspar_no_abbr ''
 set -g __baspar_old_bg ""
 set -g __baspar_fish_promp_count 0
 set -g __baspar_fish_last_promp_count 0
-set -g __baspar_has_dirty -1
-set -g __baspar_has_invalid -1
-set -g __baspar_has_staged -1
-set -g __baspar_has_untracked -1
-# set -g __baspar_git_status_pid -1
 
 function block
   # Same as _block, but wrap text with spaces
@@ -133,6 +128,8 @@ function __baspar_darker_of
 
   if [ "$argv" = "#AF5F5E" ]
     echo -n "#703D3D"
+    else if [ "$argv" = "#888888" ]
+    echo -n "#555555"
   else if [ "$argv" = "#AF875F" ]
     echo -n "#926E49"
   else if [ "$argv" = "#4B8252" ]
@@ -278,15 +275,13 @@ function __baspar_git_block_info
     function __baspar_on_finish_git_status_$pid --inherit-variable pid --on-process-exit $pid
       functions -e __baspar_on_finish_git_status_$pid
 
-      if [ $pid -eq $__baspar_git_status_pid ]
-        set -g -e __baspar_git_status_pid
-        set exit_code $argv[3]
-        set -g __baspar_has_dirty (math "$exit_code % 2")
-        set -g __baspar_has_invalid (math "floor($exit_code / 2) % 2")
-        set -g __baspar_has_staged (math "floor($exit_code / 4) % 2")
-        set -g __baspar_has_untracked (math "floor($exit_code / 8) % 2")
-        commandline -f repaint
-      end
+      set -g -e __baspar_git_status_pid
+      set exit_code $argv[3]
+      set -g __baspar_has_dirty (math "$exit_code % 2")
+      set -g __baspar_has_invalid (math "floor($exit_code / 2) % 2")
+      set -g __baspar_has_staged (math "floor($exit_code / 4) % 2")
+      set -g __baspar_has_untracked (math "floor($exit_code / 8) % 2")
+      commandline -f repaint
     end
   end
 
@@ -296,6 +291,8 @@ function __baspar_git_block_info
   # Colors
   if [ -n "$GIT_OPERATION" ]
     set COLOR "#AF5F5E"
+  else if ! set -q __baspar_has_dirty && ! set -q __baspar_has_untracked
+    set COLOR "#888888"
   else if [ $__baspar_has_dirty -eq 1 ] || [ $__baspar_has_untracked -eq 1 ]
     set COLOR "#AF875F"
   else
@@ -303,9 +300,9 @@ function __baspar_git_block_info
   end
 
   # Icons
-  [ $__baspar_has_staged -eq 1    ] && set ICONS "$ICONS+"
-  [ $__baspar_has_dirty -eq 1     ] && set ICONS "$ICONS~"
-  [ $__baspar_has_untracked -eq 1 ] && set ICONS "$ICONS?"
+  set -q __baspar_has_staged    && [ $__baspar_has_staged -eq 1 ]    && set ICONS "$ICONS+"
+  set -q __baspar_has_dirty     && [ $__baspar_has_dirty -eq 1 ]     && set ICONS "$ICONS~"
+  set -q __baspar_has_untracked && [ $__baspar_has_untracked -eq 1 ] && set ICONS "$ICONS?"
 
   # Left icons
   [ -n "$GIT_HAS_UPSTREAM" ] && [ $GIT_HAS_UPSTREAM -ne 0 ] && set GIT_OPERATION " $GIT_OPERATION"
