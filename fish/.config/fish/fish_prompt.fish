@@ -14,8 +14,8 @@ set -g ELLIPSIS_AFTER "3"
 # ========
 
 bind -M insert \ce 'set -g __baspar_no_abbr ""; commandline -f repaint'
-bind -M insert ' ' 'commandline -i " "; commandline -f expand-abbr; emit __baspar_check_special_command'
-bind -M insert \c] 'emit __baspar_cycle_indicator'
+bind -M insert ' ' 'commandline -i " "; commandline -f expand-abbr; __baspar_check_special_command_fn'
+bind -M insert \c] '__baspar_cycle_indicator'
 
 # ==================
 # Internal variables
@@ -24,6 +24,9 @@ bind -M insert \c] 'emit __baspar_cycle_indicator'
 set -g __baspar_old_bg ""
 set -g __baspar_fish_promp_count 0
 set -g __baspar_fish_last_promp_count 0
+set -g __baspar_need_git_update 'true'
+set -g __baspar_hide_aws 'true'
+set -e __baspar_no_abbr
 
 # =======
 # Helpers
@@ -102,8 +105,8 @@ end
 # AWS indicator
 # =============
 
-function __baspar_cycle_indicator --on-event __baspar_cycle_indicator
-  if set -q AWS_PROFILE && ! set -q __baspar_hide_aws
+function __baspar_cycle_indicator
+  if [ $AWS_PROFILE ] && ! [ $__baspar_hide_aws ]
     set AWS_PROFILES (cat ~/.aws/credentials | sed '/^\[.*\]$/!d; s/\[\(.*\)\]/\1/')
     set count (count $AWS_PROFILES)
     set -g __baspar_aws_id (math $__baspar_aws_id % $count + 1)
@@ -112,10 +115,10 @@ function __baspar_cycle_indicator --on-event __baspar_cycle_indicator
   end
 end
 
-function __baspar_aws_indicator_fn --on-event __baspar_aws_indicator
+function __baspar_aws_indicator_fn
   set AWS_PROFILES ([ -f ~/.aws/credentials ] && cat ~/.aws/credentials | sed '/^\[.*\]$/!d; s/\[\(.*\)\]/\1/'); or return
 
-  if ! set -q AWS_PROFILE
+  if ! [ $AWS_PROFILE ]
     set -g __baspar_aws_id 1
     set -gx AWS_PROFILE $AWS_PROFILES[$__baspar_aws_id]
   end
@@ -124,10 +127,11 @@ function __baspar_aws_indicator_fn --on-event __baspar_aws_indicator
   commandline -f repaint
 end
 
-function __baspar_check_special_command_fn --on-event __baspar_check_special_command
-  switch (commandline | cut -d' ' -f1)
-    case "aws"
-      emit __baspar_aws_indicator
+function __baspar_check_special_command_fn
+  set commands (commandline | sed -E 's/;|&&|\|\||\||; *(and|or)/\n/g' | string trim | cut -d' ' -f1)
+
+  if contains "aws" $commands
+      __baspar_aws_indicator_fn
   end
 end
 
@@ -139,7 +143,7 @@ function fish_custom_mode_prompt
   set LETTER ""
 
   # In SSH
-  if set -q SSH_CLIENT
+  if [ $SSH_CLIENT ]
     set LETTER "$LETTER "
   else
     set LETTER "$LETTER "
@@ -177,10 +181,10 @@ function __baspar_abbr_path -a PATH_SEGMENT
   # @returns: An abbreviated version of the PATH_SEGMENT (one letter, but keep prefix special characters)
   #           with $HOME replaced by ~
   #
-  if set -q $__baspar_no_abbr
-    echo -n "$PATH_SEGMENT" | sed "s#^$HOME#~#; s#\([^/]\{$ELLIPSIS_AFTER\}\)[^/]\{1,\}/#\1$ELLIPSIS/#g"
-  else
+  if set -q __baspar_no_abbr
     echo -n "$PATH_SEGMENT" | sed "s#^$HOME#~#"
+  else
+    echo -n "$PATH_SEGMENT" | sed "s#^$HOME#~#; s#\([^/]\{$ELLIPSIS_AFTER\}\)[^/]\{1,\}/#\1$ELLIPSIS/#g"
   end
 end
 
@@ -288,7 +292,7 @@ function __baspar_git_ahead_behind -a GIT_DIR GIT_WORKTREE
   echo "$GIT_HAS_UPSTREAM|$GIT_AHEAD|$GIT_BEHIND"
 end
 
-function __baspar_git_block_info -a GIT_DIR GIT_WORKTREE NEED_GIT_STATUS_UPDATE
+function __baspar_git_block_info -a GIT_DIR GIT_WORKTREE
   # Function __baspar_git_block_info
   #
   # @param GIT_DIR: Absolute path of the .git folder
@@ -301,8 +305,7 @@ function __baspar_git_block_info -a GIT_DIR GIT_WORKTREE NEED_GIT_STATUS_UPDATE
   __baspar_git_operation "$GIT_DIR" "$GIT_WORKTREE"    | read -l GIT_OPERATION
   __baspar_git_ahead_behind "$GIT_DIR" "$GIT_WORKTREE" | read -d '|' -l GIT_HAS_UPSTREAM GIT_AHEAD GIT_BEHIND
 
-  # TODO: Use `string escape --style=var $GIT_DIR`
-  if [ $NEED_GIT_STATUS_UPDATE ]
+  if set -q __baspar_need_git_update
     if set -q __baspar_git_status_pid_$SAFE_GIT_DIR
       eval command kill -9 \$__baspar_git_status_pid_$SAFE_GIT_DIR 2>&1 > /dev/null
       eval functions -e __baspar_on_finish_git_status_\$__baspar_git_status_pid_$SAFE_GIT_DIR
@@ -325,8 +328,8 @@ function __baspar_git_block_info -a GIT_DIR GIT_WORKTREE NEED_GIT_STATUS_UPDATE
           set -g __baspar_has_staged_$SAFE_GIT_DIR (math "floor($exit_code / 4) % 2")
           set -g __baspar_has_untracked_$SAFE_GIT_DIR (math "floor($exit_code / 8) % 2")
         end
-        commandline -f repaint
       end
+      commandline -f repaint
     end
   end
 
@@ -358,21 +361,12 @@ function __baspar_git_block_info -a GIT_DIR GIT_WORKTREE NEED_GIT_STATUS_UPDATE
   echo -n "$COLOR|$GIT_BRANCH|$GIT_OPERATION|$ICONS" | sed 's# $##'
 end
 
-function __baspar_cleanup --on-event fish_cancel
-  # Function __baspar_cleanup
-  #
-  # Clean all indicators when C-c
-  #
-  set -g __baspar_hide_aws 'true'
-end
-
-function __baspar_set_fish_promp_count --on-event fish_prompt
+function __baspar_set_fish_promp_count --on-event fish_prompt --on-event fish_cancel
   # Function __baspar_set_fish_promp_count
   #
-  # Increment a counter for every "fresh" repaint and
-  # cleanup some variable
+  # Reset behaviour and variable
   #
-  set -g __baspar_fish_promp_count (math $__baspar_fish_promp_count + 1)
+  set -g __baspar_need_git_update 'true'
   set -g __baspar_hide_aws 'true'
   set -e __baspar_no_abbr
 end
@@ -403,7 +397,7 @@ function __baspar_update_path_segments_abbr --on-variable __baspar_no_abbr
   #
   set -e __baspar_path_segments_abbr
   for PATH_SEGMENT in $__baspar_path_segments
-    set -gx --append __baspar_path_segments_abbr (__baspar_abbr_path "$PATH_SEGMENT")
+    set -g --append __baspar_path_segments_abbr (__baspar_abbr_path "$PATH_SEGMENT")
   end
 
   commandline -f repaint
@@ -419,7 +413,7 @@ function __baspar_update_path_segments --on-variable PWD
   for PATH_SEGMENT in (echo $PWD | sed 's#^/##; s#/$##' | tr '/' '\n')
     set ACCUMULATED_PATH "$ACCUMULATED_PATH/$PATH_SEGMENT"
     if [ -e "$TOTAL_PATH$ACCUMULATED_PATH/.git" ]
-      set -gx --append __baspar_path_segments "$ACCUMULATED_PATH"
+      set -g --append __baspar_path_segments "$ACCUMULATED_PATH"
       set TOTAL_PATH "$TOTAL_PATH$ACCUMULATED_PATH"
       set ACCUMULATED_PATH ''
     end
@@ -451,15 +445,9 @@ function fish_prompt
   end
 
   # Virtual env
-  if set -q VIRTUAL_ENV
+  if [ $VIRTUAL_ENV ]
     set VENV_NAME (basename $VIRTUAL_ENV)
     block "#4B8252" "#3e3e3e" "$VENV_NAME" -i -o
-  end
-
-  set NEED_GIT_STATUS_UPDATE ""
-  if [ $__baspar_fish_promp_count -ne $__baspar_fish_last_promp_count ]
-    set -g __baspar_fish_last_promp_count $__baspar_fish_promp_count
-    set NEED_GIT_STATUS_UPDATE "true"
   end
 
   # Initialize path segment
@@ -479,7 +467,7 @@ function fish_prompt
     # Git block
     set GIT_WORKTREE "$TOTAL_PATH"
     set GIT_DIR (__baspar_get_git_dir "$GIT_WORKTREE")
-    __baspar_git_block_info "$GIT_DIR" "$GIT_WORKTREE" "$NEED_GIT_STATUS_UPDATE" | read -d '|' GIT_BG_COLOR GIT_BRANCH GIT_OPERATION GIT_ICONS
+    __baspar_git_block_info "$GIT_DIR" "$GIT_WORKTREE" | read -d '|' GIT_BG_COLOR GIT_BRANCH GIT_OPERATION GIT_ICONS
 
     set GIT_FG_COLOR "#3e3e3e"
     set SAFE_GIT_DIR (string escape --style=var "$GIT_DIR")
@@ -499,12 +487,14 @@ function fish_prompt
   fish_custom_mode_prompt
   _block "normal" "normal" ""
   echo " "
+
+  set -e __baspar_need_git_update
 end
 
 function fish_right_prompt
   set -g __baspar_old_bg "black"
 
-  if set -q AWS_PROFILE && ! set -q __baspar_hide_aws
+  if [ $AWS_PROFILE ] && ! [ $__baspar_hide_aws ]
     set AWS_PROFILES (cat ~/.aws/credentials | sed '/^\[.*\]$/!d; s/\[\(.*\)\]/\1/')
     set count (count $AWS_PROFILES)
     block "#AF875F" "#000000" " $AWS_PROFILE" -o -i
