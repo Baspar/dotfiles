@@ -6,7 +6,6 @@
 
 set -g FISH_SEPARATOR "$LEFT_SEPARATOR"
 set -g FISH_SUB_SEPARATOR "$LEFT_SUB_SEPARATOR"
-set -g ELLIPSIS "·"
 set -g ELLIPSIS_AFTER "3"
 
 # ========
@@ -21,6 +20,7 @@ bind -M insert \c] '__baspar_cycle_indicator'
 # Internal variables
 # ==================
 
+set -g __baspar_ellipsis_marker "·"
 set -g __baspar_old_bg ""
 set -g __baspar_fish_promp_count 0
 set -g __baspar_fish_last_promp_count 0
@@ -65,16 +65,18 @@ function _block -a BG FG TEXT
   end
 
   if [ ! -z $TEXT ]
-    set -g SKIP_ELLIPSIS 0
     set_color $FG -b $BG
-    for TEXT_BLOCK in (echo "$TEXT" | tr "$ELLIPSIS" '\n')
-      if [ $SKIP_ELLIPSIS  -ne 0 ]
-        set_color '#666666' -b $BG
-        echo -n "$ELLIPSIS"
-        set_color $FG -b $BG
+    set TEXT_BLOCKS (string split "$__baspar_ellipsis_marker" "$TEXT")
+    for i in (seq (count $TEXT_BLOCKS))
+      set TEXT_BLOCK $TEXT_BLOCKS[$i]
+      if [ "$TEXT_BLOCK" ]
+        if [ (math "$i % 2") -eq 0 ]
+          set_color '#888888' -b $BG
+        else
+          set_color $FG -b $BG
+        end
+        echo -n "$TEXT_BLOCK"
       end
-      echo -n "$TEXT_BLOCK"
-      set -g SKIP_ELLIPSIS 1
     end
   end
   set -g __baspar_old_bg $BG
@@ -184,7 +186,7 @@ function __baspar_abbr_path -a PATH_SEGMENT
   if set -q __baspar_no_abbr
     echo -n "$PATH_SEGMENT" | sed "s#^$HOME#~#"
   else
-    echo -n "$PATH_SEGMENT" | sed "s#^$HOME#~#; s#\([^/]\{$ELLIPSIS_AFTER\}\)[^/]\{1,\}/#\1$ELLIPSIS/#g"
+    echo -n "$PATH_SEGMENT" | sed "s#^$HOME#~#; s#\([^/]\{$ELLIPSIS_AFTER\}\)[^/]\{1,\}/#$__baspar_ellipsis_marker\1$__baspar_ellipsis_marker/#g"
   end
 end
 
