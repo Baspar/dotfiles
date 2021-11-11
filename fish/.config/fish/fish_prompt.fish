@@ -103,9 +103,9 @@ function __baspar_darker_of -a COLOR
   end
 end
 
-# =============
-# AWS indicator
-# =============
+# ================
+# Indicators (AWS)
+# ================
 
 function __baspar_cycle_indicator
   if [ $AWS_PROFILE ] && ! [ $__baspar_hide_aws ]
@@ -175,18 +175,46 @@ end
 # Main prompt logic
 # =================
 
-function __baspar_abbr_path -a PATH_SEGMENT
+function __baspar_abbr_path -a root path_segment
   # Function __baspar_abbr_path
   #
-  # @param PATH_SEGMENT a part of the PATH
+  # @param path_segment a part of the PATH
   #
-  # @returns: An abbreviated version of the PATH_SEGMENT (one letter, but keep prefix special characters)
+  # @returns: An abbreviated version of the path_segment (one letter, but keep prefix special characters)
   #           with $HOME replaced by ~
   #
+  set path_segment (echo "$path_segment" | sed "s#^$HOME#~#")
+
   if set -q __baspar_no_abbr
-    echo -n "$PATH_SEGMENT" | sed "s#^$HOME#~#"
+    echo -n "$path_segment"
   else
-    echo -n "$PATH_SEGMENT" | sed "s#^$HOME#~#; s#\([^/]\{$ELLIPSIS_AFTER\}\)[^/]\{1,\}/#$__baspar_ellipsis_marker\1$__baspar_ellipsis_marker/#g"
+    set segments (echo $path_segment | string trim -c '/' | string split '/')
+    set response ""
+    for i in (seq 1 (count $segments))
+      set segment $segments[$i]
+
+      if [ $segment = "~" ] && [ -z $root ]
+        set response "~"
+        set root "$HOME"
+      else if [ (string length "$segment") -le $ELLIPSIS_AFTER ] || [ $i -eq (count $segments) ]
+        set response "$response/$segment"
+        set root "$root/$segment"
+      else
+        set truncated ""
+        for truncate_at in (seq $ELLIPSIS_AFTER (string length "$segment"))
+          set truncated (string sub --length $truncate_at $segment)
+          [ (count $root/$truncated*/) -eq 1 ] && break
+        end
+
+        set root $root"/"$segment
+        if [ $truncated = $segment ]
+          set response "$response/$segment"
+        else
+          set response "$response/$__baspar_ellipsis_marker$truncated$__baspar_ellipsis_marker"
+        end
+      end
+    end
+    echo -n "$response"
   end
 end
 
@@ -398,8 +426,10 @@ function __baspar_update_path_segments_abbr --on-variable __baspar_no_abbr
   # Cache list of abbreviated path segments
   #
   set -e __baspar_path_segments_abbr
+  set ROOT ""
   for PATH_SEGMENT in $__baspar_path_segments
-    set -g --append __baspar_path_segments_abbr (__baspar_abbr_path "$PATH_SEGMENT")
+    set -g --append __baspar_path_segments_abbr (__baspar_abbr_path "$ROOT" "$PATH_SEGMENT")
+    set ROOT $ROOT$PATH_SEGMENT
   end
 
   commandline -f repaint
@@ -471,6 +501,7 @@ function fish_prompt
     set GIT_DIR (__baspar_get_git_dir "$GIT_WORKTREE")
     __baspar_git_block_info "$GIT_DIR" "$GIT_WORKTREE" | read -d '|' GIT_BG_COLOR GIT_BRANCH GIT_OPERATION GIT_ICONS
 
+    # Assign git Foreground color if job running or not
     set GIT_FG_COLOR "#3e3e3e"
     set SAFE_GIT_DIR (string escape --style=var "$GIT_DIR")
     if set -q __baspar_git_status_pid_$SAFE_GIT_DIR
