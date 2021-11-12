@@ -130,7 +130,7 @@ function __baspar_aws_indicator_fn
 end
 
 function __baspar_check_special_command_fn
-  set commands (commandline | sed -E 's/;|&&|\|\||\||; *(and|or)/\n/g' | string trim | cut -d' ' -f1)
+  set commands (commandline | sed -E 's/;|&&|\|\||\||; *(and|or)|env +([^ ]+=[^ ]+ +)*/\n/g' | string trim | cut -d' ' -f1)
 
   if contains "aws" $commands
       __baspar_aws_indicator_fn
