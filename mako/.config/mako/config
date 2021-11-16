@@ -4,6 +4,8 @@ border-color=#DFAF8F
 border-size=2
 padding=10
 progress-color=#DFAF8F
+font=Haskplex Nerd 15
+width=500
 
 # default-timeout=3000
 

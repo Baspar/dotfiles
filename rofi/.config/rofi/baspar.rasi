@@ -1,5 +1,5 @@
 configuration {
-	font: "Haskplex Nerd 15";
+	font: "Haskplex Nerd 20";
 }
 
 * {

@@ -23,7 +23,7 @@ set $desktop8 "8"
 set $desktop9 "9"
 set $desktop10 "10"
 
-font pango:Fira Code 10
+font pango:Haskplex Nerd 15
 
 # Home row direction keys, like vim
 set $left h
@@ -49,6 +49,8 @@ bindsym XF86Search exec ~/.bin/exec.sh
 
 # start tmux-rofi
 bindsym $mod+b exec ~/.bin/tmux-rofi
+
+bindsym XF86PowerOff exec ~/.bin/powermenu.sh
 
 # start nb
 bindsym $mod+n exec ~/.bin/nb
@@ -132,7 +134,7 @@ output * bg ~/.walls/4.jpg fill
 #
 # Example configuration:
 #
-output eDP-1 resolution 2560x1600 pos 0 0 scale 1.5
+output eDP-1 resolution 2560x1600 pos 0 0 scale 1
 output HDMI-A-2 resolution 1920x1080 pos 1706 0
 
 bindswitch --reload --locked lid:on output eDP-1 disable

@@ -1,14 +1,20 @@
 #!/bin/env bash
+if [ "$1" = "--clipboard" ]; then
+    TYPE="clipboard"
+else
+    TYPE="file"
+fi
+
 MODE=$(echo -e "Window\nScreen\nRegion" | rofi \
     -dmenu \
-    -p "Type of screenshot> " \
+    -p "Will be stored in $TYPE> " \
     -i \
     -matching fuzzy \
     -fullscreen \
     -theme "/home/baspar/.config/rofi/baspar.rasi"
 )
 
-case "$MODE" in 
+case "$MODE" in
     Window)
         GEOMETRY=$(
             swaymsg -t get_tree \

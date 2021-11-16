@@ -55,6 +55,6 @@ ICONS["80"]=""
 ICONS["90"]=""
 ICONS["100"]=""
 
-ICON=${ICONS[$(echo "$PERCENTAGE/10*10")]}
+ICON=${ICONS[$(echo "$PERCENTAGE/10*10" | bc)]}
 echo "#[bg=$BACKGROUND_COLOR,fg=$COLOR]$RIGHT_SEPARATOR#[bg=$COLOR,fg=$FONT] $PERCENTAGE%$ICON "
 

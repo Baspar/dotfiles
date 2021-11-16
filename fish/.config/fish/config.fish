@@ -8,6 +8,8 @@ set -Ux VIRTUAL_ENV_DISABLE_PROMPT 'true'
 set -Ux fish_greeting
 set -x GPG_TTY (tty)
 
+set -Ux QT_WAYLAND_FORCE_DPI 144
+
 set -g SHELL "fish"
 
 set -Ux GOPATH ~/.go
