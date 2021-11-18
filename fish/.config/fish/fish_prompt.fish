@@ -123,6 +123,7 @@ function __baspar_aws_indicator_fn
   if ! [ $AWS_PROFILE ]
     set -g __baspar_aws_id 1
     set -gx AWS_PROFILE $AWS_PROFILES[$__baspar_aws_id]
+    set -gx AWS_REGION (aws configure get region)
   end
 
   set -e __baspar_hide_aws
