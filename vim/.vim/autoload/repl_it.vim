@@ -24,7 +24,7 @@ function! repl_it#send_to(type, ...)
   endif
 
   let text = trim(@r)
-  let text = escape(text, '$"%#;')
+  let text = escape(text, '$"%#')
 
   for block in split(text, '\n')
     call repl_it#send(pane, block)
