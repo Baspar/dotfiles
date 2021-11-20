@@ -40,6 +40,7 @@ export LC_CTYPE=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 [ -e ~/.tokenrc ] && source ~/.tokenrc
 export MOZ_USE_XINPUT2 DEFAULT=1
+export QT_WAYLAND_FORCE_DPI=144
 
 fs() {
 	local -r fmt='#{session_id}:|#S|(#{session_attached} attached)'
