@@ -107,23 +107,52 @@ end
 # Indicators (AWS)
 # ================
 
-function __baspar_cycle_indicator
-  if [ $AWS_PROFILE ] && ! [ $__baspar_hide_aws ]
-    set AWS_PROFILES (cat ~/.aws/credentials | sed '/^\[.*\]$/!d; s/\[\(.*\)\]/\1/')
+function __baspar_update_aws_async -a AWS_PROFILE aws_tmp_file
+  set AWS_REGION (env AWS_PROFILE=$AWS_PROFILE aws configure get region 2>/dev/null)
+
+  echo "$AWS_REGION" > $aws_tmp_file
+end
+
+function __baspar_update_aws -a delta
+  set AWS_PROFILES ([ -f ~/.aws/credentials ] && cat ~/.aws/credentials | sed '/^\[.*\]$/!d; s/\[\(.*\)\]/\1/'); or return
+  if [ $delta -gt 0 ]
     set count (count $AWS_PROFILES)
     set -g __baspar_aws_id (math $__baspar_aws_id % $count + 1)
-    set -gx AWS_PROFILE $AWS_PROFILES[$__baspar_aws_id]
+  end
+  set -gx AWS_PROFILE $AWS_PROFILES[$__baspar_aws_id]
+
+  # Kill running async function
+  if set -q __baspar_aws_update_pid
+    kill -9 $__baspar_aws_update_pid
+  end
+
+  set aws_tmp_file (mktemp)
+  command fish --private --command "__baspar_update_aws_async '$AWS_PROFILE' '$aws_tmp_file'" 2>&1 > /dev/null &
+  set -g __baspar_aws_update_pid (jobs --last --pid)
+
+  functions -e __baspar_update_aws_async_callback
+  function __baspar_update_aws_async_callback -V aws_tmp_file --on-process-exit $__baspar_aws_update_pid
+    set async_response (cat $aws_tmp_file)
+
+    set -gx AWS_REGION $async_response[1]
+
+    set -e __baspar_aws_update_pid
+
+    commandline -f repaint
+  end
+end
+
+function __baspar_cycle_indicator
+  if [ $AWS_PROFILE ] && ! [ $__baspar_hide_aws ]
+    __baspar_update_aws 1
     commandline -f repaint
   end
 end
 
 function __baspar_aws_indicator_fn
-  set AWS_PROFILES ([ -f ~/.aws/credentials ] && cat ~/.aws/credentials | sed '/^\[.*\]$/!d; s/\[\(.*\)\]/\1/'); or return
-
   if ! [ $AWS_PROFILE ]
     set -g __baspar_aws_id 1
-    set -gx AWS_PROFILE $AWS_PROFILES[$__baspar_aws_id]
-    set -gx AWS_REGION (aws configure get region)
+    __baspar_update_aws 0
   end
 
   set -e __baspar_hide_aws
@@ -342,7 +371,7 @@ function __baspar_git_block_info -a GIT_DIR GIT_WORKTREE
       eval functions -e __baspar_on_finish_git_status_\$__baspar_git_status_pid_$SAFE_GIT_DIR
     end
 
-    command fish --private --command "__baspar_async_git_status '$GIT_DIR' '$GIT_WORKTREE'" &
+    command fish --private --command "__baspar_async_git_status '$GIT_DIR' '$GIT_WORKTREE'" 2>&1 > /dev/null &
     set -l pid (jobs --last --pid)
     set -g __baspar_git_status_pid_$SAFE_GIT_DIR $pid
 
@@ -531,7 +560,12 @@ function fish_right_prompt
   if [ $AWS_PROFILE ] && ! [ $__baspar_hide_aws ]
     set AWS_PROFILES (cat ~/.aws/credentials | sed '/^\[.*\]$/!d; s/\[\(.*\)\]/\1/')
     set count (count $AWS_PROFILES)
-    block "#AF875F" "#000000" " $AWS_PROFILE" -o -i
+
+    set AWS_FG_COLOR "#000000"
+    if set -q __baspar_aws_update_pid
+      set AWS_FG_COLOR "#666666"
+    end
+    block "#AF875F" $AWS_FG_COLOR " $AWS_PROFILE" -o -i
     block (__baspar_darker_of "#AF875F") "#3e3e3e" "$__baspar_aws_id/$count" -o
   end
 end
