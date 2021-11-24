@@ -58,8 +58,6 @@ call plug#begin('~/.vim/plugged')
 
   "{{{ Nvim-TreeSitter
   Plug 'nvim-treesitter/nvim-treesitter', Cond(has('nvim'), {'do': ':TSUpdate'})
-  Plug 'romgrk/nvim-treesitter-context', Cond(has('nvim'))
-  Plug 'lukas-reineke/indent-blankline.nvim', Cond(has('nvim'))
   "}}}
 
   " {{{ Polyglot

@@ -92,6 +92,8 @@ nnoremap <leader>vP :tabe $HOME/.vim/plugins.vim<CR>
 nnoremap <leader>vp :e $HOME/.vim/plugins.vim<CR>
 nnoremap <leader>vC :tabe $HOME/.vim/config.vim<CR>
 nnoremap <leader>vc :e $HOME/.vim/config.vim<CR>
+nnoremap <leader>vT :tabe $HOME/.vim/treesitter.lua<CR>
+nnoremap <leader>vt :e $HOME/.vim/treesitter.lua<CR>
 
 " Splits
 nnoremap <leader>\| :vs<CR>
