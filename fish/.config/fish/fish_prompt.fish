@@ -27,6 +27,7 @@ set -g __baspar_fish_last_promp_count 0
 set -g __baspar_need_git_update 'true'
 set -g __baspar_hide_aws 'true'
 set -e __baspar_no_abbr
+set -g __baspar_aws_tmp_file (mktemp)
 
 # =======
 # Helpers
@@ -107,10 +108,10 @@ end
 # Indicators (AWS)
 # ================
 
-function __baspar_update_aws_async -a AWS_PROFILE aws_tmp_file
+function __baspar_update_aws_async -a AWS_PROFILE __baspar_aws_tmp_file
   set AWS_REGION (env AWS_PROFILE=$AWS_PROFILE aws configure get region 2>/dev/null)
 
-  echo "$AWS_REGION" > $aws_tmp_file
+  echo "$AWS_REGION" > $__baspar_aws_tmp_file
 end
 
 function __baspar_update_aws -a delta
@@ -126,13 +127,12 @@ function __baspar_update_aws -a delta
     kill -9 $__baspar_aws_update_pid
   end
 
-  set aws_tmp_file (mktemp)
-  command fish --private --command "__baspar_update_aws_async '$AWS_PROFILE' '$aws_tmp_file'" 2>&1 > /dev/null &
+  command fish --private --command "__baspar_update_aws_async '$AWS_PROFILE' '$__baspar_aws_tmp_file'" 2>&1 > /dev/null &
   set -g __baspar_aws_update_pid (jobs --last --pid)
 
   functions -e __baspar_update_aws_async_callback
-  function __baspar_update_aws_async_callback -V aws_tmp_file --on-process-exit $__baspar_aws_update_pid
-    set async_response (cat $aws_tmp_file)
+  function __baspar_update_aws_async_callback -V __baspar_aws_tmp_file --on-process-exit $__baspar_aws_update_pid
+    set async_response (cat $__baspar_aws_tmp_file)
 
     set -gx AWS_REGION $async_response[1]
 
