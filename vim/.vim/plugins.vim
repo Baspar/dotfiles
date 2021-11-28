@@ -33,24 +33,23 @@ call plug#begin('~/.vim/plugged')
   let g:NERDTreeQuitOnOpen = 1
   " }}}
 
-  " {{{ VimCartographe
-  Plug 'gh:baspar/vim-cartographe'
-  " }}}
-
   " {{{ EasyMotion
   Plug 'easymotion/vim-easymotion'
   " }}}
 
   " {{{ LSP
   Plug 'neovim/nvim-lspconfig', Cond(has('nvim'))
+  " }}}
+
+  " {{{ Undotree
+  Plug 'mbbill/undotree'
+  " }}}
+
+  " {{{ Completion + Snippets
   Plug 'hrsh7th/cmp-path', Cond(has('nvim'))
   Plug 'hrsh7th/cmp-buffer', Cond(has('nvim'))
   Plug 'hrsh7th/cmp-nvim-lsp', Cond(has('nvim'))
   Plug 'hrsh7th/nvim-cmp', Cond(has('nvim'))
-  Plug 'folke/trouble.nvim', Cond(has('nvim'))
-  " }}}
-
-  " {{{ Snippets
   Plug 'hrsh7th/cmp-vsnip', Cond(has('nvim'))
   Plug 'hrsh7th/vim-vsnip'
   Plug 'rafamadriz/friendly-snippets'
@@ -74,10 +73,6 @@ call plug#begin('~/.vim/plugged')
   Plug 'tpope/vim-sexp-mappings-for-regular-people', {'for': ['clojure']}
   let g:clojure_align_multiline_strings = 1
   let g:sexp_insert_after_wrap = 'false'
-  " }}}
-
-  " {{{ Undotree
-  Plug 'mbbill/undotree'
   " }}}
 
   " {{{ FZF
