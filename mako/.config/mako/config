@@ -9,6 +9,7 @@ width=500
 
 # default-timeout=3000
 
+layer=overlay
 
 [app-name="Telegram Desktop"]
 group-by=summary
