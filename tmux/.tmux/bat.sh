@@ -1,6 +1,4 @@
 #!/bin/bash
-BACKGROUND_COLOR=$1
-
 if [ $(command -v acpi) ]
 then
     INFO=$(acpi)
@@ -56,5 +54,4 @@ ICONS["90"]=""
 ICONS["100"]=""
 
 ICON=${ICONS[$(echo "$PERCENTAGE/10*10" | bc)]}
-echo "#[bg=$BACKGROUND_COLOR,fg=$COLOR]$RIGHT_SEPARATOR#[bg=$COLOR,fg=$FONT] $PERCENTAGE%$ICON "
-
+echo "#[fg=$COLOR]$RIGHT_SEPARATOR#[bg=$COLOR,fg=$FONT] $ICON$PERCENTAGE% "
