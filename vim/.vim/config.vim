@@ -32,7 +32,7 @@ set listchars=tab:┋\ ,trail:✗,eol:↴
 
 " {{{ Color
 set synmaxcol=300
-colorscheme alduin
+colorscheme melange
 if exists('+termguicolors')
   let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
   let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
@@ -44,6 +44,7 @@ augroup CustomColorChange
     hi! NonText ctermbg=NONE guibg=NONE
     hi! SignColumn ctermbg=233 guibg=#121212
     hi! Comment cterm=italic gui=italic
+    hi! String cterm=italic gui=italic
     hi! Sneak ctermfg=237 ctermbg=3 guifg=#3A3A3A guibg=#AF875F
     hi! LspDiagnosticsDefaultError guifg=red ctermfg=red
     hi! LspErrorHighlight cterm=undercurl gui=undercurl ctermfg=131 guifg=#af5f5f

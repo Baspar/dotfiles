@@ -106,6 +106,7 @@ call plug#begin('~/.vim/plugged')
   " }}}
 
   " {{{ Colorschemes
+  Plug 'https://gitlab.com/rawleyIfowler/melange'
   Plug 'fcpg/vim-fahrenheit'
   Plug 'AlessandroYorba/alduin'
   Plug 'fcpg/vim-orbital'
