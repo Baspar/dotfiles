@@ -74,3 +74,8 @@ source ~/.config/fish/fish_prompt.fish
 alias npm "functions --erase npm yarn node; load_nvm; npm $argv"
 alias yarn "functions --erase npm yarn node; load_nvm; yarn $argv"
 alias node "functions --erase npm yarn node; load_nvm; node $argv"
+
+function update_tmux_current_pwd --on-variable PWD
+    [ -n "$TMUX" ] && tmux setenv TMUXPWD_(tmux display -p "#D" | tr -d %) "$PWD"
+end
+update_tmux_current_pwd
