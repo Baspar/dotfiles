@@ -149,15 +149,19 @@ function __baspar_cycle_indicator
   end
 end
 
-function __baspar_aws_indicator_fn
+function __baspar_aws_indicator_init
   if ! [ $AWS_PROFILE ]
     set -g __baspar_aws_id 1
     __baspar_update_aws 0
   end
+end
 
+function __baspar_aws_indicator_fn
+  __baspar_aws_indicator_init
   set -e __baspar_hide_aws
   commandline -f repaint
 end
+__baspar_aws_indicator_init
 
 function __baspar_check_special_command_fn
   set commands (commandline | sed -E 's/;|&&|\|\||\||; *(and|or)|env +([^ ]+=[^ ]+ +)*/\n/g' | string trim | cut -d' ' -f1)

@@ -78,4 +78,4 @@ alias node "functions --erase npm yarn node; load_nvm; node $argv"
 function update_tmux_current_pwd --on-variable PWD
     [ -n "$TMUX" ] && tmux setenv TMUXPWD_(tmux display -p "#D" | tr -d %) "$PWD"
 end
-update_tmux_current_pwd
+# update_tmux_current_pwd
