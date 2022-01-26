@@ -118,7 +118,7 @@ function __baspar_update_aws -a delta
   set AWS_PROFILES ([ -f ~/.aws/credentials ] && cat ~/.aws/credentials | sed '/^\[.*\]$/!d; s/\[\(.*\)\]/\1/'); or return
   if [ $delta -gt 0 ]
     set count (count $AWS_PROFILES)
-    set -g __baspar_aws_id (math $__baspar_aws_id % $count + 1)
+    set -gx __baspar_aws_id (math $__baspar_aws_id % $count + 1)
   end
   set -gx AWS_PROFILE $AWS_PROFILES[$__baspar_aws_id]
 
@@ -150,8 +150,8 @@ function __baspar_cycle_indicator
 end
 
 function __baspar_aws_indicator_init
-  if ! [ $AWS_PROFILE ]
-    set -g __baspar_aws_id 1
+  if ! set -q __baspar_aws_id
+    set -gx __baspar_aws_id 1
     __baspar_update_aws 0
   end
 end
