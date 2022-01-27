@@ -14,7 +14,7 @@ set -g ELLIPSIS_AFTER "3"
 
 bind -M insert \ce 'set -g __baspar_no_abbr ""; commandline -f repaint'
 bind -M insert ' ' 'commandline -i " "; commandline -f expand-abbr; __baspar_check_special_command_fn'
-bind -M insert \c] '__baspar_cycle_indicator'
+bind -M insert \c] '__baspar_indicator_cycle'
 
 # ==================
 # Internal variables
@@ -24,10 +24,9 @@ set -g __baspar_ellipsis_marker "·"
 set -g __baspar_old_bg ""
 set -g __baspar_fish_promp_count 0
 set -g __baspar_fish_last_promp_count 0
-set -g __baspar_need_git_update 'true'
-set -g __baspar_hide_aws 'true'
+set -g __baspar_need_git_update
 set -e __baspar_no_abbr
-set -g __baspar_aws_tmp_file (mktemp)
+set -g __baspar_indicator_commands
 
 # =======
 # Helpers
@@ -104,105 +103,48 @@ function __baspar_darker_of -a COLOR
   end
 end
 
-# ================
-# Indicators (AWS)
-# ================
-
-function __baspar_update_aws_async -a AWS_PROFILE __baspar_aws_tmp_file
-  set AWS_REGION (env AWS_PROFILE=$AWS_PROFILE aws configure get region 2>/dev/null)
-
-  echo "$AWS_REGION" > $__baspar_aws_tmp_file
-end
-
-function __baspar_update_aws -a delta
-  set AWS_PROFILES ([ -f ~/.aws/credentials ] && cat ~/.aws/credentials | sed '/^\[.*\]$/!d; s/\[\(.*\)\]/\1/'); or return
-  if [ $delta -gt 0 ]
-    set count (count $AWS_PROFILES)
-    set -gx __baspar_aws_id (math $__baspar_aws_id % $count + 1)
-  end
-  set -gx AWS_PROFILE $AWS_PROFILES[$__baspar_aws_id]
-
-  # Kill running async function
-  if set -q __baspar_aws_update_pid
-    kill -9 $__baspar_aws_update_pid
-  end
-
-  command fish --private --command "__baspar_update_aws_async '$AWS_PROFILE' '$__baspar_aws_tmp_file'" 2>&1 > /dev/null &
-  set -g __baspar_aws_update_pid (jobs --last --pid)
-
-  functions -e __baspar_update_aws_async_callback
-  function __baspar_update_aws_async_callback -V __baspar_aws_tmp_file --on-process-exit $__baspar_aws_update_pid
-    set async_response (cat $__baspar_aws_tmp_file)
-
-    set -gx AWS_REGION $async_response[1]
-
-    set -e __baspar_aws_update_pid
-
-    commandline -f repaint
-  end
-end
-
-function __baspar_cycle_indicator
-  if [ $AWS_PROFILE ] && ! [ $__baspar_hide_aws ]
-    __baspar_update_aws 1
-    commandline -f repaint
-  end
-end
-
-function __baspar_aws_indicator_init
-  if ! set -q __baspar_aws_id
-    set -gx __baspar_aws_id 1
-    __baspar_update_aws 0
-  end
-end
-
-function __baspar_aws_indicator_fn
-  __baspar_aws_indicator_init
-  set -e __baspar_hide_aws
-  commandline -f repaint
-end
-__baspar_aws_indicator_init
+# ==========
+# Indicators
+# ==========
 
 function __baspar_check_special_command_fn
   set commands (commandline | sed -E 's/;|&&|\|\||\||; *(and|or)|env +([^ ]+=[^ ]+ +)*/\n/g' | string trim | cut -d' ' -f1)
 
-  if contains "aws" $commands
-      __baspar_aws_indicator_fn
+  for command in $__baspar_indicator_commands
+    if contains $command $commands
+      eval __baspar_indicator_init_$command
+      set -g __baspar_indicator_show_$command
+    else
+      set -e __baspar_indicator_show_$command
+    end
+  end
+
+  commandline -f repaint
+end
+
+function __baspar_indicator_cycle
+  for command in $__baspar_indicator_commands
+    if set -q $__baspar_indicator_show_$command
+      eval __baspar_indicator_cycle_$command
+      break
+    end
   end
 end
 
-function fish_custom_mode_prompt
-  # Function fish_mode_prompt
-  #
-  # @returns Vi mode prompt
-  #
-  set LETTER ""
-
-  # In SSH
-  if [ $SSH_CLIENT ]
-    set LETTER "$LETTER "
-  else
-    set LETTER "$LETTER "
+function __baspar_indicator_display
+  for command in $__baspar_indicator_commands
+    if set -q __baspar_indicator_show_$command
+      eval __baspar_indicator_display_$command
+      break
+    end
   end
+end
 
-  # Root
-  if [ (id -u) = "0" ]
-    set LETTER "$LETTER "
-  end
-
-  # Vim mode
-  switch $fish_bind_mode
-    case "insert"
-      set BG_COLOR "#AF875F"
-    case "visual"
-      set BG_COLOR "#AF5F5E"
-    case "autocomplete"
-      set BG_COLOR "#AF5F5E"
-    case '*'
-      set BG_COLOR "#FFFFFF"
-  end
-
-  _block "$BG_COLOR" "#000000" " $LETTER "
+for command_file in ~/.config/fish/prompt_indicators/*.fish
+  set command (basename $command_file .fish)
+  source $command_file
+  set __baspar_indicator_commands $__baspar_indicator_commands $command 
+  eval __baspar_indicator_init_$command
 end
 
 # =================
@@ -430,9 +372,13 @@ function __baspar_set_fish_promp_count --on-event fish_prompt --on-event fish_ca
   #
   # Reset behaviour and variable
   #
-  set -g __baspar_need_git_update 'true'
-  set -g __baspar_hide_aws 'true'
+  set -g __baspar_need_git_update
   set -e __baspar_no_abbr
+  for command in $__baspar_indicator_commands
+    set -e __baspar_indicator_show_$command
+  end
+
+  commandline -f repaint
 end
 
 function __baspar_get_git_dir -a GIT_WORKTREE
@@ -496,6 +442,40 @@ end
 # Prompts
 # =======
 
+function fish_custom_mode_prompt
+  # Function fish_mode_prompt
+  #
+  # @returns Vi mode prompt
+  #
+  set LETTER ""
+
+  # In SSH
+  if [ $SSH_CLIENT ]
+    set LETTER "$LETTER "
+  else
+    set LETTER "$LETTER "
+  end
+
+  # Root
+  if [ (id -u) = "0" ]
+    set LETTER "$LETTER "
+  end
+
+  # Vim mode
+  switch $fish_bind_mode
+    case "insert"
+      set BG_COLOR "#AF875F"
+    case "visual"
+      set BG_COLOR "#AF5F5E"
+    case "autocomplete"
+      set BG_COLOR "#AF5F5E"
+    case '*'
+      set BG_COLOR "#FFFFFF"
+  end
+
+  _block "$BG_COLOR" "#000000" " $LETTER "
+end
+
 function fish_prompt
   # Function fish_prompt
   #
@@ -547,7 +527,7 @@ function fish_prompt
     [ -n "$GIT_ICONS" ] && block (__baspar_darker_of $GIT_BG_COLOR) "#3e3e3e" "$GIT_ICONS" -o -i
   end
 
-  _block "normal" "normal" ""
+  _block "normal" "nomal" ""
   echo ""
 
   set -g __baspar_old_bg ""
@@ -561,17 +541,7 @@ end
 function fish_right_prompt
   set -g __baspar_old_bg "black"
 
-  if [ $AWS_PROFILE ] && ! [ $__baspar_hide_aws ]
-    set AWS_PROFILES (cat ~/.aws/credentials | sed '/^\[.*\]$/!d; s/\[\(.*\)\]/\1/')
-    set count (count $AWS_PROFILES)
-
-    set AWS_FG_COLOR "#000000"
-    if set -q __baspar_aws_update_pid
-      set AWS_FG_COLOR "#666666"
-    end
-    block "#AF875F" $AWS_FG_COLOR " $AWS_PROFILE" -o -i
-    block (__baspar_darker_of "#AF875F") "#3e3e3e" "$__baspar_aws_id/$count" -o
-  end
+  __baspar_indicator_display
 end
 
 function fish_mode_prompt
