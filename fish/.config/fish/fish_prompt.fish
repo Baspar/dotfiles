@@ -12,7 +12,7 @@ set -g ELLIPSIS_AFTER "3"
 # Mappings
 # ========
 
-bind -M insert \ce 'set -g __baspar_no_abbr ""; commandline -f repaint'
+bind -M insert \ce 'set -g __baspar_no_abbr; commandline -f repaint'
 bind -M insert ' ' 'commandline -i " "; commandline -f expand-abbr; __baspar_check_special_command_fn'
 bind -M insert \c] '__baspar_indicator_cycle'
 
@@ -71,11 +71,12 @@ function _block -a BG FG TEXT
       set TEXT_BLOCK $TEXT_BLOCKS[$i]
       if [ "$TEXT_BLOCK" ]
         if [ (math "$i % 2") -eq 0 ]
-          set_color '#888888' -b $BG
+          set_color '#888888' -b $BG -i
         else
           set_color $FG -b $BG
         end
         echo -n "$TEXT_BLOCK"
+        set_color normal
       end
     end
   end
