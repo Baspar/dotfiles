@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # Based on https://github.com/wfxr/tmux-fzf-url
 open_url() {
-    if hash xdg-open &>/dev/null; then
+    if command -v xdg-open &>/dev/null; then
         nohup xdg-open "$@"
-    elif hash open &>/dev/null; then
+    elif command -v open &>/dev/null; then
         nohup open "$@"
-    elif [[ -n $BROWSER ]]; then
-        nohup "$BROWSER" "$@"
+    else
+        echo "$@" | tmux loadb -w -
     fi
 }
 
