@@ -22,10 +22,10 @@ function __baspar_indicator_update_aws -a delta
 
   # Kill running async function
   if set -q __baspar_aws_update_pid
-    kill -9 $__baspar_aws_update_pid
+    kill -9 $__baspar_aws_update_pid 2>/dev/null >/dev/null
   end
 
-  command fish --private --command "__baspar_indicator_update_async_aws '$AWS_PROFILE' '$__baspar_aws_tmp_file'" 2>&1 > /dev/null &
+  command fish --private --command "__baspar_indicator_update_async_aws '$AWS_PROFILE' '$__baspar_aws_tmp_file'" 2>/dev/null > /dev/null &
   set -g __baspar_aws_update_pid (jobs --last --pid)
 
   functions -e __baspar_update_aws_async_callback
