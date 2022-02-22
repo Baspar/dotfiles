@@ -125,7 +125,7 @@ end
 
 function __baspar_indicator_cycle
   for command in $__baspar_indicator_commands
-    if set -q $__baspar_indicator_show_$command
+    if set -q __baspar_indicator_show_$command
       eval __baspar_indicator_cycle_$command
       break
     end

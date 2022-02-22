@@ -7,9 +7,11 @@ set -g __baspar_aws_tmp_file (mktemp)
 function __baspar_indicator_update_async_aws -a AWS_PROFILE __baspar_aws_tmp_file
   set AWS_REGION (env AWS_PROFILE=$AWS_PROFILE aws configure get region 2> /dev/null)
   set AWS_ACCOUNT (env AWS_PROFILE=$AWS_PROFILE aws sts get-caller-identity --query Account --output text 2> /dev/null)
+  set AWS_DEV (env AWS_PROFILE=$AWS_PROFILE aws configure get dev 2> /dev/null)
 
   echo "$AWS_REGION" > $__baspar_aws_tmp_file
   echo "$AWS_ACCOUNT" >> $__baspar_aws_tmp_file
+  echo "$AWS_DEV" >> $__baspar_aws_tmp_file
 end
 
 function __baspar_indicator_update_aws -a delta
@@ -34,6 +36,13 @@ function __baspar_indicator_update_aws -a delta
 
     set -gx AWS_REGION $async_response[1]
     set -gx AWS_ACCOUNT_ID $async_response[2]
+    set AWS_DEV $async_response[3]
+
+    if [ -n "$AWS_DEV" ]
+      set -gx DEV_AWS_ACCOUNT $AWS_ACCOUNT_ID
+    else
+      set -e DEV_AWS_ACCOUNT
+    end
 
     set -e __baspar_aws_update_pid
 
