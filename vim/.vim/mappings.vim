@@ -149,6 +149,7 @@ nnoremap <silent> ]a :lua vim.lsp.diagnostic.goto_next({popup_opts = {max_width 
 nnoremap <silent> [a :lua vim.lsp.diagnostic.goto_prev({popup_opts = {max_width = 150, focusable = false, border = "rounded"}})<CR>
 nnoremap <silent> <localleader>r :lua vim.lsp.buf.references()<CR>
 nnoremap <silent> <localleader>d :lua vim.lsp.buf.definition()<CR>
+nnoremap <silent> <localleader>D m0:tabe %<CR>`0:lua vim.lsp.buf.definition()<CR>
 nnoremap <silent> <localleader>f :lua vim.lsp.buf.formatting()<CR>
 vnoremap <silent> <localleader>f :lua vim.lsp.buf.range_formatting()<CR>
 nnoremap <silent> <localleader>R :lua vim.lsp.buf.rename()<CR>
