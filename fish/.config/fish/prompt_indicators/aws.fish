@@ -2,8 +2,6 @@
 # Indicators (AWS)
 # ================
 
-# set -g __baspar_aws_tmp_file (mktemp)
-
 function __baspar_indicator_list_aws
   [ -f ~/.aws/credentials ] && cat ~/.aws/credentials | sed '/^\[.*\]$/!d; s/\[\(.*\)\]/\1/'
 end
@@ -36,4 +34,8 @@ function __baspar_indicator_async_cb_aws -a response_file
   end
 end
 
-setup_indicator aws __baspar_indicator_pre_async_aws __baspar_indicator_async_aws __baspar_indicator_async_cb_aws __baspar_indicator_list_aws
+setup_indicator aws " " \
+  __baspar_indicator_pre_async_aws \
+  __baspar_indicator_async_aws \
+  __baspar_indicator_async_cb_aws \
+  __baspar_indicator_list_aws

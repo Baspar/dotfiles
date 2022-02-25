@@ -2,7 +2,7 @@ set -g DICT_TMP_FILE "__baspar_tmp_file"
 set -g DICT_PID "__baspar_pid"
 set -g DICT_ID "__baspar_id"
 
-function setup_indicator -a indicator_name pre_async_fn async_fn async_cb_fn list_fn
+function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_fn list_fn
   _dict_set $DICT_TMP_FILE $indicator_name (mktemp)
 
   function __baspar_indicator_update_$indicator_name -a delta -V indicator_name -V list_fn -V async_fn -V async_cb_fn -V pre_async_fn
@@ -44,7 +44,7 @@ function setup_indicator -a indicator_name pre_async_fn async_fn async_cb_fn lis
     end
   end
 
-  function __baspar_indicator_display_$indicator_name -V indicator_name -V list_fn
+  function __baspar_indicator_display_$indicator_name -V indicator_name -V list_fn -V logo
     if _dict_has $DICT_ID $indicator_name
       set id (_dict_get $DICT_ID $indicator_name)
       set list (eval $list_fn)
@@ -56,7 +56,7 @@ function setup_indicator -a indicator_name pre_async_fn async_fn async_cb_fn lis
         set fg_color "#666666"
       end
 
-      block "#AF875F" $fg_color " $item" -o -i
+      block "#AF875F" $fg_color "$logo$item" -o -i
       block (__baspar_darker_of "#AF875F") "#3e3e3e" "$id/$count" -o
     end
   end
