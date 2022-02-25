@@ -113,7 +113,6 @@ function __baspar_check_special_command_fn
 
   for command in $__baspar_indicator_commands
     if contains $command $commands
-      eval __baspar_indicator_init_$command
       set -g __baspar_indicator_show_$command
     else
       set -e __baspar_indicator_show_$command
@@ -141,12 +140,22 @@ function __baspar_indicator_display
   end
 end
 
-for command_file in ~/.config/fish/prompt_indicators/*.fish
-  set command (basename $command_file .fish)
-  source $command_file
-  set __baspar_indicator_commands $__baspar_indicator_commands $command 
-  eval __baspar_indicator_init_$command
+function __baspar_indicator_init
+  if set -q __baspar_indicator_init_done
+    return
+  end
+
+  for command_file in ~/.config/fish/prompt_indicators/*.fish
+    set command (basename $command_file .fish)
+    source $command_file
+    set __baspar_indicator_commands $__baspar_indicator_commands $command
+    eval __baspar_indicator_init_$command
+  end
+
+  set -g __baspar_indicator_init_done
 end
+# Need to be pre-loaded for the async command
+status is-interactive; or __baspar_indicator_init
 
 # =================
 # Main prompt logic
@@ -482,6 +491,8 @@ function fish_prompt
   #
   # @returns Main prompt
   #
+  __baspar_indicator_init
+
   set -l _display_status $status
 
   set -g __baspar_old_bg ""
