@@ -1,6 +1,8 @@
 local lspconfig = require'lspconfig'
 local cmp = require'cmp'
 local cmp_lsp = require'cmp_nvim_lsp'
+local null_ls = require'null-ls'
+local fidget = require'fidget'
 
 local configs = {}
 
@@ -36,24 +38,6 @@ configs['tsserver'] = {
     end
     client.resolved_capabilities.document_formatting = false
   end,
-  filetypes = tsFamily,
-}
-configs['efm'] = {
-  on_attach = function(client)
-    client.resolved_capabilities.document_formatting = true
-    client.resolved_capabilities.goto_definition = false
-  end,
-  root_dir = lspconfig.util.root_pattern("yarn.lock", "lerna.json", ".git"),
-  settings = {
-    languages = {
-      javascript = {eslint, prettier},
-      javascriptreact = {eslint, prettier},
-      ["javascript.jsx"] = {eslint, prettier},
-      typescript = {eslint, prettier},
-      ["typescript.tsx"] = {eslint, prettier},
-      typescriptreact = {eslint, prettier}
-    }
-  },
   filetypes = tsFamily,
 }
 -- }}}
@@ -104,6 +88,15 @@ configs['groovyls'] = {
   cmd = { "java", "-jar", "/Users/bastien/.vim/lsp-servers/groovy-language-server-all.jar" },
 }
 -- }}}
+
+-- {{{ Null-LS
+null_ls.setup({
+    sources = {
+        null_ls.builtins.diagnostics.eslint_d,
+        null_ls.builtins.formatting.prettier
+    },
+})
+-- }}}
 -- }}}
 
 -- {{{ nvim-cmp
@@ -128,6 +121,17 @@ for name, config in pairs(configs) do
     capabilities = capabilities
   }
 end
+-- }}}
+
+-- {{{ Fidget
+fidget.setup{
+  text = {
+    spinner = "dots"
+  },
+  align = {
+    bottom = false
+  }
+}
 -- }}}
 
 -- {{{ Custom handler

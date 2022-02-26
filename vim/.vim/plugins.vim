@@ -1,4 +1,4 @@
-function! Cond(cond, ...)
+function! If(cond, ...)
   let opts = get(a:000, 0, {})
   return a:cond ? opts : extend(opts, { 'on': [], 'for': [] })
 endfunction
@@ -38,7 +38,10 @@ call plug#begin('~/.vim/plugged')
   " }}}
 
   " {{{ LSP
-  Plug 'neovim/nvim-lspconfig', Cond(has('nvim'))
+  Plug 'nvim-lua/plenary.nvim', If(has('nvim'))
+  Plug 'neovim/nvim-lspconfig', If(has('nvim'))
+  Plug 'j-hui/fidget.nvim', If(has('nvim'))
+  Plug 'jose-elias-alvarez/null-ls.nvim', If(has('nvim'))
   " }}}
 
   " {{{ Undotree
@@ -46,17 +49,17 @@ call plug#begin('~/.vim/plugged')
   " }}}
 
   " {{{ Completion + Snippets
-  Plug 'hrsh7th/cmp-path', Cond(has('nvim'))
-  Plug 'hrsh7th/cmp-buffer', Cond(has('nvim'))
-  Plug 'hrsh7th/cmp-nvim-lsp', Cond(has('nvim'))
-  Plug 'hrsh7th/nvim-cmp', Cond(has('nvim'))
-  Plug 'hrsh7th/cmp-vsnip', Cond(has('nvim'))
+  Plug 'hrsh7th/cmp-path', If(has('nvim'))
+  Plug 'hrsh7th/cmp-buffer', If(has('nvim'))
+  Plug 'hrsh7th/cmp-nvim-lsp', If(has('nvim'))
+  Plug 'hrsh7th/nvim-cmp', If(has('nvim'))
+  Plug 'hrsh7th/cmp-vsnip', If(has('nvim'))
   Plug 'hrsh7th/vim-vsnip'
   Plug 'rafamadriz/friendly-snippets'
   " }}}
 
   "{{{ Nvim-TreeSitter
-  Plug 'nvim-treesitter/nvim-treesitter', Cond(has('nvim'), {'do': ':TSUpdate'})
+  Plug 'nvim-treesitter/nvim-treesitter', If(has('nvim'), {'do': ':TSUpdate'})
   "}}}
 
   " {{{ Polyglot
