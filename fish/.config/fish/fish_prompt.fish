@@ -13,8 +13,6 @@ set -g ELLIPSIS_AFTER "3"
 # ========
 
 bind -M insert \ce 'set -g __baspar_no_abbr; commandline -f repaint'
-bind -M insert ' ' 'commandline -i " "; commandline -f expand-abbr; __baspar_check_special_command_fn'
-bind -M insert \c] '__baspar_indicator_cycle'
 
 # ==================
 # Internal variables
@@ -26,7 +24,6 @@ set -g __baspar_fish_promp_count 0
 set -g __baspar_fish_last_promp_count 0
 set -g __baspar_need_git_update
 set -e __baspar_no_abbr
-set -g __baspar_indicator_commands
 
 # =======
 # Helpers
@@ -103,59 +100,6 @@ function __baspar_darker_of -a COLOR
     echo -n ""
   end
 end
-
-# ==========
-# Indicators
-# ==========
-
-function __baspar_check_special_command_fn
-  set commands (commandline | sed -E 's/;|&&|\|\||\||; *(and|or)|env +([^ ]+=[^ ]+ +)*/\n/g' | string trim | cut -d' ' -f1)
-
-  for command in $__baspar_indicator_commands
-    if contains $command $commands
-      set -g __baspar_indicator_show_$command
-    else
-      set -e __baspar_indicator_show_$command
-    end
-  end
-
-  commandline -f repaint
-end
-
-function __baspar_indicator_cycle
-  for command in $__baspar_indicator_commands
-    if set -q __baspar_indicator_show_$command
-      eval __baspar_indicator_cycle_$command
-      break
-    end
-  end
-end
-
-function __baspar_indicator_display
-  for command in $__baspar_indicator_commands
-    if set -q __baspar_indicator_show_$command
-      eval __baspar_indicator_display_$command
-      break
-    end
-  end
-end
-
-function __baspar_indicator_init
-  if set -q __baspar_indicator_init_done
-    return
-  end
-
-  for command_file in ~/.config/fish/prompt_indicators/*.fish
-    set command (basename $command_file .fish)
-    source $command_file
-    set __baspar_indicator_commands $__baspar_indicator_commands $command
-    eval __baspar_indicator_init_$command
-  end
-
-  set -g __baspar_indicator_init_done
-end
-# Need to be pre-loaded for the async command
-status is-interactive; or __baspar_indicator_init
 
 # =================
 # Main prompt logic
