@@ -14,7 +14,7 @@ function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_f
   function __baspar_indicator_update_$indicator_name -a item -V indicator_name -V list_fn -V async_fn -V async_cb_fn -V pre_async_fn
     set item (echo $item | string unescape --style=var)
     eval $pre_async_fn "$item"
-    commandline -f repaint
+    status is-interactive && commandline -f repaint
 
     # Kill running async function
     if _dict_has $DICT_PID $indicator_name
@@ -30,7 +30,7 @@ function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_f
     function __baspar_update_async_callback_$indicator_name -V indicator_name -V pid -V async_cb_fn --on-process-exit $pid
       eval $async_cb_fn (_dict_get $DICT_TMP_FILE $indicator_name)
       _dict_rem $DICT_PID $indicator_name
-      commandline -f repaint
+      status is-interactive && commandline -f repaint
     end
   end
 
