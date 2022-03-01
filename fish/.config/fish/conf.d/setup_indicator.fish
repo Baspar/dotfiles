@@ -1,4 +1,4 @@
-bind -M insert ' ' 'commandline -i " "; commandline -f expand-abbr; __baspar_check_special_command_fn'
+bind -M insert ' ' 'commandline -i " "; commandline -f expand-abbr; __baspar_indicator_check'
 bind -M insert \c] '__baspar_indicator_cycle'
 bind -M insert \cp '__baspar_indicator_select'
 
@@ -7,6 +7,7 @@ set -g __baspar_indicator_commands
 set -g DICT_TMP_FILE "__baspar_tmp_file"
 set -g DICT_PID "__baspar_pid"
 set -g DICT_ID "__baspar_id"
+set -g DICT_ERR "__baspar_err"
 
 function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_fn list_fn
   _dict_set $DICT_TMP_FILE $indicator_name (mktemp)
@@ -25,11 +26,18 @@ function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_f
     command fish --private --command "$async_fn '$item' '$file'" &
 
     set pid (jobs --last --pid)
-    _dict_set $DICT_PID $indicator_name
+    _dict_set $DICT_PID $indicator_name $pid
 
+    functions -e __baspar_update_async_callback_$indicator_name
     function __baspar_update_async_callback_$indicator_name -V indicator_name -V pid -V async_cb_fn --on-process-exit $pid
-      eval $async_cb_fn (_dict_get $DICT_TMP_FILE $indicator_name)
       _dict_rem $DICT_PID $indicator_name
+      set error_code $argv[3]
+      if [ $error_code -eq 0 ]
+        _dict_rem $DICT_ERR $indicator_name
+        eval $async_cb_fn (_dict_get $DICT_TMP_FILE $indicator_name)
+      else
+        _dict_set $DICT_ERR $indicator_name true
+      end
       status is-interactive && commandline -f repaint
     end
   end
@@ -62,8 +70,15 @@ function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_f
     eval __baspar_indicator_update_$indicator_name (echo $item | string escape --style=var)
   end
 
-  function __baspar_indicator_logo_$indicator_name -V logo
+  function __baspar_indicator_logo_$indicator_name -V logo -V indicator_name
+    if _dict_has $DICT_PID $indicator_name
+      set_color "white"
       echo -n "$logo"
+    else if _dict_has $DICT_ERR $indicator_name
+      set_color "#AF5F5E"
+      echo -n "$logo"
+    end
+    set_color normal
   end
 
   function __baspar_indicator_cycle_$indicator_name -V indicator_name
@@ -85,8 +100,13 @@ function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_f
         set fg_color "#666666"
       end
 
-      block "#AF875F" $fg_color "$logo$item" -o -i
-      block (__baspar_darker_of "#AF875F") "#3e3e3e" "$id/$count" -o
+      set bg_color "#AF875F"
+      if _dict_has $DICT_ERR $indicator_name
+        set bg_color "#AF5F5E"
+      end
+
+      block $bg_color $fg_color "$logo$item" -o -i
+      block (__baspar_darker_of $bg_color) "#3e3e3e" "$id/$count" -o
     end
   end
 
@@ -98,7 +118,7 @@ function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_f
   end
 end
 
-function __baspar_check_special_command_fn
+function __baspar_indicator_check
   set commands (commandline | sed -E 's/;|&&|\|\||\||; *(and|or)|env +([^ ]+=[^ ]+ +)*/\n/g' | string trim | cut -d' ' -f1)
 
   for command in $__baspar_indicator_commands
@@ -131,22 +151,15 @@ function __baspar_indicator_cycle
 end
 
 function __baspar_indicator_display
-  set loading_indicators
   for command in $__baspar_indicator_commands
     if set -q __baspar_indicator_show_$command
       eval __baspar_indicator_display_$command
-      commandline -i $command
       return
-    end
-
-    if _dict_has $DICT_PID $command
-      set loading_indicators $loading_indicators (eval __baspar_indicator_logo_$command)
     end
   end
 
-  if [ (count $loading_indicators) -gt 0 ]
-    set_color white
-    printf "%s" $loading_indicators
+  for command in $__baspar_indicator_commands
+    eval __baspar_indicator_logo_$command
   end
 end
 

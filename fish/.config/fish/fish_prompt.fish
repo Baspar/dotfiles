@@ -435,9 +435,9 @@ function fish_prompt
   #
   # @returns Main prompt
   #
-  __baspar_indicator_init
-
   set -l _display_status $status
+
+  __baspar_indicator_init
 
   set -g __baspar_old_bg ""
 
