@@ -145,8 +145,8 @@ function __baspar_indicator_display
   end
 
   if [ (count $loading_indicators) -gt 0 ]
-    set logos (printf "%s" $loading_indicators)
-    block "#888888" "#666666" "$logos" -i -o
+    set_color white
+    printf "%s" $loading_indicators
   end
 end
 
