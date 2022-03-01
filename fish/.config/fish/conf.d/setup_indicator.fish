@@ -62,6 +62,10 @@ function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_f
     eval __baspar_indicator_update_$indicator_name (echo $item | string escape --style=var)
   end
 
+  function __baspar_indicator_logo_$indicator_name -V logo
+      echo -n "$logo"
+  end
+
   function __baspar_indicator_cycle_$indicator_name -V indicator_name
     if _dict_has $DICT_ID $indicator_name
       __baspar_indicator_increment_$indicator_name 1
@@ -127,11 +131,22 @@ function __baspar_indicator_cycle
 end
 
 function __baspar_indicator_display
+  set loading_indicators
   for command in $__baspar_indicator_commands
     if set -q __baspar_indicator_show_$command
       eval __baspar_indicator_display_$command
-      break
+      commandline -i $command
+      return
     end
+
+    if _dict_has $DICT_PID $command
+      set loading_indicators $loading_indicators (eval __baspar_indicator_logo_$command)
+    end
+  end
+
+  if [ (count $loading_indicators) -gt 0 ]
+    set logos (printf "%s" $loading_indicators)
+    block "#888888" "#666666" "$logos" -i -o
   end
 end
 
