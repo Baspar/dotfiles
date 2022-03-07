@@ -13,32 +13,38 @@ function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_f
   _dict_set $DICT_TMP_FILE $indicator_name (mktemp)
 
   function __baspar_indicator_update_$indicator_name -a item -V indicator_name -V list_fn -V async_fn -V async_cb_fn -V pre_async_fn
+
     set item (echo $item | string unescape --style=var)
     eval $pre_async_fn "$item"
-    status is-interactive && commandline -f repaint
+    commandline -f repaint
 
     # Kill running async function
     if _dict_has $DICT_PID $indicator_name
+      functions -e __baspar_update_async_callback_$indicator_name
       kill -9 (_dict_get $DICT_PID $indicator_name) &> /dev/null
     end
 
     set file (_dict_get $DICT_TMP_FILE $indicator_name)
-    command fish --private --command "$async_fn '$item' '$file'" &
+    command fish --private --command "$async_fn '$item' '$file'" 2> $file.err &
 
     set pid (jobs --last --pid)
     _dict_set $DICT_PID $indicator_name $pid
 
-    functions -e __baspar_update_async_callback_$indicator_name
-    function __baspar_update_async_callback_$indicator_name -V indicator_name -V pid -V async_cb_fn --on-process-exit $pid
+    function __baspar_update_async_callback_$indicator_name -V file -V indicator_name -V pid -V async_cb_fn --on-process-exit $pid
       _dict_rem $DICT_PID $indicator_name
       set error_code $argv[3]
+      functions -e __baspar_indicator_err_$indicator_name
       if [ $error_code -eq 0 ]
         _dict_rem $DICT_ERR $indicator_name
         eval $async_cb_fn (_dict_get $DICT_TMP_FILE $indicator_name)
       else
-        _dict_set $DICT_ERR $indicator_name true
+        _dict_set $DICT_ERR $indicator_name "$error_code - $pid"
+        function __baspar_indicator_err_$indicator_name -V file -V error_code
+          echo "error_code: $error_code" 
+          cat $file.err
+        end
       end
-      status is-interactive && commandline -f repaint
+      commandline -f repaint
     end
   end
 
@@ -82,39 +88,33 @@ function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_f
   end
 
   function __baspar_indicator_cycle_$indicator_name -V indicator_name
-    if _dict_has $DICT_ID $indicator_name
-      __baspar_indicator_increment_$indicator_name 1
-      commandline -f repaint
-    end
+    __baspar_indicator_increment_$indicator_name 1
+    commandline -f repaint
   end
 
   function __baspar_indicator_display_$indicator_name -V indicator_name -V list_fn -V logo
-    if _dict_has $DICT_ID $indicator_name
-      set id (_dict_get $DICT_ID $indicator_name)
-      set list (eval $list_fn)
-      set item $list[$id]
-      set count (count $list)
+    set id (_dict_get $DICT_ID $indicator_name)
+    set list (eval $list_fn)
+    set item $list[$id]
+    set count (count $list)
 
-      set fg_color "#000000"
-      if _dict_has $DICT_PID $indicator_name
-        set fg_color "#666666"
-      end
-
-      set bg_color "#AF875F"
-      if _dict_has $DICT_ERR $indicator_name
-        set bg_color "#AF5F5E"
-      end
-
-      block $bg_color $fg_color "$logo$item" -o -i
-      block (__baspar_darker_of $bg_color) "#3e3e3e" "$id/$count" -o
+    set fg_color "#000000"
+    if _dict_has $DICT_PID $indicator_name
+      set fg_color "#666666"
     end
+
+    set bg_color "#AF875F"
+    if _dict_has $DICT_ERR $indicator_name
+      set bg_color "#AF5F5E"
+    end
+
+    block $bg_color $fg_color "$logo$item" -o -i
+    block (__baspar_darker_of $bg_color) "#3e3e3e" "$id/$count" -o
   end
 
   function __baspar_indicator_init_$indicator_name -V indicator_name
-    if ! _dict_has $DICT_ID $indicator_name
-      _dict_setx $DICT_ID $indicator_name 1
-      __baspar_indicator_increment_$indicator_name 0
-    end
+    _dict_setx $DICT_ID $indicator_name 1
+    __baspar_indicator_increment_$indicator_name 0
   end
 end
 
@@ -164,19 +164,16 @@ function __baspar_indicator_display
 end
 
 function __baspar_indicator_init
-  if set -q __baspar_indicator_init_done
-    return
-  end
+  set -q __baspar_indicator_init_done && return
+  set -g __baspar_indicator_init_done
 
-  for command_file in ~/.config/fish/prompt_indicators/*.fish
-    set command (basename $command_file .fish)
-    source $command_file
-    set __baspar_indicator_commands $__baspar_indicator_commands $command
+  for command in $__baspar_indicator_commands
     eval __baspar_indicator_init_$command
   end
-
-  set -g __baspar_indicator_init_done
 end
 
-# Need to be pre-loaded for the async command
-status is-interactive; or __baspar_indicator_init
+for command_file in ~/.config/fish/prompt_indicators/*.fish
+  set command (basename $command_file .fish)
+  set __baspar_indicator_commands $__baspar_indicator_commands $command
+  source $command_file
+end

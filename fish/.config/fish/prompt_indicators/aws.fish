@@ -11,9 +11,9 @@ function __baspar_indicator_pre_async_aws -a item
 end
 
 function __baspar_indicator_async_aws -a AWS_PROFILE response_file
-  set AWS_REGION (env AWS_PROFILE=$AWS_PROFILE aws configure get region 2> /dev/null); or return 1
-  set AWS_ACCOUNT (env AWS_PROFILE=$AWS_PROFILE aws sts get-caller-identity --query Account --output text 2> /dev/null); or return 1
-  set AWS_DEV (env AWS_PROFILE=$AWS_PROFILE aws configure get dev 2> /dev/null); or return 1
+  set AWS_REGION (env AWS_PROFILE=$AWS_PROFILE aws configure get region)
+  set AWS_ACCOUNT (env AWS_PROFILE=$AWS_PROFILE aws sts get-caller-identity --query Account --output text); or return 2
+  set AWS_DEV (env AWS_PROFILE=$AWS_PROFILE aws configure get dev)
 
   echo "$AWS_REGION" > $response_file
   echo "$AWS_ACCOUNT" >> $response_file
