@@ -13,6 +13,7 @@ function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_f
   _dict_set $DICT_TMP_FILE $indicator_name (mktemp)
 
   function __baspar_indicator_update_$indicator_name -a item -V indicator_name -V list_fn -V async_fn -V async_cb_fn -V pre_async_fn
+    block -l
 
     set item (echo $item | string unescape --style=var)
     eval $pre_async_fn "$item"
@@ -40,10 +41,11 @@ function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_f
       else
         _dict_set $DICT_ERR $indicator_name "$error_code - $pid"
         function __baspar_indicator_err_$indicator_name -V file -V error_code
-          echo "error_code: $error_code" 
+          echo "error_code: $error_code"
           cat $file.err
         end
       end
+      rm -rf $file $file.err
       commandline -f repaint
     end
   end
@@ -108,8 +110,8 @@ function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_f
       set bg_color "#AF5F5E"
     end
 
-    block $bg_color $fg_color "$logo$item" -o -i
-    block (__baspar_darker_of $bg_color) "#3e3e3e" "$id/$count" -o
+    section $bg_color $fg_color "$logo$item" -o -i
+    section (__baspar_darker_of $bg_color) "#3e3e3e" "$id/$count" -o
   end
 
   function __baspar_indicator_init_$indicator_name -V indicator_name

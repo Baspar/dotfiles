@@ -29,23 +29,23 @@ set -e __baspar_no_abbr
 # Helpers
 # =======
 
-function block -a BG FG TEXT
-  # Same as _block, but wrap text with spaces
+function section -a BG FG TEXT
+  # Same as _section, but wrap text with spaces
   #
   set FLAGS "$argv[4..-1]"
 
-  _block "$BG" "$FG" " $TEXT " $FLAGS
+  _section "$BG" "$FG" " $TEXT " $FLAGS
 end
 
-function _block -a BG FG TEXT
-  # Function _block
+function _section -a BG FG TEXT
+  # Function _section
   #
-  # @param BG: Background color of the block
-  # @param FG: Foreground color of the block
-  # @param TEXT: Text to display in the block
+  # @param BG: Background color of the section
+  # @param FG: Foreground color of the section
+  # @param TEXT: Text to display in the section
   # @param ...FLAGS: 0+ Flags for set_color
   #
-  # @returns: A block with style and text
+  # @returns: A section with style and text
   #
   set FLAGS "$argv[4..-1]"
 
@@ -252,8 +252,8 @@ function __baspar_git_ahead_behind -a GIT_DIR GIT_WORKTREE
   echo "$GIT_HAS_UPSTREAM|$GIT_AHEAD|$GIT_BEHIND"
 end
 
-function __baspar_git_block_info -a GIT_DIR GIT_WORKTREE
-  # Function __baspar_git_block_info
+function __baspar_git_section_info -a GIT_DIR GIT_WORKTREE
+  # Function __baspar_git_section_info
   #
   # @param GIT_DIR: Absolute path of the .git folder
   #
@@ -427,7 +427,7 @@ function fish_custom_mode_prompt
       set BG_COLOR "#FFFFFF"
   end
 
-  _block "$BG_COLOR" "#000000" " $LETTER "
+  _section "$BG_COLOR" "#000000" " $LETTER "
 end
 
 function fish_prompt
@@ -443,13 +443,13 @@ function fish_prompt
 
   # Command error status
   if [ "$_display_status" != "0" ]
-    block "#AF5F5E" "#000000" "$_display_status" -o
+    section "#AF5F5E" "#000000" "$_display_status" -o
   end
 
   # Virtual env
   if [ $VIRTUAL_ENV ]
     set VENV_NAME (basename $VIRTUAL_ENV)
-    block "#4B8252" "#3e3e3e" "$VENV_NAME" -i -o
+    section "#4B8252" "#3e3e3e" "$VENV_NAME" -i -o
   end
 
   # Initialize path segment
@@ -460,16 +460,16 @@ function fish_prompt
     set PATH_SEGMENT_ABBR $__baspar_path_segments_abbr[$i]
     set TOTAL_PATH $TOTAL_PATH$__baspar_path_segments[$i]
 
-    # Path part block
-    block "#3e3e3e" "#FFFFFF" "$PATH_SEGMENT_ABBR"
+    # Path part section
+    section "#3e3e3e" "#FFFFFF" "$PATH_SEGMENT_ABBR"
 
-    # No git block for last part
+    # No git section for last part
     [ $i -eq (count $__baspar_path_segments) ] && break
 
-    # Git block
+    # Git section
     set GIT_WORKTREE "$TOTAL_PATH"
     set GIT_DIR (__baspar_get_git_dir "$GIT_WORKTREE")
-    __baspar_git_block_info "$GIT_DIR" "$GIT_WORKTREE" | read -d '|' GIT_BG_COLOR GIT_BRANCH GIT_OPERATION GIT_ICONS
+    __baspar_git_section_info "$GIT_DIR" "$GIT_WORKTREE" | read -d '|' GIT_BG_COLOR GIT_BRANCH GIT_OPERATION GIT_ICONS
 
     # Assign git Foreground color if job running or not
     set GIT_FG_COLOR "#3e3e3e"
@@ -478,17 +478,17 @@ function fish_prompt
       set GIT_FG_COLOR "#666666"
     end
 
-    [ -n "$GIT_OPERATION" ] && block (__baspar_darker_of $GIT_BG_COLOR) "#3e3e3e" "$GIT_OPERATION" -o -i
-    block "$GIT_BG_COLOR" $GIT_FG_COLOR "$GIT_BRANCH" -o -i
-    [ -n "$GIT_ICONS" ] && block (__baspar_darker_of $GIT_BG_COLOR) "#3e3e3e" "$GIT_ICONS" -o -i
+    [ -n "$GIT_OPERATION" ] && section (__baspar_darker_of $GIT_BG_COLOR) "#3e3e3e" "$GIT_OPERATION" -o -i
+    section "$GIT_BG_COLOR" $GIT_FG_COLOR "$GIT_BRANCH" -o -i
+    [ -n "$GIT_ICONS" ] && section (__baspar_darker_of $GIT_BG_COLOR) "#3e3e3e" "$GIT_ICONS" -o -i
   end
 
-  _block "normal" "nomal" ""
+  _section "normal" "nomal" ""
   echo ""
 
   set -g __baspar_old_bg ""
   fish_custom_mode_prompt
-  _block "normal" "normal" ""
+  _section "normal" "normal" ""
   echo " "
 
   set -e __baspar_need_git_update
