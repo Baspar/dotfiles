@@ -84,9 +84,9 @@ configs['gopls'] = {}
 -- }}}
 
 -- {{{ Groovy
-configs['groovyls'] = {
-  cmd = { "java", "-jar", "/Users/bastien/.vim/lsp-servers/groovy-language-server-all.jar" },
-}
+-- configs['groovyls'] = {
+--   cmd = { "java", "-jar", "/Users/bastien/.vim/lsp-servers/groovy-language-server-all.jar" },
+-- }
 -- }}}
 
 -- {{{ Null-LS
@@ -108,6 +108,7 @@ cmp.setup({
   }, {
     { name = 'buffer' },
   }),
+  preselect = cmp.PreselectMode.None,
   snippet = {
     expand = function(args)
       vim.fn["vsnip#anonymous"](args.body)
@@ -137,8 +138,6 @@ fidget.setup{
 -- {{{ Custom handler
 vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
   vim.lsp.handlers.hover, {
-    border = "rounded",
-    focusable = false,
     max_width = 150
   }
 )

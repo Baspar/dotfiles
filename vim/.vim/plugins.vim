@@ -9,7 +9,7 @@ let &packpath = &runtimepath
 call plug#begin('~/.vim/plugged')
 
   " {{{ AutoPairs
-  Plug 'jiangmiao/auto-pairs'
+  Plug 'LunarWatcher/auto-pairs'
   Plug 'alvan/vim-closetag'
   " }}}
 
