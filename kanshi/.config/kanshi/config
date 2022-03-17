@@ -1,6 +1,6 @@
 profile multiscreen {
-  output eDP-1 mode 2560x1600 position 0,0
-  output HDMI-A-2 mode 1920x1080 position 1706,0
+  output HDMI-A-2 mode 1920x1080 position 0,0 scale 1
+  output eDP-1 mode 2560x1600 position 1920,0
 }
 
 profile laptop_only {
