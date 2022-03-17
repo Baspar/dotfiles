@@ -4,12 +4,13 @@ if [ $(command -v acpi) ]; then
     PERCENTAGE=$(echo "$INFO" | grep -o "\([0-9]\+\)%" | sed 's/%//')
     DISCHARGING=$(echo "$INFO" | grep -i "discharging")
     CHARGING=$(echo "$INFO" | grep -i "charging")
+    FULL=$(echo "$INFO" | grep -i "full")
 elif [ $(command -v pmset) ]; then
     INFO=$(pmset -g batt)
     PERCENTAGE=$(echo "$INFO" | grep -o "\([0-9]\+\)%" | sed 's/%//')
     DISCHARGING=$(echo "$INFO" | grep -i "discharging")
     CHARGING=$(echo "$INFO" | grep -i "\(charging\|finishing charge\)")
-    CHARGED=$(echo "$INFO" | grep -i "charged")
+    FULL=$(echo "$INFO" | grep -i "charged")
 fi
 
 if [ "$DISCHARGING" ]; then
@@ -23,7 +24,7 @@ if [ "$DISCHARGING" ]; then
         COLOR='#4e4e4e'
         FONT='white'
     fi
-elif [ "$CHARGING" ] ||[ "$CHARGED" ]; then
+elif [ "$CHARGING" ] || [ "$FULL" ]; then
     COLOR='#4e4e4e'
     FONT='white'
 else
@@ -31,21 +32,10 @@ else
     FONT='black'
 fi
 
-declare -A ICONS
-ICONS["0"]=""
-ICONS["10"]=""
-ICONS["20"]=""
-ICONS["30"]=""
-ICONS["40"]=""
-ICONS["50"]=""
-ICONS["60"]=""
-ICONS["70"]=""
-ICONS["80"]=""
-ICONS["90"]=""
-ICONS["100"]=""
+ICONS=( "" "" "" "" "" "" "" "" "" "" "" )
 
 if [ -n "$PERCENTAGE" ]; then
-    INFO="${ICONS[$(( PERCENTAGE / 10 * 10 ))]}$PERCENTAGE%"
+    INFO="${ICONS[$(( PERCENTAGE / 10 ))]}$PERCENTAGE%"
 else
     INFO=""
 fi
