@@ -28,6 +28,7 @@ set shell=/bin/bash
 set noswapfile
 set list
 set listchars=tab:┋\ ,trail:✗,eol:↴
+set laststatus=3
 " }}}
 
 " {{{ Color
