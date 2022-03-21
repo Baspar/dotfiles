@@ -11,20 +11,17 @@ elif [ $(command -v pmset) ]; then
     DISCHARGING=$(echo "$INFO" | grep -i "discharging")
     CHARGING=$(echo "$INFO" | grep -i "\(charging\|finishing charge\)")
     FULL=$(echo "$INFO" | grep -i "charged")
+else
+    exit
 fi
 
-if [ "$DISCHARGING" ]; then
-    if [ $PERCENTAGE -lt 10 ]; then
-        COLOR='#AF5F5E'
-        FONT='#3e3e3e'
-    elif [ $PERCENTAGE -lt 25 ]; then
-        COLOR='#af875f'
-        FONT='#3e3e3e'
-    else
-        COLOR='#4e4e4e'
-        FONT='white'
-    fi
-elif [ "$CHARGING" ] || [ "$FULL" ]; then
+if [ "$DISCHARGING" ] && [ $PERCENTAGE -lt 10 ]; then
+    COLOR='#AF5F5E'
+    FONT='#3e3e3e'
+elif [ "$DISCHARGING" ] && [ $PERCENTAGE -lt 25 ]; then
+    COLOR='#af875f'
+    FONT='#3e3e3e'
+elif [ "$DISCHARGING" ] || [ "$CHARGING" ] || [ "$FULL" ]; then
     COLOR='#4e4e4e'
     FONT='white'
 else
