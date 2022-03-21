@@ -1,4 +1,10 @@
 #!/usr/bin/env bash
+RED=$(tput setaf 1)
+GREEN=$(tput setaf 2)
+YELLOW=$(tput setaf 3)
+COLOR_RESET=$(tput sgr0)
+CLEAR_LINE=$(tput el)
+
 DOTS=""
 MODE="INSTALL"
 for DOT in $*
@@ -31,11 +37,11 @@ UNINSTALL_DOT () {
         echo -e -n "  $FILE...\r"
         if [ -L "$DEST_FILE" ] && [ -e "$DEST_FILE" ] && [ "$SOURCE_FILE" -ef "$DEST_FILE" ]; then
             rm -rf "$DEST_FILE"
-            echo -e "\r  \033[32m$FILE...\033[0m Removed"
+            echo -e "\r  $GREEN$FILE...$COLOR_RESET Removed"
         elif [ -e "$DEST_FILE" ]; then
-            echo -e "\r  \033[31m$FILE...\033[0m Error, file was not set by deploy.bash"
+            echo -e "\r  $RED$FILE...$COLOR_RESET Error, file was not set by deploy.bash"
         else
-            echo -e "\r  \033[33m$FILE...\033[0m Is not linked"
+            echo -e "\r  $YELLOW$FILE...$COLOR_RESET Is not linked"
         fi
     done
 
@@ -55,7 +61,11 @@ UNINSTALL_DOT () {
 
 INSTALL_DOT () {
     DOT="$1"
-    echo "Installing $DOT"
+
+    tput cud1
+    echo -en "$CLEAR_LINE$YELLOW  $COLOR_RESET Installing $DOT"
+    tput cuu1
+
     cd "$ROOT_DIR/$DOT"
     DIRS=$(find . -type d | sed 's# #_SPACE_#g')
     for ENCODED_HOME_DIR in $DIRS; do
@@ -67,17 +77,24 @@ INSTALL_DOT () {
     for ENCODED_FILE in $FILES; do
         FILE=$(echo $ENCODED_FILE | sed 's#_SPACE_# #g')
         SOURCE_FILE=$(echo "$(pwd)/$FILE" | sed 's#\(/\.\.\)\+/#/#g; s#/\./#/#g')
-        DEST_FILE=$(echo "$HOME/$FILE" | sed 's#\(/\.\.\)\+/#/#g; s#/\./#/#g')
-        echo -e -n "  $FILE...\r"
+        DEST_FILE=$(echo "$HOME/$FILE"    | sed 's#\(/\.\.\)\+/#/#g; s#/\./#/#g')
         if [ -L "$DEST_FILE" ] && [ -e "$DEST_FILE" ] && [ "$SOURCE_FILE" -ef "$DEST_FILE" ]; then
-            echo -e "\r  \033[33m$FILE...\033[0m Already linked"
-        elif [ -e "$DEST_FILE" ]; then
-            echo -e "\r  \033[31m$FILE...\033[0m Error, file already exists"
+            echo -en "\r$CLEAR_LINE  $YELLOW$FILE...$COLOR_RESET Already linked"
+            continue
+        fi
+
+        if [ -e "$DEST_FILE" ]; then
+            echo -e "\r$CLEAR_LINE  $RED  $FILE...$COLOR_RESET Error, file already exists"
         else
             ln -s "$SOURCE_FILE" "$DEST_FILE"
-            echo -e "\r  \033[32m$FILE...\033[0m OK"
+            echo -e "\r$CLEAR_LINE  $GREEN  $FILE...$COLOR_RESET OK"
         fi
+
+        tput cud1
+        echo -en "$CLEAR_LINE$YELLOW  $COLOR_RESET Installing $DOT"
+        tput cuu1
     done
+    echo -e "\r$CLEAR_LINE$GREEN  $COLOR_RESET Installed $DOT"
 
     cd - >> /dev/null
 }
