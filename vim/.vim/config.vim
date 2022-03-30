@@ -60,7 +60,8 @@ augroup END
 
 " {{{ Indentation
 set tabstop=2 shiftwidth=2 expandtab
-autocmd FileType sh set tabstop=4 shiftwidth=4 expandtab
+au FileType sh setlocal tabstop=4 shiftwidth=4 expandtab
+au FileType go setlocal ts=4 sw=4 sts=4 noexpandtab
 " }}}
 
 " {{{ Netrw
