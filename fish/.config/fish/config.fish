@@ -11,6 +11,7 @@ set -x GPG_TTY (tty)
 set -Ux QT_WAYLAND_FORCE_DPI 144
 set -Ux fish_term24bit 1
 
+set -Ux TZ "Europe/Amsterdam"
 set -g SHELL "fish"
 set -g TERM "xterm-256color"
 

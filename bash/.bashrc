@@ -65,6 +65,7 @@ source "$HOME/.cargo/env"
 [ -e "$HOME/.env.vandebron" ] && source ~/.env.vandebron
 
 export NVM_DIR="$HOME/.nvm"
+export TZ="Europe/Amsterdam"
 
 [ -s "$NVM_DIR/nvm.sh" ] && alias  nvm="unalias npm yarn node nvm; . \"$NVM_DIR/nvm.sh\"; nvm $@"
 [ -s "$NVM_DIR/nvm.sh" ] && alias  npm="unalias npm yarn node nvm; . \"$NVM_DIR/nvm.sh\"; npm $@"
