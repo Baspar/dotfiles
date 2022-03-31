@@ -16,7 +16,7 @@ function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_f
     block -l
 
     set item (echo $item | string unescape --style=var)
-    eval $pre_async_fn "$item"
+    $pre_async_fn "$item"
     commandline -f repaint
 
     # Kill running async function
@@ -37,7 +37,7 @@ function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_f
       functions -e __baspar_indicator_err_$indicator_name
       if [ $error_code -eq 0 ]
         _dict_rem $DICT_ERR $indicator_name
-        eval $async_cb_fn (_dict_get $DICT_TMP_FILE $indicator_name)
+        $async_cb_fn (_dict_get $DICT_TMP_FILE $indicator_name)
       else
         _dict_set $DICT_ERR $indicator_name "$error_code - $pid"
         function __baspar_indicator_err_$indicator_name -V file -V error_code
@@ -60,7 +60,7 @@ function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_f
         | read -l -d \t id item; or return
     _dict_setx $DICT_ID $indicator_name $id
 
-    eval __baspar_indicator_update_$indicator_name (echo $item | string escape --style=var)
+    __baspar_indicator_update_$indicator_name (echo $item | string escape --style=var)
   end
 
   function __baspar_indicator_increment_$indicator_name -a delta -V indicator_name -V list_fn -V async_fn -V async_cb_fn -V pre_async_fn
@@ -75,7 +75,7 @@ function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_f
     set id (_dict_get $DICT_ID $indicator_name)
     set item $list[$id]
 
-    eval __baspar_indicator_update_$indicator_name (echo $item | string escape --style=var)
+    __baspar_indicator_update_$indicator_name (echo $item | string escape --style=var)
   end
 
   function __baspar_indicator_logo_$indicator_name -V logo -V indicator_name
