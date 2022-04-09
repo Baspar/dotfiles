@@ -321,15 +321,15 @@ function __baspar_git_section_info -a GIT_DIR GIT_WORKTREE
   echo -n "$COLOR|$GIT_BRANCH|$GIT_OPERATION|$ICONS" | sed 's# $##'
 end
 
-function __baspar_set_fish_promp_count --on-event fish_prompt --on-event fish_cancel
-  # Function __baspar_set_fish_promp_count
+function __baspar_reset --on-event fish_prompt --on-event fish_cancel
+  # Function __baspar_reset
   #
   # Reset behaviour and variable
   #
   set -g __baspar_need_git_update
   set -e __baspar_no_abbr
-  for command in $__baspar_indicator_commands
-    set -e __baspar_indicator_show_$command
+  for indicator in $__baspar_indicator_names
+    set -e __baspar_indicator_show_$indicator
   end
 
   commandline -f repaint

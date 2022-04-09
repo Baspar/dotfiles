@@ -1,16 +1,24 @@
 bind -M insert ' ' 'commandline -i " "; commandline -f expand-abbr; __baspar_indicator_check'
+bind -M insert \ca 'commandline -f accept-autosuggestion; __baspar_indicator_check'
 bind -M insert \c] '__baspar_indicator_cycle'
 bind -M insert \cp '__baspar_indicator_select'
 
-set -g __baspar_indicator_commands
+set -g __baspar_indicator_names
 
 set -g DICT_TMP_FILE "__baspar_tmp_file"
 set -g DICT_PID "__baspar_pid"
 set -g DICT_ID "__baspar_id"
 set -g DICT_ERR "__baspar_err"
+set -g DICT_COMMAND "__baspar_cmd"
+
+function setup_indicator_alias -a command_name indicator_name
+  _dict_setx $DICT_COMMAND $command_name $indicator_name
+end
 
 function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_fn list_fn
   _dict_set $DICT_TMP_FILE $indicator_name (mktemp)
+  set __baspar_indicator_names $__baspar_indicator_names $indicator_name
+  setup_indicator_alias $indicator_name $indicator_name
 
   function __baspar_indicator_update_$indicator_name -a item -V indicator_name -V list_fn -V async_fn -V async_cb_fn -V pre_async_fn
     block -l
@@ -123,11 +131,13 @@ end
 function __baspar_indicator_check
   set commands (commandline | sed -E 's/;|&&|\|\||\||; *(and|or)|env +([^ ]+=[^ ]+ +)*/\n/g' | string trim | cut -d' ' -f1)
 
-  for command in $__baspar_indicator_commands
+  for indicator in $__baspar_indicator_names
+      set -e __baspar_indicator_show_$indicator
+  end
+
+  for command in (_dict_keys $DICT_COMMAND)
     if contains $command $commands
-      set -g __baspar_indicator_show_$command
-    else
-      set -e __baspar_indicator_show_$command
+      set -g __baspar_indicator_show_(_dict_get $DICT_COMMAND $command)
     end
   end
 
@@ -135,7 +145,7 @@ function __baspar_indicator_check
 end
 
 function __baspar_indicator_select
-  for command in $__baspar_indicator_commands
+  for command in $__baspar_indicator_names
     if set -q __baspar_indicator_show_$command
       eval __baspar_indicator_select_$command
       break
@@ -144,7 +154,7 @@ function __baspar_indicator_select
 end
 
 function __baspar_indicator_cycle
-  for command in $__baspar_indicator_commands
+  for command in $__baspar_indicator_names
     if set -q __baspar_indicator_show_$command
       eval __baspar_indicator_cycle_$command
       break
@@ -153,14 +163,14 @@ function __baspar_indicator_cycle
 end
 
 function __baspar_indicator_display
-  for command in $__baspar_indicator_commands
+  for command in $__baspar_indicator_names
     if set -q __baspar_indicator_show_$command
       eval __baspar_indicator_display_$command
       return
     end
   end
 
-  for command in $__baspar_indicator_commands
+  for command in $__baspar_indicator_names
     eval __baspar_indicator_logo_$command
   end
 end
@@ -169,13 +179,11 @@ function __baspar_indicator_init
   set -q __baspar_indicator_init_done && return
   set -g __baspar_indicator_init_done
 
-  for command in $__baspar_indicator_commands
+  for command in $__baspar_indicator_names
     eval __baspar_indicator_init_$command
   end
 end
 
 for command_file in ~/.config/fish/prompt_indicators/*.fish
-  set command (basename $command_file .fish)
-  set __baspar_indicator_commands $__baspar_indicator_commands $command
   source $command_file
 end

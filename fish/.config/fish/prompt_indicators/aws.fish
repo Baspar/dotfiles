@@ -39,3 +39,5 @@ setup_indicator aws " " \
   __baspar_indicator_async_aws \
   __baspar_indicator_async_cb_aws \
   __baspar_indicator_list_aws
+
+setup_indicator_alias deploy-infra aws
