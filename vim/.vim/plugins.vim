@@ -64,10 +64,8 @@ call plug#begin('~/.vim/plugged')
 
   " {{{ Polyglot
   Plug 'sheerun/vim-polyglot'
-  " }}}
-
-  " {{{ Fish
-  Plug 'dag/vim-fish', {'for': ['fish']}
+  Plug 'jasdel/vim-smithy'
+  Plug 'dag/vim-fish'
   " }}}
 
   " {{{ Clojure

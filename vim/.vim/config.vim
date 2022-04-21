@@ -53,9 +53,9 @@ augroup CustomColorChange
   endfunction
 
   au!
-  au ColorScheme * call s:custom_colors()
-  au VimEnter * call s:custom_colors()
-augroup END
+    au ColorScheme * call s:custom_colors()
+    au VimEnter * call s:custom_colors()
+  augroup END
 " }}}
 
 " {{{ Indentation
@@ -81,20 +81,6 @@ match TrailingSpaces / \+$/
 
 " {{{ Change default SQL mapping
 let g:ftplugin_sql_omni_key = '<C-s>'
-" }}}
-
-" {{{
-let g:coq_settings = {
-  \   'auto_start': 'shut-up',
-  \   'display': {
-  \     'pum': {
-  \       'fast_close': v:false
-  \     },
-  \     'preview': {
-  \       'positions': { "north": 1, "west": 2, "south": 3, "east": 4 }
-  \     }
-  \   }
-  \ }
 " }}}
 
 " vim: foldmethod=marker:foldlevel=0

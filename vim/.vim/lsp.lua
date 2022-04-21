@@ -109,6 +109,9 @@ cmp.setup({
     { name = 'buffer' },
   }),
   preselect = cmp.PreselectMode.None,
+  view = {
+    entries = 'native'
+  },
   snippet = {
     expand = function(args)
       vim.fn["vsnip#anonymous"](args.body)
