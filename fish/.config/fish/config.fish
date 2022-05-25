@@ -17,7 +17,7 @@ set -g TERM "xterm-256color"
 
 set -Ux GOPATH ~/.go
 
-set -x JAVA_HOME "/Library/Java/JavaVirtualMachines/graalvm-ce-java8-21.0.0.2/Contents/Home/bin"
+# set -x JAVA_HOME "/Library/Java/JavaVirtualMachines/graalvm-ce-java8-21.0.0.2/Contents/Home/bin"
 
 # set -Ux LEFT_SEPARATOR ""
 # set -Ux RIGHT_SEPARATOR ""
@@ -32,7 +32,7 @@ set -Ux RIGHT_SUB_SEPARATOR "▒"
 alias java11 "set -x JAVA_HOME /Library/Java/JavaVirtualMachines/jdk-11.0.2.jdk/Contents/Home"
 alias java8 "set -x JAVA_HOME /Library/Java/JavaVirtualMachines/jdk1.8.0_212.jdk/Contents/Home"
 alias graal8 "set -x JAVA_HOME /Library/Java/JavaVirtualMachines/graalvm-ce-java8-21.0.0.2/Contents/Home"
-[ -e "/Library/Java/JavaVirtualMachines/graalvm-ce-java8-21.0.0.2/Contents/Home" ]; and graal8
+# [ -e "/Library/Java/JavaVirtualMachines/graalvm-ce-java8-21.0.0.2/Contents/Home" ]; and graal8
 
 set -Ux NVM_DIR "$HOME/.nvm"
 
@@ -40,6 +40,7 @@ set PATH \
     "/opt/homebrew/bin" \
     "/Users/bastien/Library/Application Support/Coursier/bin" \
     "/usr/local/opt/curl/bin" \
+    "/usr/local/bin" \
     "$HOME/.toolbox/bin" \
     "$HOME/.bin" \
     "$HOME/.rvm/bin" \

@@ -72,7 +72,7 @@ export TZ="Europe/Amsterdam"
 [ -s "$NVM_DIR/nvm.sh" ] && alias yarn="unalias npm yarn node nvm; . \"$NVM_DIR/nvm.sh\"; yarn $@"
 [ -s "$NVM_DIR/nvm.sh" ] && alias node="unalias npm yarn node nvm; . \"$NVM_DIR/nvm.sh\"; node $@"
 
-export JAVA_HOME="/Library/Java/JavaVirtualMachines/graalvm-ce-java8-21.0.0.2/Contents/Home/bin"
+# export JAVA_HOME="/Library/Java/JavaVirtualMachines/graalvm-ce-java8-21.0.0.2/Contents/Home/bin"
 
 export PATH=$PATH:"~/.bin:$GOPATH/bin:~/.gem/ruby/2.4.0/bin:~/.gem/ruby/2.5.0/bin:$HOME/.cargo/bin"
 export PATH=$PATH:"$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$HOME/.cargo/bin"
