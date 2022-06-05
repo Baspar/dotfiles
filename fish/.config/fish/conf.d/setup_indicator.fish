@@ -10,6 +10,7 @@ set -g DICT_PID "__baspar_pid"
 set -g DICT_ID "__baspar_id"
 set -g DICT_ERR "__baspar_err"
 set -g DICT_COMMAND "__baspar_cmd"
+set -g DICT_LIST "__baspar_list"
 
 function setup_indicator_alias -a command_name indicator_name
   _dict_setx $DICT_COMMAND $command_name $indicator_name
@@ -19,6 +20,13 @@ function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_f
   _dict_set $DICT_TMP_FILE $indicator_name (mktemp)
   set __baspar_indicator_names $__baspar_indicator_names $indicator_name
   setup_indicator_alias $indicator_name $indicator_name
+
+  function __baspar_indicator_mem_list_$indicator_name -V indicator_name -V list_fn
+    if ! _dict_has $DICT_LIST $indicator_name
+      _dict_setx $DICT_LIST $indicator_name "$(eval $list_fn)"
+    end
+    _dict_get $DICT_LIST $indicator_name
+  end
 
   function __baspar_indicator_update_$indicator_name -a item -V indicator_name -V async_fn -V async_cb_fn -V pre_async_fn
     block -l
@@ -58,8 +66,8 @@ function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_f
     end
   end
 
-  function __baspar_indicator_select_$indicator_name -V indicator_name -V list_fn -V async_fn -V async_cb_fn -V pre_async_fn
-    set list (eval $list_fn); or return
+  function __baspar_indicator_select_$indicator_name -V indicator_name -V async_fn -V async_cb_fn -V pre_async_fn
+    set list (eval __baspar_indicator_mem_list_$indicator_name); or return
 
     printf "%s\n" $list \
         | cat -n \
@@ -71,8 +79,8 @@ function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_f
     __baspar_indicator_update_$indicator_name (echo $item | string escape --style=var)
   end
 
-  function __baspar_indicator_increment_$indicator_name -a delta -V indicator_name -V list_fn -V async_fn -V async_cb_fn -V pre_async_fn
-    set list (eval $list_fn); or return
+  function __baspar_indicator_increment_$indicator_name -a delta -V indicator_name -V async_fn -V async_cb_fn -V pre_async_fn
+    set list (eval __baspar_indicator_mem_list_$indicator_name); or return
     set count (count $list)
 
     if [ $delta -gt 0 ]
@@ -102,9 +110,9 @@ function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_f
     commandline -f repaint
   end
 
-  function __baspar_indicator_display_$indicator_name -V indicator_name -V list_fn -V logo
+  function __baspar_indicator_display_$indicator_name -V indicator_name -V logo
     set id (_dict_get $DICT_ID $indicator_name)
-    set list (eval $list_fn)
+    set list (eval __baspar_indicator_mem_list_$indicator_name); or return
     set item $list[$id]
     set count (count $list)
 
