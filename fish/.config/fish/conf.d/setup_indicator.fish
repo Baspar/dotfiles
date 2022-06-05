@@ -20,7 +20,7 @@ function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_f
   set __baspar_indicator_names $__baspar_indicator_names $indicator_name
   setup_indicator_alias $indicator_name $indicator_name
 
-  function __baspar_indicator_update_$indicator_name -a item -V indicator_name -V list_fn -V async_fn -V async_cb_fn -V pre_async_fn
+  function __baspar_indicator_update_$indicator_name -a item -V indicator_name -V async_fn -V async_cb_fn -V pre_async_fn
     block -l
 
     set item (echo $item | string unescape --style=var)
@@ -53,7 +53,7 @@ function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_f
           cat $file.err
         end
       end
-      rm -rf $file $file.err
+      rm -rf $file # $file.err
       commandline -f repaint
     end
   end
