@@ -83,6 +83,10 @@ configs['clangd'] = {}
 configs['gopls'] = {}
 -- }}}
 
+-- {{{ Smithy
+configs['smithy_lsp'] = {}
+-- }}}
+
 -- {{{ Groovy
 -- configs['groovyls'] = {
 --   cmd = { "java", "-jar", "/Users/bastien/.vim/lsp-servers/groovy-language-server-all.jar" },

@@ -38,9 +38,9 @@ call plug#begin('~/.vim/plugged')
   " }}}
 
   " {{{ LSP
-  Plug 'nvim-lua/plenary.nvim', If(has('nvim'))
   Plug 'neovim/nvim-lspconfig', If(has('nvim'))
   Plug 'j-hui/fidget.nvim', If(has('nvim'))
+  Plug 'nvim-lua/plenary.nvim', If(has('nvim')) " Used by null-ls
   Plug 'jose-elias-alvarez/null-ls.nvim', If(has('nvim'))
   " }}}
 
