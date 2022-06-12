@@ -40,9 +40,9 @@ set PATH \
     "/opt/homebrew/bin" \
     "/Users/bastien/Library/Application Support/Coursier/bin" \
     "/usr/local/opt/curl/bin" \
-    "/usr/local/bin" \
     "$HOME/.toolbox/bin" \
     "$HOME/.bin" \
+    "/usr/local/bin" \
     "$HOME/.rvm/bin" \
     "$HOME/.cargo/bin/" \
     "$JAVA_HOME/bin" \

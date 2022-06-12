@@ -12,15 +12,18 @@ set -g DICT_ERR "__baspar_err"
 set -g DICT_COMMAND "__baspar_cmd"
 set -g DICT_LIST "__baspar_list"
 
+# Alias a command to a indicator name
 function setup_indicator_alias -a command_name indicator_name
   _dict_setx $DICT_COMMAND $command_name $indicator_name
 end
 
+# Create all underlying function for specific `indicator_name`
 function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_fn list_fn
   _dict_set $DICT_TMP_FILE $indicator_name (mktemp)
   set __baspar_indicator_names $__baspar_indicator_names $indicator_name
   setup_indicator_alias $indicator_name $indicator_name
 
+  # Call provided list_fn once and return the memoized response
   function __baspar_indicator_mem_list_$indicator_name -V indicator_name -V list_fn
     if ! _dict_has $DICT_LIST $indicator_name
       _dict_setx $DICT_LIST $indicator_name "$(eval $list_fn)"
@@ -29,8 +32,6 @@ function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_f
   end
 
   function __baspar_indicator_update_$indicator_name -a item -V indicator_name -V async_fn -V async_cb_fn -V pre_async_fn
-    block -l
-
     set item (echo $item | string unescape --style=var)
     $pre_async_fn "$item"
     commandline -f repaint
@@ -45,7 +46,7 @@ function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_f
     command fish --private --command "$async_fn '$item' '$file'" 2> $file.err &
 
     set pid (jobs --last --pid)
-    _dict_set $DICT_PID $indicator_name $pid
+    _dict_setx $DICT_PID $indicator_name $pid
 
     function __baspar_update_async_callback_$indicator_name -V file -V indicator_name -V pid -V async_cb_fn --on-process-exit $pid
       _dict_rem $DICT_PID $indicator_name
@@ -61,7 +62,7 @@ function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_f
           cat $file.err
         end
       end
-      rm -rf $file # $file.err
+      rm -rf $file
       commandline -f repaint
     end
   end
@@ -136,6 +137,7 @@ function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_f
   end
 end
 
+# Search current commandline for indicator_name/alias and call corresponding `__baspar_indicator_show_*`
 function __baspar_indicator_check
   set commands (commandline | sed -E 's/;|&&|\|\||\||; *(and|or)|env +([^ ]+=[^ ]+ +)*/\n/g' | string trim | cut -d' ' -f1)
 
