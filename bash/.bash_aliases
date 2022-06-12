@@ -27,7 +27,7 @@ abbr gb "git branch"
 abbr gn "git notes"
 abbr gba "git branch --all"
 abbr gclone "git clone --recursive gh:"
-alias gl="git log  --color=always --format='%C(auto)%h%d %s' | fzf --reverse --ansi --preview 'echo {} | grep -o \'[a-f0-9]\\{7\\}\' | head -n 1 | xargs git show --color=always'"
+alias gl="git log  --color=always --date=relative --format='%C(White)%h %C(Yellow)%cd %C(BrightRed)%aN%C(cyan)%d %C(auto)%s' | fzf --reverse --ansi --preview 'echo {} | grep -o \'[a-f0-9]\\{7\\}\' | head -n 1 | xargs git show --color=always'"
 
 abbr y "yarn"
 abbr yd "yarn dev"
