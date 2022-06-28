@@ -91,6 +91,7 @@ call plug#begin('~/.vim/plugged')
 
   " {{{ VimFugitive
   Plug 'tpope/vim-fugitive'
+  Plug 'ssh://git.amazon.com:2222/pkg/Vim-code-browse', {'branch': 'mainline'}
   " }}}
 
   " {{{ VimDispatch & Async

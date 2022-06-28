@@ -36,8 +36,8 @@ nnoremap <expr> <tab> OpenGitFilesIfGit()
 nnoremap <s-tab> :FZF<CR>
 
 " fileExplorer
-nnoremap <C-e> :NERDTreeToggle<CR>
-nnoremap - :NERDTreeFind<CR>
+nnoremap <C-e> :silent exec "NERDTreeToggle"<CR>
+nnoremap - :silent exec "NERDTreeFind"<CR>
 augroup CancelNERDTreeQ
   au!
   au FileType nerdtree unmap <buffer> q
@@ -115,15 +115,12 @@ function! ToggleGStatus()
     endif
 endfunction
 nnoremap <leader>ga :Git add %:p<CR><CR>
+nnoremap <leader>go :GBrowse<CR>
+vnoremap <leader>go :GBrowse<CR>
 nnoremap <leader>gs :call ToggleGStatus()<CR>
 nnoremap <leader>gl :silent! Glog<CR>:bot copen<CR>
-nnoremap <leader>gm :Git move<Space>
 nnoremap <leader>gd :Gdiff<CR>
 nnoremap <leader>gb :Git blame<CR>
-nnoremap <leader>gB :Git branch<Space>
-nnoremap <leader>go :Git checkout<Space>
-nnoremap <leader>gp :set termwinsize=10x0<CR>:term git push<CR>
-nnoremap <leader>gP :set termwinsize=10x0<CR>:term git pull<CR>
 
 " Select all
 nnoremap <leader>a ggVG
