@@ -142,8 +142,8 @@ vnoremap <leader>r :<C-u>call repl_it#visual_mode()<CR>
 nmap <leader>rr V<leader>r
 
 " Neovim LSP
-nnoremap <silent> ]a :lua vim.lsp.diagnostic.goto_next({popup_opts = {max_width = 150, focusable = false, border = "rounded"}})<CR>
-nnoremap <silent> [a :lua vim.lsp.diagnostic.goto_prev({popup_opts = {max_width = 150, focusable = false, border = "rounded"}})<CR>
+nnoremap <silent> ]a :lua vim.diagnostic.goto_next({float = {max_width = 150, focusable = false, border = "rounded"}})<CR>
+nnoremap <silent> [a :lua vim.diagnostic.goto_prev({float = {max_width = 150, focusable = false, border = "rounded"}})<CR>
 nnoremap <silent> <localleader>r :lua vim.lsp.buf.references()<CR>
 nnoremap <silent> <localleader>d :lua vim.lsp.buf.definition()<CR>
 nnoremap <silent> <localleader>D m0:tabe %<CR>`0:lua vim.lsp.buf.definition()<CR>

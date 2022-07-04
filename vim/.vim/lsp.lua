@@ -122,13 +122,6 @@ cmp.setup({
     end,
   }
 })
-
-local capabilities = cmp_lsp.update_capabilities(vim.lsp.protocol.make_client_capabilities())
-for name, config in pairs(configs) do
-  lspconfig[name].setup {
-    capabilities = capabilities
-  }
-end
 -- }}}
 
 -- {{{ Fidget
@@ -138,24 +131,33 @@ fidget.setup{
   },
   align = {
     bottom = false
+  },
+  fmt = {
+    stack_upwards = false
   }
 }
 -- }}}
 
 -- {{{ Custom handler
 vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
-  vim.lsp.handlers.hover, {
-    max_width = 150
-  }
+  vim.lsp.handlers.hover,
+  { max_width = 150, border = "single" }
 )
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
- vim.lsp.diagnostic.on_publish_diagnostics, {
+  vim.lsp.diagnostic.on_publish_diagnostics,
+  {
     underline = true,
-    virtual_text = {
-      spacing = 4,
-    }
+    virtual_text = { spacing = 4 },
+    border = "single"
   }
 )
 -- }}}
+
+local capabilities = cmp_lsp.update_capabilities(vim.lsp.protocol.make_client_capabilities())
+for name, config in pairs(configs) do
+  lspconfig[name].setup {
+    capabilities = capabilities
+  }
+end
 
 -- vim: foldmethod=marker:foldlevel=0
