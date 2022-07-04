@@ -94,17 +94,17 @@ call plug#begin('~/.vim/plugged')
   Plug 'ssh://git.amazon.com:2222/pkg/Vim-code-browse', {'branch': 'mainline'}
   " }}}
 
-  " {{{ VimDispatch & Async
-  Plug 'tpope/vim-dispatch'
-  Plug 'prabirshrestha/async.vim'
-  " }}}
-
   " {{{ VimSandwich
   Plug 'machakann/vim-sandwich'
   " }}}
 
   " {{{ Lightline.Vim
   Plug 'itchyny/lightline.vim'
+  " }}}
+
+  " {{{ IndentLine
+  Plug 'lukas-reineke/indent-blankline.nvim', If(has('nvim'))
+  let g:indentLine_char = "┋"
   " }}}
 
   " {{{ Colorschemes
