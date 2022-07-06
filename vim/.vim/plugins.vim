@@ -104,7 +104,6 @@ call plug#begin('~/.vim/plugged')
 
   " {{{ IndentLine
   Plug 'lukas-reineke/indent-blankline.nvim', If(has('nvim'))
-  let g:indentLine_char = "┋"
   " }}}
 
   " {{{ Colorschemes

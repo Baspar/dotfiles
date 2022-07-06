@@ -20,16 +20,6 @@ local tsFamily = {
   "typescript.tsx",
   "typescriptreact"
 }
-local eslint = {
-  lintCommand = "eslint_d -f compact --stdin --stdin-filename ${INPUT}",
-  lintIgnoreExitCode = true,
-  lintStdin = true,
-  lintFormats = {'%f: line %l, col %c, %trror - %m', '%f: line %l, col %c, %tarning - %m'},
-}
-local prettier = {
-  formatCommand = "prettier --stdin-filepath ${INPUT}",
-  formatStdin = true
-}
 
 configs['tsserver'] = {
   on_attach = function(client)
@@ -40,6 +30,14 @@ configs['tsserver'] = {
   end,
   filetypes = tsFamily,
 }
+null_ls.setup({
+    sources = {
+        null_ls.builtins.diagnostics.eslint_d.with({
+          extra_args = { "--config", "eslint.cdk.json" }
+        }),
+        null_ls.builtins.formatting.prettier
+    },
+})
 -- }}}
 
 -- {{{ Rust
@@ -91,15 +89,6 @@ configs['smithy_lsp'] = {}
 -- configs['groovyls'] = {
 --   cmd = { "java", "-jar", "/Users/bastien/.vim/lsp-servers/groovy-language-server-all.jar" },
 -- }
--- }}}
-
--- {{{ Null-LS
-null_ls.setup({
-    sources = {
-        null_ls.builtins.diagnostics.eslint_d,
-        null_ls.builtins.formatting.prettier
-    },
-})
 -- }}}
 -- }}}
 
