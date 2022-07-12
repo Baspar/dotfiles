@@ -28,7 +28,7 @@ set shell=/bin/bash
 set noswapfile
 set list
 set listchars=tab:┋\ ,trail:✗,eol:↴
-set laststatus=3
+set laststatus=2
 " }}}
 
 " {{{ Color
@@ -63,6 +63,8 @@ set tabstop=2 shiftwidth=2 expandtab
 au FileType sh setlocal tabstop=4 shiftwidth=4 expandtab
 au FileType go setlocal ts=4 sw=4 sts=4 noexpandtab
 " }}}
+
+au FileType git setlocal foldmethod=syntax
 
 " {{{ Netrw
 autocmd FileType netrw vertical resize 30

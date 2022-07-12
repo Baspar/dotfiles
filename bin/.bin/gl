@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+commit=$(git log --color=always --date=relative --format='%C(White)%h %C(Yellow)%cd %C(BrightRed)%aN%C(cyan)%d %C(auto)%s' \
+    | fzf --reverse --ansi --preview-window='bottom' --preview 'echo {} | grep -o "[a-f0-9]\\{7\\}" | head -n 1 | xargs git show --stat --color=always'
+    ) || exit
+echo "$commit" | grep -o "[a-f0-9]\\{7\\}" | git show | nvim
