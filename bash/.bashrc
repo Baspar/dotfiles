@@ -28,7 +28,6 @@ export EDITOR='nvim'
 export GOPATH="$HOME/.go"
 
 ANDROID_HOME=~/.android/sdk/
-TERM=xterm-256color
 [ -e ~/.config/ripgrep/rc ] && export RIPGREP_CONFIG_PATH="$HOME/.config/ripgrep/rc"
 
 [ -e "~/.local/share/Steam/ubuntu12_32/steam-runtime/amd64/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0" ] && {
