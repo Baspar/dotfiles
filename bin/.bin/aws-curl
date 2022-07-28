@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+usage() {
+    echo ''
+    echo 'Usage:'
+    echo '  aws-curl --region REGION --service SERVICE  (-p1 PROVIDER1) (-p2 PROVIDER2) -- [Normal cURL arguments]'
+}
+
+region=""
+service=""
+provider1="aws"
+provider2="amz"
+
+ARGS=$(getopt -n aws-curl -o "r:s:p1:p2:h" --long "region:,service:,provider1:,provider2:,help" -- "$@") || exit 1
+eval set -- $ARGS
+while :; do
+    case "$1" in
+        -r|--region)
+            region=$2
+            shift 2
+            ;;
+        -s|--service)
+            service=$2
+            shift 2
+            ;;
+        -p1|--provider1)
+            provider1=$2
+            shift 2
+            ;;
+        -p2|--provider2)
+            provider2=$2
+            shift 2
+            ;;
+        -h|--help)
+            usage
+            exit
+            ;;
+        --)
+            shift
+            break
+            ;;
+        *)
+            exit 1
+    esac
+done
+
+[ -z $region ] && {
+    echo "Error: Missing region"
+    usage
+    exit 1
+}
+[ -z $service ] && {
+    echo "Error: Missing service"
+    usage
+    exit 1
+}
+sigv4="$provider1:$provider2:$region:$service"
+echo "using sigv4 '$sigv4'"
+
+if [ -n "$AWS_ACCESS_KEY_ID" ] && [ -n "$AWS_SECRET_ACCESS_KEY" ] && [ -n "$AWS_SESSION_TOKEN" ]; then
+    echo "using env var"
+elif [ -n "$(aws configure get credential_process)" ]; then
+    echo "using credential_process"
+    credentials=$($(aws configure get credential_process) | jq -r '[.AccessKeyId, .SecretAccessKey, .SessionToken] | join("|")')
+    AWS_ACCESS_KEY_ID=$(echo $credentials | cut -d'|' -f1)
+    AWS_SECRET_ACCESS_KEY=$(echo $credentials | cut -d'|' -f2)
+    AWS_SESSION_TOKEN=$(echo $credentials | cut -d'|' -f3)
+fi
+
+curl --aws-sigv4 "$sigv4" --user "$AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY" -H "x-amz-security-token:$AWS_SESSION_TOKEN" $*
