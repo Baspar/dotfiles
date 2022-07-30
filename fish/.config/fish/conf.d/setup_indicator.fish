@@ -20,6 +20,7 @@ end
 # Create all underlying function for specific `indicator_name`
 function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_fn list_fn
   _dict_set $DICT_TMP_FILE $indicator_name (mktemp)
+  _dict_rem $DICT_LIST $indicator_name
   set __baspar_indicator_names $__baspar_indicator_names $indicator_name
   setup_indicator_alias $indicator_name $indicator_name
 
@@ -67,7 +68,7 @@ function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_f
     end
   end
 
-  function __baspar_indicator_select_$indicator_name -V indicator_name -V async_fn -V async_cb_fn -V pre_async_fn
+  function __baspar_indicator_select_$indicator_name -V indicator_name
     set list (eval __baspar_indicator_mem_list_$indicator_name); or return
 
     printf "%s\n" $list \
@@ -80,7 +81,7 @@ function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_f
     __baspar_indicator_update_$indicator_name (echo $item | string escape --style=var)
   end
 
-  function __baspar_indicator_increment_$indicator_name -a delta -V indicator_name -V async_fn -V async_cb_fn -V pre_async_fn
+  function __baspar_indicator_increment_$indicator_name -a delta -V indicator_name
     set list (eval __baspar_indicator_mem_list_$indicator_name); or return
     set count (count $list)
 
@@ -93,6 +94,12 @@ function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_f
     set item $list[$id]
 
     __baspar_indicator_update_$indicator_name (echo $item | string escape --style=var)
+  end
+
+  function __baspar_indicator_start_override_$indicator_name -a override_item -V indicator_name
+    _dict_setx $DICT_ID $indicator_name 0
+
+    __baspar_indicator_update_$indicator_name (echo $override_item | string escape --style=var)
   end
 
   function __baspar_indicator_logo_$indicator_name -V logo -V indicator_name
@@ -114,7 +121,11 @@ function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_f
   function __baspar_indicator_display_$indicator_name -V indicator_name -V logo
     set id (_dict_get $DICT_ID $indicator_name)
     set list (eval __baspar_indicator_mem_list_$indicator_name); or return
-    set item $list[$id]
+    if [ $id -le 0 ]
+      set item "???"
+    else
+      set item $list[$id]
+    end
     set count (count $list)
 
     set fg_color "#000000"
@@ -174,14 +185,16 @@ end
 
 function __baspar_indicator_display
   for command in $__baspar_indicator_names
-    if set -q __baspar_indicator_show_$command
-      eval __baspar_indicator_display_$command
-      return
+    if ! set -q __baspar_indicator_show_$command
+      eval __baspar_indicator_logo_$command
     end
   end
 
   for command in $__baspar_indicator_names
-    eval __baspar_indicator_logo_$command
+    if set -q __baspar_indicator_show_$command
+      eval __baspar_indicator_display_$command
+      return
+    end
   end
 end
 

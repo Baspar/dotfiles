@@ -6,15 +6,25 @@ function __baspar_indicator_list_aws
   aws configure list-profiles
 end
 
-function __baspar_indicator_pre_async_aws -a item
-  set -gx AWS_PROFILE $item
+function __baspar_indicator_pre_async_aws -a credentials
+  if string match "|*|*|*|" "$credentials" > /dev/null
+    set -e AWS_PROFILE
+  else
+    set -gx AWS_PROFILE $credentials
+  end
 end
 
-function __baspar_indicator_async_aws -a AWS_PROFILE response_file
-  set -fx AWS_PROFILE $AWS_PROFILE
+function __baspar_indicator_async_aws -a credentials response_file
+  if string match "|*|*|*|" "$credentials" > /dev/null
+    set -fx AWS_ACCESS_KEY_ID (echo $credentials | cut -d'|' -f 2)
+    set -fx AWS_SECRET_ACCESS_KEY (echo $credentials | cut -d'|' -f 3)
+    set -fx AWS_SESSION_TOKEN (echo $credentials | cut -d'|' -f 4)
+  else
+    set -fx AWS_PROFILE $credentials
+  end
 
-  set AWS_REGION (aws configure get region)
-  set AWS_ACCOUNT (aws sts get-caller-identity --query Account --output text); or return 2
+  set AWS_REGION (aws configure get region; or echo "eu-west-1")
+  set AWS_ACCOUNT (aws sts get-caller-identity --query Account --output text); or exit 2
   set AWS_DEV (aws configure get dev)
 
   echo "$AWS_REGION" > $response_file
@@ -41,3 +51,11 @@ setup_indicator aws " " \
   __baspar_indicator_async_aws \
   __baspar_indicator_async_cb_aws \
   __baspar_indicator_list_aws
+
+if status is-interactive
+  function __baspar_indicator_override_aws --on-variable AWS_ACCESS_KEY_ID --on-variable AWS_SECRET_ACCESS_KEY --on-variable AWS_SESSION_TOKEN
+    if [ -n "$AWS_ACCESS_KEY_ID" ] && [ -n "$AWS_SECRET_ACCESS_KEY" ] && [ -n "$AWS_SESSION_TOKEN" ]
+      __baspar_indicator_start_override_aws "|$AWS_ACCESS_KEY_ID|$AWS_SECRET_ACCESS_KEY|$AWS_SESSION_TOKEN|"
+    end
+  end
+end
