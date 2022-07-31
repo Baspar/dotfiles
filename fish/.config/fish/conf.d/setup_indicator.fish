@@ -2,6 +2,7 @@ bind -M insert ' ' 'commandline -i " "; commandline -f expand-abbr; __baspar_ind
 bind -M insert \ca 'commandline -f accept-autosuggestion; __baspar_indicator_check'
 bind -M insert \c] '__baspar_indicator_cycle'
 bind -M insert \cp '__baspar_indicator_select'
+bind -M insert \c_ '__baspar_indicator_err'
 
 set -g __baspar_indicator_names
 
@@ -59,9 +60,12 @@ function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_f
         $async_cb_fn (_dict_get $DICT_TMP_FILE $indicator_name)
       else
         _dict_set $DICT_ERR $indicator_name "$error_code - $pid"
-        function __baspar_indicator_err_$indicator_name -V file -V error_code
-          echo "error_code: $error_code"
+        function __baspar_indicator_err_$indicator_name -V file -V error_code -V indicator_name
+          echo -e "\n$indicator_name:"
+          echo -e "error_code: $error_code"
           cat $file.err
+          echo ""
+          commandline -f repaint
         end
       end
       rm -rf $file
@@ -203,6 +207,15 @@ function __baspar_indicator_display
     if set -q __baspar_indicator_show_$command
       eval __baspar_indicator_display_$command
       return
+    end
+  end
+end
+
+function __baspar_indicator_err
+  for command in $__baspar_indicator_names
+    if set -q __baspar_indicator_show_$command && _dict_has $DICT_ERR $command
+      eval __baspar_indicator_err_$command
+      break
     end
   end
 end
