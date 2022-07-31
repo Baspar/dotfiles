@@ -82,8 +82,6 @@ function _section -a BG FG TEXT
 end
 
 function __baspar_darker_of -a COLOR
-  # Function __baspar_darker_of
-  #
   # @param COLOR a color part of the list
   #
   # @returns: A darker shade of this color
@@ -106,8 +104,6 @@ end
 # =================
 
 function __baspar_abbr_path -a root path_segment
-  # Function __baspar_abbr_path
-  #
   # @param path_segment a part of the PATH
   #
   # @returns: An abbreviated version of the path_segment (one letter, but keep prefix special characters)
@@ -149,25 +145,25 @@ function __baspar_abbr_path -a root path_segment
 end
 
 function __baspar_git_branch_name -a GIT_DIR GIT_WORKTREE
-  # Function __baspar_git_branch_name
-  #
   # @param GIT_DIR location of .git folder
   #
-  # @returns:
+  # @returns: The branch name, or commit hash
   #
   [ -d "$GIT_WORKTREE/rebase-merge" ] && {
     cat "$GIT_WORKTREE/rebase-merge/head-name" 2>/dev/null
     return
   }
 
-  set x (git -C "$GIT_WORKTREE" symbolic-ref HEAD 2> /dev/null)
+  # HEAD is on a branch
+  set head_branch (git -C "$GIT_WORKTREE" symbolic-ref HEAD 2> /dev/null)
   if [ $status -eq 0 ]
-    echo $x | \
+    echo $head_branch | \
       sed 's|refs/[^/]*/||g' | \
       tr -d '\n'
     return
   end
 
+  # Detached HEAD
   echo (git -C "$GIT_WORKTREE" rev-parse HEAD | string match -r '^.{8}')…
 end
 
@@ -178,25 +174,25 @@ function __baspar_git_operation -a GIT_DIR GIT_WORKTREE
   #
   # @returns: a symbol corresponding to the current operation
   #
-  if test -d "$GIT_DIR/rebase-merge"
+  if [ -d "$GIT_DIR/rebase-merge" ]
       set step (cat "$GIT_DIR/rebase-merge/msgnum" 2>/dev/null)
       set total (cat "$GIT_DIR/rebase-merge/end" 2>/dev/null)
       set GIT_OPERATION " "
-  else if test -d "$GIT_DIR/rebase-apply"
+  else if [ -d "$GIT_DIR/rebase-apply" ]
     set step (cat "$GIT_DIR/rebase-apply/next" 2>/dev/null)
     set total (cat "$GIT_DIR/rebase-apply/last" 2>/dev/null)
     set GIT_OPERATION " "
-  else if test -f "$GIT_DIR/MERGE_HEAD"
+  else if [ -f "$GIT_DIR/MERGE_HEAD" ]
       set GIT_OPERATION " "
-  else if test -f "$GIT_DIR/CHERRY_PICK_HEAD"
+  else if [ -f "$GIT_DIR/CHERRY_PICK_HEAD" ]
       set GIT_OPERATION " "
-  else if test -f "$GIT_DIR/REVERT_HEAD"
+  else if [ -f "$GIT_DIR/REVERT_HEAD" ]
       set GIT_OPERATION " "
-  else if test -f "$GIT_DIR/BISECT_LOG"
+  else if [ -f "$GIT_DIR/BISECT_LOG" ]
       set GIT_OPERATION "÷"
   end
 
-  if test -n "$step" -a -n "$total"
+  if [ -n "$step" ] && [ -n "$total" ]
       set GIT_OPERATION "$GIT_OPERATION $step/$total"
   end
 
@@ -325,6 +321,9 @@ function __baspar_reset --on-event fish_prompt --on-event fish_cancel
   # Function __baspar_reset
   #
   # Reset behaviour and variable
+  # - Force git update
+  # - Reset dir abbreviation
+  # - Disable all indicators
   #
   set -g __baspar_need_git_update
   set -e __baspar_no_abbr
@@ -435,7 +434,7 @@ function fish_prompt
   #
   # @returns Main prompt
   #
-  set -l _display_status $status
+  set _display_status $status
 
   __baspar_indicator_init
 
