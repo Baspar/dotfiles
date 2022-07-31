@@ -11,6 +11,7 @@ set -g DICT_ID "__baspar_id"
 set -g DICT_ERR "__baspar_err"
 set -g DICT_COMMAND "__baspar_cmd"
 set -g DICT_LIST "__baspar_list"
+set -g DICT_OVERRIDE_NAME "__baspar_override_name"
 
 # Alias a command to a indicator name
 function setup_indicator_alias -a command_name indicator_name
@@ -96,6 +97,10 @@ function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_f
     __baspar_indicator_update_$indicator_name (echo $item | string escape --style=var)
   end
 
+  function __baspar_indicator_end_override_$indicator_name -a override_name -V indicator_name
+    _dict_setx $DICT_OVERRIDE_NAME $indicator_name $override_name
+  end
+
   function __baspar_indicator_start_override_$indicator_name -a override_item -V indicator_name
     _dict_setx $DICT_ID $indicator_name 0
 
@@ -121,10 +126,12 @@ function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_f
   function __baspar_indicator_display_$indicator_name -V indicator_name -V logo
     set id (_dict_get $DICT_ID $indicator_name)
     set list (eval __baspar_indicator_mem_list_$indicator_name); or return
-    if [ $id -le 0 ]
-      set item "???"
-    else
+    if [ $id -gt 0 ]
       set item $list[$id]
+    else if _dict_has $DICT_OVERRIDE_NAME $indicator_name
+      set item (_dict_get $DICT_OVERRIDE_NAME $indicator_name)
+    else
+      set item "???"
     end
     set count (count $list)
 
@@ -139,7 +146,9 @@ function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_f
     end
 
     section $bg_color $fg_color "$logo$item" -o -i
-    section (__baspar_darker_of $bg_color) "#3e3e3e" "$id/$count" -o
+    if [ $id -gt 0 ]
+      section (__baspar_darker_of $bg_color) "#3e3e3e" "$id/$count" -o
+    end
   end
 
   function __baspar_indicator_init_$indicator_name -V indicator_name

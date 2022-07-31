@@ -11,11 +11,14 @@ function __baspar_indicator_pre_async_aws -a credentials
     set -e AWS_PROFILE
   else
     set -gx AWS_PROFILE $credentials
+    set -e AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN
   end
 end
 
 function __baspar_indicator_async_aws -a credentials response_file
+  set is_overriden
   if string match "|*|*|*|" "$credentials" > /dev/null
+    set is_overriden "true"
     set -fx AWS_ACCESS_KEY_ID (echo $credentials | cut -d'|' -f 2)
     set -fx AWS_SECRET_ACCESS_KEY (echo $credentials | cut -d'|' -f 3)
     set -fx AWS_SESSION_TOKEN (echo $credentials | cut -d'|' -f 4)
@@ -27,7 +30,8 @@ function __baspar_indicator_async_aws -a credentials response_file
   set AWS_ACCOUNT (aws sts get-caller-identity --query Account --output text); or exit 2
   set AWS_DEV (aws configure get dev)
 
-  echo "$AWS_REGION" > $response_file
+  echo "$is_overriden" > $response_file
+  echo "$AWS_REGION" >> $response_file
   echo "$AWS_ACCOUNT" >> $response_file
   echo "$AWS_DEV" >> $response_file
 end
@@ -35,14 +39,19 @@ end
 function __baspar_indicator_async_cb_aws -a response_file
   set async_response (cat $response_file)
 
-  set -gx AWS_REGION $async_response[1]
-  set -gx AWS_ACCOUNT_ID $async_response[2]
-  set AWS_DEV $async_response[3]
+  set is_overriden $async_response[1]
+  set -gx AWS_REGION $async_response[2]
+  set -gx AWS_ACCOUNT_ID $async_response[3]
+  set AWS_DEV $async_response[4]
 
   if [ -n "$AWS_DEV" ]
     set -gx DEV_AWS_ACCOUNT $AWS_ACCOUNT_ID
   else
     set -e DEV_AWS_ACCOUNT
+  end
+
+  if [ -n "$is_overriden" ]
+    __baspar_indicator_end_override_aws $AWS_ACCOUNT_ID
   end
 end
 
