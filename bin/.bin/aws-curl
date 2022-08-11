@@ -2,15 +2,16 @@
 usage() {
     echo ''
     echo 'Usage:'
-    echo '  aws-curl --region REGION --service SERVICE  (-p1 PROVIDER1) (-p2 PROVIDER2) -- [Normal cURL arguments]'
+    echo '  aws-curl --region REGION --service SERVICE  (-p1 PROVIDER1) (-p2 PROVIDER2) (--verbose) (--help) -- [Normal cURL arguments]'
 }
 
 region=""
 service=""
 provider1="aws"
 provider2="amz"
+verbose=""
 
-ARGS=$(getopt -n aws-curl -o "r:s:p1:p2:h" --long "region:,service:,provider1:,provider2:,help" -- "$@") || exit 1
+ARGS=$(getopt -n aws-curl -o "r:s:p1:p2:hv" --long "region:,service:,provider1:,provider2:,help,verbose" -- "$@") || exit 1
 eval set -- $ARGS
 while :; do
     case "$1" in
@@ -34,6 +35,10 @@ while :; do
             usage
             exit
             ;;
+        -v|--verbose)
+            verbose="--verbose"
+            shift
+            ;;
         --)
             shift
             break
@@ -43,27 +48,32 @@ while :; do
     esac
 done
 
-[ -z $region ] && {
+[ -z "$region" ] && {
     echo "Error: Missing region"
     usage
     exit 1
 }
-[ -z $service ] && {
+[ -z "$service" ] && {
     echo "Error: Missing service"
     usage
     exit 1
 }
 sigv4="$provider1:$provider2:$region:$service"
-echo "using sigv4 '$sigv4'"
+[ -n "$verbose" ] && echo "using sigv4 '$sigv4'"
 
-if [ -n "$AWS_ACCESS_KEY_ID" ] && [ -n "$AWS_SECRET_ACCESS_KEY" ] && [ -n "$AWS_SESSION_TOKEN" ]; then
-    echo "using env var"
-elif [ -n "$(aws configure get credential_process)" ]; then
-    echo "using credential_process"
-    credentials=$($(aws configure get credential_process) | jq -r '[.AccessKeyId, .SecretAccessKey, .SessionToken] | join("|")')
+if [ -n "$AWS_ACCESS_KEY_ID" ] && [ -n "$AWS_SECRET_ACCESS_KEY" ]; then
+    [ -n "$verbose" ] && echo "using env var"
+elif aws configure get aws_access_key_id >/dev/null && aws configure get aws_secret_access_key >/dev/null; then
+    [ -n "$verbose" ] && echo "using profile values"
+    AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id)
+    AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key)
+    AWS_SESSION_TOKEN=$(aws configure get aws_session_token)
+elif aws configure get credential_process >/dev/null; then
+    [ -n "$verbose" ] && echo "using credential_process"
+    credentials=$($(aws configure get credential_process) | jq -r '[.AccessKeyId, .SecretAccessKey, .SessionToken] | join("|")') || exit 1
     AWS_ACCESS_KEY_ID=$(echo $credentials | cut -d'|' -f1)
     AWS_SECRET_ACCESS_KEY=$(echo $credentials | cut -d'|' -f2)
     AWS_SESSION_TOKEN=$(echo $credentials | cut -d'|' -f3)
 fi
 
-curl --aws-sigv4 "$sigv4" --user "$AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY" -H "x-amz-security-token:$AWS_SESSION_TOKEN" $*
+curl --aws-sigv4 "$sigv4" --user "$AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY" -H "x-amz-security-token:$AWS_SESSION_TOKEN" $verbose $*
