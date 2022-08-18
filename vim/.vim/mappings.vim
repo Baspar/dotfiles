@@ -151,6 +151,7 @@ nnoremap <silent> <localleader>f :lua vim.lsp.buf.formatting()<CR>
 vnoremap <silent> <localleader>f :lua vim.lsp.buf.range_formatting()<CR>
 nnoremap <silent> <localleader>R :lua vim.lsp.buf.rename()<CR>
 nnoremap <silent> <localleader><localleader> :lua vim.lsp.buf.code_action()<CR>
+vnoremap <silent> <localleader><localleader> :lua vim.lsp.buf.range_code_action()<CR>
 nnoremap <silent> K :lua vim.lsp.buf.hover()<CR>
 
 " Markdown
