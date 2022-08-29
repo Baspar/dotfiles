@@ -27,18 +27,12 @@ set directory=$HOME/.vim/swap//
 set shell=/bin/bash
 set noswapfile
 set list
-set listchars=tab:┋\ ,trail:✗,eol:↴
+set listchars=tab:┋\ ,trail:✗,eol:↵
 set laststatus=2
 " }}}
 
 " {{{ Color
 set synmaxcol=300
-colorscheme melange
-if exists('+termguicolors')
-  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-  set termguicolors
-endif
 augroup CustomColorChange
   function! s:custom_colors ()
     hi! Normal ctermbg=NONE guibg=NONE
@@ -53,10 +47,18 @@ augroup CustomColorChange
   endfunction
 
   au!
-    au ColorScheme * call s:custom_colors()
-    au VimEnter * call s:custom_colors()
-  augroup END
+  au ColorScheme * call s:custom_colors()
+  au VimEnter * call s:custom_colors()
+augroup END
+if exists('+termguicolors')
+  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+  set termguicolors
+endif
+set background=dark
+colorscheme melange
 " }}}
+
 
 " {{{ Indentation
 set tabstop=2 shiftwidth=2 expandtab

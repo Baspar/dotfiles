@@ -54,17 +54,6 @@ func! s:is_fzf(filename)
 endfunc
 
 " Component functions
-func! Coc(field)
-    try
-        let count = get(b:coc_diagnostic_info, a:field)
-        if count == 0
-            return ''
-        endif
-        return count
-    catch /.*/
-        return ''
-    endtry
-endfunc
 func! LSPWarning()
   if has('nvim') && luaeval('not vim.tbl_isempty(vim.lsp.buf_get_clients(0))')
     let count = luaeval("table.getn(vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN }))")
@@ -148,8 +137,8 @@ let g:lightline = {
             \             [ 'filename' ] ],
             \   'right': [ ['fugitive'],
             \              ['lineinfo'],
-            \              ['cocWarning'],
-            \              ['cocError'] ]
+            \              ['lspWarning'],
+            \              ['lspError'] ]
             \ },
             \ 'inactive': {
             \   'left': [ [ 'filename', 'readOnlyModified' ] ],
@@ -160,8 +149,8 @@ let g:lightline = {
             \   'lineinfo': 'LineInfo',
             \   'fugitive': 'Fugitive',
             \   'filename': 'FileName',
-            \   'cocWarning': 'LSPWarning',
-            \   'cocError': 'LSPError',
+            \   'lspWarning': 'LSPWarning',
+            \   'lspError': 'LSPError',
             \   'readOnlyModified': 'ReadOnlyModified'
             \ },
             \ 'separator': { 'left': $LEFT_SEPARATOR, 'right': $RIGHT_SEPARATOR },
