@@ -40,8 +40,12 @@ call plug#begin('~/.vim/plugged')
   " {{{ LSP
   Plug 'neovim/nvim-lspconfig', If(has('nvim'))
   Plug 'j-hui/fidget.nvim', If(has('nvim'))
-  Plug 'nvim-lua/plenary.nvim', If(has('nvim')) " Used by null-ls
+  Plug 'nvim-lua/plenary.nvim', If(has('nvim'))
   Plug 'jose-elias-alvarez/null-ls.nvim', If(has('nvim'))
+
+  Plug 'prabirshrestha/vim-lsp', If(!has('nvim'))
+  Plug 'micchy326/lightline-lsp-progress', If(!has('nvim'))
+  Plug 'mattn/vim-lsp-settings', If(!has('nvim'))
   " }}}
 
   " {{{ Undotree
@@ -49,12 +53,13 @@ call plug#begin('~/.vim/plugged')
   " }}}
 
   " {{{ Completion + Snippets
-  Plug 'hrsh7th/cmp-path', If(has('nvim'))
-  Plug 'hrsh7th/cmp-buffer', If(has('nvim'))
-  Plug 'hrsh7th/cmp-nvim-lsp', If(has('nvim'))
-  Plug 'hrsh7th/nvim-cmp', If(has('nvim'))
-  Plug 'hrsh7th/cmp-vsnip', If(has('nvim'))
+  Plug 'prabirshrestha/asyncomplete.vim'
+  Plug 'prabirshrestha/asyncomplete-buffer.vim'
+  Plug 'prabirshrestha/asyncomplete-file.vim'
+  Plug 'prabirshrestha/asyncomplete-lsp.vim'
+
   Plug 'hrsh7th/vim-vsnip'
+  Plug 'hrsh7th/vim-vsnip-integ'
   Plug 'rafamadriz/friendly-snippets'
   " }}}
 

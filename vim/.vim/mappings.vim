@@ -142,17 +142,31 @@ vnoremap <leader>r :<C-u>call repl_it#visual_mode()<CR>
 nmap <leader>rr V<leader>r
 
 " Neovim LSP
-nnoremap <silent> ]a :lua vim.diagnostic.goto_next({float = {max_width = 150, focusable = false, border = "rounded"}})<CR>
-nnoremap <silent> [a :lua vim.diagnostic.goto_prev({float = {max_width = 150, focusable = false, border = "rounded"}})<CR>
-nnoremap <silent> <localleader>r :lua vim.lsp.buf.references()<CR>
-nnoremap <silent> <localleader>d :lua vim.lsp.buf.definition()<CR>
-nnoremap <silent> <localleader>D m0:tabe %<CR>`0:lua vim.lsp.buf.definition()<CR>
-nnoremap <silent> <localleader>f :lua vim.lsp.buf.formatting()<CR>
-vnoremap <silent> <localleader>f :lua vim.lsp.buf.range_formatting()<CR>
-nnoremap <silent> <localleader>R :lua vim.lsp.buf.rename()<CR>
-nnoremap <silent> <localleader><localleader> :lua vim.lsp.buf.code_action()<CR>
-vnoremap <silent> <localleader><localleader> :lua vim.lsp.buf.range_code_action()<CR>
-nnoremap <silent> K :lua vim.lsp.buf.hover()<CR>
+if has('nvim')
+  nnoremap <silent> K :lua vim.lsp.buf.hover()<CR>
+  nnoremap <silent> ]a :lua vim.diagnostic.goto_next({float = {max_width = 150, focusable = false, border = "rounded"}})<CR>
+  nnoremap <silent> [a :lua vim.diagnostic.goto_prev({float = {max_width = 150, focusable = false, border = "rounded"}})<CR>
+  nnoremap <silent> <localleader>r :lua vim.lsp.buf.references()<CR>
+  nnoremap <silent> <localleader>d :lua vim.lsp.buf.definition()<CR>
+  nnoremap <silent> <localleader>D m0:tabe %<CR>`0:lua vim.lsp.buf.definition()<CR>
+  nnoremap <silent> <localleader>f :lua vim.lsp.buf.formatting()<CR>
+  vnoremap <silent> <localleader>f :lua vim.lsp.buf.range_formatting()<CR>
+  nnoremap <silent> <localleader>R :lua vim.lsp.buf.rename()<CR>
+  nnoremap <silent> <localleader><localleader> :lua vim.lsp.buf.code_action()<CR>
+  vnoremap <silent> <localleader><localleader> :lua vim.lsp.buf.range_code_action()<CR>
+else
+  nnoremap <silent> K <plug>(lsp-hover)
+  nnoremap <silent> ]a <plug>(lsp-next-diagnostic)
+  nnoremap <silent> [a <plug>(lsp-previous-diagnostic)
+  nnoremap <silent> <localleader>r <plug>(lsp-references)
+  nnoremap <silent> <localleader>d <plug>(lsp-definition)
+  nnoremap <silent> <localleader>D m0:tabe %<CR>`0<plug>(lsp-definition)
+  nnoremap <silent> <localleader>f :call execute('LspDocumentFormatSync')<CR>
+  vnoremap <silent> <localleader>f :call execute('LspDocumentFormatSync')<CR>
+  nnoremap <silent> <localleader>R <plug>(lsp-rename)
+  nnoremap <silent> <localleader><localleader> :LspCodeAction<CR>
+  vnoremap <silent> <localleader><localleader> :LspCodeAction<CR>
+endif
 
 " Markdown
 augroup MarkdownManipulation

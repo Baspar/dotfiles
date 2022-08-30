@@ -1,6 +1,4 @@
 local lspconfig = require'lspconfig'
-local cmp = require'cmp'
-local cmp_lsp = require'cmp_nvim_lsp'
 local null_ls = require'null-ls'
 local fidget = require'fidget'
 
@@ -92,27 +90,6 @@ configs['smithy_lsp'] = {}
 -- }}}
 -- }}}
 
--- {{{ nvim-cmp
-cmp.setup({
-  sources = cmp.config.sources({
-    { name = 'nvim_lsp' },
-    { name = 'path' },
-    { name = 'vsnip' },
-  }, {
-    { name = 'buffer' },
-  }),
-  preselect = cmp.PreselectMode.None,
-  view = {
-    entries = 'native'
-  },
-  snippet = {
-    expand = function(args)
-      vim.fn["vsnip#anonymous"](args.body)
-    end,
-  }
-})
--- }}}
-
 -- {{{ Fidget
 fidget.setup{
   text = {
@@ -141,12 +118,5 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
   }
 )
 -- }}}
-
-local capabilities = cmp_lsp.update_capabilities(vim.lsp.protocol.make_client_capabilities())
-for name, config in pairs(configs) do
-  lspconfig[name].setup {
-    capabilities = capabilities
-  }
-end
 
 -- vim: foldmethod=marker:foldlevel=0

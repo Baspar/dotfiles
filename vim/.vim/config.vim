@@ -39,11 +39,17 @@ augroup CustomColorChange
     hi! SignColumn ctermbg=233 guibg=#121212
     hi! Comment cterm=italic gui=italic
     hi! String cterm=italic gui=italic
+    hi! lspInlayHintsParameter cterm=italic ctermfg=14 gui=italic guifg=#7e6956
+    hi! lspInlayHintsType cterm=italic ctermfg=14 gui=italic guifg=#5e5e5e
     hi! Sneak ctermfg=237 ctermbg=3 guifg=#3A3A3A guibg=#AF875F
+
     hi! LspDiagnosticsDefaultError guifg=red ctermfg=red
     hi! LspErrorHighlight cterm=undercurl gui=undercurl ctermfg=131 guifg=#af5f5f
+    hi! LspErrorText ctermfg=131 guifg=#af5f5f
+
     hi! LspDiagnosticsDefaultWarning ctermfg=180 guifg=#dfaf87
     hi! LspWarningHighlight cterm=undercurl gui=undercurl ctermfg=180 guifg=#dfaf87
+    hi! LspWarningText ctermfg=180 guifg=#dfaf87
   endfunction
 
   au!
@@ -53,6 +59,8 @@ augroup END
 if exists('+termguicolors')
   let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
   let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+  let &t_Cs = "\e[4:3m"
+  let &t_Ce = "\e[4:0m"
   set termguicolors
 endif
 set background=dark

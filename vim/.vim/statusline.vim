@@ -10,20 +10,20 @@ let s:p = {'normal': {}, 'inactive': {}, 'insert': {}, 'replace': {}, 'visual': 
 
 let s:p.normal.left = [ [ s:white, s:dark_grey, 'bold' ], [ s:white, s:light_grey ] ]
 let s:p.normal.middle = [ [ s:white, s:transparent ] ]
-let s:p.normal.right = [ [ s:white, s:dark_grey ], [ s:white, s:light_grey ], [ s:white, s:orange ], [ s:white, s:red ] ]
+let s:p.normal.right = [ [ s:white, s:light_grey ], [ s:white, s:dark_grey ], [ s:white, s:light_grey ], [ s:white, s:orange ], [ s:white, s:red ] ]
 
 let s:p.inactive.left =  [ [ s:dark_grey, s:light_grey ] ]
 let s:p.inactive.middle  = [ [ s:white, s:transparent ] ]
-let s:p.inactive.right = [ [ s:dark_grey, s:light_grey ] ]
+let s:p.inactive.right = [ [ s:white, s:light_grey ], [ s:dark_grey, s:light_grey ] ]
 
 let s:p.insert.left = [ [ s:white, s:orange, 'bold' ], [ s:white, s:light_grey ] ]
-let s:p.insert.right = [ [ s:white, s:dark_grey ], [ s:white, s:light_grey ], [ s:white, s:orange ], [ s:white, s:red ] ]
+let s:p.insert.right = [ [ s:white, s:light_grey ], [ s:white, s:dark_grey ], [ s:white, s:light_grey ], [ s:white, s:orange ], [ s:white, s:red ] ]
 
 let s:p.replace.left = [ [ s:white, s:green, 'bold' ], [ s:white, s:light_grey ] ]
-let s:p.replace.right = [ [ s:white, s:dark_grey ], [ s:white, s:light_grey ], [ s:white, s:orange ], [ s:white, s:red ] ]
+let s:p.replace.right = [ [ s:white, s:light_grey ], [ s:white, s:dark_grey ], [ s:white, s:light_grey ], [ s:white, s:orange ], [ s:white, s:red ] ]
 
 let s:p.visual.left = [ [ s:white, s:red, 'bold' ], [ s:white, s:light_grey ] ]
-let s:p.visual.right = [ [ s:white, s:dark_grey ], [ s:white, s:light_grey ], [ s:white, s:orange ], [ s:white, s:red ] ]
+let s:p.visual.right = [ [ s:white, s:light_grey ], [ s:white, s:dark_grey ], [ s:white, s:light_grey ], [ s:white, s:orange ], [ s:white, s:red ] ]
 
 let s:p.tabline.right = []
 let s:p.tabline.left = [ [ s:white, s:light_grey ] ]
@@ -135,7 +135,8 @@ let g:lightline = {
             \ 'active': {
             \   'left': [ [ 'mode', 'paste' ],
             \             [ 'filename' ] ],
-            \   'right': [ ['fugitive'],
+            \   'right': [ ['lsp_status'],
+            \              ['fugitive'],
             \              ['lineinfo'],
             \              ['lspWarning'],
             \              ['lspError'] ]
@@ -145,6 +146,7 @@ let g:lightline = {
             \   'right': [ ['fugitive'] ]
             \ },
             \ 'component_function': {
+            \   'lsp_status': 'lightline_lsp_progress#progress',
             \   'mode': 'Mode',
             \   'lineinfo': 'LineInfo',
             \   'fugitive': 'Fugitive',
