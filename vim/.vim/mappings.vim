@@ -166,6 +166,8 @@ else
   nnoremap <silent> <localleader>R <plug>(lsp-rename)
   nnoremap <silent> <localleader><localleader> :LspCodeAction<CR>
   vnoremap <silent> <localleader><localleader> :LspCodeAction<CR>
+  nnoremap <expr> <C-j> lsp#scroll(+4)
+  nnoremap <expr> <C-k> lsp#scroll(-4)
 endif
 
 " Markdown
