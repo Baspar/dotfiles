@@ -23,17 +23,9 @@ nnoremap <Plug>PrependText# n".P:call repeat#set("\<Plug>PrependText#")<CR>
 nnoremap c<#                #cgN<C-r>"<C-o>`[<C-o>:call repeat#set("\<Plug>PrependText#")<CR>
 
 " FZF
-function! OpenGitFilesIfGit()
-  silent! !git rev-parse --is-inside-work-tree
-  if v:shell_error == 0
-    return ":GitFiles ."
-  else
-    return ":FZF"
-  endif
-endfunction
-nnoremap \ :Buffers<CR>
-nnoremap <expr> <tab> OpenGitFilesIfGit()
-nnoremap <s-tab> :FZF<CR>
+nnoremap <silent> \ :Buffers<CR>
+nnoremap <silent> <tab> :GitFiles<CR>
+nnoremap <silent> <s-tab> :FZF<CR>
 
 " fileExplorer
 nnoremap <C-e> :silent exec "NERDTreeToggle"<CR>
@@ -149,8 +141,8 @@ if has('nvim')
   nnoremap <silent> <localleader>r :lua vim.lsp.buf.references()<CR>
   nnoremap <silent> <localleader>d :lua vim.lsp.buf.definition()<CR>
   nnoremap <silent> <localleader>D m0:tabe %<CR>`0:lua vim.lsp.buf.definition()<CR>
-  nnoremap <silent> <localleader>f :lua vim.lsp.buf.formatting()<CR>
-  vnoremap <silent> <localleader>f :lua vim.lsp.buf.range_formatting()<CR>
+  nnoremap <silent> <localleader>f :lua vim.lsp.buf.format()<CR>
+  vnoremap <silent> <localleader>f :lua vim.lsp.buf.format()<CR>
   nnoremap <silent> <localleader>R :lua vim.lsp.buf.rename()<CR>
   nnoremap <silent> <localleader><localleader> :lua vim.lsp.buf.code_action()<CR>
   vnoremap <silent> <localleader><localleader> :lua vim.lsp.buf.range_code_action()<CR>

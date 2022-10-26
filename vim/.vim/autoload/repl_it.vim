@@ -21,6 +21,7 @@ function! repl_it#send_to(type, ...)
   call system("tmux loadb -b replit -", getreg("r"))
   execute 'silent! !tmux pasteb -b replit -t "\' . pane . '"'
   execute 'silent! !tmux deleteb -b replit'
+  execute 'redraw!'
 endfunction
 
 function! repl_it#normal_mode()

@@ -54,6 +54,17 @@ func! s:is_fzf(filename)
 endfunc
 
 " Component functions
+
+func! GetLSPCounts(t)
+  if exists("*lsp#get_buffer_diagnostics_counts")
+    let c = get(lsp#get_buffer_diagnostics_counts(), a:t)
+    if c != 0
+      return c
+    endif
+  endif
+  return ''
+endfunc
+
 func! LSPWarning()
   if has('nvim') && luaeval('not vim.tbl_isempty(vim.lsp.buf_get_clients(0))')
     let count = luaeval("table.getn(vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN }))")
@@ -61,16 +72,17 @@ func! LSPWarning()
       return count
     endif
   endif
-  return ''
+  return GetLSPCounts('warning')
 endfunc
+
 func! LSPError()
   if has('nvim') && luaeval('not vim.tbl_isempty(vim.lsp.buf_get_clients(0))')
-    let count = luaeval("table.getn(vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR }))")
-    if count != 0
-      return count
+    let c = luaeval("table.getn(vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR }))")
+    if c != 0
+      return c
     endif
   endif
-  return ''
+  return GetLSPCounts('error')
 endfunc
 
 func! LineInfo()

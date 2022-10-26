@@ -7,7 +7,6 @@ set runtimepath^=~/.vim runtimepath+=~/.vim/after
 let &packpath = &runtimepath
 
 call plug#begin('~/.vim/plugged')
-
   " {{{ AutoPairs
   Plug 'jiangmiao/auto-pairs'
   Plug 'alvan/vim-closetag'
@@ -38,14 +37,27 @@ call plug#begin('~/.vim/plugged')
   " }}}
 
   " {{{ LSP
-  Plug 'neovim/nvim-lspconfig', If(has('nvim'))
-  Plug 'j-hui/fidget.nvim', If(has('nvim'))
-  Plug 'nvim-lua/plenary.nvim', If(has('nvim'))
-  Plug 'jose-elias-alvarez/null-ls.nvim', If(has('nvim'))
-
-  Plug 'prabirshrestha/vim-lsp', If(!has('nvim'))
-  Plug 'micchy326/lightline-lsp-progress', If(!has('nvim'))
-  Plug 'mattn/vim-lsp-settings', If(!has('nvim'))
+  if has('nvim')
+    Plug 'hrsh7th/cmp-path'
+    Plug 'hrsh7th/cmp-buffer'
+    Plug 'hrsh7th/cmp-nvim-lsp'
+    Plug 'hrsh7th/nvim-cmp'
+    Plug 'hrsh7th/cmp-vsnip'
+    Plug 'neovim/nvim-lspconfig'
+    Plug 'j-hui/fidget.nvim'
+    Plug 'nvim-lua/plenary.nvim'
+    Plug 'jose-elias-alvarez/null-ls.nvim'
+    Plug 'hrsh7th/vim-vsnip'
+    Plug 'hrsh7th/vim-vsnip-integ'
+  else
+    Plug 'prabirshrestha/vim-lsp'
+    Plug 'micchy327/lightline-lsp-progress'
+    Plug 'mattn/vim-lsp-settings'
+    Plug 'prabirshrestha/asyncomplete.vim'
+    Plug 'prabirshrestha/asyncomplete-buffer.vim'
+    Plug 'prabirshrestha/asyncomplete-file.vim'
+    Plug 'prabirshrestha/asyncomplete-lsp.vim'
+  endif
   " }}}
 
   " {{{ Undotree
@@ -53,13 +65,6 @@ call plug#begin('~/.vim/plugged')
   " }}}
 
   " {{{ Completion + Snippets
-  Plug 'prabirshrestha/asyncomplete.vim'
-  Plug 'prabirshrestha/asyncomplete-buffer.vim'
-  Plug 'prabirshrestha/asyncomplete-file.vim'
-  Plug 'prabirshrestha/asyncomplete-lsp.vim'
-
-  Plug 'hrsh7th/vim-vsnip'
-  Plug 'hrsh7th/vim-vsnip-integ'
   Plug 'rafamadriz/friendly-snippets'
   " }}}
 

@@ -1,6 +1,6 @@
 filetype plugin on
 
-" {{{ General options
+"  General options
 set nowrap
 set completeopt=menu,menuone,noselect
 set noemoji
@@ -22,16 +22,20 @@ set foldmethod=indent
 set wildmenu
 set spelllang=en
 set spellfile=$HOME/.vim/spell/en.utf-8.add
-set undodir=$HOME/.vim/undo//
-set directory=$HOME/.vim/swap//
+if has('nvim')
+  set undodir=$HOME/.config/nvim/undo//
+  set directory=$HOME/.config/nvim/swap//
+else
+  set undodir=$HOME/.vim/undo//
+  set directory=$HOME/.vim/swap//
+endif
 set shell=/bin/bash
 set noswapfile
 set list
-set listchars=tab:┋\ ,trail:✗,eol:↵
+set listchars=tab:┋\ ,trail:✗,eol:↩
 set laststatus=2
-" }}}
 
-" {{{ Color
+"  Color
 set synmaxcol=300
 augroup CustomColorChange
   function! s:custom_colors ()
@@ -56,43 +60,47 @@ augroup CustomColorChange
   au ColorScheme * call s:custom_colors()
   au VimEnter * call s:custom_colors()
 augroup END
+
 if exists('+termguicolors')
-  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-  let &t_Cs = "\e[4:3m"
-  let &t_Ce = "\e[4:0m"
+  let &t_8f = "\e[38;2;%lu;%lu;%lum"
+  let &t_8b = "\e[48;2;%lu;%lu;%lum"
   set termguicolors
 endif
+let &t_Cs = "\e[4:3m" " start undercurl
+let &t_Ce = "\e[4:0m" " stop undercurl
+let &t_SI = "\e[5 q" " start insert: blinking bar
+let &t_SR = "\e[3 q" " start replace: blinking underscore
+let &t_EI = "\e[1 q" " end insert/replace: blinking block
 set background=dark
 colorscheme melange
-" }}}
+" 
 
 
-" {{{ Indentation
+"  Indentation
 set tabstop=2 shiftwidth=2 expandtab
 au FileType sh setlocal tabstop=4 shiftwidth=4 expandtab
 au FileType go setlocal ts=4 sw=4 sts=4 noexpandtab
-" }}}
+" 
 
 au FileType git setlocal foldmethod=syntax
 
-" {{{ Netrw
+"  Netrw
 autocmd FileType netrw vertical resize 30
 let g:netrw_liststyle = 3
 let g:netrw_banner = 0
-" }}}
+" 
 
-" {{{ STDIN
+"  STDIN
 autocmd StdinReadPre * let s:std_in=1
-" }}}
+" 
 
-" {{{ Trailing spaces
+"  Trailing spaces
 hi! TrailingSpaces ctermbg=131 guibg=#af5f5f
 match TrailingSpaces / \+$/
-" }}}
+" 
 
-" {{{ Change default SQL mapping
+"  Change default SQL mapping
 let g:ftplugin_sql_omni_key = '<C-s>'
-" }}}
+" 
 
 " vim: foldmethod=marker:foldlevel=0
