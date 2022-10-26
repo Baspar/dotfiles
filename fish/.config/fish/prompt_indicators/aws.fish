@@ -3,7 +3,7 @@
 # ================
 
 function __baspar_indicator_list_aws
-  aws configure list-profiles
+  [ -f ~/.aws/credentials ] && cat ~/.aws/credentials | sed '/^\[.*\]$/!d; s/\[\(.*\)\]/\1/'
 end
 
 function __baspar_indicator_pre_async_aws -a credentials
@@ -27,8 +27,12 @@ function __baspar_indicator_async_aws -a credentials response_file
   end
 
   set AWS_REGION (aws configure get region; or echo "eu-west-1")
-  set AWS_ACCOUNT (aws sts get-caller-identity --query Account --output text); or exit 2
   set AWS_DEV (aws configure get dev)
+  if [ -n "$is_overriden" ]
+    set AWS_ACCOUNT (aws sts get-caller-identity --query Account --output text); or exit 2
+  else
+    set AWS_ACCOUNT (get_or_set_aws_config aws_account_id "aws sts get-caller-identity --query Account --output text"); or exit 2
+  end
 
   echo "$is_overriden" > $response_file
   echo "$AWS_REGION" >> $response_file

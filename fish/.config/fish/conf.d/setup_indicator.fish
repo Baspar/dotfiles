@@ -101,6 +101,7 @@ function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_f
     __baspar_indicator_update_$indicator_name (echo $item | string escape --style=var)
   end
 
+  # Allows for custom overriden name to be displayed
   function __baspar_indicator_end_override_$indicator_name -a override_name -V indicator_name
     _dict_setx $DICT_OVERRIDE_NAME $indicator_name $override_name
   end
@@ -133,6 +134,7 @@ function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_f
     if [ $id -gt 0 ]
       set item $list[$id]
     else if _dict_has $DICT_OVERRIDE_NAME $indicator_name
+      set logo "$logo "
       set item (_dict_get $DICT_OVERRIDE_NAME $indicator_name)
     else
       set item "???"

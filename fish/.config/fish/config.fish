@@ -81,3 +81,12 @@ function update_tmux_current_pwd --on-variable PWD
     [ -n "$TMUX" ] && tmux setenv TMUXPWD_(tmux display -p "#D" | tr -d %) "$PWD"
 end
 update_tmux_current_pwd
+
+function get_or_set_aws_config -a key -a cmd
+    set out (aws configure get "$key")
+    if [ -z "$out" ]
+        set out (eval $cmd); or return 1
+        aws configure set "$key" "$out"
+    end
+    echo $out
+end
