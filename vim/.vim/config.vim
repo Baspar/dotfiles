@@ -32,10 +32,10 @@ endif
 set shell=/bin/bash
 set noswapfile
 set list
-set listchars=tab:┋\ ,trail:✗,eol:↩
+set listchars=tab:┋\ ,trail:■,eol:↩
 set laststatus=2
 
-"  Color
+" Color
 set synmaxcol=300
 augroup CustomColorChange
   function! s:custom_colors ()
@@ -46,6 +46,8 @@ augroup CustomColorChange
     hi! lspInlayHintsParameter cterm=italic ctermfg=14 gui=italic guifg=#7e6956
     hi! lspInlayHintsType cterm=italic ctermfg=14 gui=italic guifg=#5e5e5e
     hi! Sneak ctermfg=237 ctermbg=3 guifg=#3A3A3A guibg=#AF875F
+
+    hi! Whitespace guifg=#4d453e cterm=italic gui=italic
 
     hi! LspDiagnosticsDefaultError guifg=red ctermfg=red
     hi! LspErrorHighlight cterm=undercurl gui=undercurl ctermfg=131 guifg=#af5f5f
@@ -73,14 +75,11 @@ let &t_SR = "\e[3 q" " start replace: blinking underscore
 let &t_EI = "\e[1 q" " end insert/replace: blinking block
 set background=dark
 colorscheme melange
-" 
-
 
 "  Indentation
 set tabstop=2 shiftwidth=2 expandtab
 au FileType sh setlocal tabstop=4 shiftwidth=4 expandtab
 au FileType go setlocal ts=4 sw=4 sts=4 noexpandtab
-" 
 
 au FileType git setlocal foldmethod=syntax
 
@@ -88,19 +87,15 @@ au FileType git setlocal foldmethod=syntax
 autocmd FileType netrw vertical resize 30
 let g:netrw_liststyle = 3
 let g:netrw_banner = 0
-" 
 
 "  STDIN
 autocmd StdinReadPre * let s:std_in=1
-" 
 
 "  Trailing spaces
-hi! TrailingSpaces ctermbg=131 guibg=#af5f5f
+hi! TrailingSpaces ctermfg=131 guifg=#af5f5f
 match TrailingSpaces / \+$/
-" 
 
 "  Change default SQL mapping
 let g:ftplugin_sql_omni_key = '<C-s>'
-" 
 
 " vim: foldmethod=marker:foldlevel=0

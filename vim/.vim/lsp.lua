@@ -142,7 +142,6 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
 )
 -- }}}
 
-
 local capabilities = cmp_nvim_lsp.default_capabilities()
 for name, config in pairs(configs) do
   lspconfig[name].setup {

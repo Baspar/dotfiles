@@ -50,8 +50,9 @@ abbr mc 'make clean'
 abbr free 'free -h'
 abbr f 'free'
 
-abbr vi 'vim'
-abbr v 'vim'
+command -v nvim > /dev/null && abbr vim 'nvim'
+command -v nvim > /dev/null && abbr vi  'nvim' || abbr vi 'vim'
+command -v nvim > /dev/null && abbr v   'nvim' || abbr v 'vim'
 
 abbr o 'xdg-open'
 
