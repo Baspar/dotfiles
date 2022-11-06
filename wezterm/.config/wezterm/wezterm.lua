@@ -8,6 +8,10 @@ return {
     family= 'Haskplex Nerd',
     harfbuzz_features = { 'calt=1', 'clig=1', 'liga=1' },
   },
+  keys = {
+    -- CTRL-SHIFT-l activates the debug overlay
+    { key = 'L', mods = 'CTRL', action = wezterm.action.ShowDebugOverlay },
+  },
   window_padding = {
     left = 0,
     right = 0,
@@ -15,11 +19,27 @@ return {
     bottom = 0,
   },
   window_decorations = "RESIZE",
+  cursor_blink_ease_in = "EaseInOut",
+  cursor_blink_ease_out = "EaseInOut",
+  cursor_blink_rate = 400,
+  -- use_fancy_tab_bar = true,
   colors = {
     background = "#202020",
     foreground = "#ECE1D7",
     cursor_bg  = "#99826D",
+    cursor_border  = "#99826D",
     cursor_fg  = "black",
+    tab_bar = {
+      background = "#202020",
+      active_tab = {
+        bg_color = "#af875f",
+        fg_color = "#3e3e3e"
+      },
+      inactive_tab = {
+        bg_color = "#3e3e3e",
+        fg_color = "white"
+      },
+    },
     ansi = {
       "#352F2A",
       "#B65C60",
