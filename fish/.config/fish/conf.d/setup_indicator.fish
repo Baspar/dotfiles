@@ -215,9 +215,8 @@ end
 
 function __baspar_indicator_err
   for command in $__baspar_indicator_names
-    if set -q __baspar_indicator_show_$command && _dict_has $DICT_ERR $command
+    if _dict_has $DICT_ERR $command
       eval __baspar_indicator_err_$command
-      break
     end
   end
 end
