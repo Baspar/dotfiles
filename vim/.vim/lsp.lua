@@ -3,6 +3,7 @@ local null_ls = require'null-ls'
 local fidget = require'fidget'
 local cmp = require'cmp'
 local cmp_nvim_lsp = require'cmp_nvim_lsp'
+local lspkind = require'lspkind'
 
 local configs = {}
 
@@ -44,29 +45,29 @@ null_ls.setup({
 configs['rls'] = {}
 -- }}}
 
--- {{{ Scala
-local scala_capabilities = vim.lsp.protocol.make_client_capabilities()
-scala_capabilities.textDocument.codeAction = {
-  dynamicRegistration = false;
-  codeActionLiteralSupport = {
-    codeActionKind = {
-      valueSet = {
-        "",
-        "quickfix",
-        "refactor",
-        "refactor.extract",
-        "refactor.inline",
-        "refactor.rewrite",
-        "source",
-        "source.organizeImports",
-      };
-    };
-  };
-}
-configs['metals'] = {
-  root_dir = lspconfig.util.find_git_ancestor;
-  capabilities = scala_capabilities;
-}
+-- {{{ Scala [Disabled]
+-- local scala_capabilities = vim.lsp.protocol.make_client_capabilities()
+-- scala_capabilities.textDocument.codeAction = {
+--   dynamicRegistration = false;
+--   codeActionLiteralSupport = {
+--     codeActionKind = {
+--       valueSet = {
+--         "",
+--         "quickfix",
+--         "refactor",
+--         "refactor.extract",
+--         "refactor.inline",
+--         "refactor.rewrite",
+--         "source",
+--         "source.organizeImports",
+--       };
+--     };
+--   };
+-- }
+-- configs['metals'] = {
+--   root_dir = lspconfig.util.find_git_ancestor;
+--   capabilities = scala_capabilities;
+-- }
 -- }}}
 
 -- {{{ Python
@@ -77,15 +78,23 @@ configs['pyright'] = {}
 configs['clangd'] = {}
 -- }}}
 
+-- {{{ Vim
+configs['vimls'] = {}
+-- }}}
+
+-- {{{ LUA
+configs['sumneko_lua'] = {}
+-- }}}
+
 -- {{{ Go
 configs['gopls'] = {}
 -- }}}
 
--- {{{ Smithy
-configs['smithy_lsp'] = {}
+-- {{{ Smithy [Disabled]
+-- configs['smithy_lsp'] = {}
 -- }}}
 
--- {{{ Groovy
+-- {{{ Groovy [Disabled]
 -- configs['groovyls'] = {
 --   cmd = { "java", "-jar", "/Users/bastien/.vim/lsp-servers/groovy-language-server-all.jar" },
 -- }
@@ -106,6 +115,24 @@ cmp.setup({
   view = {
     entries = 'native'
   },
+  formatting = {
+    format = function(entry, vim_item)
+      if vim.tbl_contains({ 'path' }, entry.source.name) then
+        local icon, hl_group = require('nvim-web-devicons').get_icon(entry:get_completion_item().label)
+        if icon then
+          vim_item.kind = icon
+          vim_item.kind_hl_group = hl_group
+          return vim_item
+        end
+      end
+      return lspkind.cmp_format({ with_text = false })(entry, vim_item)
+    end
+  },
+  mapping = cmp.mapping.preset.insert({
+    ['<C-k>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-j>'] = cmp.mapping.scroll_docs(4),
+    ['<C-l>'] = cmp.mapping.confirm({select = true}),
+  }),
   experimental = {
     ghost_text = true
   },
@@ -146,7 +173,7 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
 )
 -- }}}
 
-for name, config in pairs(configs) do
+for name, _ in pairs(configs) do
   lspconfig[name].setup {
     capabilities = cmp_nvim_lsp.default_capabilities()
   }

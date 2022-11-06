@@ -48,6 +48,8 @@ call plug#begin('~/.vim/plugged')
     Plug 'j-hui/fidget.nvim'
     Plug 'nvim-lua/plenary.nvim'
     Plug 'jose-elias-alvarez/null-ls.nvim'
+    Plug 'nvim-tree/nvim-web-devicons'
+    Plug 'onsails/lspkind.nvim'
   else
     Plug 'prabirshrestha/vim-lsp'
     Plug 'micchy327/lightline-lsp-progress'
