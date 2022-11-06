@@ -96,14 +96,18 @@ configs['smithy_lsp'] = {}
 cmp.setup({
   sources = cmp.config.sources({
     { name = 'nvim_lsp' },
+    { name = 'nvim_lsp_signature_help' },
     { name = 'path' },
     { name = 'vsnip' },
-  }, {
     { name = 'buffer' },
+  }, {
   }),
   preselect = cmp.PreselectMode.None,
   view = {
     entries = 'native'
+  },
+  experimental = {
+    ghost_text = true
   },
   snippet = {
     expand = function(args)
@@ -142,10 +146,9 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
 )
 -- }}}
 
-local capabilities = cmp_nvim_lsp.default_capabilities()
 for name, config in pairs(configs) do
   lspconfig[name].setup {
-    capabilities = capabilities
+    capabilities = cmp_nvim_lsp.default_capabilities()
   }
 end
 

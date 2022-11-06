@@ -38,17 +38,16 @@ call plug#begin('~/.vim/plugged')
 
   " {{{ LSP
   if has('nvim')
+    Plug 'hrsh7th/nvim-cmp'
     Plug 'hrsh7th/cmp-path'
     Plug 'hrsh7th/cmp-buffer'
     Plug 'hrsh7th/cmp-nvim-lsp'
-    Plug 'hrsh7th/nvim-cmp'
+    Plug 'hrsh7th/cmp-nvim-lsp-signature-help'
     Plug 'hrsh7th/cmp-vsnip'
     Plug 'neovim/nvim-lspconfig'
     Plug 'j-hui/fidget.nvim'
     Plug 'nvim-lua/plenary.nvim'
     Plug 'jose-elias-alvarez/null-ls.nvim'
-    Plug 'hrsh7th/vim-vsnip'
-    Plug 'hrsh7th/vim-vsnip-integ'
   else
     Plug 'prabirshrestha/vim-lsp'
     Plug 'micchy327/lightline-lsp-progress'
@@ -58,6 +57,8 @@ call plug#begin('~/.vim/plugged')
     Plug 'prabirshrestha/asyncomplete-file.vim'
     Plug 'prabirshrestha/asyncomplete-lsp.vim'
   endif
+  Plug 'hrsh7th/vim-vsnip'
+  Plug 'hrsh7th/vim-vsnip-integ'
   " }}}
 
   " {{{ Undotree
