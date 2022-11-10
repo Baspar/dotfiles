@@ -78,6 +78,10 @@ configs['pyright'] = {}
 configs['clangd'] = {}
 -- }}}
 
+-- {{{ Bash
+configs['bashls'] = {}
+-- }}}
+
 -- {{{ Vim
 configs['vimls'] = {}
 -- }}}
