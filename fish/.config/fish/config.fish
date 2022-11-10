@@ -82,6 +82,9 @@ function update_tmux_current_pwd --on-variable PWD
 end
 update_tmux_current_pwd
 
+bind -M insert \ck 'up-or-search'
+bind -M insert \cj 'down-or-search'
+
 function get_or_set_aws_config -a key -a cmd
     set out (aws configure get "$key")
     if [ -z "$out" ]
