@@ -85,11 +85,6 @@ update_tmux_current_pwd
 bind -M insert \ck 'up-or-search'
 bind -M insert \cj 'down-or-search'
 
-function get_or_set_aws_config -a key -a cmd
-    set out (aws configure get "$key")
-    if [ -z "$out" ]
-        set out (eval $cmd); or return 1
-        aws configure set "$key" "$out"
-    end
-    echo $out
+function errcho
+    echo $argv 1>&2;;
 end
