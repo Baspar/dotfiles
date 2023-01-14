@@ -77,8 +77,8 @@ set background=dark
 colorscheme melange
 
 "  Indentation
-set tabstop=2 shiftwidth=2 expandtab
-au FileType sh setlocal tabstop=4 shiftwidth=4 expandtab
+set ts=2 sw=2 expandtab
+au FileType sh setlocal ts=4 sw=4 expandtab
 au FileType go setlocal ts=4 sw=4 sts=4 noexpandtab
 
 au FileType git setlocal foldmethod=syntax

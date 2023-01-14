@@ -32,10 +32,6 @@ call plug#begin('~/.vim/plugged')
   let g:NERDTreeQuitOnOpen = 1
   " }}}
 
-  " {{{ EasyMotion
-  Plug 'easymotion/vim-easymotion'
-  " }}}
-
   " {{{ LSP
   if has('nvim')
     Plug 'hrsh7th/nvim-cmp'
@@ -52,7 +48,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'onsails/lspkind.nvim'
   else
     Plug 'prabirshrestha/vim-lsp'
-    Plug 'micchy327/lightline-lsp-progress'
     Plug 'mattn/vim-lsp-settings'
     Plug 'prabirshrestha/asyncomplete.vim'
     Plug 'prabirshrestha/asyncomplete-buffer.vim'
@@ -61,14 +56,11 @@ call plug#begin('~/.vim/plugged')
   endif
   Plug 'hrsh7th/vim-vsnip'
   Plug 'hrsh7th/vim-vsnip-integ'
+  Plug 'rafamadriz/friendly-snippets'
   " }}}
 
   " {{{ Undotree
   Plug 'mbbill/undotree'
-  " }}}
-
-  " {{{ Completion + Snippets
-  Plug 'rafamadriz/friendly-snippets'
   " }}}
 
   "{{{ Nvim-TreeSitter
@@ -99,7 +91,7 @@ call plug#begin('~/.vim/plugged')
       \ 'hl+': ['fg', 'Number'],
       \ }
   let g:fzf_preview_window = ''
-  let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.5 } }
+  let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.7 } }
   " }}}
 
   " {{{ VimFugitive
