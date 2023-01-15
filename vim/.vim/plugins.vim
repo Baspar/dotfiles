@@ -41,11 +41,10 @@ call plug#begin('~/.vim/plugged')
     Plug 'hrsh7th/cmp-nvim-lsp-signature-help'
     Plug 'hrsh7th/cmp-vsnip'
     Plug 'neovim/nvim-lspconfig'
-    Plug 'j-hui/fidget.nvim'
+    " Plug 'j-hui/fidget.nvim'
+    Plug 'rcarriga/nvim-notify'
     Plug 'nvim-lua/plenary.nvim'
     Plug 'jose-elias-alvarez/null-ls.nvim'
-    Plug 'nvim-tree/nvim-web-devicons'
-    Plug 'onsails/lspkind.nvim'
   else
     Plug 'prabirshrestha/vim-lsp'
     Plug 'mattn/vim-lsp-settings'
