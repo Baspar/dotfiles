@@ -201,6 +201,10 @@ vim.lsp.handlers["$/progress"] = function(_, result, ctx)
 
   if val.kind == "begin" then
     local message = format_message(val.message, val.percentage)
+    if string.find(val.title, "diagnostic") then
+      notif_data.disabled = true
+      return
+    end
 
     notif_data.notification = notify(message or "Loading", "info", {
         title = format_title(val.title, vim.lsp.get_client_by_id(client_id).name),
@@ -211,12 +215,12 @@ vim.lsp.handlers["$/progress"] = function(_, result, ctx)
 
     notif_data.spinner = 1
     update_spinner(client_id, result.token)
-  elseif val.kind == "report" and notif_data then
+  elseif val.kind == "report" and notif_data and not notif_data.disabled then
     notif_data.notification = notify(format_message(val.message, val.percentage), "info", {
         replace = notif_data.notification,
         hide_from_history = false,
       })
-  elseif val.kind == "end" and notif_data then
+  elseif val.kind == "end" and notif_data and not notif_data.disabled then
     notif_data.notification = notify(val.message and format_message(val.message) or "Complete", "info", {
         icon = "",
         replace = notif_data.notification,
@@ -249,4 +253,4 @@ for name, _ in pairs(configs) do
   }
 end
 
--- vim: foldmethod=marker:foldlevel=0
+-- vim: foldmethod=syntax:foldlevel=0
