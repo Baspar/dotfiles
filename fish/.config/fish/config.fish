@@ -38,6 +38,7 @@ set -Ux NVM_DIR "$HOME/.nvm"
 set PATH \
     "/opt/homebrew/bin" \
     "/Users/bastien/Library/Application Support/Coursier/bin" \
+    "/Applications/KeePassXC.app/Contents/MacOS" \
     "/usr/local/opt/curl/bin" \
     "$HOME/.toolbox/bin" \
     "$HOME/.bin" \

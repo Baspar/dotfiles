@@ -80,4 +80,5 @@ export PATH=$PATH:"/usr/local/opt/llvm/bin"
 export PATH=$PATH:"$GOPATH/bin"
 export PATH=$PATH:"$JAVA_HOME/bin"
 export PATH=$PATH:"$HOME/.rvm/bin"
+export PATH=$PATH:"/Applications/KeePassXC.app/Contents/MacOS"
 export PATH="/usr/local/opt/curl/bin":$PATH

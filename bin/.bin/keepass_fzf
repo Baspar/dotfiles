@@ -1,0 +1,51 @@
+#!/bin/bash
+fzf_file_selector() {
+    path="./"
+    while [[ "$path" == */ ]]; do
+        segment=$(ls -pa --color "$path" \
+            | tail -n +2 \
+            | fzf --ansi \
+            --height 15 \
+            --reverse \
+            --prompt="Select keepass file | $(realpath $path) > " \
+            ) || return $?
+        path="$path$segment"
+    done
+
+    echo "$path"
+}
+
+if command -v keepassxc-cli; then
+    kpcli="keepassxc-cli"
+elif [ -f "$HOME/.tmp/KeePassXC-2.6.6-x86_64.AppImage" ]; then
+    kpcli="$HOME/.tmp/KeePassXC-2.6.6-x86_64.AppImage cli"
+else
+    echo 'Install keepassxc-cli or download `~/.tmp/KeePassXC-2.6.6-x86_64.AppImage` cli'
+    echo 'wget https://github.com/keepassxreboot/keepassxc/releases/download/2.6.6/KeePassXC-2.6.6-x86_64.AppImage'
+    exit 1
+fi
+
+keepass_file=$(cat ~/.keepass_file 2>/dev/null)
+if [ -z "$keepass_file" ]; then
+    keepass_file=$(fzf_file_selector | xargs realpath) || exit 0
+    echo -n "$keepass_file" > ~/.keepass_file
+fi
+
+echo "Using database @ '$keepass_file'"
+
+while :; do
+    read -s -p "Password> " keepass_password || exit 0
+
+    keys=$(echo "$keepass_password" | eval "$kpcli ls -q --recursive --flatten '$keepass_file'") || {
+        clear
+        echo "Invalid password"
+        continue
+    }
+    echo "OK"
+    break
+done
+
+key=$(echo "$keys" | fzf --reverse --ansi --no-bold) || exit 0
+
+password=$(echo "$keepass_password" | eval "$kpcli show -q -s -a password '$keepass_file' '$key'")
+tmux send-key "$password" Enter
