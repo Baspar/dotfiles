@@ -86,7 +86,7 @@ configs['vimls'] = {}
 -- }}}
 
 -- {{{ LUA
-configs['sumneko_lua'] = {}
+configs['lua_ls'] = {}
 -- }}}
 
 -- {{{ Go
