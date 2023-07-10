@@ -85,10 +85,11 @@ call plug#begin('~/.vim/plugged')
   Plug 'junegunn/fzf.vim'
   let g:fzf_colors = {
       \ 'prompt': ['fg', 'Type'],
-      \ 'bg':      ['bg', 'Pmenu'],
-      \ 'hl': ['fg', 'Type'],
-      \ 'hl+': ['fg', 'Number'],
+      \ 'bg':     ['bg', 'FZFBackground', 'Pmenu'],
+      \ 'bg+':    ['bg', 'FZFBackgroundSelected'],
       \ }
+      " \ 'hl': ['fg', 'Type'],
+      " \ 'hl+': ['fg', 'Number'],
   let g:fzf_preview_window = ''
   let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.7 } }
   " }}}
@@ -102,13 +103,11 @@ call plug#begin('~/.vim/plugged')
   Plug 'machakann/vim-sandwich'
   " }}}
 
-  " {{{ Lightline.Vim
-  Plug 'itchyny/lightline.vim'
-  " }}}
-
   " {{{ IndentLine
   Plug 'lukas-reineke/indent-blankline.nvim', If(has('nvim'))
   " }}}
+
+  Plug 'tmux-plugins/vim-tmux-focus-events'
 
   " {{{ Colorschemes
   Plug 'https://gitlab.com/rawleyIfowler/melange'

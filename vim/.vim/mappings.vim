@@ -86,6 +86,8 @@ nnoremap <leader>vC :tabe $HOME/.vim/config.vim<CR>
 nnoremap <leader>vc :e $HOME/.vim/config.vim<CR>
 nnoremap <leader>vT :tabe $HOME/.vim/treesitter.lua<CR>
 nnoremap <leader>vt :e $HOME/.vim/treesitter.lua<CR>
+nnoremap <leader>vS :tabe $HOME/.vim/statusline.vim<CR>
+nnoremap <leader>vs :e $HOME/.vim/statusline.vim<CR>
 
 " Splits
 nnoremap <leader>\| :vs<CR>

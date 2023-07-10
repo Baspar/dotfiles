@@ -86,13 +86,13 @@ function __baspar_darker_of -a COLOR
   #
   # @returns: A darker shade of this color
   #
-  if [ "$COLOR" = "#AF5F5E" ]
+  if [ "$COLOR" = "#AF5F5E" ] # RED
     echo -n "#703D3D"
-  else if [ "$COLOR" = "#888888" ]
+  else if [ "$COLOR" = "#888888" ] # GREY
     echo -n "#555555"
-  else if [ "$COLOR" = "#AF875F" ]
+  else if [ "$COLOR" = "#AF875F" ] # ORANGE
     echo -n "#926E49"
-  else if [ "$COLOR" = "#4B8252" ]
+  else if [ "$COLOR" = "#4B8252" ] # GREEN
     echo -n "#38623E"
   else
     echo -n ""

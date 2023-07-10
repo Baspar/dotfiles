@@ -41,29 +41,43 @@ set synmaxcol=300
 augroup CustomColorChange
   function! s:custom_colors ()
     hi! Normal ctermbg=NONE guibg=NONE
-    hi! SignColumn ctermbg=233 guibg=#121212
     hi! Comment cterm=italic gui=italic
     hi! String cterm=italic gui=italic
     hi! lspInlayHintsParameter cterm=italic ctermfg=14 gui=italic guifg=#7e6956
     hi! lspInlayHintsType cterm=italic ctermfg=14 gui=italic guifg=#5e5e5e
     hi! Sneak ctermfg=237 ctermbg=3 guifg=#3A3A3A guibg=#AF875F
 
-    hi! NotifyBackground ctermbg=242 guibg=#4d453e ctermfg=14 guifg=#a38d78
-
-    hi! Whitespace guifg=#4d453e cterm=italic gui=italic
-
-    hi! LspDiagnosticsDefaultError guifg=red ctermfg=red
+    hi! LspDiagnosticsDefaultError guifg=red9 ctermfg=red
     hi! LspErrorHighlight cterm=undercurl gui=undercurl ctermfg=131 guifg=#af5f5f
     hi! LspErrorText ctermfg=131 guifg=#af5f5f
 
     hi! LspDiagnosticsDefaultWarning ctermfg=180 guifg=#dfaf87
     hi! LspWarningHighlight cterm=undercurl gui=undercurl ctermfg=180 guifg=#dfaf87
     hi! LspWarningText ctermfg=180 guifg=#dfaf87
-  endfunction
 
+    if &bg=="light"
+      hi! FZFBackground  ctermfg=4 ctermbg=248 guifg=#7c6f65 guibg=#ebdab4
+      hi! FZFBackgroundSelected  ctermfg=4 ctermbg=248 guifg=#7c6f65 guibg=#d4c4a2
+      hi! link NotifyBackground FZFBackground
+      hi! Folded ctermfg=4 ctermbg=248 guifg=#7c6f65 guibg=#ebdab4
+      hi! link LineNr Folded
+      hi! link SignColumn Folded 
+      hi! Whitespace guifg=#d5c4a3 cterm=italic gui=italic
+    else
+      hi! Whitespace guifg=#4d453e cterm=italic gui=italic
+      hi! SignColumn ctermbg=233 guibg=#121212
+      hi! NotifyBackground ctermbg=242 guibg=#4d453e ctermfg=14 guifg=#a38d78
+    endif
+    hi! link LineNr Folded
+    hi! link SignColumn Folded 
+  endfunction
+,
   au!
   au ColorScheme * call s:custom_colors()
   au VimEnter * call s:custom_colors()
+  " au FocusGained * call s:custom_colors()
+  " au VimEnter * lua vim.loop.fs_write(2, "\27]11;?\27\\", -1, nil)
+  " au FocusGained * lua vim.loop.fs_write(2, "\27]11;?\27\\", -1, nil)
 augroup END
 
 if exists('+termguicolors')
@@ -76,7 +90,6 @@ let &t_Ce = "\e[4:0m" " stop undercurl
 let &t_SI = "\e[5 q" " start insert: blinking bar
 let &t_SR = "\e[3 q" " start replace: blinking underscore
 let &t_EI = "\e[1 q" " end insert/replace: blinking block
-set background=dark
 colorscheme melange
 
 "  Indentation

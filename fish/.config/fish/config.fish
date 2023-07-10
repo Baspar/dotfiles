@@ -12,7 +12,7 @@ set -Ux QT_WAYLAND_FORCE_DPI 144
 set -Ux fish_term24bit 1
 
 set -Ux TZ "Europe/Amsterdam"
-set -g SHELL "fish"
+set -g SHELL (which fish)
 
 set -Ux GOPATH ~/.go
 
@@ -88,4 +88,16 @@ bind -M insert \cj 'down-or-search'
 
 function errcho
     echo $argv 1>&2;;
+end
+
+set -eg THEME
+function check_theme --on-event fish_prompt
+    set theme (bash ~/.bin/osc11.bash)
+    if [ "$THEME" != "$theme" ]
+        set -Ux THEME $theme
+        if command -v tmux &> /dev/null
+            tmux setenv -g THEME $theme
+            tmux source ~/.tmux.conf
+        end
+    end
 end
