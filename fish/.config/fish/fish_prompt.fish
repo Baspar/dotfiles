@@ -39,6 +39,8 @@ end
 
 function _section -a BG FG TEXT
   # Function _section
+  # Will display section with style.
+  # If `$__baspar_ellipsis_marker` is present, will style it with normal secondary FG
   #
   # @param BG: Background color of the section
   # @param FG: Foreground color of the section
@@ -68,7 +70,7 @@ function _section -a BG FG TEXT
       set TEXT_BLOCK $TEXT_BLOCKS[$i]
       if [ "$TEXT_BLOCK" ]
         if [ (math "$i % 2") -eq 0 ]
-          set_color '#888888' -b $BG -i
+          set_color "$prompt_fg_sec" -b $BG -i
         else
           set_color $FG -b $BG
         end
@@ -79,24 +81,6 @@ function _section -a BG FG TEXT
   end
   set -g __baspar_old_bg $BG
   set_color normal -b normal
-end
-
-function __baspar_darker_of -a COLOR
-  # @param COLOR a color part of the list
-  #
-  # @returns: A darker shade of this color
-  #
-  if [ "$COLOR" = "#AF5F5E" ] # RED
-    echo -n "#703D3D"
-  else if [ "$COLOR" = "#888888" ] # GREY
-    echo -n "#555555"
-  else if [ "$COLOR" = "#AF875F" ] # ORANGE
-    echo -n "#926E49"
-  else if [ "$COLOR" = "#4B8252" ] # GREEN
-    echo -n "#38623E"
-  else
-    echo -n ""
-  end
 end
 
 # =================
@@ -150,6 +134,7 @@ function __baspar_git_branch_name -a GIT_DIR GIT_WORKTREE
   # @returns: The branch name, or commit hash
   #
   [ -d "$GIT_WORKTREE/rebase-merge" ] && {
+    echo -n " "
     cat "$GIT_WORKTREE/rebase-merge/head-name" 2>/dev/null
     return
   }
@@ -157,14 +142,14 @@ function __baspar_git_branch_name -a GIT_DIR GIT_WORKTREE
   # HEAD is on a branch
   set head_branch (git -C "$GIT_WORKTREE" symbolic-ref HEAD 2> /dev/null)
   if [ $status -eq 0 ]
-    echo $head_branch | \
+    echo " $head_branch" | \
       sed 's|refs/[^/]*/||g' | \
       tr -d '\n'
     return
   end
 
   # Detached HEAD
-  echo (git -C "$GIT_WORKTREE" rev-parse HEAD | string match -r '^.{8}')…
+  echo " "(git -C "$GIT_WORKTREE" rev-parse HEAD | string match -r '^.{8}')…
 end
 
 function __baspar_git_operation -a GIT_DIR GIT_WORKTREE
@@ -294,13 +279,25 @@ function __baspar_git_section_info -a GIT_DIR GIT_WORKTREE
 
   # Colors
   if [ -n "$GIT_OPERATION" ]
-    set COLOR "#AF5F5E"
+    set COLOR_BG "$prompt_red_bg"
+    set COLOR_BG_SEC "$prompt_red_bg_sec"
+    set COLOR_FG "$prompt_red_fg"
+    set COLOR_FG_SEC "$prompt_red_fg_sec"
   else if ! set -q __baspar_has_dirty_$SAFE_GIT_DIR && ! set -q __baspar_has_untracked_$SAFE_GIT_DIR
-    set COLOR "#888888"
+    set COLOR_BG "$prompt_inactive_bg"
+    set COLOR_BG_SEC "$prompt_inactive_bg_sec"
+    set COLOR_FG "$prompt_inactive_fg"
+    set COLOR_FG_SEC "$prompt_inactive_fg_sec"
   else if [ (eval echo \$__baspar_has_dirty_$SAFE_GIT_DIR) = "1" ] || [ (eval echo \$__baspar_has_untracked_$SAFE_GIT_DIR) = "1" ]
-    set COLOR "#AF875F"
+    set COLOR_BG "$prompt_orange_bg"
+    set COLOR_BG_SEC "$prompt_orange_bg_sec"
+    set COLOR_FG "$prompt_orange_fg"
+    set COLOR_FG_SEC "$prompt_orange_fg_sec"
   else
-    set COLOR "#4B8252"
+    set COLOR_BG "$prompt_green_bg"
+    set COLOR_BG_SEC "$prompt_green_bg_sec"
+    set COLOR_FG "$prompt_green_fg"
+    set COLOR_FG_SEC "$prompt_green_fg_sec"
   end
 
   # Icons
@@ -314,7 +311,7 @@ function __baspar_git_section_info -a GIT_DIR GIT_WORKTREE
   [ -n "$GIT_BEHIND"       ] && [ $GIT_BEHIND -ge 1       ] && set GIT_OPERATION "$GIT_OPERATION$GIT_BEHIND↓"
 
   # Build git string
-  echo -n "$COLOR|$GIT_BRANCH|$GIT_OPERATION|$ICONS" | sed 's# $##'
+  echo -n "$COLOR_BG|$COLOR_BG_SEC|$COLOR_FG|$COLOR_FG_SEC|$GIT_BRANCH|$GIT_OPERATION|$ICONS" | sed 's# $##'
 end
 
 function __baspar_reset --on-event fish_prompt --on-event fish_cancel
@@ -417,16 +414,20 @@ function fish_custom_mode_prompt
   # Vim mode
   switch $fish_bind_mode
     case "insert"
-      set BG_COLOR "#AF875F"
+      set BG_COLOR "$prompt_orange_bg"
+      set FG_COLOR "$prompt_orange_fg"
     case "visual"
-      set BG_COLOR "#AF5F5E"
+      set BG_COLOR "$prompt_red_bg"
+      set FG_COLOR "$prompt_red_fg"
     case "autocomplete"
-      set BG_COLOR "#AF5F5E"
+      set BG_COLOR "$prompt_green_bg"
+      set FG_COLOR "$prompt_green_fg"
     case '*'
-      set BG_COLOR "#FFFFFF"
+      set BG_COLOR "$prompt_bg"
+      set FG_COLOR "$prompt_fg"
   end
 
-  _section "$BG_COLOR" "#000000" " $LETTER "
+  _section "$BG_COLOR" "$FG_COLOR" " $LETTER "
 end
 
 function fish_prompt
@@ -442,13 +443,13 @@ function fish_prompt
 
   # Command error status
   if [ "$_display_status" != "0" ]
-    section "#AF5F5E" "#000000" "$_display_status" -o
+    section "$prompt_red_bg" "$prompt_red_fg" "$_display_status" -o
   end
 
   # Virtual env
   if [ $VIRTUAL_ENV ]
     set VENV_NAME (basename $VIRTUAL_ENV)
-    section "#4B8252" "#3e3e3e" "$VENV_NAME" -i -o
+    section "$prompt_green_bg" "$prompt_green_fg" "$VENV_NAME" -i -o
   end
 
   # Initialize path segment
@@ -460,7 +461,7 @@ function fish_prompt
     set TOTAL_PATH $TOTAL_PATH$__baspar_path_segments[$i]
 
     # Path part section
-    section "#3e3e3e" "#FFFFFF" "$PATH_SEGMENT_ABBR"
+    section "$prompt_bg" "$prompt_fg" "$PATH_SEGMENT_ABBR"
 
     # No git section for last part
     [ $i -eq (count $__baspar_path_segments) ] && break
@@ -468,18 +469,18 @@ function fish_prompt
     # Git section
     set GIT_WORKTREE "$TOTAL_PATH"
     set GIT_DIR (__baspar_get_git_dir "$GIT_WORKTREE")
-    __baspar_git_section_info "$GIT_DIR" "$GIT_WORKTREE" | read -d '|' GIT_BG_COLOR GIT_BRANCH GIT_OPERATION GIT_ICONS
+    set SAFE_GIT_DIR (string escape --style=var "$GIT_DIR")
+    __baspar_git_section_info "$GIT_DIR" "$GIT_WORKTREE" \
+      | read -d '|' GIT_BG_COLOR GIT_BG_COLOR_SEC GIT_FG_COLOR GIT_FG_COLOR_SEC GIT_BRANCH GIT_OPERATION GIT_ICONS
 
     # Assign git Foreground color if job running or not
-    set GIT_FG_COLOR "#3e3e3e"
-    set SAFE_GIT_DIR (string escape --style=var "$GIT_DIR")
     if set -q __baspar_git_status_pid_$SAFE_GIT_DIR
-      set GIT_FG_COLOR "#666666"
+      set GIT_FG_COLOR "$GIT_FG_COLOR_SEC"
     end
 
-    [ -n "$GIT_OPERATION" ] && section (__baspar_darker_of $GIT_BG_COLOR) "#3e3e3e" "$GIT_OPERATION" -o -i
-    section "$GIT_BG_COLOR" $GIT_FG_COLOR "$GIT_BRANCH" -o -i
-    [ -n "$GIT_ICONS" ] && section (__baspar_darker_of $GIT_BG_COLOR) "#3e3e3e" "$GIT_ICONS" -o -i
+    [ -n "$GIT_OPERATION" ] && section "$GIT_BG_COLOR_SEC" "$GIT_FG_COLOR" "$GIT_OPERATION" -o -i
+    section "$GIT_BG_COLOR" "$GIT_FG_COLOR" "$GIT_BRANCH" -o -i
+    [ -n "$GIT_ICONS" ] && section "$GIT_BG_COLOR_SEC" "$GIT_FG_COLOR" "$GIT_ICONS" -o -i
   end
 
   _section "normal" "nomal" ""

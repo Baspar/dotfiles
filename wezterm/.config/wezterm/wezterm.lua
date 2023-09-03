@@ -48,7 +48,7 @@ local dark_colors = {
 
 local light_colors = {
   foreground    = "#54433A",
-  background    = "#FBF1C8",
+  background    = "#FCF3CF",
   cursor_bg     = "#54433A",
   cursor_border = "#54433A",
   cursor_fg     = "#F1F1F1",

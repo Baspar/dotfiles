@@ -35,7 +35,6 @@ set list
 set listchars=tab:┋\ ,trail:■,eol:↩
 set laststatus=2
 
-
 " Color
 set synmaxcol=300
 augroup CustomColorChange
@@ -45,7 +44,6 @@ augroup CustomColorChange
     hi! String cterm=italic gui=italic
     hi! lspInlayHintsParameter cterm=italic ctermfg=14 gui=italic guifg=#7e6956
     hi! lspInlayHintsType cterm=italic ctermfg=14 gui=italic guifg=#5e5e5e
-    hi! Sneak ctermfg=237 ctermbg=3 guifg=#3A3A3A guibg=#AF875F
 
     hi! LspDiagnosticsDefaultError guifg=red9 ctermfg=red
     hi! LspErrorHighlight cterm=undercurl gui=undercurl ctermfg=131 guifg=#af5f5f

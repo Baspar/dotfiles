@@ -73,7 +73,6 @@ set fish_color_search_match --background='333'
 
 source ~/.config/fish/fish_prompt.fish
 
-# [ -d ~/.config/fish/completions ] && source ~/.config/fish/completions/*.fish
 alias npm "functions --erase npm yarn node; load_nvm; npm $argv"
 alias yarn "functions --erase npm yarn node; load_nvm; yarn $argv"
 alias node "functions --erase npm yarn node; load_nvm; node $argv"
@@ -91,6 +90,7 @@ function errcho
 end
 
 set -eg THEME
+set_colorscheme
 function check_theme --on-event fish_prompt
     set theme (bash ~/.bin/osc11.bash)
     if [ "$THEME" != "$theme" ]
@@ -98,6 +98,7 @@ function check_theme --on-event fish_prompt
         if command -v tmux &> /dev/null
             tmux setenv -g THEME $theme
             tmux source ~/.tmux.conf
+            set_colorscheme
         end
     end
 end

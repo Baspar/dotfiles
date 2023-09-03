@@ -96,6 +96,9 @@ augroup UpdateStatusLine
     if &background ==# "dark"
       hi! StatusLineModeCommand ctermbg=yellow ctermfg=black guibg=#af875f guifg=#3e3e3e gui=bold
       hi! link StatusLineFileName LineNr
+      hi! StatusLineLspError ctermbg=red ctermfg=white guibg=#af5f5e guifg=#FFFFFF
+      hi! StatusLineLspWarning ctermbg=yellow ctermfg=white guibg=#af875f guifg=#FFFFFF
+      hi! link StatusLineLineInfo StatusLineFileName
     else
       hi! StatusLine ctermfg=brown guifg=#ebdab4
       hi! StatusLineModeCommand ctermbg=brown ctermfg=white guibg=#7c6f65 guifg=#fbf0c9 gui=bold

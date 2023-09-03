@@ -1,11 +1,13 @@
 #!/bin/bash
 if [ $(command -v acpi) ]; then
+    # Linux
     INFO=$(acpi)
     PERCENTAGE=$(echo "$INFO" | grep -o "\([0-9]\+\)%" | sed 's/%//')
     DISCHARGING=$(echo "$INFO" | grep -i "discharging")
     CHARGING=$(echo "$INFO" | grep -i "charging")
     FULL=$(echo "$INFO" | grep -i "full")
 elif [ $(command -v pmset) ]; then
+    # MacOS
     INFO=$(pmset -g batt)
     PERCENTAGE=$(echo "$INFO" | grep -o "\([0-9]\+\)%" | sed 's/%//')
     DISCHARGING=$(echo "$INFO" | grep -i "discharging")
@@ -16,17 +18,17 @@ else
 fi
 
 if [ "$DISCHARGING" ] && [ $PERCENTAGE -lt 10 ]; then
-    COLOR='#AF5F5E'
-    FONT='#3e3e3e'
+    BG='#AF5F5E'
+    FG='#3e3e3e'
 elif [ "$DISCHARGING" ] && [ $PERCENTAGE -lt 25 ]; then
-    COLOR='#af875f'
-    FONT='#3e3e3e'
-elif [ "$DISCHARGING" ] || [ "$CHARGING" ] || [ "$FULL" ]; then
-    COLOR='#4e4e4e'
-    FONT='white'
+    BG='#af875f'
+    FG='#3e3e3e'
+elif [ "$THEME" = "Light" ]; then
+    BG='#7c6f65'
+    FG='#fbf0c9'
 else
-    COLOR='#AF5F5E'
-    FONT='black'
+    BG='#af875f'
+    FG='#3e3e3e'
 fi
 
 ICONS=( "" "" "" "" "" "" "" "" "" "" "" )
@@ -37,4 +39,4 @@ else
     INFO=""
 fi
 
-echo "#[fg=$COLOR]$RIGHT_SEPARATOR#[bg=$COLOR,fg=$FONT] $INFO "
+echo "#[fg=$BG]$RIGHT_SEPARATOR#[bg=$BG,fg=$FG] $INFO "
