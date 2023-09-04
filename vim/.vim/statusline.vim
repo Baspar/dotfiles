@@ -89,6 +89,10 @@ func! Mode()
   return get(s:mode_map, mode())
 endfunc
 
+" func! Wrap(text)
+"   return get(s:mode_map, mode())
+" endfunc
+
 augroup UpdateStatusLine
   set fillchars=stl:─,stlnc:─
 
@@ -124,7 +128,7 @@ augroup UpdateStatusLine
     setlocal statusline+=\ %{LSPWarning()}\ 
     setlocal statusline+=%#StatusLineLineInfo#
     setlocal statusline+=\ %{LineInfo()}\ 
-    setlocal statusline+=%#PmenuSel#
+    setlocal statusline+=%#StatusLineModeCommand#
     setlocal statusline+=\ %{Fugitive()}\ 
     setlocal statusline+=%#VertSplit#
   endfunction
