@@ -56,18 +56,17 @@ augroup CustomColorChange
     if &bg=="light"
       hi! FZFBackground  ctermfg=4 ctermbg=248 guifg=#7c6f65 guibg=#ebdab4
       hi! FZFBackgroundSelected  ctermfg=4 ctermbg=248 guifg=#7c6f65 guibg=#d4c4a2
-      hi! link NotifyBackground FZFBackground
-      hi! Folded ctermfg=4 ctermbg=248 guifg=#7c6f65 guibg=#ebdab4
-      hi! link LineNr Folded
-      hi! link SignColumn Folded 
+      hi! Folded ctermfg=4 ctermbg=248 guifg=#7c6f65 guibg=#d4c4a2
+      hi! LineNr ctermfg=4 ctermbg=248 guifg=#7c6f65 guibg=#ebdab4
+      hi! link SignColumn LineNr
       hi! Whitespace guifg=#d5c4a3 cterm=italic gui=italic
     else
       hi! Whitespace guifg=#4d453e cterm=italic gui=italic
       hi! SignColumn ctermbg=233 guibg=#121212
       hi! NotifyBackground ctermbg=242 guibg=#4d453e ctermfg=14 guifg=#a38d78
+      hi! link LineNr Folded
+      hi! link SignColumn Folded 
     endif
-    hi! link LineNr Folded
-    hi! link SignColumn Folded 
   endfunction
 ,
   au!

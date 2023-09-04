@@ -51,12 +51,15 @@ set PATH \
     $PATH \
     "/usr/local/opt/llvm/bin"
 
+alias npm "functions --erase npm yarn node; load_nvm; npm $argv"
+alias yarn "functions --erase npm yarn node; load_nvm; yarn $argv"
+alias node "functions --erase npm yarn node; load_nvm; node $argv"
+
 [ -e ~/.config/ripgrep/rc ] && set -Ux RIPGREP_CONFIG_PATH "$HOME/.config/ripgrep/rc"
 
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/baspar/.gcloud/path.fish.inc' ]
-    . '/Users/baspar/.gcloud/path.fish.inc'
-end
+source ~/.config/fish/fish_prompt.fish
+
+status is-interactive; or return
 
 # Import colorscheme
 if test -e ~/.dircolors
@@ -71,12 +74,6 @@ end
 
 set fish_color_search_match --background='333'
 
-source ~/.config/fish/fish_prompt.fish
-
-alias npm "functions --erase npm yarn node; load_nvm; npm $argv"
-alias yarn "functions --erase npm yarn node; load_nvm; yarn $argv"
-alias node "functions --erase npm yarn node; load_nvm; node $argv"
-
 function update_tmux_current_pwd --on-variable PWD
     [ -n "$TMUX" ] && tmux setenv TMUXPWD_(tmux display -p "#D" | tr -d %) "$PWD"
 end
@@ -90,7 +87,6 @@ function errcho
 end
 
 set -eg THEME
-set_colorscheme
 function check_theme --on-event fish_prompt
     set theme (bash ~/.bin/osc11.bash)
     if [ "$THEME" != "$theme" ]
@@ -98,7 +94,7 @@ function check_theme --on-event fish_prompt
         if command -v tmux &> /dev/null
             tmux setenv -g THEME $theme
             tmux source ~/.tmux.conf
-            set_colorscheme
         end
+        set_colorscheme
     end
 end

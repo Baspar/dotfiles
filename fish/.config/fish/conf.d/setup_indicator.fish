@@ -114,10 +114,10 @@ function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_f
 
   function __baspar_indicator_logo_$indicator_name -V logo -V indicator_name
     if _dict_has $DICT_PID $indicator_name
-      set_color "white"
+      set_color $prompt_orange_bg
       echo -n "$logo"
     else if _dict_has $DICT_ERR $indicator_name
-      set_color "#AF5F5E"
+      set_color $prompt_red_bg
       echo -n "$logo"
     end
     set_color normal
@@ -141,19 +141,19 @@ function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_f
     end
     set count (count $list)
 
-    set fg_color "#000000"
+    set bg_color $prompt_orange_bg
+    set bg_color_sec $prompt_orange_bg_sec
+    set fg_color $prompt_orange_fg
     if _dict_has $DICT_PID $indicator_name
-      set fg_color "#666666"
+    set fg_color $prompt_orange_fg_sec
     end
-
-    set bg_color "#AF875F"
     if _dict_has $DICT_ERR $indicator_name
-      set bg_color "#AF5F5E"
+      set bg_color $prompt_red_bg
     end
 
     section $bg_color $fg_color "$logo$item" -o -i
     if [ $id -gt 0 ]
-      section (__baspar_darker_of $bg_color) "#3e3e3e" "$id/$count" -o
+      section $bg_color_sec $fg_color "$id/$count" -o
     end
   end
 
