@@ -67,6 +67,7 @@ augroup CustomColorChange
       hi! link LineNr Folded
       hi! link SignColumn Folded 
     endif
+    hi! link NotifyBackground FZFBackground
   endfunction
 ,
   au!
