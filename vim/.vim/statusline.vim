@@ -170,4 +170,5 @@ augroup UpdateStatusLine
   au InsertLeave * call s:update_status_line(v:false)
   au InsertChange * call s:update_status_line(v:false)
   au InsertEnter * call s:update_status_line(v:false)
+  au User CustomColors call s:update_status_line(v:false)
 augroup END

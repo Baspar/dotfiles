@@ -65,7 +65,7 @@ augroup CustomColorChange
       hi! SignColumn ctermbg=233 guibg=#121212
       hi! NotifyBackground ctermbg=242 guibg=#4d453e ctermfg=14 guifg=#a38d78
       hi! link LineNr Folded
-      hi! link SignColumn Folded 
+      hi! link SignColumn Folded
     endif
     hi! link NotifyBackground FZFBackground
   endfunction
@@ -73,9 +73,8 @@ augroup CustomColorChange
   au!
   au ColorScheme * call s:custom_colors()
   au VimEnter * call s:custom_colors()
-  " au FocusGained * call s:custom_colors()
-  " au VimEnter * lua vim.loop.fs_write(2, "\27]11;?\27\\", -1, nil)
-  " au FocusGained * lua vim.loop.fs_write(2, "\27]11;?\27\\", -1, nil)
+  au FocusGained * call s:custom_colors()
+  au User CustomColors call s:custom_colors()
 augroup END
 
 if exists('+termguicolors')
@@ -112,4 +111,4 @@ match TrailingSpaces / \+$/
 "  Change default SQL mapping
 let g:ftplugin_sql_omni_key = '<C-s>'
 
-" vim: foldmethod=marker:foldlevel=0
+" vim: foldmethod=marker:foldlevel=1
