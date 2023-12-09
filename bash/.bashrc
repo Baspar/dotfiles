@@ -82,3 +82,5 @@ export PATH=$PATH:"$JAVA_HOME/bin"
 export PATH=$PATH:"$HOME/.rvm/bin"
 export PATH=$PATH:"/Applications/KeePassXC.app/Contents/MacOS"
 export PATH="/usr/local/opt/curl/bin":$PATH
+
+[ -e "$HOME/.bashrc.secret" ] && source "$HOME/.bashrc.secret"
