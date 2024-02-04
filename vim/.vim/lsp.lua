@@ -25,7 +25,9 @@ configs['tsserver'] = {
     if client.config.flags then
       client.config.flags.allow_incremental_sync = true
     end
-    client.resolved_capabilities.document_formatting = false
+    if client.resolved_capabilities then
+      client.resolved_capabilities.document_formatting = false
+    end
   end,
   filetypes = tsFamily,
 }
@@ -146,17 +148,18 @@ cmp.setup({
 -- }}}
 
 -- {{{ LSP Status
-require("fidget").setup {
-  notification = {
-    window = {
-      normal_hl = "MsgArea",
-      winblend = 0,
-      align_bottom = false,
-      y_padding = 1,
-      border = "rounded"
-    }
-  }
-}
+require('mini.notify').setup()
+-- require("fidget").setup {
+--   notification = {
+--     window = {
+--       normal_hl = "MsgArea",
+--       -- winblend = 0,
+--       -- align_bottom = false,
+--       y_padding = 1,
+--       border = "rounded"
+--     }
+--   }
+-- }
 
 local client_notifs = {}
 
