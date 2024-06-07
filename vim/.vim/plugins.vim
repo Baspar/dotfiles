@@ -109,6 +109,9 @@ call plug#begin('~/.vim/plugged')
   Plug 'lukas-reineke/indent-blankline.nvim', If(has('nvim'))
   " }}}
 
+  Plug 'justinmk/vim-ipmotion'
+  let g:ip_skipfold = 1
+
   Plug 'tmux-plugins/vim-tmux-focus-events'
 
   " {{{ Colorschemes

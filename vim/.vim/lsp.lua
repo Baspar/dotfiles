@@ -42,7 +42,7 @@ null_ls.setup({
 -- }}}
 
 -- {{{ Rust
-configs['rls'] = {}
+configs['rust_analyzer'] = {}
 -- }}}
 
 -- {{{ Scala [Disabled]
