@@ -58,9 +58,10 @@ function __baspar_indicator_async_cb_aws -a response_file
     set -e DEV_AWS_ACCOUNT
   end
 
-    set AWS_PRETTY_ROLE ( echo $AWS_ROLE | sed 's#^.*:assumed-role/\(.*\)/[^/]*$#\1#g')
+  set AWS_PRETTY_ROLE ( echo $AWS_ROLE | sed 's#^.*:assumed-role/\(.*\)/[^/]*$#\1#g')
+
   if [ -n "$is_overriden" ]
-    __baspar_indicator_end_override_aws "$AWS_ACCOUNT_ID - $AWS_PRETTY_ROLE"
+    __baspar_indicator_end_override_aws "$AWS_ACCOUNT_ID ▒ $AWS_PRETTY_ROLE"
   end
 end
 

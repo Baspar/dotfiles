@@ -134,7 +134,6 @@ function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_f
     if [ $id -gt 0 ]
       set item $list[$id]
     else if _dict_has $DICT_OVERRIDE_NAME $indicator_name
-      set logo "$logo "
       set item (_dict_get $DICT_OVERRIDE_NAME $indicator_name)
     else
       set item "???"
@@ -154,6 +153,8 @@ function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_f
     section $bg_color $fg_color "$logo$item" -o -i
     if [ $id -gt 0 ]
       section $bg_color_sec $fg_color "$id/$count" -o
+    else if _dict_has $DICT_OVERRIDE_NAME $indicator_name
+      section $bg_color_sec $fg_color " " -o
     end
   end
 
