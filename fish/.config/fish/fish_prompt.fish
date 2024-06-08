@@ -7,12 +7,31 @@
 set -g FISH_SEPARATOR "$LEFT_SEPARATOR"
 set -g FISH_SUB_SEPARATOR "$LEFT_SUB_SEPARATOR"
 set -g ELLIPSIS_AFTER "3"
+set -e DISABLE_TRANSIENT_PROMPT
 
 # ========
 # Mappings
 # ========
 
 bind -M insert \ce 'set -g __baspar_no_abbr; commandline -f repaint'
+bind -M insert \r transient_and_execute
+
+# ================
+# Transient prompt
+# ================
+
+function transient_and_execute
+  if set -q DISABLE_TRANSIENT_PROMPT
+    commandline -f execute
+    return
+  end
+  if commandline --is-valid || ! commandline | string length -q
+    set -g __baspar_transient_prompt
+    commandline -f repaint
+    echo -en "\e[2K"
+  end
+  commandline -f execute
+end
 
 # ==================
 # Internal variables
@@ -24,6 +43,7 @@ set -g __baspar_fish_promp_count 0
 set -g __baspar_fish_last_promp_count 0
 set -g __baspar_need_git_update
 set -e __baspar_no_abbr
+set -e __baspar_transient_prompt
 
 # =======
 # Helpers
@@ -134,9 +154,9 @@ function __baspar_git_branch_name -a GIT_DIR GIT_WORKTREE
   # @returns: The branch name, or commit hash
   #
   [ -d "$GIT_WORKTREE/rebase-merge" ] && {
-    echo -n " "
-    cat "$GIT_WORKTREE/rebase-merge/head-name" 2>/dev/null
-    return
+  echo -n " "
+  cat "$GIT_WORKTREE/rebase-merge/head-name" 2>/dev/null
+  return
   }
 
   # HEAD is on a branch
@@ -160,25 +180,25 @@ function __baspar_git_operation -a GIT_DIR GIT_WORKTREE
   # @returns: a symbol corresponding to the current operation
   #
   if [ -d "$GIT_DIR/rebase-merge" ]
-      set step (cat "$GIT_DIR/rebase-merge/msgnum" 2>/dev/null)
-      set total (cat "$GIT_DIR/rebase-merge/end" 2>/dev/null)
-      set GIT_OPERATION " "
+    set step (cat "$GIT_DIR/rebase-merge/msgnum" 2>/dev/null)
+    set total (cat "$GIT_DIR/rebase-merge/end" 2>/dev/null)
+    set GIT_OPERATION " "
   else if [ -d "$GIT_DIR/rebase-apply" ]
     set step (cat "$GIT_DIR/rebase-apply/next" 2>/dev/null)
     set total (cat "$GIT_DIR/rebase-apply/last" 2>/dev/null)
     set GIT_OPERATION " "
   else if [ -f "$GIT_DIR/MERGE_HEAD" ]
-      set GIT_OPERATION " "
+    set GIT_OPERATION " "
   else if [ -f "$GIT_DIR/CHERRY_PICK_HEAD" ]
-      set GIT_OPERATION " "
+    set GIT_OPERATION " "
   else if [ -f "$GIT_DIR/REVERT_HEAD" ]
-      set GIT_OPERATION " "
+    set GIT_OPERATION " "
   else if [ -f "$GIT_DIR/BISECT_LOG" ]
-      set GIT_OPERATION "÷"
+    set GIT_OPERATION "÷"
   end
 
   if [ -n "$step" ] && [ -n "$total" ]
-      set GIT_OPERATION "$GIT_OPERATION $step/$total"
+    set GIT_OPERATION "$GIT_OPERATION $step/$total"
   end
 
   echo "$GIT_OPERATION"
@@ -324,6 +344,7 @@ function __baspar_reset --on-event fish_prompt --on-event fish_cancel
   #
   set -g __baspar_need_git_update
   set -e __baspar_no_abbr
+  set -e __baspar_transient_prompt
   for indicator in $__baspar_indicator_names
     set -e __baspar_indicator_show_$indicator
   end
@@ -430,6 +451,12 @@ function fish_custom_mode_prompt
   _section "$BG_COLOR" "$FG_COLOR" " $LETTER "
 end
 
+function fish_transient_prompt
+  section "$prompt_bg" "$prompt_fg" (string join '/' $__baspar_path_segments_abbr | sed 's#/*$##')
+  _section "normal" "normal" ""
+  echo " "
+end
+
 function fish_prompt
   # Function fish_prompt
   #
@@ -441,6 +468,15 @@ function fish_prompt
 
   set -g __baspar_old_bg ""
 
+  # Initialize path segment
+  set -q __baspar_path_segments || __baspar_update_path_segments
+
+  # If 
+  if set -q __baspar_transient_prompt
+    fish_transient_prompt
+    return
+  end
+
   # Command error status
   if [ "$_display_status" != "0" ]
     section "$prompt_red_bg" "$prompt_red_fg" "$_display_status" -o
@@ -451,9 +487,6 @@ function fish_prompt
     set VENV_NAME (basename $VIRTUAL_ENV)
     section "$prompt_green_bg" "$prompt_green_fg" "$VENV_NAME" -i -o
   end
-
-  # Initialize path segment
-  set -q __baspar_path_segments || __baspar_update_path_segments
 
   set TOTAL_PATH ''
   for i in (seq (count $__baspar_path_segments))
@@ -483,7 +516,7 @@ function fish_prompt
     [ -n "$GIT_ICONS" ] && section "$GIT_BG_COLOR_SEC" "$GIT_FG_COLOR" "$GIT_ICONS" -o -i
   end
 
-  _section "normal" "nomal" ""
+  _section "normal" "normal" ""
   echo ""
 
   set -g __baspar_old_bg ""
