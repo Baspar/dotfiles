@@ -15,6 +15,7 @@ set -e DISABLE_TRANSIENT_PROMPT
 
 bind -M insert \ce 'set -g __baspar_no_abbr; commandline -f repaint'
 bind -M insert \r transient_and_execute
+bind \r transient_and_execute
 
 # ================
 # Transient prompt
