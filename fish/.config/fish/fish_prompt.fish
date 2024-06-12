@@ -453,7 +453,7 @@ function fish_custom_mode_prompt
 end
 
 function fish_transient_prompt
-  section "$prompt_bg" "$prompt_fg" (string join '' $__baspar_path_segments_abbr | sed 's#/*$#/#')
+  section "$prompt_bg" "$prompt_fg" (string join '' $__baspar_path_segments_abbr | sed 's#/*$##')
   _section "normal" "normal" ""
   echo " "
 end
