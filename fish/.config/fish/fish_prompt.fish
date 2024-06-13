@@ -16,6 +16,7 @@ set -e DISABLE_TRANSIENT_PROMPT
 bind -M insert \ce 'set -g __baspar_no_abbr; commandline -f repaint'
 bind -M insert \r transient_and_execute
 bind \r transient_and_execute
+bind -M insert \cc transient_and_cancel
 
 # ================
 # Transient prompt
@@ -32,6 +33,19 @@ function transient_and_execute
     echo -en "\e[2K"
   end
   commandline -f execute
+end
+
+function transient_and_cancel
+  if set -q DISABLE_TRANSIENT_PROMPT
+    commandline -f cancel-commandline repaint-mode
+    return
+  end
+  if commandline | string length -q
+    set -g __baspar_transient_prompt
+    commandline -f repaint
+    echo -en "\e[2K"
+  end
+  commandline -f cancel-commandline repaint-mode
 end
 
 # ==================
