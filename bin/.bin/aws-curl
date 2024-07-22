@@ -11,25 +11,25 @@ provider1="aws"
 provider2="amz"
 verbose=""
 
-ARGS=$(getopt -n aws-curl -o "r:s:p1:p2:hv" --long "region:,service:,provider1:,provider2:,help,verbose" -- "$@") || exit 1
-eval set -- $ARGS
-while :; do
+declare -a ARGS
+shopt -s extglob; # Enable complex match
+while [ $# -gt 0 ]; do
     case "$1" in
-        -r|--region)
-            region=$2
-            shift 2
+        --region?(=*)|-r?(=*))
+            region=$(echo "$1" | cut -s -d= -f2-)
+            ! [ "$region" ] && shift && region="$1"
             ;;
-        -s|--service)
-            service=$2
-            shift 2
+        --service?(=*)|-s?(=*))
+            service=$(echo "$1" | cut -s -d= -f2-)
+            ! [ "$service" ] && shift && service="$1"
             ;;
-        -p1|--provider1)
-            provider1=$2
-            shift 2
+        --provider2?(=*)|-p2?(=*))
+            provider2=$(echo "$1" | cut -s -d= -f2-)
+            ! [ "$provider2" ] && shift && provider2="$1"
             ;;
-        -p2|--provider2)
-            provider2=$2
-            shift 2
+        --provider1?(=*)|-p1?(=*))
+            provider1=$(echo "$1" | cut -s -d= -f2-)
+            ! [ "$provider1" ] && shift && provider1="$1"
             ;;
         -h|--help)
             usage
@@ -37,15 +37,23 @@ while :; do
             ;;
         -v|--verbose)
             verbose="--verbose"
-            shift
             ;;
         --)
-            shift
-            break
+            read_args_now=true
+            ;;
+        -*)
+            if [ "$read_args_now" ]; then
+                ARGS+=( "$1" )
+            else
+                echo "Unknown flag: '$1'"
+                usage
+                exit 5
+            fi
             ;;
         *)
-            exit 1
+            [ "$read_args_now" ] && ARGS+=( "$1" )
     esac
+    shift
 done
 
 [ -z "$region" ] && {
@@ -70,10 +78,10 @@ elif aws configure get aws_access_key_id >/dev/null && aws configure get aws_sec
     AWS_SESSION_TOKEN=$(aws configure get aws_session_token)
 elif aws configure get credential_process >/dev/null; then
     [ -n "$verbose" ] && echo "using credential_process"
-    credentials=$($(aws configure get credential_process) | jq -r '[.AccessKeyId, .SecretAccessKey, .SessionToken] | join("|")') || exit 1
-    AWS_ACCESS_KEY_ID=$(echo $credentials | cut -d'|' -f1)
-    AWS_SECRET_ACCESS_KEY=$(echo $credentials | cut -d'|' -f2)
-    AWS_SESSION_TOKEN=$(echo $credentials | cut -d'|' -f3)
+    credentials=$(eval $(aws configure get credential_process) | jq -r '[.AccessKeyId, .SecretAccessKey, .SessionToken] | join("|")') || exit 1
+    AWS_ACCESS_KEY_ID=$(echo "$credentials" | cut -d'|' -f1)
+    AWS_SECRET_ACCESS_KEY=$(echo "$credentials" | cut -d'|' -f2)
+    AWS_SESSION_TOKEN=$(echo "$credentials" | cut -d'|' -f3)
 fi
 
-curl --aws-sigv4 "$sigv4" --user "$AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY" -H "x-amz-security-token:$AWS_SESSION_TOKEN" $verbose $*
+curl --aws-sigv4 "$sigv4" --user "$AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY" -H "x-amz-security-token:$AWS_SESSION_TOKEN" $verbose "${ARGS[@]}"
