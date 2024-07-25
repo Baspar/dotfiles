@@ -1,8 +1,20 @@
 #!/usr/bin/env bash
+shopt -s extglob; # Enable complex pattern match
+
 usage() {
-    echo ''
-    echo 'Usage:'
-    echo '  aws-curl --region REGION --service SERVICE  (-p1 PROVIDER1) (-p2 PROVIDER2) (--verbose) (--help) -- [Normal cURL arguments]'
+    echo "Usage:"
+    echo ""
+    echo "aws-curl --service SERVICE [--region REGION] [--provider1 PROVIDER1] [--provider2 PROVIDER2] [--unsigned-payload] [--verbose] [--help] -- [Normal cURL arguments]"
+    echo " --service|-s            : Vendor code used for SigV4"
+    echo " --region|-r             : AWS region used for SigV4 (Default: \$AWS_REGION)"
+    echo " --provider1|-p1         : Provider1 used for SigV4 (Default : aws)"
+    echo " --provider2|-p2         : Provider2 used for SigV4 (Default : amz)"
+    echo " --unsigned-payload|-u   : Don't use payload checksum to sign the request"
+    echo " --help|-h               : Display this help"
+    echo " --verbose|-v            : Enable debug logs"
+    echo " [Normal cURL arguments] : Any argument after -- will be passed to underlying cURL command"
+
+    exit "${1:-0}"
 }
 
 region=""
@@ -10,10 +22,9 @@ service=""
 provider1="aws"
 provider2="amz"
 verbose=""
+curl_args=()
 
-declare -a ARGS
-shopt -s extglob; # Enable complex match
-while [ $# -gt 0 ]; do
+while (($#)); do
     case "$1" in
         --region?(=*)|-r?(=*))
             region=$(echo "$1" | cut -s -d= -f2-)
@@ -33,55 +44,44 @@ while [ $# -gt 0 ]; do
             ;;
         -h|--help)
             usage
-            exit
             ;;
         -v|--verbose)
             verbose="--verbose"
             ;;
-        --)
-            read_args_now=true
+        --unsigned-payload|-u)
+            curl_args+=( '-H' 'x-amz-content-sha256: UNSIGNED-PAYLOAD' )
             ;;
-        -*)
-            if [ "$read_args_now" ]; then
-                ARGS+=( "$1" )
-            else
-                echo "Unknown flag: '$1'"
-                usage
-                exit 5
-            fi
+        --)
+            curl_args+=( "${@:2}" )
+            set --
             ;;
         *)
-            [ "$read_args_now" ] && ARGS+=( "$1" )
+            echo "Unknown flag or argument: '$1'"
+            usage 5
+            ;;
     esac
     shift
 done
 
-[ -z "$region" ] && {
-    echo "Error: Missing region"
-    usage
-    exit 1
-}
-[ -z "$service" ] && {
-    echo "Error: Missing service"
-    usage
-    exit 1
-}
-sigv4="$provider1:$provider2:$region:$service"
-[ -n "$verbose" ] && echo "using sigv4 '$sigv4'"
+! [ "$region" ] && echo "Error: Missing region" && usage 1
+! [ "$service" ] && echo "Error: Missing service" && usage 1
 
-if [ -n "$AWS_ACCESS_KEY_ID" ] && [ -n "$AWS_SECRET_ACCESS_KEY" ]; then
-    [ -n "$verbose" ] && echo "using env var"
+sigv4="$provider1:$provider2:$region:$service"
+[ "$verbose" ] && echo "using sigv4 '$sigv4'"
+
+if [ "$AWS_ACCESS_KEY_ID" ] && [ "$AWS_SECRET_ACCESS_KEY" ]; then
+    [ "$verbose" ] && echo "using env var"
 elif aws configure get aws_access_key_id >/dev/null && aws configure get aws_secret_access_key >/dev/null; then
-    [ -n "$verbose" ] && echo "using profile values"
+    [ "$verbose" ] && echo "using profile values"
     AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id)
     AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key)
     AWS_SESSION_TOKEN=$(aws configure get aws_session_token)
 elif aws configure get credential_process >/dev/null; then
-    [ -n "$verbose" ] && echo "using credential_process"
-    credentials=$(eval $(aws configure get credential_process) | jq -r '[.AccessKeyId, .SecretAccessKey, .SessionToken] | join("|")') || exit 1
+    [ "$verbose" ] && echo "using credential_process"
+    credentials=$(eval "$(aws configure get credential_process)" | jq -r '[.AccessKeyId, .SecretAccessKey, .SessionToken] | join("|")') || exit 1
     AWS_ACCESS_KEY_ID=$(echo "$credentials" | cut -d'|' -f1)
     AWS_SECRET_ACCESS_KEY=$(echo "$credentials" | cut -d'|' -f2)
     AWS_SESSION_TOKEN=$(echo "$credentials" | cut -d'|' -f3)
 fi
 
-curl --aws-sigv4 "$sigv4" --user "$AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY" -H "x-amz-security-token:$AWS_SESSION_TOKEN" $verbose "${ARGS[@]}"
+curl --aws-sigv4 "$sigv4" --user "$AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY" -H "x-amz-security-token:$AWS_SESSION_TOKEN" $verbose "${curl_args[@]}"
