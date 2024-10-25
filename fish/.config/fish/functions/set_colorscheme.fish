@@ -17,7 +17,7 @@ function set_colorscheme
     set -U fish_color_cwd 008000
     set -U fish_color_cwd_root 800000
     set -U fish_color_valid_path normal
-    set -U fish_color_autosuggestion 444444
+    set -U fish_color_autosuggestion aaaaaa --italics
     set -U fish_color_user 00ff00
     set -U fish_color_host normal
     set -U fish_color_cancel normal
@@ -63,7 +63,7 @@ function set_colorscheme
     set -U prompt_fg "#4B3F36"
     set -U prompt_fg_sec "#aaaaaa"
   else
-    set -U fish_color_autosuggestion 444444
+    set -U fish_color_autosuggestion 444444 --italics
     set -U fish_color_cancel normal
     set -U fish_color_command af5f00
     set -U fish_color_comment 9e9e9e

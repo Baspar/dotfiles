@@ -62,6 +62,7 @@ augroup CustomColorChange
       hi! Whitespace guifg=#d5c4a3 cterm=italic gui=italic
     else
       hi! Whitespace guifg=#4d453e cterm=italic gui=italic
+      hi! Folded ctermfg=4 ctermbg=248 guifg=#c1a78e guibg=#3e3e3e
       hi! SignColumn ctermbg=233 guibg=#121212
       hi! NotifyBackground ctermbg=242 guibg=#4d453e ctermfg=14 guifg=#a38d78
       hi! link LineNr Folded
@@ -69,7 +70,7 @@ augroup CustomColorChange
     endif
     hi! link NotifyBackground FZFBackground
   endfunction
-,
+
   au!
   au ColorScheme * call s:custom_colors()
   au VimEnter * call s:custom_colors()

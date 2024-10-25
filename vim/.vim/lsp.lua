@@ -1,7 +1,17 @@
 local lspconfig = require'lspconfig'
+local configs = require 'lspconfig.configs'
 local null_ls = require'null-ls'
 local cmp = require'cmp'
 local cmp_nvim_lsp = require'cmp_nvim_lsp'
+
+vim.tbl_deep_extend('keep', lspconfig, {
+	codewhisperer = {
+    -- Add the codewhisperer to our PATH or BIN folder
+    cmd = { "cwls" },
+    root_dir = lspconfig.util.root_pattern("packageInfo", "package.json", "tsconfig.json", "jsconfig.json", ".git"),
+    filetypes = { 'java', 'python', 'typescript', 'javascript', 'csharp', 'ruby', 'kotlin', 'shell', 'sql', 'c', 'cpp', 'go', 'rust', 'lua' },
+	}
+})
 
 local configs = {}
 
@@ -20,7 +30,7 @@ local tsFamily = {
   "typescriptreact"
 }
 
-configs['tsserver'] = {
+configs['ts_ls'] = {
   on_attach = function(client)
     if client.config.flags then
       client.config.flags.allow_incremental_sync = true
@@ -93,6 +103,8 @@ configs['lua_ls'] = {}
 -- {{{ Java
 configs['jdtls'] = {}
 -- }}}
+
+configs['codewhisperer'] = {}
 
 -- {{{ Go
 configs['gopls'] = {
@@ -199,9 +211,11 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
 )
 -- }}}
 
+
 for name, config in pairs(configs) do
   config.capabilities =  cmp_nvim_lsp.default_capabilities()
   lspconfig[name].setup(config)
 end
+
 
 -- vim: foldmethod=syntax:foldlevel=0

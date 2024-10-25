@@ -66,6 +66,7 @@ call plug#begin('~/.vim/plugged')
 
   "{{{ Nvim-TreeSitter
   Plug 'nvim-treesitter/nvim-treesitter', If(has('nvim'), {'do': ':TSUpdate'})
+  Plug 'nvim-treesitter/nvim-treesitter-textobjects', If(has('nvim'))
   "}}}
 
   " {{{ Polyglot
@@ -112,10 +113,21 @@ call plug#begin('~/.vim/plugged')
   Plug 'justinmk/vim-ipmotion'
   let g:ip_skipfold = 1
 
-  Plug 'tmux-plugins/vim-tmux-focus-events'
+  " Plug 'tmux-plugins/vim-tmux-focus-events'
 
   " {{{ Colorschemes
-  Plug 'https://gitlab.com/rawleyIfowler/melange'
+  Plug 'rktjmp/lush.nvim'
+
+  Plug 'ab-dx/ares.nvim'
+  Plug 'savq/melange-nvim'
+  " Plug 'Martin1887/melangeDarkerWarm-nvim'
+  Plug 'ramojus/mellifluous.nvim'
+  Plug 'rebelot/kanagawa.nvim'
+  Plug 'sainnhe/everforest'
+  Plug 'zenbones-theme/zenbones.nvim'
+  Plug 'rose-pine/neovim'
+
+
   Plug 'fcpg/vim-fahrenheit'
   Plug 'AlessandroYorba/alduin'
   Plug 'fcpg/vim-orbital'
