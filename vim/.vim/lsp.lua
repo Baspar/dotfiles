@@ -4,15 +4,6 @@ local null_ls = require'null-ls'
 local cmp = require'cmp'
 local cmp_nvim_lsp = require'cmp_nvim_lsp'
 
-vim.tbl_deep_extend('keep', lspconfig, {
-	codewhisperer = {
-    -- Add the codewhisperer to our PATH or BIN folder
-    cmd = { "cwls" },
-    root_dir = lspconfig.util.root_pattern("packageInfo", "package.json", "tsconfig.json", "jsconfig.json", ".git"),
-    filetypes = { 'java', 'python', 'typescript', 'javascript', 'csharp', 'ruby', 'kotlin', 'shell', 'sql', 'c', 'cpp', 'go', 'rust', 'lua' },
-	}
-})
-
 local configs = {}
 
 -- {{{ Nvim LSP
@@ -103,8 +94,6 @@ configs['lua_ls'] = {}
 -- {{{ Java
 configs['jdtls'] = {}
 -- }}}
-
-configs['codewhisperer'] = {}
 
 -- {{{ Go
 configs['gopls'] = {
