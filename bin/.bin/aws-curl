@@ -84,4 +84,6 @@ elif aws configure get credential_process >/dev/null; then
     AWS_SESSION_TOKEN=$(echo "$credentials" | cut -d'|' -f3)
 fi
 
+[ "$verbose" ] && echo "using credential: $(aws sts get-caller-identity)"
+
 curl --aws-sigv4 "$sigv4" --user "$AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY" -H "x-amz-security-token:$AWS_SESSION_TOKEN" $verbose "${curl_args[@]}"
