@@ -3,6 +3,10 @@ command -v exa 1>/dev/null 2>/dev/null && abbr ls 'exa'
 command -v exa 1>/dev/null 2>/dev/null && abbr l 'exa -l'
 command -v exa 1>/dev/null 2>/dev/null && abbr ll 'exa -la'
 
+command -v eza 1>/dev/null 2>/dev/null && abbr ls 'eza'
+command -v eza 1>/dev/null 2>/dev/null && abbr l 'eza -l'
+command -v eza 1>/dev/null 2>/dev/null && abbr ll 'eza -la'
+
 abbr gm 'git merge'
 abbr gd 'git diff'
 abbr gp 'git push'
