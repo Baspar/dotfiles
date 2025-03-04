@@ -27,10 +27,11 @@ function transient_and_execute
     commandline -f execute
     return
   end
+  commandline --function expand-abbr suppress-autosuggestion
   if commandline --is-valid || ! commandline | string length -q
     set -g __baspar_transient_prompt
-    commandline -f repaint
-    echo -en "\e[2K"
+    commandline --function repaint
+    echo -en "\e[1K"
   end
   commandline -f execute
 end
