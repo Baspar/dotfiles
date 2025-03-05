@@ -27,7 +27,6 @@ function transient_and_execute
     commandline -f execute
     return
   end
-  commandline --function expand-abbr suppress-autosuggestion
   if commandline --is-valid || ! commandline | string length -q
     set -g __baspar_transient_prompt
     commandline --function repaint
