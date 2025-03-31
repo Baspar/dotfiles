@@ -24,7 +24,17 @@ provider2="amz"
 verbose=""
 curl_args=()
 
+declare -A seen=()
+check_duplicate_arg() {
+    local arg=$1
+    if [[ ${seen[$arg]} ]]; then
+        echo "Error: Argument '$arg' specified multiple times" && usage 1
+    fi
+    seen[$arg]=1
+}
+
 while (($#)); do
+    check_duplicate_arg "$1"
     case "$1" in
         --region?(=*)|-r?(=*))
             region=$(echo "$1" | cut -s -d= -f2-)
