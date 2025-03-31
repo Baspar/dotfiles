@@ -2,6 +2,13 @@
 shopt -s extglob; # Enable complex pattern match
 
 usage() {
+    local exit_code="${1:-0}"
+    local error_msg="$2"
+    
+    if [ "$exit_code" -ne 0 ] && [ -n "$error_msg" ]; then
+        echo "$error_msg" >&2
+    fi
+    
     echo "Usage:"
     echo ""
     echo "aws-curl --service SERVICE [--region REGION] [--provider1 PROVIDER1] [--provider2 PROVIDER2] [--unsigned-payload] [--verbose] [--help] -- [Normal cURL arguments]"
@@ -14,8 +21,9 @@ usage() {
     echo " --verbose|-v            : Enable debug logs"
     echo " [Normal cURL arguments] : Any argument after -- will be passed to underlying cURL command"
 
-    exit "${1:-0}"
+    exit "$exit_code"
 }
+
 
 region=""
 service=""
@@ -24,21 +32,34 @@ provider2="amz"
 verbose=""
 curl_args=()
 
+declare -A seen=()
+check_duplicate_arg() {
+    local canonical_name=$1
+    if [[ ${seen[$canonical_name]} ]]; then
+        usage 1 "Error: Argument '${canonical_name}' specified multiple times"
+    fi
+    seen[$canonical_name]=1
+}
+
 while (($#)); do
     case "$1" in
         --region?(=*)|-r?(=*))
+            check_duplicate_arg "region"
             region=$(echo "$1" | cut -s -d= -f2-)
             ! [ "$region" ] && shift && region="$1"
             ;;
         --service?(=*)|-s?(=*))
+            check_duplicate_arg "service"
             service=$(echo "$1" | cut -s -d= -f2-)
             ! [ "$service" ] && shift && service="$1"
             ;;
         --provider2?(=*)|-p2?(=*))
+            check_duplicate_arg "provider2"
             provider2=$(echo "$1" | cut -s -d= -f2-)
             ! [ "$provider2" ] && shift && provider2="$1"
             ;;
         --provider1?(=*)|-p1?(=*))
+            check_duplicate_arg "provider1"
             provider1=$(echo "$1" | cut -s -d= -f2-)
             ! [ "$provider1" ] && shift && provider1="$1"
             ;;
@@ -46,9 +67,11 @@ while (($#)); do
             usage
             ;;
         -v|--verbose)
+            check_duplicate_arg "verbose"
             verbose="--verbose"
             ;;
         --unsigned-payload|-u)
+            check_duplicate_arg "unsigned-payload"
             curl_args+=( '-H' 'x-amz-content-sha256: UNSIGNED-PAYLOAD' )
             ;;
         --)
@@ -56,15 +79,14 @@ while (($#)); do
             set --
             ;;
         *)
-            echo "Unknown flag or argument: '$1'"
-            usage 5
+            usage 5 "Unknown flag or argument: '$1'"
             ;;
     esac
     shift
 done
 
-! [ "$region" ] && echo "Error: Missing region" && usage 1
-! [ "$service" ] && echo "Error: Missing service" && usage 1
+! [ "$region" ] && usage 1 "Error: Missing region"
+! [ "$service" ] && usage 1 "Error: Missing service"
 
 sigv4="$provider1:$provider2:$region:$service"
 [ "$verbose" ] && echo "using sigv4 '$sigv4'"
