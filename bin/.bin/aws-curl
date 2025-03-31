@@ -24,31 +24,46 @@ provider2="amz"
 verbose=""
 curl_args=()
 
+declare -A seen=()
 while (($#)); do
     case "$1" in
         --region?(=*)|-r?(=*))
+            [[ ${seen[region]} ]] && echo "Error: arg region specified multiple times" && usage 1
+            seen[region]=1
             region=$(echo "$1" | cut -s -d= -f2-)
             ! [ "$region" ] && shift && region="$1"
             ;;
         --service?(=*)|-s?(=*))
+            [[ ${seen[service]} ]] && echo "Error: arg service specified multiple times" && usage 1
+            seen[service]=1
             service=$(echo "$1" | cut -s -d= -f2-)
             ! [ "$service" ] && shift && service="$1"
             ;;
         --provider2?(=*)|-p2?(=*))
+            [[ ${seen[provider2]} ]] && echo "Error: arg provider2 specified multiple times" && usage 1
+            seen[provider2]=1
             provider2=$(echo "$1" | cut -s -d= -f2-)
             ! [ "$provider2" ] && shift && provider2="$1"
             ;;
         --provider1?(=*)|-p1?(=*))
+            [[ ${seen[provider1]} ]] && echo "Error: arg provider1 specified multiple times" && usage 1
+            seen[provider1]=1
             provider1=$(echo "$1" | cut -s -d= -f2-)
             ! [ "$provider1" ] && shift && provider1="$1"
             ;;
         -h|--help)
+            [[ ${seen[help]} ]] && echo "Error: arg help specified multiple times" && usage 1
+            seen[help]=1
             usage
             ;;
         -v|--verbose)
+            [[ ${seen[verbose]} ]] && echo "Error: arg verbose specified multiple times" && usage 1
+            seen[verbose]=1
             verbose="--verbose"
             ;;
         --unsigned-payload|-u)
+            [[ ${seen[unsigned]} ]] && echo "Error: arg unsigned-payload specified multiple times" && usage 1
+            seen[unsigned]=1
             curl_args+=( '-H' 'x-amz-content-sha256: UNSIGNED-PAYLOAD' )
             ;;
         --)
