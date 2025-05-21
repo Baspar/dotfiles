@@ -30,7 +30,7 @@ function transient_and_execute
   if commandline --is-valid || ! commandline | string length -q
     set -g __baspar_transient_prompt
     commandline --function repaint
-    echo -en "\e[1K"
+    echo -en "\e[2K"
   end
   commandline -f execute
 end
@@ -467,7 +467,7 @@ function fish_custom_mode_prompt
 end
 
 function fish_transient_prompt
-  section "$prompt_bg" "$prompt_fg" (string join '' $__baspar_path_segments_abbr | sed 's#/*$##')
+  _section "$prompt_bg" "$prompt_fg" "⠀"(string join '' $__baspar_path_segments_abbr | sed 's#/*$##')" "
   _section "normal" "normal" ""
   echo " "
 end
