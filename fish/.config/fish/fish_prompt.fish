@@ -486,7 +486,6 @@ function fish_prompt
   # Initialize path segment
   set -q __baspar_path_segments || __baspar_update_path_segments
 
-  # If 
   if set -q __baspar_transient_prompt
     fish_transient_prompt
     return

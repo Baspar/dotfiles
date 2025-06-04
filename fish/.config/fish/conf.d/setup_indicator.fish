@@ -20,7 +20,7 @@ function setup_indicator_alias -a command_name indicator_name
 end
 
 # Create all underlying function for specific `indicator_name`
-function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_fn list_fn
+function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_fn list_fn additional_action_fn
   _dict_set $DICT_TMP_FILE $indicator_name (mktemp)
   _dict_rem $DICT_LIST $indicator_name
   set __baspar_indicator_names $__baspar_indicator_names $indicator_name
@@ -73,14 +73,24 @@ function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_f
     end
   end
 
-  function __baspar_indicator_select_$indicator_name -V indicator_name
+  function __baspar_indicator_select_$indicator_name -V indicator_name -V additional_action_fn
     set list (eval __baspar_indicator_mem_list_$indicator_name); or return
 
-    printf "%s\n" $list \
+    set res (printf "%s\n" $list \
         | cat -n \
-        | fzf --height 10 --with-nth 2.. \
-        | string trim \
-        | read -l -d \t id item; or return
+        | fzf --reverse --height 10 --with-nth 2.. --expect=ctrl-p); or return
+
+    if [ "$res[1]" = "ctrl-p" ]
+      if [ "$additional_action_fn" ]
+        eval $additional_action_fn
+      end
+      return
+    end
+
+
+    echo $res[2] \
+      | string trim \
+      | read -l -d \t id item; or return
     _dict_setx $DICT_ID $indicator_name $id
 
     __baspar_indicator_update_$indicator_name (echo $item | string escape --style=var)
