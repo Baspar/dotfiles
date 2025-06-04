@@ -76,19 +76,26 @@ function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_f
   function __baspar_indicator_select_$indicator_name -V indicator_name -V additional_action_fn
     set list (eval __baspar_indicator_mem_list_$indicator_name); or return
 
+    set fzf_opts ""
+    if [ "$additional_action_fn" ]
+      set fzf_opts "--expect=ctrl-p"
+    end
+
     set res (printf "%s\n" $list \
         | cat -n \
-        | fzf --reverse --height 10 --with-nth 2.. --expect=ctrl-p); or return
+        | eval fzf --reverse --height 10 --with-nth 2.. $fzf_opts); or return
 
-    if [ "$res[1]" = "ctrl-p" ]
-      if [ "$additional_action_fn" ]
+    set item "$res[1]"
+    if [ "$additional_action_fn" ]
+      if [ "$res[1]" = "ctrl-p" ]
         eval $additional_action_fn
+        return
       end
-      return
+      set item $res[2]
     end
 
 
-    echo $res[2] \
+    echo $item \
       | string trim \
       | read -l -d \t id item; or return
     _dict_setx $DICT_ID $indicator_name $id
@@ -195,6 +202,7 @@ function __baspar_indicator_select
   for command in $__baspar_indicator_names
     if set -q __baspar_indicator_show_$command
       eval __baspar_indicator_select_$command
+      set -e __baspar_transient_prompt
       break
     end
   end
