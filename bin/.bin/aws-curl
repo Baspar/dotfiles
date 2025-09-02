@@ -11,8 +11,8 @@ usage() {
     
     echo "Usage:"
     echo ""
-    echo "aws-curl --service SERVICE [--region REGION] [--provider1 PROVIDER1] [--provider2 PROVIDER2] [--unsigned-payload] [--verbose] [--help] -- [Normal cURL arguments]"
-    echo " --service|-s            : Vendor code used for SigV4"
+    echo "aws-curl [--service SERVICE] [--region REGION] [--provider1 PROVIDER1] [--provider2 PROVIDER2] [--unsigned-payload] [--verbose] [--help] -- [Normal cURL arguments]"
+    echo " --service|-s            : Vendor code used for SigV4 (Default: execute-api)"
     echo " --region|-r             : AWS region used for SigV4 (Default: \$AWS_REGION)"
     echo " --provider1|-p1         : Provider1 used for SigV4 (Default : aws)"
     echo " --provider2|-p2         : Provider2 used for SigV4 (Default : amz)"
@@ -25,8 +25,8 @@ usage() {
 }
 
 
-region=""
-service=""
+region="$AWS_REGION"
+service="execute-api"
 provider1="aws"
 provider2="amz"
 verbose=""
