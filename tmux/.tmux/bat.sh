@@ -1,7 +1,7 @@
 #!/bin/bash
 if [ $(command -v acpi) ]; then
     # Linux
-    INFO=$(acpi)
+    INFO=$(acpi | grep -v "unavailable")
     PERCENTAGE=$(echo "$INFO" | grep -o "\([0-9]\+\)%" | sed 's/%//')
     DISCHARGING=$(echo "$INFO" | grep -i "discharging")
     CHARGING=$(echo "$INFO" | grep -i "charging")

@@ -51,9 +51,10 @@ set PATH \
     $PATH \
     "/usr/local/opt/llvm/bin"
 
-alias npm "functions --erase npm yarn node; load_nvm; npm $argv"
-alias yarn "functions --erase npm yarn node; load_nvm; yarn $argv"
-alias node "functions --erase npm yarn node; load_nvm; node $argv"
+alias npm "functions --erase npm yarn node npx; load_nvm; npm $argv"
+alias yarn "functions --erase npm yarn node npx; load_nvm; yarn $argv"
+alias node "functions --erase npm yarn node npx; load_nvm; node $argv"
+alias npx "functions --erase npm yarn node npx; load_nvm; npx $argv"
 
 [ -e ~/.config/ripgrep/rc ] && set -Ux RIPGREP_CONFIG_PATH "$HOME/.config/ripgrep/rc"
 
