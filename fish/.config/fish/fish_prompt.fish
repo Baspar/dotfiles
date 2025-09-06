@@ -287,7 +287,7 @@ function __baspar_git_section_info -a GIT_DIR GIT_WORKTREE
       eval functions -e __baspar_on_finish_git_status_\$__baspar_git_status_pid_$SAFE_GIT_DIR
     end
 
-    command fish --private --command "__baspar_async_git_status '$GIT_DIR' '$GIT_WORKTREE'" 2>&1 > /dev/null &
+    command fish --private --command "sleep 0.01 && __baspar_async_git_status '$GIT_DIR' '$GIT_WORKTREE'" 2>&1 > /dev/null &
     set -l pid (jobs --last --pid)
     set -g __baspar_git_status_pid_$SAFE_GIT_DIR $pid
 
@@ -295,7 +295,6 @@ function __baspar_git_section_info -a GIT_DIR GIT_WORKTREE
       functions -e __baspar_on_finish_git_status_$pid
 
       if [ (eval echo \$__baspar_git_status_pid_$SAFE_GIT_DIR) = $pid ]
-        set -e __baspar_git_status_pid_$SAFE_GIT_DIR
         set exit_code $argv[3]
         # Exit code 130 is given when <C-c> is pressed
         if [ $exit_code -lt 16 ]
@@ -305,6 +304,7 @@ function __baspar_git_section_info -a GIT_DIR GIT_WORKTREE
           set -g __baspar_has_untracked_$SAFE_GIT_DIR (math "floor($exit_code / 8) % 2")
         end
       end
+      set -e __baspar_git_status_pid_$SAFE_GIT_DIR
       commandline -f repaint
     end
   end
