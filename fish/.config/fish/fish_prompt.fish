@@ -467,7 +467,30 @@ function fish_custom_mode_prompt
 end
 
 function fish_transient_prompt
-  _section "$prompt_bg" "$prompt_fg" "⠀"(string join '' $__baspar_path_segments_abbr | sed 's#/*$##')" "
+  # _section "$prompt_bg" "$prompt_fg" "⠀"(string join '' $__baspar_path_segments_abbr | sed 's#/*$##')" "
+  # _section "normal" "normal" ""
+  # return
+
+  set TOTAL_PATH ''
+
+  for i in (seq (count $__baspar_path_segments))
+    set PATH_SEGMENT_ABBR $__baspar_path_segments_abbr[$i]
+    set TOTAL_PATH $TOTAL_PATH$__baspar_path_segments[$i]
+
+    section "$prompt_bg" "$prompt_fg" "$PATH_SEGMENT_ABBR"
+
+    # No git section for last part
+    [ $i -eq (count $__baspar_path_segments) ] && break
+
+    # Git section
+    set GIT_WORKTREE "$TOTAL_PATH"
+    set GIT_DIR (__baspar_get_git_dir "$GIT_WORKTREE")
+    set SAFE_GIT_DIR (string escape --style=var "$GIT_DIR")
+    __baspar_git_section_info "$GIT_DIR" "$GIT_WORKTREE" \
+      | read -d '|' GIT_BG_COLOR GIT_BG_COLOR_SEC GIT_FG_COLOR GIT_FG_COLOR_SEC GIT_BRANCH GIT_OPERATION GIT_ICONS
+
+    section "$GIT_BG_COLOR" "$GIT_FG_COLOR" (echo "$GIT_BRANCH" | head -c 3) -o -i
+  end
   _section "normal" "normal" ""
   echo " "
 end
