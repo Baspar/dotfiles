@@ -459,18 +459,14 @@ function fish_custom_mode_prompt
       set BG_COLOR "$prompt_green_bg"
       set FG_COLOR "$prompt_green_fg"
     case '*'
-      set BG_COLOR "$prompt_bg"
-      set FG_COLOR "$prompt_fg"
+      set BG_COLOR "$prompt_inactive_bg"
+      set FG_COLOR "$prompt_inactive_fg"
   end
 
   _section "$BG_COLOR" "$FG_COLOR" " $LETTER "
 end
 
 function fish_transient_prompt
-  # _section "$prompt_bg" "$prompt_fg" "⠀"(string join '' $__baspar_path_segments_abbr | sed 's#/*$##')" "
-  # _section "normal" "normal" ""
-  # return
-
   set TOTAL_PATH ''
 
   for i in (seq (count $__baspar_path_segments))
@@ -483,10 +479,9 @@ function fish_transient_prompt
     [ $i -eq (count $__baspar_path_segments) ] && break
 
     # Git section
-    set GIT_WORKTREE "$TOTAL_PATH"
-    set GIT_DIR (__baspar_get_git_dir "$GIT_WORKTREE")
+    set GIT_DIR (__baspar_get_git_dir "$TOTAL_PATH")
     set SAFE_GIT_DIR (string escape --style=var "$GIT_DIR")
-    __baspar_git_section_info "$GIT_DIR" "$GIT_WORKTREE" \
+    __baspar_git_section_info "$GIT_DIR" "$TOTAL_PATH" \
       | read -d '|' GIT_BG_COLOR GIT_BG_COLOR_SEC GIT_FG_COLOR GIT_FG_COLOR_SEC GIT_BRANCH GIT_OPERATION GIT_ICONS
 
     section "$GIT_BG_COLOR" "$GIT_FG_COLOR" (echo "$GIT_BRANCH" | head -c 3) -o -i
@@ -537,10 +532,9 @@ function fish_prompt
     [ $i -eq (count $__baspar_path_segments) ] && break
 
     # Git section
-    set GIT_WORKTREE "$TOTAL_PATH"
-    set GIT_DIR (__baspar_get_git_dir "$GIT_WORKTREE")
+    set GIT_DIR (__baspar_get_git_dir "$TOTAL_PATH")
     set SAFE_GIT_DIR (string escape --style=var "$GIT_DIR")
-    __baspar_git_section_info "$GIT_DIR" "$GIT_WORKTREE" \
+    __baspar_git_section_info "$GIT_DIR" "$TOTAL_PATH" \
       | read -d '|' GIT_BG_COLOR GIT_BG_COLOR_SEC GIT_FG_COLOR GIT_FG_COLOR_SEC GIT_BRANCH GIT_OPERATION GIT_ICONS
 
     # Assign git Foreground color if job running or not
