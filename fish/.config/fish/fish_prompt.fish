@@ -8,6 +8,7 @@ set -g FISH_SEPARATOR "$LEFT_SEPARATOR"
 set -g FISH_SUB_SEPARATOR "$LEFT_SUB_SEPARATOR"
 set -g ELLIPSIS_AFTER "3"
 set -e DISABLE_TRANSIENT_PROMPT
+set -g FISH_BRAILLE "⠀"
 
 # ========
 # Mappings
@@ -484,10 +485,14 @@ function fish_transient_prompt
     __baspar_git_section_info "$GIT_DIR" "$TOTAL_PATH" \
       | read -d '|' GIT_BG_COLOR GIT_BG_COLOR_SEC GIT_FG_COLOR GIT_FG_COLOR_SEC GIT_BRANCH GIT_OPERATION GIT_ICONS
 
-    section "$GIT_BG_COLOR" "$GIT_FG_COLOR" (echo "$GIT_BRANCH" | head -c 3) -o -i
+    if [ -n "$GIT_OPERATION" ]
+      section "$GIT_BG_COLOR_SEC" "$GIT_FG_COLOR" "$GIT_OPERATION" -o -i
+    else
+      section "$GIT_BG_COLOR" "$GIT_FG_COLOR" (echo "$GIT_BRANCH" | head -c 3) -o -i
+    end
   end
   _section "normal" "normal" ""
-  echo " "
+  echo "$FISH_BRAILLE"
 end
 
 function fish_prompt
@@ -553,7 +558,7 @@ function fish_prompt
   set -g __baspar_old_bg ""
   fish_custom_mode_prompt
   _section "normal" "normal" ""
-  echo " "
+  echo "$FISH_BRAILLE"
 
   set -e __baspar_need_git_update
 end
