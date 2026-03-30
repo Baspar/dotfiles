@@ -42,10 +42,8 @@ call plug#begin('~/.vim/plugged')
     Plug 'hrsh7th/cmp-vsnip'
     Plug 'neovim/nvim-lspconfig'
     Plug 'echasnovski/mini.notify'
-    " Plug 'j-hui/fidget.nvim'
-    " Plug 'rcarriga/nvim-notify'
     Plug 'nvim-lua/plenary.nvim'
-    Plug 'jose-elias-alvarez/null-ls.nvim'
+    Plug 'nvimtools/none-ls.nvim'
     Plug 'liuchengxu/vista.vim'
   else
     Plug 'prabirshrestha/vim-lsp'
@@ -64,10 +62,9 @@ call plug#begin('~/.vim/plugged')
   Plug 'mbbill/undotree'
   " }}}
 
-  "{{{ Nvim-TreeSitter
-  Plug 'nvim-treesitter/nvim-treesitter', If(has('nvim'), {'do': ':TSUpdate'})
-  Plug 'nvim-treesitter/nvim-treesitter-textobjects', If(has('nvim'))
-  "}}}
+  " {{{ vim-TreeSitter
+  Plug 'nvim-treesitter/nvim-treesitter', If(has('nvim'), {'do': ':TSUpdate', 'branch': 'main'})
+  " }}}
 
   " {{{ Polyglot
   Plug 'sheerun/vim-polyglot'
@@ -84,22 +81,24 @@ call plug#begin('~/.vim/plugged')
   " }}}
 
   " {{{ FZF
-  Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-  Plug 'junegunn/fzf.vim'
-  let g:fzf_colors = {
-      \ 'prompt': ['fg', 'Type'],
-      \ 'bg':     ['bg', 'FZFBackground', 'Pmenu'],
-      \ 'bg+':    ['bg', 'FZFBackgroundSelected'],
-      \ }
-      " \ 'hl': ['fg', 'Type'],
-      " \ 'hl+': ['fg', 'Number'],
-  let g:fzf_preview_window = ''
-  let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.7 } }
+  if has('nvim')
+    Plug 'ibhagwan/fzf-lua'
+  else
+    Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+    Plug 'junegunn/fzf.vim'
+    let g:fzf_colors = {
+        \ 'prompt': ['fg', 'Type'],
+        \ 'bg':     ['bg', 'FZFBackground', 'Pmenu'],
+        \ 'bg+':    ['bg', 'FZFBackgroundSelected'],
+        \ }
+    let g:fzf_preview_window = ''
+    let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.7 } }
+  endif
   " }}}
 
   " {{{ VimFugitive
   Plug 'tpope/vim-fugitive'
-  Plug 'ssh://git.amazon.com:2222/pkg/Vim-code-browse', {'branch': 'mainline'}
+  Plug 'tpope/vim-rhubarb'
   " }}}
 
   " {{{ VimSandwich
@@ -113,14 +112,11 @@ call plug#begin('~/.vim/plugged')
   Plug 'justinmk/vim-ipmotion'
   let g:ip_skipfold = 1
 
-  " Plug 'tmux-plugins/vim-tmux-focus-events'
-
   " {{{ Colorschemes
   Plug 'rktjmp/lush.nvim'
 
   Plug 'ab-dx/ares.nvim'
   Plug 'savq/melange-nvim'
-  " Plug 'Martin1887/melangeDarkerWarm-nvim'
   Plug 'ramojus/mellifluous.nvim'
   Plug 'rebelot/kanagawa.nvim'
   Plug 'sainnhe/everforest'

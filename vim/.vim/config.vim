@@ -53,22 +53,32 @@ augroup CustomColorChange
     hi! LspWarningHighlight cterm=undercurl gui=undercurl ctermfg=180 guifg=#dfaf87
     hi! LspWarningText ctermfg=180 guifg=#dfaf87
 
-    if &bg=="light"
-      hi! FZFBackground  ctermfg=4 ctermbg=248 guifg=#7c6f65 guibg=#ebdab4
-      hi! FZFBackgroundSelected  ctermfg=4 ctermbg=248 guifg=#7c6f65 guibg=#d4c4a2
-      hi! Folded ctermfg=4 ctermbg=248 guifg=#7c6f65 guibg=#d4c4a2
-      hi! LineNr ctermfg=4 ctermbg=248 guifg=#7c6f65 guibg=#ebdab4
-      hi! link SignColumn LineNr
-      hi! Whitespace guifg=#d5c4a3 cterm=italic gui=italic
-    else
-      hi! Whitespace guifg=#4d453e cterm=italic gui=italic
+    if &bg=="dark"
       hi! Folded ctermfg=4 ctermbg=248 guifg=#c1a78e guibg=#3e3e3e
+      hi! WinSeparator ctermbg=NONE guibg=NONE ctermfg=248 guifg=#3e3e3e
+      hi! Whitespace guifg=#4d453e cterm=italic gui=italic
+
+      hi! link LineNr Folded
+
       hi! SignColumn ctermbg=233 guibg=#121212
       hi! NotifyBackground ctermbg=242 guibg=#4d453e ctermfg=14 guifg=#a38d78
-      hi! link LineNr Folded
-      hi! link SignColumn Folded
+    else
+      hi! Folded ctermfg=4 ctermbg=248 guifg=#7c6f65 guibg=#d4c4a2
+      hi! WinSeparator  ctermbg=NONE guibg=NONE ctermfg=248 guifg=#ebdab4
+      hi! Whitespace guifg=#d5c4a3 cterm=italic gui=italic
+
+      hi! LineNr ctermfg=4 ctermbg=248 guifg=#7c6f65 guibg=#ebdab4
+
+      hi! FZFBackground  ctermfg=4 ctermbg=248 guifg=#7c6f65 guibg=#ebdab4
+      hi! FZFBackgroundSelected  ctermfg=4 ctermbg=248 guifg=#7c6f65 guibg=#d4c4a2
     endif
+
+    hi! link SignColumn LineNr
     hi! link NotifyBackground FZFBackground
+    hi! link FzfLuaNormal FZFBackground
+    hi! link FzfLuaBorder FZFBackground
+    hi! link FzfLuaPreviewNormal FZFBackgroundSelected
+    hi! link FzfLuaCursorLineNr Folded
   endfunction
 
   au!
@@ -104,10 +114,6 @@ let g:netrw_banner = 0
 
 "  STDIN
 autocmd StdinReadPre * let s:std_in=1
-
-"  Trailing spaces
-hi! TrailingSpaces ctermfg=131 guifg=#af5f5f
-match TrailingSpaces / \+$/
 
 "  Change default SQL mapping
 let g:ftplugin_sql_omni_key = '<C-s>'

@@ -23,13 +23,19 @@ nnoremap <Plug>PrependText# n".P:call repeat#set("\<Plug>PrependText#")<CR>
 nnoremap c<#                #cgN<C-r>"<C-o>`[<C-o>:call repeat#set("\<Plug>PrependText#")<CR>
 
 " FZF
-nnoremap <silent> \ :Buffers<CR>
-nnoremap <silent> <tab> :GitFiles<CR>
-nnoremap <silent> <s-tab> :FZF<CR>
+if has('nvim')
+  nnoremap <silent> \ :FzfLua buffers<CR>
+  nnoremap <silent> <tab> :FzfLua git_files<CR>
+  nnoremap <silent> <s-tab> :FzfLua files<CR>
+else
+  nnoremap <silent> \ :Buffers<CR>
+  nnoremap <silent> <tab> :GitFiles<CR>
+  nnoremap <silent> <s-tab> :FZF<CR>
+endif
 
 " fileExplorer
-nnoremap <C-e> :silent exec "NERDTreeToggle"<CR>
-nnoremap - :silent exec "NERDTreeFind"<CR>
+nnoremap <C-e> :silent exec "NERDTreeToggle"<CR>:silent doautocmd User NerdTreeOpen<CR>
+nnoremap - :silent exec "NERDTreeFind"<CR>:silent doautocmd User NerdTreeOpen<CR>
 augroup CancelNERDTreeQ
   au!
   au FileType nerdtree unmap <buffer> q
@@ -120,7 +126,7 @@ nnoremap <leader>gb :Git blame<CR>
 nnoremap <leader>a ggVG
 
 " Rgs
-nnoremap <leader>F :Rg<space>
+nnoremap <leader>F :FzfLua grep<CR>
 nnoremap <leader>f :set opfunc=ag_helper#look_for_block_op<CR>g@
 nmap <leader>f<leader>f <leader>fiw
 vnoremap <leader>f :<C-u>call ag_helper#look_for_block('`<', '`>')<CR>
@@ -138,16 +144,17 @@ nmap <leader>rr V<leader>r
 " Neovim LSP
 if has('nvim')
   nnoremap <silent> K :lua vim.lsp.buf.hover()<CR>
-  nnoremap <silent> ]a :lua vim.diagnostic.goto_next({float = {max_width = 150, focusable = false, border = "rounded"}})<CR>
-  nnoremap <silent> [a :lua vim.diagnostic.goto_prev({float = {max_width = 150, focusable = false, border = "rounded"}})<CR>
-  nnoremap <silent> <localleader>r :lua vim.lsp.buf.references()<CR>
-  nnoremap <silent> <localleader>d :lua vim.lsp.buf.definition()<CR>
+  nnoremap <silent> ]a :lua vim.diagnostic.jump({count = 1, float = {max_width = 150, focusable = false, border = "rounded"}})<CR>
+  nnoremap <silent> [a :lua vim.diagnostic.jump({count = -1, float = {max_width = 150, focusable = false, border = "rounded"}})<CR>
+  nnoremap <silent> <localleader>r :FzfLua lsp_references<CR>
+  nnoremap <silent> <localleader>d :FzfLua lsp_definitions<CR>
+  nnoremap <silent> <localleader>i :FzfLua lsp_implementations<CR>
   nnoremap <silent> <localleader>D m0:tabe %<CR>`0:lua vim.lsp.buf.definition()<CR>
   nnoremap <silent> <localleader>f :lua vim.lsp.buf.format()<CR>
   vnoremap <silent> <localleader>f :lua vim.lsp.buf.format()<CR>
   nnoremap <silent> <localleader>R :lua vim.lsp.buf.rename()<CR>
-  nnoremap <silent> <localleader><localleader> :lua vim.lsp.buf.code_action()<CR>
-  vnoremap <silent> <localleader><localleader> :lua vim.lsp.buf.range_code_action()<CR>
+  nnoremap <silent> <localleader><localleader> :FzfLua lsp_code_actions<CR>
+  vnoremap <silent> <localleader><localleader> :'<,'>FzfLua lsp_code_actions<CR>
 else
   nnoremap <silent> K <plug>(lsp-hover)
   nnoremap <silent> ]a <plug>(lsp-next-diagnostic)

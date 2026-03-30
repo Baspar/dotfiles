@@ -16,9 +16,6 @@ let s:mode_map = {
 func! s:is_nerd_tree(filename)
     return a:filename =~# '^NERD_tree_'
 endfunc
-func! s:is_fzf(filename)
-    return a:filename =~# '^term://.*#FZF$'
-endfunc
 func! s:is_undo(filename)
     return a:filename =~# '^undotree'
 endfunc
@@ -28,7 +25,7 @@ endfunc
 
 " Component functions
 func! LSPWarning()
-  if has('nvim') && luaeval('not vim.tbl_isempty(vim.lsp.buf_get_clients(0))')
+  if has('nvim') && luaeval('not vim.tbl_isempty(vim.lsp.get_clients({bufnr = 0}))')
     let count = luaeval("table.getn(vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN }))")
     if count != 0
       return count
@@ -38,10 +35,10 @@ func! LSPWarning()
 endfunc
 
 func! LSPError()
-  if has('nvim') && luaeval('not vim.tbl_isempty(vim.lsp.buf_get_clients(0))')
+  if has('nvim') && luaeval('not vim.tbl_isempty(vim.lsp.get_clients({bufnr = 0}))')
     let count = luaeval("table.getn(vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR }))")
     if count != 0
-      return count
+      return '\ ' + count + '\ '
     endif
   endif
   return ''
@@ -50,8 +47,6 @@ endfunc
 func! LineInfo()
     let filename = expand('%:f')
     if s:is_nerd_tree(filename)
-        return ''
-    elseif s:is_fzf(filename)
         return ''
     else
         return line('.') . '/' . line('$') . ':' . (col('$') - 1)
@@ -89,33 +84,30 @@ func! Mode()
   return get(s:mode_map, mode())
 endfunc
 
-" func! Wrap(text)
-"   return get(s:mode_map, mode())
-" endfunc
-
 augroup UpdateStatusLine
-  set fillchars=stl:─,stlnc:─
+  set fillchars=stl:━,stlnc:╍
 
   function! s:update_status_line_highlights()
+    hi! link StatusLineFileName LineNr
+    hi! link StatusLineLineInfo StatusLineFileName
+    hi! link StatusLine LineNr
+    hi StatusLine ctermbg=NONE guibg=NONE
+    hi! link StatusLineNC StatusLine
+    hi! link VertSplit WinSeparator
+
     if &background ==# "dark"
       hi! StatusLineModeCommand ctermbg=yellow ctermfg=black guibg=#af875f guifg=#3e3e3e gui=bold
-      hi! link StatusLineFileName LineNr
       hi! StatusLineLspError ctermbg=red ctermfg=white guibg=#af5f5e guifg=#FFFFFF
       hi! StatusLineLspWarning ctermbg=yellow ctermfg=white guibg=#af875f guifg=#FFFFFF
-      hi! link StatusLineLineInfo StatusLineFileName
     else
-      hi! StatusLine ctermfg=brown guifg=#ebdab4
       hi! StatusLineModeCommand ctermbg=brown ctermfg=white guibg=#7c6f65 guifg=#fbf0c9 gui=bold
-      hi! link StatusLineFileName LineNr
       hi! StatusLineLspError ctermbg=red ctermfg=white guibg=#af5f5e guifg=#FFFFFF
       hi! StatusLineLspWarning ctermbg=yellow ctermfg=white guibg=#af875f guifg=#FFFFFF
-      hi! link StatusLineLineInfo StatusLineFileName
     endif
   endfunction
 
   function! s:set_status_line_active()
-    setlocal statusline=
-    setlocal statusline+=%#StatusLineModeCommand#
+    setlocal statusline=%#StatusLineModeCommand#
     setlocal statusline+=\ %{Mode()}\ 
     setlocal statusline+=%#StatusLineFileName#
     setlocal statusline+=\ %f
@@ -130,12 +122,10 @@ augroup UpdateStatusLine
     setlocal statusline+=\ %{LineInfo()}\ 
     setlocal statusline+=%#StatusLineModeCommand#
     setlocal statusline+=\ %{Fugitive()}\ 
-    setlocal statusline+=%#VertSplit#
   endfunction
 
   function! s:set_status_line_inactive()
-    setlocal statusline=
-    setlocal statusline+=%#StatusLineFileName#
+    setlocal statusline=%#StatusLineFileName#
     setlocal statusline+=\ %f
     setlocal statusline+=%m\ 
     setlocal statusline+=%#VertSplit#
@@ -143,32 +133,32 @@ augroup UpdateStatusLine
   endfunction
 
   function! s:set_status_line_simple()
-    setlocal statusline=
-    setlocal statusline+=%#StatusLineModeCommand#
+    setlocal statusline=%#StatusLineModeCommand#
     setlocal statusline+=\ %{FileName()}\ 
     setlocal statusline+=%#Normal#
   endfunction
 
-  function! s:update_status_line(inactive)
+  function! s:update_status_line(active)
     call s:update_status_line_highlights()
 
     let filename = expand('%:f')
-    if s:is_nerd_tree(filename) || s:is_fzf(filename) || s:is_undo(filename) || s:is_diff(filename)
+    if s:is_nerd_tree(filename) || s:is_undo(filename) || s:is_diff(filename)
       call s:set_status_line_simple()
-    elseif a:inactive
-      call s:set_status_line_inactive()
-    else
+    elseif a:active
       call s:set_status_line_active()
+    else
+      call s:set_status_line_inactive()
     endif
   endfunction
 
   au!
-  au ColorScheme * call s:update_status_line(v:false)
-  au VimEnter * call s:update_status_line(v:false)
-  au FocusLost,WinLeave,BufLeave * call s:update_status_line(v:true)
-  au FocusGained,BufWinEnter,WinEnter,WinNew,BufEnter * call s:update_status_line(v:false)
-  au InsertLeave * call s:update_status_line(v:false)
-  au InsertChange * call s:update_status_line(v:false)
-  au InsertEnter * call s:update_status_line(v:false)
-  au User CustomColors call s:update_status_line(v:false)
+  au ColorScheme * call s:update_status_line(v:true)
+  au VimEnter * call s:update_status_line(v:true)
+  au FocusLost,WinLeave,BufLeave * call s:update_status_line(v:false)
+  au FocusGained,BufWinEnter,WinEnter,WinNew,BufEnter * call s:update_status_line(v:true)
+  au InsertLeave * call s:update_status_line(v:true)
+  au InsertChange * call s:update_status_line(v:true)
+  au InsertEnter * call s:update_status_line(v:true)
+  au User CustomColors,NerdTreeOpen call s:update_status_line(v:true)
+
 augroup END

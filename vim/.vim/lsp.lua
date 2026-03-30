@@ -1,8 +1,6 @@
-local lspconfig = require'lspconfig'
-local configs = require 'lspconfig.configs'
-local null_ls = require'null-ls'
-local cmp = require'cmp'
-local cmp_nvim_lsp = require'cmp_nvim_lsp'
+local null_ls = require 'null-ls'
+local cmp = require 'cmp'
+local cmp_nvim_lsp = require 'cmp_nvim_lsp'
 
 local configs = {}
 
@@ -33,42 +31,17 @@ configs['ts_ls'] = {
   filetypes = tsFamily,
 }
 null_ls.setup({
-    sources = {
-        null_ls.builtins.diagnostics.eslint_d.with({
-          extra_args = { "--config", "eslint.cdk.json" }
-        }),
-        null_ls.builtins.formatting.prettier
-    },
+  -- sources = {
+  --     null_ls.builtins.diagnostics.eslint_d.with({
+  --       extra_args = { "--config", "eslint.cdk.json" }
+  --     }),
+  --     null_ls.builtins.formatting.prettier
+  -- },
 })
 -- }}}
 
 -- {{{ Rust
 configs['rust_analyzer'] = {}
--- }}}
-
--- {{{ Scala [Disabled]
--- local scala_capabilities = vim.lsp.protocol.make_client_capabilities()
--- scala_capabilities.textDocument.codeAction = {
---   dynamicRegistration = false;
---   codeActionLiteralSupport = {
---     codeActionKind = {
---       valueSet = {
---         "",
---         "quickfix",
---         "refactor",
---         "refactor.extract",
---         "refactor.inline",
---         "refactor.rewrite",
---         "source",
---         "source.organizeImports",
---       };
---     };
---   };
--- }
--- configs['metals'] = {
---   root_dir = lspconfig.util.find_git_ancestor;
---   capabilities = scala_capabilities;
--- }
 -- }}}
 
 -- {{{ Python
@@ -88,7 +61,14 @@ configs['vimls'] = {}
 -- }}}
 
 -- {{{ LUA
-configs['lua_ls'] = {}
+configs['lua_ls'] = {
+  settings = {
+    Lua = {
+      diagnostics = {
+        globals = { "vim" } }
+    }
+  }
+}
 -- }}}
 
 -- {{{ Java
@@ -98,23 +78,13 @@ configs['jdtls'] = {}
 -- {{{ Go
 configs['gopls'] = {
   settings = {
-        gopls = {
-            env = {
-                GOFLAGS = "-tags=integration"
-            }
-        }
+    gopls = {
+      env = {
+        GOFLAGS = "-tags=integration,bmc,bmc_process"
+      }
     }
+  }
 }
--- }}}
-
--- {{{ Smithy [Disabled]
--- configs['smithy_lsp'] = {}
--- }}}
-
--- {{{ Groovy [Disabled]
--- configs['groovyls'] = {
---   cmd = { "java", "-jar", "/Users/bastien/.vim/lsp-servers/groovy-language-server-all.jar" },
--- }
 -- }}}
 -- }}}
 
@@ -135,7 +105,7 @@ cmp.setup({
   mapping = cmp.mapping.preset.insert({
     ['<C-k>'] = cmp.mapping.scroll_docs(-4),
     ['<C-j>'] = cmp.mapping.scroll_docs(4),
-    ['<C-l>'] = cmp.mapping.confirm({select = true}),
+    ['<C-l>'] = cmp.mapping.confirm({ select = true }),
   }),
   experimental = {
     ghost_text = true
@@ -150,61 +120,16 @@ cmp.setup({
 
 -- {{{ LSP Status
 require('mini.notify').setup()
--- require("fidget").setup {
---   notification = {
---     window = {
---       normal_hl = "MsgArea",
---       -- winblend = 0,
---       -- align_bottom = false,
---       y_padding = 1,
---       border = "rounded"
---     }
---   }
--- }
-
-local client_notifs = {}
-
-local function get_notif_data(client_id, token)
-  if not client_notifs[client_id] then
-    client_notifs[client_id] = {}
-  end
-
-  if not client_notifs[client_id][token] then
-    client_notifs[client_id][token] = {}
-  end
-
-  return client_notifs[client_id][token]
-end
-
-
-local function format_title(title, client_name)
-  return client_name .. (#title > 0 and ": " .. title or "")
-end
-
-local function format_message(message, percentage)
-  return (percentage and percentage .. "%\t" or "") .. (message or "")
-end
 
 -- {{{ Custom handler
-vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
-  vim.lsp.handlers.hover,
-  { max_width = 150, border = "single" }
-)
-vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
-  vim.lsp.diagnostic.on_publish_diagnostics,
-  {
-    underline = true,
-    virtual_text = { spacing = 4 },
-    border = "single"
-  }
-)
+vim.o.winborder = "single"
 -- }}}
 
 
 for name, config in pairs(configs) do
-  config.capabilities =  cmp_nvim_lsp.default_capabilities()
-  lspconfig[name].setup(config)
+  config.capabilities = cmp_nvim_lsp.default_capabilities()
+  vim.lsp.config(name, config)
+  vim.lsp.enable(name)
 end
-
 
 -- vim: foldmethod=syntax:foldlevel=0
