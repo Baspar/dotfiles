@@ -62,6 +62,9 @@ source ~/.config/fish/fish_prompt.fish
 
 status is-interactive; or return
 
+
+set -g fish_key_bindings fish_vi_key_bindings
+
 # Import colorscheme
 if test -e ~/.dircolors
     switch (uname)

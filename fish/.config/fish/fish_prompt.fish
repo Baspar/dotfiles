@@ -557,8 +557,7 @@ function fish_prompt
 
   set -g __baspar_old_bg ""
   fish_custom_mode_prompt
-  _section "normal" "normal" ""
-  echo "$FISH_BRAILLE"
+  _section "normal" "normal" " "
 
   set -e __baspar_need_git_update
 end
