@@ -54,30 +54,37 @@ augroup CustomColorChange
     hi! LspWarningText ctermfg=180 guifg=#dfaf87
 
     if &bg=="dark"
-      hi! Folded ctermfg=4 ctermbg=248 guifg=#c1a78e guibg=#3e3e3e
-      hi! WinSeparator ctermbg=NONE guibg=NONE ctermfg=248 guifg=#3e3e3e
-      hi! Whitespace guifg=#4d453e cterm=italic gui=italic
+      hi! Furthest guibg=#202020 guifg=#ECE1D7
+      hi! Further  guibg=#312F2E guifg=#C1A78E
+      hi! Closer   guibg=#453e38 guifg=#B5A292
+      hi! Closest  guibg=#AF875F guifg=#3E3E3E
 
-      hi! link LineNr Folded
+      hi! WinSeparator guibg=NONE guifg=#453E38
+      hi! Whitespace   gui=italic guifg=#4D453E
 
-      hi! SignColumn ctermbg=233 guibg=#121212
-      hi! NotifyBackground ctermbg=242 guibg=#4d453e ctermfg=14 guifg=#a38d78
+      hi! link LineNr Closer
     else
-      hi! Folded ctermfg=4 ctermbg=248 guifg=#7c6f65 guibg=#d4c4a2
-      hi! WinSeparator  ctermbg=NONE guibg=NONE ctermfg=248 guifg=#ebdab4
-      hi! Whitespace guifg=#d5c4a3 cterm=italic gui=italic
+      hi! Furthest guibg=#FCF3CF guifg=#54433A
+      hi! Further  guibg=#EBDAB4 guifg=#7C6F65
+      hi! Closer   guibg=#D4C4A2 guifg=#7C6F65
+      hi! Closest  guibg=#7C6F65 guifg=#FBF0C9
 
-      hi! LineNr ctermfg=4 ctermbg=248 guifg=#7c6f65 guibg=#ebdab4
+      hi! WinSeparator guibg=NONE guifg=#EBDAB4
+      hi! Whitespace   gui=italic guifg=#D5C4A3
 
-      hi! FZFBackground  ctermfg=4 ctermbg=248 guifg=#7c6f65 guibg=#ebdab4
-      hi! FZFBackgroundSelected  ctermfg=4 ctermbg=248 guifg=#7c6f65 guibg=#d4c4a2
+      hi! link LineNr Further
     endif
 
-    hi! link SignColumn LineNr
-    hi! link NotifyBackground FZFBackground
-    hi! link FzfLuaNormal FZFBackground
-    hi! link FzfLuaBorder FZFBackground
-    hi! link FzfLuaPreviewNormal FZFBackgroundSelected
+    hi! link Folded Closer
+
+    hi! link NotifyBackground Further
+    hi! link NotifyBackgroundSecondary Closer
+
+    hi! link FzfBackground NotifyBackground
+    hi! link FzfLuaNormal NotifyBackground
+    hi! link FzfLuaBorder NotifyBackground
+    hi! link FzfBackgroundSelected NotifyBackgroundSecondary
+    hi! link FzfLuaPreviewNormal NotifyBackgroundSecondary
     hi! link FzfLuaCursorLineNr Folded
   endfunction
 
