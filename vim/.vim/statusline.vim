@@ -93,17 +93,17 @@ augroup UpdateStatusLine
     hi! link StatusLine LineNr
     hi StatusLine ctermbg=NONE guibg=NONE
     hi! link StatusLineNC StatusLine
+    " hi! link StatusLineNC 
     hi! link VertSplit WinSeparator
 
     if &background ==# "dark"
-      hi! StatusLineModeCommand ctermbg=yellow ctermfg=black guibg=#af875f guifg=#3e3e3e gui=bold
-      hi! StatusLineLspError ctermbg=red ctermfg=white guibg=#af5f5e guifg=#FFFFFF
-      hi! StatusLineLspWarning ctermbg=yellow ctermfg=white guibg=#af875f guifg=#FFFFFF
+      hi! StatusLineModeCommand ctermbg=yellow ctermfg=black guibg=#AF875F guifg=#3e3e3e gui=bold
     else
       hi! StatusLineModeCommand ctermbg=brown ctermfg=white guibg=#7c6f65 guifg=#fbf0c9 gui=bold
-      hi! StatusLineLspError ctermbg=red ctermfg=white guibg=#af5f5e guifg=#FFFFFF
-      hi! StatusLineLspWarning ctermbg=yellow ctermfg=white guibg=#af875f guifg=#FFFFFF
     endif
+
+    hi! link StatusLineLspError Red
+    hi! link StatusLineLspWarning Yellow
   endfunction
 
   function! s:set_status_line_active()

@@ -42,50 +42,66 @@ augroup CustomColorChange
     hi! Normal ctermbg=NONE guibg=NONE
     hi! Comment cterm=italic gui=italic
     hi! String cterm=italic gui=italic
-    hi! lspInlayHintsParameter cterm=italic ctermfg=14 gui=italic guifg=#7e6956
-    hi! lspInlayHintsType cterm=italic ctermfg=14 gui=italic guifg=#5e5e5e
 
-    hi! LspDiagnosticsDefaultError guifg=red9 ctermfg=red
-    hi! LspErrorHighlight cterm=undercurl gui=undercurl ctermfg=131 guifg=#af5f5f
-    hi! LspErrorText ctermfg=131 guifg=#af5f5f
+    let colors = {
+      \ 'Red':        {'bg': '#AF5F5E', 'fg': '#FFFFFF'},
+      \ 'Yellow':     {'bg': '#AF875F', 'fg': '#FFFFFF'},
+      \ 'Green':      {'bg': '#A1B56C', 'fg': '#FFFFFF'},
+      \ }
 
-    hi! LspDiagnosticsDefaultWarning ctermfg=180 guifg=#dfaf87
-    hi! LspWarningHighlight cterm=undercurl gui=undercurl ctermfg=180 guifg=#dfaf87
-    hi! LspWarningText ctermfg=180 guifg=#dfaf87
+
+    let colors = extend(colors, &bg=="dark" ? {
+      \ 'RedSecondary':    {'bg': '#A26865', 'fg': '#FFFFFF'},
+      \ 'YellowSecondary': {'bg': '#A88B6D', 'fg': '#FFFFFF'},
+      \ 'GreenSecondary':  {'bg': '#90A261', 'fg': '#FFFFFF'},
+      \ 'Background':      {'bg': '#202020', 'fg': '#ECE1D7'},
+      \ 'Furthest':        {'bg': '#292827', 'fg': '#ECE1D7'},
+      \ 'Further':         {'bg': '#312F2E', 'fg': '#C1A78E'},
+      \ 'Closer':          {'bg': '#453E38', 'fg': '#B5A292'},
+      \ 'Closest':         {'bg': '#AF875F', 'fg': '#3E3E3E'},
+      \ } : {
+      \ 'RedSecondary':    {'bg': '#703D3D', 'fg': '#FFFFFF'},
+      \ 'YellowSecondary': {'bg': '#926E49', 'fg': '#FFFFFF'},
+      \ 'GreenSecondary':  {'bg': '#38623E', 'fg': '#FFFFFF'},
+      \ 'Background':      {'bg': '#FCF3CF', 'fg': '#54433A'},
+      \ 'Furthest':        {'bg': '#F4E7C2', 'fg': '#54433A'},
+      \ 'Further':         {'bg': '#EBDAB4', 'fg': '#7C6F65'},
+      \ 'Closer':          {'bg': '#D4C4A2', 'fg': '#7C6F65'},
+      \ 'Closest':         {'bg': '#7C6F65', 'fg': '#FBF0C9'},
+      \ })
+
+    for [name, c] in items(colors)
+      let [bg, fg] = [c.bg, c.fg]
+      exe 'hi! ' . name . ' guibg=' . bg . ' guifg=' . fg
+      exe 'hi! ' . name . '_bg guibg=' . bg
+      exe 'hi! ' . name . '_fg guifg=' . fg
+
+      exe 'hi! ' . name . '_reverse guibg=' . fg . ' guifg=' . bg
+      exe 'hi! ' . name . '_bg_reverse guibg=' . fg
+      exe 'hi! ' . name . '_fg_reverse guifg=' . bg
+    endfor
 
     if &bg=="dark"
-      hi! Furthest guibg=#202020 guifg=#ECE1D7
-      hi! Further  guibg=#312F2E guifg=#C1A78E
-      hi! Closer   guibg=#453e38 guifg=#B5A292
-      hi! Closest  guibg=#AF875F guifg=#3E3E3E
-
-      hi! WinSeparator guibg=NONE guifg=#453E38
-      hi! Whitespace   gui=italic guifg=#4D453E
+      hi! Whitespace gui=italic guifg=#4D453E
 
       hi! link LineNr Closer
     else
-      hi! Furthest guibg=#FCF3CF guifg=#54433A
-      hi! Further  guibg=#EBDAB4 guifg=#7C6F65
-      hi! Closer   guibg=#D4C4A2 guifg=#7C6F65
-      hi! Closest  guibg=#7C6F65 guifg=#FBF0C9
-
-      hi! WinSeparator guibg=NONE guifg=#EBDAB4
-      hi! Whitespace   gui=italic guifg=#D5C4A3
+      hi! Whitespace gui=italic guifg=#D5C4A3
 
       hi! link LineNr Further
     endif
 
+    hi! link WinSeparator Closer_fg_reverse
     hi! link Folded Closer
-
     hi! link NotifyBackground Further
     hi! link NotifyBackgroundSecondary Closer
-
     hi! link FzfBackground NotifyBackground
     hi! link FzfLuaNormal NotifyBackground
     hi! link FzfLuaBorder NotifyBackground
     hi! link FzfBackgroundSelected NotifyBackgroundSecondary
     hi! link FzfLuaPreviewNormal NotifyBackgroundSecondary
     hi! link FzfLuaCursorLineNr Folded
+    hi! link HighlightCurrentWord Further_bg
   endfunction
 
   au!
