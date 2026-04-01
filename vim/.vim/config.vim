@@ -101,6 +101,8 @@ augroup CustomColorChange
     hi! link FzfBackgroundSelected NotifyBackgroundSecondary
     hi! link FzfLuaPreviewNormal NotifyBackgroundSecondary
     hi! link FzfLuaCursorLineNr Folded
+
+    hi! link Sneak Closest
     hi! link HighlightCurrentWord Further_bg
   endfunction
 

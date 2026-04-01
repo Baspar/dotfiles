@@ -109,6 +109,10 @@ call plug#begin('~/.vim/plugged')
   Plug 'lukas-reineke/indent-blankline.nvim', If(has('nvim'))
   " }}}
 
+  " {{{ Vim Sneak
+  Plug 'justinmk/vim-sneak'
+  " }}}
+
   Plug 'justinmk/vim-ipmotion'
   let g:ip_skipfold = 1
 
