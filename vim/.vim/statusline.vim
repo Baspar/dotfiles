@@ -24,24 +24,11 @@ func! s:is_diff(filename)
 endfunc
 
 " Component functions
-func! LSPWarning()
+func! LSPDiagnosticCount(level)
   if has('nvim') && luaeval('not vim.tbl_isempty(vim.lsp.get_clients({bufnr = 0}))')
-    let count = luaeval("table.getn(vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN }))")
-    if count != 0
-      return count
-    endif
+    return luaeval("table.getn(vim.diagnostic.get(0, { severity = vim.diagnostic.severity.".a:level." }))")
   endif
-  return ''
-endfunc
-
-func! LSPError()
-  if has('nvim') && luaeval('not vim.tbl_isempty(vim.lsp.get_clients({bufnr = 0}))')
-    let count = luaeval("table.getn(vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR }))")
-    if count != 0
-      return '\ ' + count + '\ '
-    endif
-  endif
-  return ''
+  return 0
 endfunc
 
 func! LineInfo()
@@ -93,17 +80,17 @@ augroup UpdateStatusLine
     hi! link StatusLine LineNr
     hi StatusLine ctermbg=NONE guibg=NONE
     hi! link StatusLineNC StatusLine
-    " hi! link StatusLineNC 
     hi! link VertSplit WinSeparator
 
     if &background ==# "dark"
-      hi! StatusLineModeCommand ctermbg=yellow ctermfg=black guibg=#AF875F guifg=#3e3e3e gui=bold
+      hi! StatusLineModeCommand ctermbg=yellow ctermfg=black guibg=#AF875F guifg=#3E3E3E gui=bold
     else
-      hi! StatusLineModeCommand ctermbg=brown ctermfg=white guibg=#7c6f65 guifg=#fbf0c9 gui=bold
+      hi! StatusLineModeCommand ctermbg=brown  ctermfg=white guibg=#7C6F65 guifg=#FBF0C9 gui=bold
     endif
 
     hi! link StatusLineLspError Red
     hi! link StatusLineLspWarning Yellow
+    hi! link StatusLineLspInfo Green
   endfunction
 
   function! s:set_status_line_active()
@@ -114,10 +101,22 @@ augroup UpdateStatusLine
     setlocal statusline+=%m\ 
     setlocal statusline+=%#VertSplit#
     setlocal statusline+=%=
+
     setlocal statusline+=%#StatusLineLspError#
-    setlocal statusline+=\ %{LSPError()}\ 
+    setlocal statusline+=%{LSPDiagnosticCount(\"ERROR\")>0?'⠀':''}
+    setlocal statusline+=%{LSPDiagnosticCount(\"ERROR\")>0?LSPDiagnosticCount(\"ERROR\"):''}
+    setlocal statusline+=%{LSPDiagnosticCount(\"ERROR\")>0?'⠀':''}
+
     setlocal statusline+=%#StatusLineLspWarning#
-    setlocal statusline+=\ %{LSPWarning()}\ 
+    setlocal statusline+=%{LSPDiagnosticCount(\"WARN\")>0?'⠀':''}
+    setlocal statusline+=%{LSPDiagnosticCount(\"WARN\")>0?LSPDiagnosticCount(\"WARN\"):''}
+    setlocal statusline+=%{LSPDiagnosticCount(\"WARN\")>0?'⠀':''}
+
+    setlocal statusline+=%#StatusLineLspInfo#
+    setlocal statusline+=%{LSPDiagnosticCount(\"INFO\")>0?'⠀':''}
+    setlocal statusline+=%{LSPDiagnosticCount(\"INFO\")>0?LSPDiagnosticCount(\"INFO\"):''}
+    setlocal statusline+=%{LSPDiagnosticCount(\"INFO\")>0?'⠀':''}
+
     setlocal statusline+=%#StatusLineLineInfo#
     setlocal statusline+=\ %{LineInfo()}\ 
     setlocal statusline+=%#StatusLineModeCommand#
