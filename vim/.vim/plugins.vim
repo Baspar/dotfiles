@@ -110,7 +110,8 @@ call plug#begin('~/.vim/plugged')
   " }}}
 
   " {{{ Vim Sneak
-  Plug 'justinmk/vim-sneak'
+  " Plug 'justinmk/vim-sneak'
+  Plug 'https://codeberg.org/andyg/leap.nvim'
   " }}}
 
   Plug 'justinmk/vim-ipmotion'
