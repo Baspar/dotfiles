@@ -1,26 +1,33 @@
-require "ibl".setup {
-  indent = { char = "┋" },
-}
+-- Indent line
+do
+  require "ibl".setup {
+    indent = { char = "┋" },
+  }
 
-for _, keymap in pairs({ 'zc', 'zC', 'za', 'zA', 'zr', 'zR' }) do
-  vim.api.nvim_set_keymap('n', keymap, keymap .. '<CMD>lua require("ibl").debounced_refresh(0)<CR>',
-    { noremap = true, silent = true })
+  for _, keymap in pairs({ 'zc', 'zC', 'za', 'zA', 'zr', 'zR' }) do
+    vim.api.nvim_set_keymap('n', keymap, keymap .. '<CMD>lua require("ibl").debounced_refresh(0)<CR>',
+      { noremap = true, silent = true })
+  end
 end
 
-require("fzf-lua").setup {
-  fzf_colors = {
-    true,
-  },
-  winopts = {
-    preview = {
-      layout   = "vertical",
-      winopts  = {
-        signcolumn = "no",
+-- FZF lua
+do
+  require("fzf-lua").setup {
+    fzf_colors = {
+      true,
+    },
+    winopts = {
+      preview = {
+        layout   = "vertical",
+        winopts  = {
+          signcolumn = "no",
+        }
       }
     }
   }
-}
+end
 
+-- Leap.nvim
 do
   local function ft(key_specific_args)
     require('leap').leap(
@@ -37,7 +44,7 @@ do
     )
   end
 
-  local clever = require('leap.user').with_traversal_keys(';', ',')
+  local clever = require('leap.user').with_traversal_keys(';', '\\')
 
   vim.keymap.set({ 'n', 'x', 'o' }, 'f', function()
     ft { opts = clever }
@@ -51,4 +58,23 @@ do
   vim.keymap.set({ 'n', 'x', 'o' }, 'T', function()
     ft { backward = true, offset = 1, opts = clever }
   end)
+end
+
+-- Treesitter node navigation
+do
+  vim.keymap.set({ 'x' }, '(', function()
+    require 'vim.treesitter._select'.select_prev(vim.v.count1)
+  end, { desc = 'Select previous node' })
+
+  vim.keymap.set({ 'x' }, ')', function()
+    require 'vim.treesitter._select'.select_next(vim.v.count1)
+  end, { desc = 'Select next node' })
+
+  vim.keymap.set({ 'x', 'o' }, '+', function()
+    require 'vim.treesitter._select'.select_parent(vim.v.count1)
+  end, { desc = 'Select parent (outer) node' })
+
+  vim.keymap.set({ 'x', 'o' }, '-', function()
+    require 'vim.treesitter._select'.select_child(vim.v.count1)
+  end, { desc = 'Select child (inner) node' })
 end

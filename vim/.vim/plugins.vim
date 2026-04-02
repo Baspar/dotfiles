@@ -7,6 +7,10 @@ set runtimepath^=~/.vim runtimepath+=~/.vim/after
 let &packpath = &runtimepath
 
 call plug#begin('~/.vim/plugged')
+  " {{{ Repeat
+  Plug 'tpope/vim-repeat'
+  " }}}
+
   " {{{ AutoPairs
   Plug 'jiangmiao/auto-pairs'
   Plug 'alvan/vim-closetag'
