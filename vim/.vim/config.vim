@@ -49,20 +49,19 @@ augroup CustomColorChange
       \ 'Green':      {'bg': '#A1B56C', 'fg': '#FFFFFF'},
       \ }
 
-
     let colors = extend(colors, &bg=="dark" ? {
-      \ 'RedSecondary':    {'bg': '#A26865', 'fg': '#FFFFFF'},
-      \ 'YellowSecondary': {'bg': '#A88B6D', 'fg': '#FFFFFF'},
-      \ 'GreenSecondary':  {'bg': '#90A261', 'fg': '#FFFFFF'},
-      \ 'Background':      {'bg': '#202020', 'fg': '#ECE1D7'},
-      \ 'Furthest':        {'bg': '#292827', 'fg': '#ECE1D7'},
-      \ 'Further':         {'bg': '#312F2E', 'fg': '#C1A78E'},
-      \ 'Closer':          {'bg': '#453E38', 'fg': '#B5A292'},
-      \ 'Closest':         {'bg': '#AF875F', 'fg': '#3E3E3E'},
-      \ } : {
       \ 'RedSecondary':    {'bg': '#703D3D', 'fg': '#FFFFFF'},
       \ 'YellowSecondary': {'bg': '#926E49', 'fg': '#FFFFFF'},
       \ 'GreenSecondary':  {'bg': '#38623E', 'fg': '#FFFFFF'},
+      \ 'Background':      {'bg': '#202020', 'fg': '#ECE1D7'},
+      \ 'Furthest':        {'bg': '#292827', 'fg': '#ECE1D7'},
+      \ 'Further':         {'bg': '#3B3733', 'fg': '#C1A78E'},
+      \ 'Closer':          {'bg': '#53483D', 'fg': '#B5A292'},
+      \ 'Closest':         {'bg': '#AF875F', 'fg': '#3E3E3E'},
+      \ } : {
+      \ 'RedSecondary':    {'bg': '#A26865', 'fg': '#FFFFFF'},
+      \ 'YellowSecondary': {'bg': '#A88B6D', 'fg': '#FFFFFF'},
+      \ 'GreenSecondary':  {'bg': '#90A261', 'fg': '#FFFFFF'},
       \ 'Background':      {'bg': '#FCF3CF', 'fg': '#54433A'},
       \ 'Furthest':        {'bg': '#F4E7C2', 'fg': '#54433A'},
       \ 'Further':         {'bg': '#EBDAB4', 'fg': '#7C6F65'},
@@ -71,27 +70,38 @@ augroup CustomColorChange
       \ })
 
     for [name, c] in items(colors)
-      let [bg, fg] = [c.bg, c.fg]
-      exe 'hi! ' . name . ' guibg=' . bg . ' guifg=' . fg
-      exe 'hi! ' . name . '_bg guibg=' . bg
-      exe 'hi! ' . name . '_fg guifg=' . fg
-
-      exe 'hi! ' . name . '_reverse guibg=' . fg . ' guifg=' . bg
-      exe 'hi! ' . name . '_bg_reverse guibg=' . fg
-      exe 'hi! ' . name . '_fg_reverse guifg=' . bg
+      for [reverse_suffix, reverse_c] in items({
+            \ ''        : [c.bg, c.fg],
+            \ '_reverse': [c.fg, c.bg],
+            \ })
+        let [bg, fg] = reverse_c
+        for [gui_suffix, gui] in items({
+            \ ''            : '',
+            \ '_bold'       : ' gui=bold',
+            \ '_italic'     : ' gui=italic',
+            \ '_bold_italic': ' gui=bold,italic',
+            \ })
+          exe 'hi! ' . name . ''    . reverse_suffix . gui_suffix . ' guibg=' . bg . ' guifg=' . fg . gui
+          exe 'hi! ' . name . '_bg' . reverse_suffix . gui_suffix . ' guibg=' . bg . gui
+          exe 'hi! ' . name . '_fg' . reverse_suffix . gui_suffix . ' guifg=' . fg . gui
+        endfor
+      endfor
     endfor
 
     if &bg=="dark"
       hi! Whitespace gui=italic guifg=#4D453E
-
-      hi! link LineNr Closer
     else
       hi! Whitespace gui=italic guifg=#D5C4A3
-
-      hi! link LineNr Further
     endif
 
-    hi! link WinSeparator Closer_fg_reverse
+    hi! link CurSearch YellowSecondary_bold
+    hi! link LeapLabel RedSecondary
+    hi! link Search RedSecondary
+    hi! link LineNr Further
+    hi! link CursorLineNr Closer
+    hi! link CursorLine Furthest_bg
+    hi! link WinSeparator Further_fg_reverse
+
     hi! link Folded Closer
     hi! link NotifyBackground Further
     hi! link NotifyBackgroundSecondary Closer

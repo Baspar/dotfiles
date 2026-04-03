@@ -18,8 +18,8 @@ do
     },
     winopts = {
       preview = {
-        layout   = "vertical",
-        winopts  = {
+        layout  = "vertical",
+        winopts = {
           signcolumn = "no",
         }
       }
@@ -78,3 +78,16 @@ do
     require 'vim.treesitter._select'.select_child(vim.v.count1)
   end, { desc = 'Select child (inner) node' })
 end
+
+-- Cursorline
+vim.o.cursorline = true
+vim.api.nvim_create_autocmd({ "VimEnter", "WinEnter", "BufWinEnter" }, {
+  callback = function()
+    vim.o.cursorlineopt = "both"
+  end,
+})
+vim.api.nvim_create_autocmd({ "WinLeave" }, {
+  callback = function()
+    vim.o.cursorlineopt = "number"
+  end,
+})

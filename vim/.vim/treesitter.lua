@@ -1,4 +1,4 @@
-local treesitter = require'nvim-treesitter'
+local treesitter = require 'nvim-treesitter'
 
 treesitter.setup {}
 
@@ -7,36 +7,18 @@ vim.api.nvim_create_autocmd("FileType", {
   callback = function(args)
     local lang = vim.treesitter.language.get_lang(args.match)
     if not lang then return end
+
     if vim.treesitter.query.get(lang, "highlights") then vim.treesitter.start(args.buf) end
+
+    if vim.treesitter.query.get(lang, "indents") then
+      vim.opt_local.indentexpr = ':lua.require("nvim-treesitter").indentexpr()'
+    end
+
+    -- if vim.treesitter.query.get(lang, "folds") then
+    --   vim.opt_local.foldmethod = "expr"
+    --   vim.opt_local.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+    -- end
   end,
 })
---   ensure_installed = "all",
---   ignore_install = { "haskell", "ipkg" },
---
---   highlight = {
---     enable = true,
---     additional_vim_regex_highlighting = true
---   },
---
---   -- textobjects = {
---   --   select = {
---   --     enable = true,
---   --     lookahead = true,
---   --     keymaps = {
---   --       ["af"] = "@function.outer",
---   --       ["if"] = "@function.inner",
---   --
---   --       ["ic"] = "@comment.inner",
---   --       ["ac"] = "@comment.outer",
---   --
---   --       -- ["ac"] = "@class.outer",
---   --       ["as"] = { query = "@scope", query_group = "locals", desc = "Select language scope" },
---   --     }
---   --   }
---   -- }
--- }
-
--- vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
--- vim.opt.foldtext = "v:lua.vim.treesitter.foldtext()"
 
 -- vim: foldmethod=marker:foldlevel=1

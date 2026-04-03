@@ -76,17 +76,14 @@ augroup UpdateStatusLine
 
   function! s:update_status_line_highlights()
     hi! link StatusLineFileName LineNr
-    hi! link StatusLineLineInfo StatusLineFileName
+    hi! link StatusLineFileInfo Folded
+    hi! link StatusLineLineInfo LineNr
     hi! link StatusLine LineNr
     hi StatusLine ctermbg=NONE guibg=NONE
     hi! link StatusLineNC StatusLine
     hi! link VertSplit WinSeparator
 
-    if &background ==# "dark"
-      hi! StatusLineModeCommand ctermbg=yellow ctermfg=black guibg=#AF875F guifg=#3E3E3E gui=bold
-    else
-      hi! StatusLineModeCommand ctermbg=brown  ctermfg=white guibg=#7C6F65 guifg=#FBF0C9 gui=bold
-    endif
+    hi! link StatusLineModeCommand Closest_bold
 
     hi! link StatusLineLspError Red
     hi! link StatusLineLspWarning Yellow
@@ -96,9 +93,10 @@ augroup UpdateStatusLine
   function! s:set_status_line_active()
     setlocal statusline=%#StatusLineModeCommand#
     setlocal statusline+=\ %{Mode()}\ 
+    setlocal statusline+=%#StatusLineFileInfo#
+    setlocal statusline+=\ %m\ 
     setlocal statusline+=%#StatusLineFileName#
-    setlocal statusline+=\ %f
-    setlocal statusline+=%m\ 
+    setlocal statusline+=\ %f\ 
     setlocal statusline+=%#VertSplit#
     setlocal statusline+=%=
 
@@ -119,6 +117,8 @@ augroup UpdateStatusLine
 
     setlocal statusline+=%#StatusLineLineInfo#
     setlocal statusline+=\ %{LineInfo()}\ 
+    setlocal statusline+=%#StatusLineFileInfo#
+    setlocal statusline+=\ \ 
     setlocal statusline+=%#StatusLineModeCommand#
     setlocal statusline+=\ %{Fugitive()}\ 
   endfunction
@@ -152,12 +152,8 @@ augroup UpdateStatusLine
 
   au!
   au ColorScheme * call s:update_status_line(v:true)
-  au VimEnter * call s:update_status_line(v:true)
   au FocusLost,WinLeave,BufLeave * call s:update_status_line(v:false)
-  au FocusGained,BufWinEnter,WinEnter,WinNew,BufEnter * call s:update_status_line(v:true)
-  au InsertLeave * call s:update_status_line(v:true)
-  au InsertChange * call s:update_status_line(v:true)
-  au InsertEnter * call s:update_status_line(v:true)
+  au FocusGained,BufWinEnter,WinEnter,WinNew,BufEnter,VimEnter * call s:update_status_line(v:true)
+  au InsertEnter,InsertChange,InsertLeave * call s:update_status_line(v:true)
   au User CustomColors,NerdTreeOpen call s:update_status_line(v:true)
-
 augroup END
