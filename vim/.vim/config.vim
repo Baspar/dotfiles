@@ -1,5 +1,4 @@
 filetype plugin on
-
 "  General options
 set nowrap
 set completeopt=menu,menuone,noselect
@@ -101,6 +100,10 @@ augroup CustomColorChange
     hi! link CursorLineNr Closer
     hi! link CursorLine Furthest_bg
     hi! link WinSeparator Further_fg_reverse
+
+    hi! link TabLine Further
+    hi! link TabLineFill Furthest
+    hi! link TabLineSel Closer_bold
 
     hi! link Folded Closer
     hi! link NotifyBackground Further
