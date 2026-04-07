@@ -99,6 +99,8 @@ map("n", "<leader>vT", ":tabe ~/.config/nvim/lua/config/treesitter.lua<CR>")
 map("n", "<leader>vt", ":e ~/.config/nvim/lua/config/treesitter.lua<CR>")
 map("n", "<leader>vS", ":tabe ~/.config/nvim/lua/config/statusline.lua<CR>")
 map("n", "<leader>vs", ":e ~/.config/nvim/lua/config/statusline.lua<CR>")
+map("n", "<leader>vV", ":tabe ~/.config/nvim/init.lua<CR>")
+map("n", "<leader>vv", ":e ~/.config/nvim/init.lua<CR>")
 
 -- Splits
 map("n", "<leader>|", ":vs<CR>")

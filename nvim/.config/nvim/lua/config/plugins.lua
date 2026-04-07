@@ -1,11 +1,30 @@
 vim.pack.add({
+  -- {{{ Repeat
   "https://github.com/tpope/vim-repeat",
+  -- }}}
+
+  -- {{{ AutoPairs
   "https://github.com/jiangmiao/auto-pairs",
   "https://github.com/alvan/vim-closetag",
+  -- }}}
+
+  -- {{{ TCommentVim
   "https://github.com/tomtom/tcomment_vim",
+  -- }}}
+
+  -- {{{ VimLion
   "https://github.com/tommcdo/vim-lion",
+  -- }}}
+
+  -- {{{ VimAbolish
   "https://github.com/tpope/vim-abolish",
+  -- }}}
+
+  -- {{{ Nerdtree
   "https://github.com/scrooloose/nerdtree",
+  -- }}}
+
+  -- {{{ LSP
   "https://github.com/hrsh7th/nvim-cmp",
   "https://github.com/hrsh7th/cmp-path",
   "https://github.com/hrsh7th/cmp-buffer",
@@ -20,22 +39,48 @@ vim.pack.add({
   "https://github.com/hrsh7th/vim-vsnip",
   "https://github.com/hrsh7th/vim-vsnip-integ",
   "https://github.com/rafamadriz/friendly-snippets",
+  -- }}}
+
+  -- {{{ Undotree
   "https://github.com/mbbill/undotree",
+  -- }}}
+
+  -- {{{ vim-TreeSitter
   "https://github.com/nvim-treesitter/nvim-treesitter",
+  -- }}}
+
+  -- {{{ Polyglot
   "https://github.com/sheerun/vim-polyglot",
   "https://github.com/jasdel/vim-smithy",
   "https://github.com/dag/vim-fish",
-  "https://github.com/guns/vim-clojure-static",
-  "https://github.com/guns/vim-sexp",
-  "https://github.com/tpope/vim-sexp-mappings-for-regular-people",
+  -- }}}
+
+  -- {{{ FZF
   "https://github.com/ibhagwan/fzf-lua",
+  -- }}}
+
+  -- {{{ VimFugitive
   "https://github.com/tpope/vim-fugitive",
   "https://github.com/tpope/vim-rhubarb",
+  -- }}}
+
+  -- {{{ VimSandwich
   "https://github.com/machakann/vim-sandwich",
+  -- }}}
+
+  -- {{{ IndentLine
   "https://github.com/lukas-reineke/indent-blankline.nvim",
+  -- }}}
+
+  -- {{{ Navigation
   "https://codeberg.org/andyg/leap.nvim",
   "https://github.com/justinmk/vim-ipmotion",
+  -- }}}
+
+
+  -- {{{ Colorschemes
   "https://github.com/rktjmp/lush.nvim",
+
   "https://github.com/ab-dx/ares.nvim",
   "https://github.com/savq/melange-nvim",
   "https://github.com/ramojus/mellifluous.nvim",
@@ -43,18 +88,14 @@ vim.pack.add({
   "https://github.com/sainnhe/everforest",
   "https://github.com/zenbones-theme/zenbones.nvim",
   "https://github.com/rose-pine/neovim",
+
+
   "https://github.com/fcpg/vim-fahrenheit",
   "https://github.com/AlessandroYorba/alduin",
   "https://github.com/fcpg/vim-orbital",
   "https://github.com/fcpg/vim-farout",
   "https://github.com/habamax/vim-gruvbit",
+  -- }}}
 })
 
-vim.g.lion_squeeze_spaces = 1
-
-vim.g.NERDTreeMinimalUI = 1
-vim.g.NERDTreeDirArrows = 1
-vim.g.NERDTreeQuitOnOpen = 1
-vim.g.clojure_align_multiline_strings = 1
-vim.g.sexp_insert_after_wrap = "false"
-vim.g.ip_skipfold = 1
+-- vim: foldmethod=marker:foldlevel=0

@@ -6,6 +6,7 @@ require("config.plugins")
 require("config.mappings")
 require("config.statusline")
 require("config.colors")
+
 require("utils.highlight_current_word")
 
 require("plugins.lsp")
@@ -13,6 +14,7 @@ require("plugins.treesitter")
 require("plugins.fzf")
 require("plugins.indent")
 require("plugins.leap")
+require("plugins.misc")
 
 vim.opt.exrc = true
 local git_vimrc = vim.fn.getcwd() .. "/.git/vimrc"
