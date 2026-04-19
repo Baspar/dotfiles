@@ -9,7 +9,7 @@ vim.pack.add({
   -- }}}
 
   -- {{{ TCommentVim
-  "https://github.com/tomtom/tcomment_vim",
+  -- "https://github.com/tomtom/tcomment_vim",
   -- }}}
 
   -- {{{ VimLion
@@ -20,27 +20,8 @@ vim.pack.add({
   "https://github.com/tpope/vim-abolish",
   -- }}}
 
-  -- {{{ Nerdtree
-  "https://github.com/scrooloose/nerdtree",
-  -- }}}
-
   -- {{{ LSP
   "https://github.com/neovim/nvim-lspconfig",
-  "https://github.com/echasnovski/mini.notify",
-  "https://github.com/nvim-lua/plenary.nvim",
-  "https://github.com/nvimtools/none-ls.nvim",
-  -- }}}
-
-  -- {{{ Complete
-  "https://github.com/hrsh7th/nvim-cmp",
-  "https://github.com/hrsh7th/cmp-path",
-  "https://github.com/hrsh7th/cmp-buffer",
-  "https://github.com/hrsh7th/cmp-nvim-lsp",
-  "https://github.com/hrsh7th/cmp-nvim-lsp-signature-help",
-  "https://github.com/hrsh7th/cmp-vsnip",
-  "https://github.com/hrsh7th/vim-vsnip",
-  "https://github.com/hrsh7th/vim-vsnip-integ",
-  "https://github.com/rafamadriz/friendly-snippets",
   -- }}}
 
   -- {{{ Undotree
@@ -55,17 +36,8 @@ vim.pack.add({
   "https://github.com/ibhagwan/fzf-lua",
   -- }}}
 
-  -- {{{ VimFugitive
-  "https://github.com/tpope/vim-fugitive",
-  -- "https://github.com/tpope/vim-rhubarb",
-  -- }}}
-
   -- {{{ VimSandwich
   "https://github.com/machakann/vim-sandwich",
-  -- }}}
-
-  -- {{{ IndentLine
-  "https://github.com/lukas-reineke/indent-blankline.nvim",
   -- }}}
 
   -- {{{ Navigation
@@ -73,21 +45,8 @@ vim.pack.add({
   "https://github.com/justinmk/vim-ipmotion",
   -- }}}
 
-
   -- {{{ Colorschemes
   "https://github.com/savq/melange-nvim",
-  -- "https://github.com/rktjmp/lush.nvim",
-  -- "https://github.com/ab-dx/ares.nvim",
-  -- "https://github.com/ramojus/mellifluous.nvim",
-  -- "https://github.com/rebelot/kanagawa.nvim",
-  -- "https://github.com/sainnhe/everforest",
-  -- "https://github.com/zenbones-theme/zenbones.nvim",
-  -- "https://github.com/rose-pine/neovim",
-  -- "https://github.com/fcpg/vim-fahrenheit",
-  -- "https://github.com/AlessandroYorba/alduin",
-  -- "https://github.com/fcpg/vim-orbital",
-  -- "https://github.com/fcpg/vim-farout",
-  -- "https://github.com/habamax/vim-gruvbit",
   -- }}}
 })
 

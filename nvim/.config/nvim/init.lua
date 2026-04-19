@@ -11,7 +11,6 @@ require("utils.highlight_current_word")
 
 require("plugins.lsp")
 require("plugins.treesitter")
-require("plugins.fzf")
 require("plugins.indent")
 require("plugins.leap")
 require("plugins.misc")

@@ -21,19 +21,13 @@ map("n", "c>*", "*``cgn<C-r><C-o>\"")
 map("n", "c>#", "#``cgN<C-r><C-o>\"")
 
 -- FZF
-map("n", "\\", ":FzfLua buffers<CR>", { silent = true })
-map("n", "<tab>", ":FzfLua git_files<CR>", { silent = true })
-map("n", "<s-tab>", ":FzfLua files<CR>", { silent = true })
+map("n", "\\", require("../plugins/fzf").buffers, { silent = true })
+map("n", "<tab>", require("../plugins/fzf").git_files, { silent = true })
+map("n", "<s-tab>", require("../plugins/fzf").files, { silent = true })
 
 -- File explorer
-map("n", "<C-e>", function()
-  vim.cmd("NERDTreeToggle")
-  vim.cmd("doautocmd User NerdTreeOpen")
-end, { silent = true })
-map("n", "-", function()
-  vim.cmd("NERDTreeFind")
-  vim.cmd("doautocmd User NerdTreeOpen")
-end, { silent = true })
+map("n", "<C-e>", require("../plugins/nerdtree").toggle, { silent = true })
+map("n", "-", require("../plugins/nerdtree").find, { silent = true })
 
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "nerdtree",
@@ -113,23 +107,23 @@ local function toggle_git_status()
   if vim.fn.buflisted(".git/index") == 1 then
     vim.cmd("bd .git/index")
   else
-    vim.cmd("Git")
+    require("plugins.fugitive").git()
   end
 end
 
-map("n", "<leader>ga", ":Git add %:p<CR><CR>")
-map("n", "<leader>go", ":GBrowse<CR>")
-map("v", "<leader>go", ":GBrowse<CR>")
+map("n", "<leader>ga", function() require("plugins.fugitive").git_add() end)
+map("n", "<leader>go", function() require("plugins.fugitive").gbrowse() end)
+map("v", "<leader>go", function() require("plugins.fugitive").gbrowse() end)
 map("n", "<leader>gs", toggle_git_status)
-map("n", "<leader>gl", ":silent! Glog<CR>:bot copen<CR>")
-map("n", "<leader>gd", ":Gdiff<CR>")
-map("n", "<leader>gb", ":Git blame<CR>")
+map("n", "<leader>gl", function() require("plugins.fugitive").glog() end)
+map("n", "<leader>gd", function() require("plugins.fugitive").gdiff() end)
+map("n", "<leader>gb", function() require("plugins.fugitive").blame() end)
 
 -- Select all
 map("n", "<leader>a", "ggVG")
 
 -- Rgs
-map("n", "<leader>F", ":FzfLua grep<CR>")
+map("n", "<leader>F", require("plugins.fzf").grep)
 map("n", "<leader>f", function()
   vim.opt.operatorfunc = "v:lua.require'utils.ag_helper'.look_for_block_op"
   return "g@"
