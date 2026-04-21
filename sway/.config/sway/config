@@ -31,13 +31,13 @@ set $down j
 set $up k
 set $right l
 # Your preferred terminal emulator
-set $term kitty
+set $term ghostty
 
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec kitty
-bindsym $mod+w exec kitty
+bindsym $mod+Return exec $term
+bindsym $mod+w exec $term
 
 # kill focused window
 bindsym $mod+d kill
@@ -134,8 +134,8 @@ output * bg ~/.walls/4.jpg fill
 #
 # Example configuration:
 #
-output eDP-1 resolution 2560x1600 pos 0 0 scale 1
-output HDMI-A-2 resolution 1920x1080 pos 1706 0
+# output eDP-1 resolution 2560x1600 pos 0 0 scale 1
+# output HDMI-A-2 resolution 1920x1080 pos 1706 0
 
 bindswitch --reload --locked lid:on output eDP-1 disable
 bindswitch --reload --locked lid:off output eDP-1 enable
@@ -238,8 +238,8 @@ mode "volume" {
         bindsym Down exec ~/.bin/volDown.sh
         bindsym space exec ~/.bin/volToggle.sh
 
-        bindsym Return exec kitty -e pulsemixer; mode "default"
-        bindsym $mod+v exec kitty -e pulsemixer; mode "default"
+        bindsym Return exec $term -e pulsemixer; mode "default"
+        bindsym $mod+v exec $term -e pulsemixer; mode "default"
         bindsym Escape mode "default"
 }
 mode "mocp" {
@@ -250,7 +250,7 @@ mode "mocp" {
         bindsym       space exec ~/.bin/PPMOCP.sh
         bindsym Shift+slash exec ~/.bin/sayMOCPSong.sh && sleep 1 && ~/.bin/sayMOCP.sh
 
-        bindsym Return exec kitty --title "MOCP - Music Player" mocp && i3-msg workspace back_and_forth; mode "default"
+        bindsym Return exec $term --title "MOCP - Music Player" mocp && i3-msg workspace back_and_forth; mode "default"
         bindsym Escape mode "default"
 }
 
@@ -272,6 +272,14 @@ bindsym XF86AudioMute exec ~/.bin/volToggle.sh 0
 bindsym Shift+XF86AudioRaiseVolume exec ~/.bin/volUp.sh 1
 bindsym Shift+XF86AudioLowerVolume exec ~/.bin/volDown.sh 1
 bindsym Shift+XF86AudioMute exec ~/.bin/volToggle.sh 1
+
+# Media
+bindsym XF86AudioPlay exec playerctl play-pause && notify-send.sh $(playerctl metadata --format '{{ artist }} - {{ title }}' ) -i $(playerctl metadata --format '{{mpris:artUrl}}')
+bindsym XF86AudioStop exec playerctl stop
+bindsym XF86AudioRewind exec playerctl previous
+bindsym XF86AudioForward exec playerctl next
+bindsym Shift+XF86AudioRewind exec playerctl position -5
+bindsym Shift+XF86AudioForward exec playerctl position +5
 
 # Brightness Control
 bindsym XF86MonBrightnessUp exec ~/.bin/brightUp.sh
@@ -317,3 +325,5 @@ exec --no-startup-id kanshi
 exec --no-startup-id mako
 
 include /etc/sway/config.d/*
+
+for_window [app_id="firefox" title="Picture-in-Picture"] floating enable, sticky enable, border pixel 1

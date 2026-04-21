@@ -1,0 +1,20 @@
+# Font
+font-family = Haskplex Nerd
+font-size = 20
+font-feature = calt
+font-feature = clig
+font-feature = liga
+
+# Window
+window-padding-x = 0
+window-padding-y = 0
+macos-titlebar-style = hidden
+
+# Bell
+# audio-bell = false
+
+# Cursor
+cursor-style-blink = true
+
+# Colors (auto light/dark)
+theme = light:light,dark:dark
