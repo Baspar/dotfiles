@@ -32,6 +32,10 @@ abbr gn "git notes"
 abbr gba "git branch --all"
 abbr gclone "git clone --recursive gh:"
 
+abbr GT "git test"
+abbr GG "git generate"
+abbr GV "git vet"
+
 abbr y "yarn"
 abbr yd "yarn dev"
 abbr ys "yarn start"
