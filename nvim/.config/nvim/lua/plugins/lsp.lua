@@ -38,49 +38,22 @@ for name, config in pairs(configs) do
   vim.lsp.enable(name)
 end
 
+require("mini.notify").setup()
+require('mini.completion').setup({
+  lsp_completion = {
+    source_func = 'omnifunc',
+    auto_setup = false,
+    process_items = function(items, base)
+      return MiniCompletion.default_process_items(items, base, { kind_priority = { Text = -1, Snippet = 99 } })
+    end
+    ,
+  },
+})
+vim.lsp.config('*', { capabilities = MiniCompletion.get_lsp_capabilities() })
+
 vim.api.nvim_create_autocmd("LspAttach", {
-  callback = function()
-    vim.pack.add({
-      "https://github.com/echasnovski/mini.notify",
-      "https://github.com/nvim-lua/plenary.nvim",
-      "https://github.com/nvimtools/none-ls.nvim",
-      "https://github.com/hrsh7th/nvim-cmp",
-      "https://github.com/hrsh7th/cmp-path",
-      "https://github.com/hrsh7th/cmp-buffer",
-      "https://github.com/hrsh7th/cmp-nvim-lsp",
-      "https://github.com/hrsh7th/cmp-nvim-lsp-signature-help",
-      "https://github.com/hrsh7th/cmp-vsnip",
-      "https://github.com/hrsh7th/vim-vsnip",
-      "https://github.com/hrsh7th/vim-vsnip-integ",
-      "https://github.com/rafamadriz/friendly-snippets",
-    })
-
-    require("null-ls").setup({})
-    require("mini.notify").setup()
-
-    local cmp = require("cmp")
-    cmp.setup({
-      sources = cmp.config.sources({
-        { name = "nvim_lsp" },
-        { name = "nvim_lsp_signature_help" },
-        { name = "path" },
-        { name = "vsnip" },
-        { name = "buffer" },
-      }),
-      preselect = cmp.PreselectMode.None,
-      view = { entries = "native" },
-      mapping = cmp.mapping.preset.insert({
-        ["<C-k>"] = cmp.mapping.scroll_docs(-4),
-        ["<C-j>"] = cmp.mapping.scroll_docs(4),
-        ["<C-l>"] = cmp.mapping.confirm({ select = true }),
-      }),
-      experimental = { ghost_text = true },
-      snippet = {
-        expand = function(args)
-          vim.fn["vsnip#anonymous"](args.body)
-        end,
-      },
-    })
+  callback = function(ev)
+    vim.bo[ev.buf].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp'
   end,
   once = true,
 })

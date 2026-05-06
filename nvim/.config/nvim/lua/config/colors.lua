@@ -67,6 +67,9 @@ local function custom_colors()
   vim.cmd("hi! link FzfLuaCursorLineNr Folded")
   vim.cmd("hi! link Sneak Closest")
   vim.cmd("hi! link HighlightCurrentWord Further_bg")
+  vim.cmd("hi! link NormalFloat Further_bg")
+  vim.cmd("hi! link FloatTitle Closer_bg")
+  vim.cmd("hi! link PmenuSel Closer_bg")
 end
 
 vim.api.nvim_create_autocmd({ "ColorScheme", "VimEnter", "FocusGained" }, {

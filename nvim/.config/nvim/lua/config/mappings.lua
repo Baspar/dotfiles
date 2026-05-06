@@ -193,13 +193,9 @@ map("n", "<S-up>", "ddkP")
 map("v", "<S-up>", "dkPV`]")
 
 -- Vsnip
-map({ "i", "s" }, "<C-l>", function()
-  if vim.fn["vsnip#available"](1) == 1 then
-    return "<Plug>(vsnip-expand-or-jump)"
-  else
-    return "<C-l>"
-  end
-end, { expr = true })
+map({ "i", "s" }, "<C-l>", [[pumvisible() ? "\<C-y>" : "\<C-l>"]], { expr = true })
+map({ "i", "s" }, "<C-j>", [[pumvisible() ? "\<C-n>" : "\<C-j>"]], { expr = true })
+map({ "i", "s" }, "<C-k>", [[pumvisible() ? "\<C-p>" : "\<C-k>"]], { expr = true })
 
 -- Emacs Ctrl-a
 map("c", "<C-A>", "<Home>")

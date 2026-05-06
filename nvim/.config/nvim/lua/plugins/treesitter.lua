@@ -12,9 +12,9 @@ vim.api.nvim_create_autocmd("FileType", {
       vim.treesitter.start(args.buf)
     end
 
-    if vim.treesitter.query.get(lang, "indents") then
-      vim.opt_local.indentexpr = "v:lua.vim.treesitter.indentexpr()"
-    end
+    -- if vim.treesitter.query.get(lang, "indents") then
+    --   vim.opt_local.indentexpr = "v:lua.vim.treesitter.indentexpr()"
+    -- end
   end,
 })
 

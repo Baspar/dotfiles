@@ -8,10 +8,6 @@ vim.pack.add({
   "https://github.com/alvan/vim-closetag",
   -- }}}
 
-  -- {{{ TCommentVim
-  -- "https://github.com/tomtom/tcomment_vim",
-  -- }}}
-
   -- {{{ VimLion
   "https://github.com/tommcdo/vim-lion",
   -- }}}
@@ -22,6 +18,11 @@ vim.pack.add({
 
   -- {{{ LSP
   "https://github.com/neovim/nvim-lspconfig",
+  -- }}}
+
+  -- {{{ Autocomplete
+  "https://github.com/nvim-mini/mini.notify",
+  "https://github.com/nvim-mini/mini.completion",
   -- }}}
 
   -- {{{ Undotree
