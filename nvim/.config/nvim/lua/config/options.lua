@@ -1,5 +1,5 @@
 vim.opt.wrap = false
-vim.opt.completeopt = { "menu", "menuone", "noselect", "popup" }
+vim.opt.completeopt = { "menu", "menuone", "noselect" }
 vim.opt.emoji = false
 vim.opt.backspace = { "indent", "eol", "start" }
 vim.opt.encoding = "utf8"
