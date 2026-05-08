@@ -71,9 +71,11 @@ while read -r log_group; do
     encoded_log_groups="${encoded_log_groups}~'${encoded_log_group}"
 done <<< "$log_groups"
 
-BASE_URL="https://${AWS_REGION}.console.aws.amazon.com/cloudwatch/home?region=${AWS_REGION}#logsV2:logs-insights\$3FqueryDetail\$3D"
-QUERY_STATE="~(end~0~start~-3600~timeType~'RELATIVE~unit~'seconds~editorString~'fields*20*40timestamp*2c*20level*2c*20coalesce*28message*2c*20*40message*29*2c*20error*0a*7c*20sort*20*40timestamp*20asc*0a*7c*20limit*201000~isLiveTail~false~source~(${encoded_log_groups}))"
+URL="https://${AWS_REGION}.console.aws.amazon.com/cloudwatch/home?region=${AWS_REGION}#logsV2:logs-insights\$3FqueryDetail\$3D"
+URL+="~(end~0~start~-3600~timeType~'RELATIVE~unit~'seconds~editorString~'fields*20*40timestamp*2c*20level*2c*20coalesce*28message*2c*20*40message*29*2c*20error*0a*7c*20sort*20*40timestamp*20asc*0a*7c*20limit*201000~isLiveTail~false~source~(${encoded_log_groups}))"
 
 echo ""
 echo "CloudWatch Logs Insights URL:"
-echo "${BASE_URL}${QUERY_STATE}"
+echo "$URL"
+printf '\033]52;c;%s\a' "$(echo "$URL" | base64 | tr -d '\n')"
+echo "Copied into clipboard"
