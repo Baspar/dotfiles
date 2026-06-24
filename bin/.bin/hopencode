@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+shopt -s extglob; # Enable complex pattern match
+
+usage() {
+    local exit_code="${1:-0}"
+    local error_msg="$2"
+ 
+    if [ "$exit_code" -ne 0 ] && [ -n "$error_msg" ]; then
+        echo "$error_msg" >&2
+    fi
+
+    echo "Usage:"
+    echo ""
+    echo "$0 [--db-path] [--help]"
+    echo " --db-path|-p : SQLite path"
+    echo " --help|-h    : Display this help"
+
+    exit "$exit_code"
+}
+
+db_path="$HOME/.local/share/opencode/opencode.db"
+
+while (($#)); do
+    case "$1" in
+        --db-path?(=*)|-p?(=*))
+            db_path=$(echo "$1" | cut -s -d= -f2-)
+            ! [ "$db_path" ] && shift && db_path="$1"
+            ;;
+        -h|--help)
+            usage
+            ;;
+        *)
+            usage 5 "Unknown flag or argument: '$1'"
+            ;;
+    esac
+    shift
+done
+
+mtd_cost=$(sqlite3 "$db_path" "SELECT printf('%.2f$', SUM(coalesce(json_extract(m.data, '\$.cost'), 0))) FROM message m WHERE m.time_created >= (strftime('%s','now','start of month') * 1000)")
+
+session=$({
+    # Compute total MTD cost for the FZF prompt header
+
+    echo "json|Title|Path|Created at|Updated at|Cost|Model|#msg"
+    sqlite3 -header -json "$db_path" 'SELECT s.id, s.title, s.directory, s.time_created, s.time_updated, printf("%.2f$", s.cost) as cost, s.model, COUNT(m.id) as message_count
+    FROM session s
+    LEFT JOIN message m ON m.session_id = s.id
+    GROUP BY s.id
+    ORDER BY s.time_updated DESC' \
+      | jq -r --arg HOME "$HOME" '.[]
+        | (.title | if length > 40 then (.[:37] + "...") else . end)  as $title
+        | (try (.model | fromjson | .id) catch "") as $model
+        | [(. | tojson | @base64),
+            $title,
+            (.directory | gsub("^" + $HOME; "~")),
+            (.time_created / 1000 | todate),
+            (.time_updated / 1000 | todate),
+            (.cost | tostring),
+            $model,
+            .message_count ]
+        | join("|")'
+} \
+    | column -s\| -t \
+    | fzf --with-nth 2.. --nth 1 --header-lines 1 --reverse --height 10 --prompt "[$mtd_cost] Session> " \
+    | cut -d' '  -f1 \
+    | base64 -d)
+
+[ "$session" ] && {
+    directory=$(echo "$session" | jq -r ".directory")
+    session_id=$(echo "$session" | jq -r ".id")
+    cd $directory && opencode -s $session_id
+}
