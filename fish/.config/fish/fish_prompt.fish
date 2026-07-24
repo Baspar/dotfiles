@@ -10,6 +10,8 @@ set -g ELLIPSIS_AFTER "3"
 set -e DISABLE_TRANSIENT_PROMPT
 set -g FISH_BRAILLE "⠀"
 
+set -g FISH_NO_GIT ""
+
 # ========
 # Mappings
 # ========
@@ -402,12 +404,19 @@ function __baspar_update_path_segments_abbr --on-variable __baspar_no_abbr
   commandline -f repaint
 end
 
-function __baspar_update_path_segments --on-variable PWD
+function __baspar_update_path_segments --on-variable PWD --on-variable FISH_NO_GIT
   # Function __baspar_update_path_segments
   #
   # Cache list of path segments
   #
   set -e __baspar_path_segments
+
+  # When git blocks are disabled, show the whole path as a single segment
+  if [ -n "$FISH_NO_GIT" ]
+    set -g __baspar_path_segments "$PWD"
+    __baspar_update_path_segments_abbr
+    return
+  end
 
   for PATH_SEGMENT in (echo $PWD | sed 's#^/##; s#/$##' | tr '/' '\n')
     set ACCUMULATED_PATH "$ACCUMULATED_PATH/$PATH_SEGMENT"
@@ -479,7 +488,8 @@ function fish_transient_prompt
     # No git section for last part
     [ $i -eq (count $__baspar_path_segments) ] && break
 
-    # Git section
+    # Git section (skippable via FISH_NO_GIT)
+    [ -n "$FISH_NO_GIT" ] && continue
     set GIT_DIR (__baspar_get_git_dir "$TOTAL_PATH")
     set SAFE_GIT_DIR (string escape --style=var "$GIT_DIR")
     __baspar_git_section_info "$GIT_DIR" "$TOTAL_PATH" \
@@ -536,7 +546,8 @@ function fish_prompt
     # No git section for last part
     [ $i -eq (count $__baspar_path_segments) ] && break
 
-    # Git section
+    # Git section (skippable via FISH_NO_GIT)
+    [ -n "$FISH_NO_GIT" ] && continue
     set GIT_DIR (__baspar_get_git_dir "$TOTAL_PATH")
     set SAFE_GIT_DIR (string escape --style=var "$GIT_DIR")
     __baspar_git_section_info "$GIT_DIR" "$TOTAL_PATH" \
