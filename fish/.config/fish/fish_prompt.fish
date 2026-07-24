@@ -63,6 +63,12 @@ set -g __baspar_need_git_update
 set -e __baspar_no_abbr
 set -e __baspar_transient_prompt
 
+if [ (id -u) = "0" ]
+  set -g __baspar_is_root
+else
+  set -e __baspar_is_root
+end
+
 # =======
 # Helpers
 # =======
@@ -453,8 +459,8 @@ function fish_custom_mode_prompt
   end
 
   # Root
-  if [ (id -u) = "0" ]
-    set LETTER "$LETTER "
+  if set -q __baspar_is_root
+    set LETTER "$LETTER "
   end
 
   # Vim mode
