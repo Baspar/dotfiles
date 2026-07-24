@@ -102,3 +102,5 @@ function check_theme --on-event fish_prompt
         set_colorscheme
     end
 end
+
+set -Ux MISE_FISH_AUTO_ACTIVATE 0`

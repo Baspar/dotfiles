@@ -110,8 +110,9 @@ function _section -a BG FG TEXT
   if [ ! -z $TEXT ]
     set_color $FG -b $BG
     set TEXT_BLOCKS (string split "$__baspar_ellipsis_marker" "$TEXT")
-    for i in (seq (count $TEXT_BLOCKS))
-      set TEXT_BLOCK $TEXT_BLOCKS[$i]
+    set i 0
+    for TEXT_BLOCK in $TEXT_BLOCKS
+      set i (math $i + 1)
       if [ "$TEXT_BLOCK" ]
         if [ (math "$i % 2") -eq 0 ]
           set_color "$prompt_fg_sec" -b $BG -i
@@ -137,20 +138,25 @@ function __baspar_abbr_path -a root path_segment
   # @returns: An abbreviated version of the path_segment (one letter, but keep prefix special characters)
   #           with $HOME replaced by ~
   #
-  set path_segment (echo "$path_segment" | sed "s#^$HOME#~#")
+  # Replace a leading $HOME with ~ (anchored, no fork)
+  if string match -q -- "$HOME*" "$path_segment"
+    set path_segment "~"(string sub -s (math (string length -- "$HOME") + 1) -- "$path_segment")
+  end
 
   if set -q __baspar_no_abbr
     echo -n "$path_segment"
   else
-    set segments (echo $path_segment | string trim -c '/' | string split '/')
+    set segments (string split '/' -- (string trim -c '/' -- "$path_segment"))
+    set segments_count (count $segments)
     set response ""
-    for i in (seq 1 (count $segments))
-      set segment $segments[$i]
+    set i 0
+    for segment in $segments
+      set i (math $i + 1)
 
       if [ $segment = "~" ] && [ -z $root ]
         set response "~"
         set root "$HOME"
-      else if [ (string length "$segment") -le $ELLIPSIS_AFTER ] || [ $i -eq (count $segments) ]
+      else if [ (string length "$segment") -le $ELLIPSIS_AFTER ] || [ $i -eq $segments_count ]
         set response "$response/$segment"
         set root "$root/$segment"
       else
@@ -424,7 +430,7 @@ function __baspar_update_path_segments --on-variable PWD --on-variable FISH_NO_G
     return
   end
 
-  for PATH_SEGMENT in (echo $PWD | sed 's#^/##; s#/$##' | tr '/' '\n')
+  for PATH_SEGMENT in (string split '/' -- (string trim -c '/' -- "$PWD"))
     set ACCUMULATED_PATH "$ACCUMULATED_PATH/$PATH_SEGMENT"
     if [ -e "$TOTAL_PATH$ACCUMULATED_PATH/.git" ]
       set -g --append __baspar_path_segments "$ACCUMULATED_PATH"
@@ -485,14 +491,17 @@ end
 function fish_transient_prompt
   set TOTAL_PATH ''
 
-  for i in (seq (count $__baspar_path_segments))
+  set segments_count (count $__baspar_path_segments)
+  set i 0
+  for PATH_SEGMENT in $__baspar_path_segments
+    set i (math $i + 1)
     set PATH_SEGMENT_ABBR $__baspar_path_segments_abbr[$i]
-    set TOTAL_PATH $TOTAL_PATH$__baspar_path_segments[$i]
+    set TOTAL_PATH $TOTAL_PATH$PATH_SEGMENT
 
     section "$prompt_bg" "$prompt_fg" "$PATH_SEGMENT_ABBR"
 
     # No git section for last part
-    [ $i -eq (count $__baspar_path_segments) ] && break
+    [ $i -eq $segments_count ] && break
 
     # Git section (skippable via FISH_NO_GIT)
     [ -n "$FISH_NO_GIT" ] && continue
@@ -542,15 +551,18 @@ function fish_prompt
   end
 
   set TOTAL_PATH ''
-  for i in (seq (count $__baspar_path_segments))
+  set segments_count (count $__baspar_path_segments)
+  set i 0
+  for PATH_SEGMENT in $__baspar_path_segments
+    set i (math $i + 1)
     set PATH_SEGMENT_ABBR $__baspar_path_segments_abbr[$i]
-    set TOTAL_PATH $TOTAL_PATH$__baspar_path_segments[$i]
+    set TOTAL_PATH $TOTAL_PATH$PATH_SEGMENT
 
     # Path part section
     section "$prompt_bg" "$prompt_fg" "$PATH_SEGMENT_ABBR"
 
     # No git section for last part
-    [ $i -eq (count $__baspar_path_segments) ] && break
+    [ $i -eq $segments_count ] && break
 
     # Git section (skippable via FISH_NO_GIT)
     [ -n "$FISH_NO_GIT" ] && continue
