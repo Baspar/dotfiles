@@ -58,10 +58,11 @@ alias npx "functions --erase npm yarn node npx; load_nvm; npx $argv"
 
 [ -e ~/.config/ripgrep/rc ] && set -Ux RIPGREP_CONFIG_PATH "$HOME/.config/ripgrep/rc"
 
-source ~/.config/fish/fish_prompt.fish
+source ~/.config/fish/fish_async_prompt.fish
 
 status is-interactive; or return
 
+source ~/.config/fish/fish_prompt.fish
 
 set -g fish_key_bindings fish_vi_key_bindings
 
