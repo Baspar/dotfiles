@@ -4,13 +4,15 @@
 # Settings
 # ========
 
-set -g FISH_SEPARATOR "$LEFT_SEPARATOR"
-set -g FISH_SUB_SEPARATOR "$LEFT_SUB_SEPARATOR"
-set -g ELLIPSIS_AFTER "3"
-set -e DISABLE_TRANSIENT_PROMPT
-set -g FISH_BRAILLE "⠀"
+set -g __baspar_separator "$LEFT_SEPARATOR"
+set -g __baspar_sub_separator "$LEFT_SUB_SEPARATOR"
 
-set -g FISH_NO_GIT ""
+set -e __baspar_disable_transient_prompt
+set -g __baspar_braille "⠀"
+
+set -e __baspar_no_git
+set -e __baspar_truncate_smart
+set -g __baspar_truncate_after "3"
 
 # ========
 # Mappings
@@ -26,7 +28,7 @@ bind -M insert \cc transient_and_cancel
 # ================
 
 function transient_and_execute
-  if set -q DISABLE_TRANSIENT_PROMPT
+  if set -q __baspar_disable_transient_prompt
     commandline -f execute
     return
   end
@@ -39,7 +41,7 @@ function transient_and_execute
 end
 
 function transient_and_cancel
-  if set -q DISABLE_TRANSIENT_PROMPT
+  if set -q __baspar_disable_transient_prompt
     commandline -f cancel-commandline repaint-mode
     return
   end
@@ -100,10 +102,10 @@ function _section -a BG FG TEXT
   if [ "$__baspar_old_bg" != "" ] && [ -z "$FISH_NO_POWERLINE" ]
     if [ "$__baspar_old_bg" = "$BG" ]
       set_color black -b $BG
-      echo -n $FISH_SUB_SEPARATOR
+      echo -n $__baspar_sub_separator
     else
       set_color $__baspar_old_bg -b $BG
-      echo -n $FISH_SEPARATOR
+      echo -n $__baspar_separator
     end
   end
 
@@ -138,44 +140,49 @@ function __baspar_abbr_path -a root path_segment
   # @returns: An abbreviated version of the path_segment (one letter, but keep prefix special characters)
   #           with $HOME replaced by ~
   #
-  # Replace a leading $HOME with ~ (anchored, no fork)
+
+  # Replace a leading $HOME with
   if string match -q -- "$HOME*" "$path_segment"
     set path_segment "~"(string sub -s (math (string length -- "$HOME") + 1) -- "$path_segment")
   end
 
   if set -q __baspar_no_abbr
     echo -n "$path_segment"
-  else
-    set segments (string split '/' -- (string trim -c '/' -- "$path_segment"))
-    set segments_count (count $segments)
-    set response ""
-    set i 0
-    for segment in $segments
-      set i (math $i + 1)
+    return
+  end
 
-      if [ $segment = "~" ] && [ -z $root ]
-        set response "~"
-        set root "$HOME"
-      else if [ (string length "$segment") -le $ELLIPSIS_AFTER ] || [ $i -eq $segments_count ]
-        set response "$response/$segment"
-        set root "$root/$segment"
-      else
+  set segments (string split '/' -- (string trim -c '/' -- "$path_segment"))
+  set segments_count (count $segments)
+  set response ""
+  set i 0
+  for segment in $segments
+    set i (math $i + 1)
+
+    if [ $segment = "~" ] && [ -z $root ]
+      set response "~"
+      set root "$HOME"
+    else
+      if [ $i -eq $segments_count ]
+        set truncated "$segment"
+      else if set -q __baspar_truncate_smart
         set truncated ""
-        for truncate_at in (seq $ELLIPSIS_AFTER (string length "$segment"))
+        for truncate_at in (seq $__baspar_truncate_after (string length "$segment"))
           set truncated (string sub --length $truncate_at $segment)
           [ (count $root/$truncated*/) -eq 1 ] && break
         end
+      else
+        set truncated (string sub --length $__baspar_truncate_after $segment)
+      end
 
-        set root $root"/"$segment
-        if [ $truncated = $segment ]
-          set response "$response/$segment"
-        else
-          set response "$response/$__baspar_ellipsis_marker$truncated$__baspar_ellipsis_marker"
-        end
+      set root $root"/"$segment
+      if [ $truncated = $segment ]
+        set response "$response/$segment"
+      else
+        set response "$response/$__baspar_ellipsis_marker$truncated$__baspar_ellipsis_marker"
       end
     end
-    echo -n "$response"
   end
+  echo -n "$response"
 end
 
 function __baspar_git_branch_name -a GIT_DIR GIT_WORKTREE
@@ -199,7 +206,7 @@ function __baspar_git_branch_name -a GIT_DIR GIT_WORKTREE
   end
 
   # Detached HEAD
-  echo " "(git -C "$GIT_WORKTREE" rev-parse HEAD | string match -r '^.{8}')…
+  echo " "(git -C "$GIT_WORKTREE" rev-parse HEAD | string match -r '^.{8}')
 end
 
 function __baspar_git_operation -a GIT_DIR GIT_WORKTREE
@@ -392,7 +399,7 @@ function __baspar_update_path_segments_abbr --on-variable __baspar_no_abbr
   commandline -f repaint
 end
 
-function __baspar_update_path_segments --on-variable PWD --on-variable FISH_NO_GIT
+function __baspar_update_path_segments --on-variable PWD
   # Function __baspar_update_path_segments
   #
   # Cache list of path segments
@@ -400,7 +407,7 @@ function __baspar_update_path_segments --on-variable PWD --on-variable FISH_NO_G
   set -e __baspar_path_segments
 
   # When git blocks are disabled, show the whole path as a single segment
-  if [ -n "$FISH_NO_GIT" ]
+  if set -q __baspar_no_git
     set -g __baspar_path_segments "$PWD"
     __baspar_update_path_segments_abbr
     return
@@ -479,8 +486,8 @@ function fish_transient_prompt
     # No git section for last part
     [ $i -eq $segments_count ] && break
 
-    # Git section (skippable via FISH_NO_GIT)
-    [ -n "$FISH_NO_GIT" ] && continue
+    # Git section (skippable via __baspar_no_git)
+    set -q __baspar_no_git && continue
     set GIT_DIR (__baspar_get_git_dir "$TOTAL_PATH")
     set SAFE_GIT_DIR (string escape --style=var "$GIT_DIR")
     __baspar_git_section_info "$GIT_DIR" "$TOTAL_PATH" \
@@ -493,7 +500,7 @@ function fish_transient_prompt
     end
   end
   _section "normal" "normal" ""
-  echo "$FISH_BRAILLE"
+  echo "$__baspar_braille"
 end
 
 function fish_prompt
@@ -540,8 +547,8 @@ function fish_prompt
     # No git section for last part
     [ $i -eq $segments_count ] && break
 
-    # Git section (skippable via FISH_NO_GIT)
-    [ -n "$FISH_NO_GIT" ] && continue
+    # Git section (skippable via __baspar_no_git)
+    set -q __baspar_no_git && continue
     set GIT_DIR (__baspar_get_git_dir "$TOTAL_PATH")
     set SAFE_GIT_DIR (string escape --style=var "$GIT_DIR")
     __baspar_git_section_info "$GIT_DIR" "$TOTAL_PATH" \
