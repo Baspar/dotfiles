@@ -151,11 +151,6 @@ function auto_complete_mode
     commandline -f repaint
   end
 
-  # Remove existing <C-x> mapping
-  bind --erase --preset -M insert \cx fish_clipboard_copy
-  bind --erase --preset \cx fish_clipboard_copy
-  bind --erase --preset -M visual \cx fish_clipboard_copy
-
   if bind -M autocomplete > /dev/null 2>&1
     bind \ce -M autocomplete --sets-mode insert edit_command_buffer
     bind \cc -M autocomplete --sets-mode insert force-repaint
