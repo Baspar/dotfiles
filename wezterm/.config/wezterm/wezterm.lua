@@ -113,7 +113,7 @@ return {
     top = 0,
     bottom = 0,
   },
-  window_decorations = "RESIZE",
+  window_decorations = "NONE",
   cursor_blink_ease_in = "EaseInOut",
   cursor_blink_ease_out = "EaseInOut",
   cursor_blink_rate = 400,
