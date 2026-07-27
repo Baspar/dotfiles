@@ -93,15 +93,19 @@ end
 
 set -eg THEME
 function check_theme --on-event fish_prompt
-    set theme (bash ~/.bin/osc11.bash)
-    if [ "$THEME" != "$theme" ]
-        set -Ux THEME $theme
-        if command -v tmux &> /dev/null
-            tmux setenv -g THEME $theme
-            tmux source ~/.tmux.conf
-        end
-        set_colorscheme
+  set -q TMUX && return
+
+  set theme (bash ~/.bin/osc11.bash)
+  if [ "$THEME" != "$theme" ]
+    set -Ux THEME $theme
+    if command -v tmux &> /dev/null
+      tmux setenv -g THEME $theme
+      tmux source ~/.tmux.conf
     end
+    set_colorscheme
+  end
+
+  set -e __baspar_check_theme
 end
 
-set -Ux MISE_FISH_AUTO_ACTIVATE 0`
+set -Ux MISE_FISH_AUTO_ACTIVATE 0
