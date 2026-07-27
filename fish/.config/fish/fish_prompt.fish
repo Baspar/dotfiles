@@ -192,7 +192,8 @@ function __baspar_git_branch_name -a GIT_DIR GIT_WORKTREE
   #
   [ -d "$GIT_WORKTREE/rebase-merge" ] && {
   echo -n " "
-  cat "$GIT_WORKTREE/rebase-merge/head-name" 2>/dev/null
+  read -z head_name < "$GIT_WORKTREE/rebase-merge/head-name" 2>/dev/null
+  echo -n (string replace -ra 'refs/[^/]*/' '' -- (string trim -- "$head_name"))
   return
   }
 
@@ -200,13 +201,13 @@ function __baspar_git_branch_name -a GIT_DIR GIT_WORKTREE
   set head_branch (git -C "$GIT_WORKTREE" symbolic-ref HEAD 2> /dev/null)
   if [ $status -eq 0 ]
     echo " $head_branch" | \
-      sed 's|refs/[^/]*/||g' | \
-      tr -d '\n'
+      string replace -ra 'refs/[^/]*/' '' | \
+      string join ''
     return
   end
 
   # Detached HEAD
-  echo " "(git -C "$GIT_WORKTREE" rev-parse HEAD | string match -r '^.{8}')
+  echo " "(string sub -l 8 -- (git -C "$GIT_WORKTREE" rev-parse HEAD 2>/dev/null))
 end
 
 function __baspar_git_operation -a GIT_DIR GIT_WORKTREE
@@ -217,12 +218,12 @@ function __baspar_git_operation -a GIT_DIR GIT_WORKTREE
   # @returns: a symbol corresponding to the current operation
   #
   if [ -d "$GIT_DIR/rebase-merge" ]
-    set step (cat "$GIT_DIR/rebase-merge/msgnum" 2>/dev/null)
-    set total (cat "$GIT_DIR/rebase-merge/end" 2>/dev/null)
+    read -z step < "$GIT_DIR/rebase-merge/msgnum" 2>/dev/null; set step (string trim -- "$step")
+    read -z total < "$GIT_DIR/rebase-merge/end" 2>/dev/null; set total (string trim -- "$total")
     set GIT_OPERATION " "
   else if [ -d "$GIT_DIR/rebase-apply" ]
-    set step (cat "$GIT_DIR/rebase-apply/next" 2>/dev/null)
-    set total (cat "$GIT_DIR/rebase-apply/last" 2>/dev/null)
+    read -z step < "$GIT_DIR/rebase-apply/next" 2>/dev/null; set step (string trim -- "$step")
+    read -z total < "$GIT_DIR/rebase-apply/last" 2>/dev/null; set total (string trim -- "$total")
     set GIT_OPERATION " "
   else if [ -f "$GIT_DIR/MERGE_HEAD" ]
     set GIT_OPERATION " "
@@ -260,7 +261,7 @@ function __baspar_git_ahead_behind -a GIT_DIR GIT_WORKTREE
 
 
   if [ -n $GIT_UPSTREAM ]
-    command git -C "$GIT_WORKTREE" rev-list --count --left-right $GIT_UPSTREAM...HEAD 2>/dev/null | tr '\t' '|' | read -d '|' GIT_BEHIND GIT_AHEAD
+    command git -C "$GIT_WORKTREE" rev-list --count --left-right $GIT_UPSTREAM...HEAD 2>/dev/null | string replace \t '|' | read -d '|' GIT_BEHIND GIT_AHEAD
   end
 
   echo "$GIT_HAS_UPSTREAM|$GIT_AHEAD|$GIT_BEHIND"
@@ -344,7 +345,7 @@ function __baspar_git_section_info -a GIT_DIR GIT_WORKTREE
   [ -n "$GIT_BEHIND"       ] && [ $GIT_BEHIND -ge 1       ] && set GIT_OPERATION "$GIT_OPERATION$GIT_BEHIND↓"
 
   # Build git string
-  echo -n "$COLOR_BG|$COLOR_BG_SEC|$COLOR_FG|$COLOR_FG_SEC|$GIT_BRANCH|$GIT_OPERATION|$ICONS" | sed 's# $##'
+  echo -n (string replace -r ' $' '' -- "$COLOR_BG|$COLOR_BG_SEC|$COLOR_FG|$COLOR_FG_SEC|$GIT_BRANCH|$GIT_OPERATION|$ICONS")
 end
 
 function __baspar_reset --on-event fish_prompt --on-event fish_cancel
@@ -373,8 +374,9 @@ function __baspar_get_git_dir -a GIT_WORKTREE
   # @returns: Actual location of the git config folder
   #
   if [ -f "$GIT_WORKTREE/.git" ]
-    set GIT_DIR (cat "$GIT_WORKTREE/.git" | grep "^gitdir" | sed 's#^gitdir: *##')
-    if ! string match -r "^/" "$GIT_DIR" &> /dev/null
+    read -z gitfile < "$GIT_WORKTREE/.git" 2>/dev/null
+    set GIT_DIR (string replace -r '^gitdir: *' '' -- (string match -r '(?m)^gitdir:.*' -- "$gitfile") | string trim)
+    if ! string match -qr "^/" -- "$GIT_DIR"
       set GIT_DIR "$GIT_WORKTREE/$GIT_DIR"
     end
   else
