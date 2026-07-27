@@ -191,23 +191,23 @@ function __baspar_git_branch_name -a GIT_DIR GIT_WORKTREE
   # @returns: The branch name, or commit hash
   #
   [ -d "$GIT_WORKTREE/rebase-merge" ] && {
-  echo -n " "
-  read -z head_name < "$GIT_WORKTREE/rebase-merge/head-name" 2>/dev/null
-  echo -n (string replace -ra 'refs/[^/]*/' '' -- (string trim -- "$head_name"))
-  return
+    echo -n " "
+    read -z head_name < "$GIT_WORKTREE/rebase-merge/head-name" 2>/dev/null
+    echo -n (string replace -ra 'refs/[^/]*/' '' -- (string trim -- "$head_name"))
+    return
   }
 
-  # HEAD is on a branch
-  set head_branch (git -C "$GIT_WORKTREE" symbolic-ref HEAD 2> /dev/null)
-  if [ $status -eq 0 ]
-    echo " $head_branch" | \
+  read -z head < "$GIT_DIR/HEAD" 2>/dev/null
+  if string match -q -- 'ref: *' "$head"
+    echo " $head" | \
+      string replace 'ref: ' '' | \
       string replace -ra 'refs/[^/]*/' '' | \
       string join ''
     return
   end
 
   # Detached HEAD
-  echo " "(string sub -l 8 -- (git -C "$GIT_WORKTREE" rev-parse HEAD 2>/dev/null))
+  echo " "(string sub -l 8 -- $head)
 end
 
 function __baspar_git_operation -a GIT_DIR GIT_WORKTREE
@@ -280,7 +280,9 @@ function __baspar_git_section_info -a GIT_DIR GIT_WORKTREE
   __baspar_git_operation "$GIT_DIR" "$GIT_WORKTREE"    | read -l GIT_OPERATION
   __baspar_git_ahead_behind "$GIT_DIR" "$GIT_WORKTREE" | read -d '|' -l GIT_HAS_UPSTREAM GIT_AHEAD GIT_BEHIND
 
-  if set -q __baspar_need_git_update
+  if set -q __baspar_need_git_update && ! set -q __baspar_lock_git_update
+    set -g __baspar_lock_git_update
+
     if set -q __baspar_git_status_pid_$SAFE_GIT_DIR
       eval command kill -9 \$__baspar_git_status_pid_$SAFE_GIT_DIR 2>&1 > /dev/null
       eval functions -e __baspar_on_finish_git_status_\$__baspar_git_status_pid_$SAFE_GIT_DIR
@@ -305,6 +307,8 @@ function __baspar_git_section_info -a GIT_DIR GIT_WORKTREE
       end
       set -e __baspar_git_status_pid_$SAFE_GIT_DIR
       commandline -f repaint
+
+      set -e __baspar_lock_git_update
     end
   end
 
@@ -401,12 +405,13 @@ function __baspar_update_path_segments_abbr --on-variable __baspar_no_abbr
   commandline -f repaint
 end
 
-function __baspar_update_path_segments --on-variable PWD
+function __baspar_update_path_segments --on-variable PWD --on-variable __baspar_no_git
   # Function __baspar_update_path_segments
   #
   # Cache list of path segments
   #
   set -e __baspar_path_segments
+  set -g __baspar_need_git_update
 
   # When git blocks are disabled, show the whole path as a single segment
   if set -q __baspar_no_git
