@@ -253,8 +253,10 @@ function __baspar_trigger_async_git_status -a GIT_DIR GIT_WORKTREE
   #
   set SAFE_GIT_DIR (string escape --style=var "$GIT_DIR")
 
-  # A job is already running for this repo: give up.
-  set -q __baspar_git_status_pid_$SAFE_GIT_DIR && return
+  if set -q __baspar_git_status_pid_$SAFE_GIT_DIR
+    eval command kill -9 \$__baspar_git_status_pid_$SAFE_GIT_DIR 2>&1 > /dev/null
+    eval functions -e __baspar_on_finish_git_status_\$__baspar_git_status_pid_$SAFE_GIT_DIR
+  end
 
   command fish --private --command "sleep 0.01 && __baspar_async_git_status '$GIT_DIR' '$GIT_WORKTREE'" 2>&1 > /dev/null &
   set -l pid (jobs --last --pid)
@@ -291,8 +293,10 @@ function __baspar_trigger_async_git_ahead_behind -a GIT_DIR GIT_WORKTREE
   #
   set SAFE_GIT_DIR (string escape --style=var "$GIT_DIR")
 
-  # A job is already running for this repo: give up.
-  set -q __baspar_git_ahead_behind_pid_$SAFE_GIT_DIR && return
+  if set -q __baspar_git_ahead_behind_pid_$SAFE_GIT_DIR
+    eval command kill -9 \$__baspar_git_ahead_behind_pid_$SAFE_GIT_DIR 2>&1 > /dev/null
+    eval functions -e __baspar_on_finish_git_ahead_behind_\$__baspar_git_ahead_behind_pid_$SAFE_GIT_DIR
+  end
 
   set -l output_file (mktemp)
   command fish --private --command "sleep 0.01 && __baspar_async_git_ahead_behind '$GIT_DIR' '$GIT_WORKTREE' '$output_file'" 2>&1 > /dev/null &
