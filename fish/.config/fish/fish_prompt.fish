@@ -242,29 +242,78 @@ function __baspar_git_operation -a GIT_DIR GIT_WORKTREE
   echo "$GIT_OPERATION"
 end
 
-function __baspar_git_ahead_behind -a GIT_DIR GIT_WORKTREE
-  # Function __baspar_git_ahead_behind
+function __baspar_trigger_async_git_status -a GIT_DIR GIT_WORKTREE
+  # Function __baspar_trigger_async_git_status
   #
-  # @param GIT_DIR location of .git folder
+  # Spawn a background job computing the git status and register a handler
+  # to decode its exit code into cached global variables.
   #
-  # @returns:
+  # @param GIT_DIR: Absolute path of the .git folder
+  # @param GIT_WORKTREE: root path of git worktree
   #
-  set GIT_AHEAD 0
-  set GIT_BEHIND 0
-  set GIT_UPSTREAM (command git -C "$GIT_WORKTREE" rev-parse --abbrev-ref --symbolic-full-name @{u} 2> /dev/null)
-  set GIT_HAS_UPSTREAM $status
+  set SAFE_GIT_DIR (string escape --style=var "$GIT_DIR")
 
-  set GIT_BRANCH (command  git -C "$GIT_WORKTREE" rev-parse --abbrev-ref HEAD )
-  if [ "$GIT_BRANCH" = "HEAD" ]
-    set GIT_HAS_UPSTREAM 0
+  # A job is already running for this repo: give up.
+  set -q __baspar_git_status_pid_$SAFE_GIT_DIR && return
+
+  command fish --private --command "sleep 0.01 && __baspar_async_git_status '$GIT_DIR' '$GIT_WORKTREE'" 2>&1 > /dev/null &
+  set -l pid (jobs --last --pid)
+  set -g __baspar_git_status_pid_$SAFE_GIT_DIR $pid
+
+  function __baspar_on_finish_git_status_$pid -V pid -V SAFE_GIT_DIR --on-process-exit $pid
+    functions -e __baspar_on_finish_git_status_$pid
+
+    if [ (eval echo \$__baspar_git_status_pid_$SAFE_GIT_DIR) = $pid ]
+      set exit_code $argv[3]
+      # Exit code 130 is given when <C-c> is pressed
+      if [ $exit_code -lt 16 ]
+        set -g __baspar_has_dirty_$SAFE_GIT_DIR (math "$exit_code % 2")
+        set -g __baspar_has_invalid_$SAFE_GIT_DIR (math "floor($exit_code / 2) % 2")
+        set -g __baspar_has_staged_$SAFE_GIT_DIR (math "floor($exit_code / 4) % 2")
+        set -g __baspar_has_untracked_$SAFE_GIT_DIR (math "floor($exit_code / 8) % 2")
+      end
+    end
+    set -e __baspar_git_status_pid_$SAFE_GIT_DIR
+    commandline -f repaint
+
+    set -e __baspar_lock_git_update
   end
+end
 
+function __baspar_trigger_async_git_ahead_behind -a GIT_DIR GIT_WORKTREE
+  # Function __baspar_trigger_async_git_ahead_behind
+  #
+  # Spawn a background job computing the ahead/behind counts and register a
+  # handler to read its output into cached global variables.
+  #
+  # @param GIT_DIR: Absolute path of the .git folder
+  # @param GIT_WORKTREE: root path of git worktree
+  #
+  set SAFE_GIT_DIR (string escape --style=var "$GIT_DIR")
 
-  if [ -n $GIT_UPSTREAM ]
-    command git -C "$GIT_WORKTREE" rev-list --count --left-right $GIT_UPSTREAM...HEAD 2>/dev/null | string replace \t '|' | read -d '|' GIT_BEHIND GIT_AHEAD
+  # A job is already running for this repo: give up.
+  set -q __baspar_git_ahead_behind_pid_$SAFE_GIT_DIR && return
+
+  set -l output_file (mktemp)
+  command fish --private --command "sleep 0.01 && __baspar_async_git_ahead_behind '$GIT_DIR' '$GIT_WORKTREE' '$output_file'" 2>&1 > /dev/null &
+  set -l ab_pid (jobs --last --pid)
+  set -g __baspar_git_ahead_behind_pid_$SAFE_GIT_DIR $ab_pid
+
+  function __baspar_on_finish_git_ahead_behind_$ab_pid -V ab_pid -V SAFE_GIT_DIR -V output_file --on-process-exit $ab_pid
+    functions -e __baspar_on_finish_git_ahead_behind_$ab_pid
+
+    if [ (eval echo \$__baspar_git_ahead_behind_pid_$SAFE_GIT_DIR) = $ab_pid ]
+      if [ $argv[3] -eq 0 ] && [ -f "$output_file" ]
+        read -d '|' -l has_upstream ahead behind < "$output_file"
+        set -g __baspar_has_upstream_$SAFE_GIT_DIR $has_upstream
+        set -g __baspar_ahead_$SAFE_GIT_DIR $ahead
+        set -g __baspar_behind_$SAFE_GIT_DIR $behind
+      end
+    end
+    command rm -f "$output_file"
+    set -e __baspar_git_ahead_behind_pid_$SAFE_GIT_DIR
+    commandline -f repaint
   end
-
-  echo "$GIT_HAS_UPSTREAM|$GIT_AHEAD|$GIT_BEHIND"
 end
 
 function __baspar_git_section_info -a GIT_DIR GIT_WORKTREE
@@ -278,38 +327,17 @@ function __baspar_git_section_info -a GIT_DIR GIT_WORKTREE
 
   __baspar_git_branch_name "$GIT_DIR" "$GIT_WORKTREE"  | read -l GIT_BRANCH
   __baspar_git_operation "$GIT_DIR" "$GIT_WORKTREE"    | read -l GIT_OPERATION
-  __baspar_git_ahead_behind "$GIT_DIR" "$GIT_WORKTREE" | read -d '|' -l GIT_HAS_UPSTREAM GIT_AHEAD GIT_BEHIND
+
+  # Read cached ahead/behind values (populated asynchronously)
+  set -q __baspar_has_upstream_$SAFE_GIT_DIR && set GIT_HAS_UPSTREAM (eval echo \$__baspar_has_upstream_$SAFE_GIT_DIR)
+  set -q __baspar_ahead_$SAFE_GIT_DIR        && set GIT_AHEAD (eval echo \$__baspar_ahead_$SAFE_GIT_DIR)
+  set -q __baspar_behind_$SAFE_GIT_DIR       && set GIT_BEHIND (eval echo \$__baspar_behind_$SAFE_GIT_DIR)
 
   if set -q __baspar_need_git_update && ! set -q __baspar_lock_git_update
     set -g __baspar_lock_git_update
 
-    if set -q __baspar_git_status_pid_$SAFE_GIT_DIR
-      eval command kill -9 \$__baspar_git_status_pid_$SAFE_GIT_DIR 2>&1 > /dev/null
-      eval functions -e __baspar_on_finish_git_status_\$__baspar_git_status_pid_$SAFE_GIT_DIR
-    end
-
-    command fish --private --command "sleep 0.01 && __baspar_async_git_status '$GIT_DIR' '$GIT_WORKTREE'" 2>&1 > /dev/null &
-    set -l pid (jobs --last --pid)
-    set -g __baspar_git_status_pid_$SAFE_GIT_DIR $pid
-
-    function __baspar_on_finish_git_status_$pid -V pid -V SAFE_GIT_DIR --on-process-exit $pid
-      functions -e __baspar_on_finish_git_status_$pid
-
-      if [ (eval echo \$__baspar_git_status_pid_$SAFE_GIT_DIR) = $pid ]
-        set exit_code $argv[3]
-        # Exit code 130 is given when <C-c> is pressed
-        if [ $exit_code -lt 16 ]
-          set -g __baspar_has_dirty_$SAFE_GIT_DIR (math "$exit_code % 2")
-          set -g __baspar_has_invalid_$SAFE_GIT_DIR (math "floor($exit_code / 2) % 2")
-          set -g __baspar_has_staged_$SAFE_GIT_DIR (math "floor($exit_code / 4) % 2")
-          set -g __baspar_has_untracked_$SAFE_GIT_DIR (math "floor($exit_code / 8) % 2")
-        end
-      end
-      set -e __baspar_git_status_pid_$SAFE_GIT_DIR
-      commandline -f repaint
-
-      set -e __baspar_lock_git_update
-    end
+    __baspar_trigger_async_git_status "$GIT_DIR" "$GIT_WORKTREE"
+    __baspar_trigger_async_git_ahead_behind "$GIT_DIR" "$GIT_WORKTREE"
   end
 
   # Default color
