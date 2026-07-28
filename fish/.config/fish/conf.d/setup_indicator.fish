@@ -161,13 +161,14 @@ function setup_indicator -a indicator_name logo pre_async_fn async_fn async_cb_f
     set bg_color_sec $prompt_orange_bg_sec
     set fg_color $prompt_orange_fg
     if _dict_has $DICT_PID $indicator_name
-    set fg_color $prompt_orange_fg_sec
+      set fg_color $prompt_orange_fg_sec
+      set loading "…"
     end
     if _dict_has $DICT_ERR $indicator_name
       set bg_color $prompt_red_bg
     end
 
-    section $bg_color $fg_color "$logo$item" -o -i
+    section $bg_color $fg_color "$logo$item$loading" -o -i
     if [ $id -gt 0 ]
       section $bg_color_sec $fg_color "$id/$count" -o
     else if _dict_has $DICT_OVERRIDE_NAME $indicator_name
