@@ -9,6 +9,7 @@ require("config.colors")
 
 require("utils.highlight_current_word")
 
+require("plugins.cmp")
 require("plugins.lsp")
 require("plugins.treesitter")
 require("plugins.indent")

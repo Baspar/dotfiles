@@ -39,27 +39,3 @@ for name, config in pairs(configs) do
 end
 
 require("mini.notify").setup()
-require('mini.completion').setup({
-  lsp_completion = {
-    source_func = 'omnifunc',
-    auto_setup = false,
-    process_items = function(items, base)
-      return MiniCompletion.default_process_items(items, base, { kind_priority = { Text = -1, Snippet = 99 } })
-    end
-    ,
-  },
-})
-vim.lsp.config('*', { capabilities = MiniCompletion.get_lsp_capabilities() })
-
-vim.api.nvim_create_autocmd("LspAttach", {
-  callback = function(ev)
-    vim.bo[ev.buf].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp'
-
-    local client = assert(vim.lsp.get_client_by_id(ev.data.client_id))
-
-    if client:supports_method('textDocument/completion') then
-      vim.lsp.completion.enable(true, client.id, ev.buf, { autotrigger = true })
-    end
-  end,
-  once = true,
-})

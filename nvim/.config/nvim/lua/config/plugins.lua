@@ -20,9 +20,14 @@ vim.pack.add({
   "https://github.com/neovim/nvim-lspconfig",
   -- }}}
 
-  -- {{{ Autocomplete
+  -- {{{ Notification
   "https://github.com/nvim-mini/mini.notify",
-  "https://github.com/nvim-mini/mini.completion",
+  -- }}}
+
+  -- {{{ Autocomplete
+   "https://github.com/Saghen/blink.lib",
+   "https://github.com/Saghen/blink.cmp",
+   "https://github.com/nvim-mini/mini.icons",
   -- }}}
 
   -- {{{ Undotree
