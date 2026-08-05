@@ -33,7 +33,10 @@ fi
 
 ICONS=( "" "" "" "" "" "" "" "" "" "" "" )
 
-if [ -n "$PERCENTAGE" ]; then
+
+if [ "$CHARGING" ]; then 
+    INFO="󰂄$PERCENTAGE%"
+elif [ -n "$PERCENTAGE" ]; then
     INFO="${ICONS[$(( PERCENTAGE / 10 ))]}$PERCENTAGE%"
 else
     INFO=""

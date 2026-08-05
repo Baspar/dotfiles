@@ -3,9 +3,15 @@
 THRESHOLD_WARNING=20
 THRESHOLD_ALERT=5
 PID_FILE=~/.bin/PID/battery
-BATTERY_NUMBER=0
+case $(uname -n) in 
+    Baspar-frmwk)
+        BATTERY_NUMBER=1
+        ;;
+    *)
+        BATTERY_NUMBER=0
+        ;;
+esac
 
-# Set
 PID=$(cat $PID_FILE)
 if [[ $PID == "" ]]
 then
@@ -20,7 +26,6 @@ CURRENT=$(cat /sys/class/power_supply/BAT$BATTERY_NUMBER/charge_now)
 OLD_BATTERY_LEVEL=$(cat ~/.bin/battery.d | head -n 1)
 OLD_CHARGING_STATE=$(cat ~/.bin/battery.d | head -n 2 | tail -n 1)
 
-# Ecriture des données dans fichier
 echo $BATTERY_LEVEL > ~/.bin/battery.d
 echo $CHARGING_STATE >> ~/.bin/battery.d
 
