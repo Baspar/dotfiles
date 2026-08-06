@@ -53,4 +53,4 @@ while read sink; do
         "$name ($volume%)"
     )
     echo "$PID" > "$file_prefix-$index"
-done < <(echo "$sinks")
+done < <(echo "$sinks" | tac)

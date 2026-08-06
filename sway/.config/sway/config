@@ -30,12 +30,11 @@ set $left h
 set $down j
 set $up k
 set $right l
-# Your preferred terminal emulator
-set $term wezterm
-
-floating_modifier $mod
+set $term ghostty
 
 # start a terminal
+floating_modifier $mod
+
 bindsym $mod+Return exec $term
 bindsym $mod+w exec $term
 
@@ -46,9 +45,6 @@ bindsym $mod+d kill
 bindsym $mod+e exec ~/.bin/exec.sh
 bindsym $mod+space exec ~/.bin/exec.sh
 bindsym XF86Search exec ~/.bin/exec.sh
-
-# start tmux-rofi
-bindsym $mod+b exec ~/.bin/tmux-rofi
 
 bindsym XF86PowerOff exec ~/.bin/powermenu.sh
 
@@ -251,12 +247,12 @@ bindsym XF86KbdBrightnessUp exec ~/.bin/keyboardBrightUp.sh
 bindsym XF86AudioRaiseVolume exec ~/.bin/vol.sh +5 1
 bindsym XF86AudioLowerVolume exec ~/.bin/vol.sh -5 1
 bindsym XF86AudioMute exec ~/.bin/vol.sh toggle 1
-bindsym Shift+XF86AudioRaiseVolume exec ~/.bin/vol.sh +5 1
-bindsym Shift+XF86AudioLowerVolume exec ~/.bin/vol.sh -5 1
-bindsym Shift+XF86AudioMute exec ~/.bin/vol.sh toggle 1
+bindsym Shift+XF86AudioRaiseVolume exec ~/.bin/vol.sh +5 2
+bindsym Shift+XF86AudioLowerVolume exec ~/.bin/vol.sh -5 2
+bindsym Shift+XF86AudioMute exec ~/.bin/vol.sh toggle 2
 
 # Media
-bindsym XF86AudioPlay exec playerctl play-pause && notify-send.sh $(playerctl metadata --format '{{ artist }} - {{ title }}' ) -i $(playerctl metadata --format '{{mpris:artUrl}}')
+bindsym XF86AudioPlay exec playerctl play-pause; notify-send.sh $(playerctl metadata --format '{{ artist }} - {{ title }}' ) -i $(playerctl metadata --format '{{mpris:artUrl}}')
 bindsym XF86AudioStop exec playerctl stop
 bindsym XF86AudioRewind exec playerctl previous
 bindsym XF86AudioForward exec playerctl next
@@ -278,7 +274,7 @@ bindsym $mod+Shift+s exec ~/.bin/screenshot.sh --clipboard
 
 # Notification center
 bindsym $mod+Escape exec makoctl dismiss -a
-bindsym $mod+Ctrl+q exec swaylock
+bindsym $mod+Ctrl+q exec swaylock -f && sleep 2 && systemctl suspend
 
 bar {
     colors {
@@ -305,6 +301,21 @@ exec_always killall swayidle; swayidle -w \
          timeout 330 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"' \
          before-sleep 'swaylock -f'
 
-include /etc/sway/config.d/*
+for_window {
+  [app_id="firefox" title="Picture-in-Picture"] floating enable, sticky enable, border pixel 1
 
-for_window [app_id="firefox" title="Picture-in-Picture"] floating enable, sticky enable, border pixel 1
+  [app_id="firefox"] move workspace $desktop1
+
+  [app_id="signal"               ] move workspace $desktop7
+  [app_id="org.telegram.desktop" ] move workspace $desktop7
+}
+
+input type:touchpad {
+    click_method clickfinger
+
+    tap enabled
+    natural_scroll disabled
+    dwt enabled
+}
+
+include /etc/sway/config.d/*
