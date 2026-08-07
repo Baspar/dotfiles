@@ -1,0 +1,118 @@
+/* Warm Rosé Pine / Gruvbox-inspired gtklock theme */
+
+@define-color base            #211d1a;
+@define-color surface         #2b2623;
+@define-color overlay         #39322d;
+
+@define-color muted           #8a7b6b;
+@define-color subtle          #b09b84;
+@define-color text            #f2e5bc;
+
+@define-color love            #ea6962;
+@define-color gold            #d8a657;
+@define-color rose            #e78a4e;
+@define-color pine            #c78a3b;
+@define-color foam            #d5c4a1;
+@define-color iris            #b2946a;
+
+@define-color highlightLow    #2d2724;
+@define-color highlightMed    #4a4038;
+@define-color highlightHigh   #66584c;
+
+* {
+  all: unset;
+}
+
+window {
+  background-color: @base;
+  background-image: url("./background.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+#window-box {
+  background-color: alpha(@base, 0.93);
+  border: 1px solid alpha(@gold, 0.18);
+  padding: 0 32px;
+  border-radius: 10px;
+  box-shadow:
+    0 60px 80px rgba(0, 0, 0, 0.65),
+    0 30px 24px rgba(0, 0, 0, 0.18);
+}
+
+#time-box {
+  font-size: 0;
+}
+
+#clock-label {
+  min-width: 320px;
+  background-color: alpha(@gold, 0.12);
+  color: @gold;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 10px 30px;
+  margin-bottom: 10px;
+  border-radius: 0 0 10px 10px;
+  border: 1px solid alpha(@gold, 0.45);
+  border-top: 0;
+}
+
+/* Hide "Password:" label */
+#input-label {
+  font-size: 0;
+}
+
+#user-icon {
+  margin: 8px 0 0;
+}
+
+#user-name {
+  color: @text;
+  font-size: 32px;
+  font-weight: 600;
+  margin: 8px 0;
+}
+
+#input-field {
+  background-color: alpha(@surface, 0.8);
+  color: @text;
+  border-radius: 24px;
+  padding: 10px 15px;
+  border: 1px solid @highlightMed;
+}
+
+#input-field:focus {
+  border: 1px solid @gold;
+}
+
+#warning-label {
+  color: @gold;
+}
+
+#error-label {
+  color: @love;
+}
+
+#warning-label,
+#error-label,
+#unlock-button {
+  margin-top: 12px;
+  padding: 10px 2rem;
+  margin-bottom: 20px;
+}
+
+#unlock-button {
+  background-color: alpha(@rose, 0.15);
+  color: @rose;
+  border-radius: 24px;
+  border: 1px solid alpha(@rose, 0.55);
+}
+
+#unlock-button:hover {
+  background-color: alpha(@rose, 0.22);
+}
+
+#unlock-button:active {
+  background-color: alpha(@rose, 0.30);
+}

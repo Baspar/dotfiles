@@ -32,7 +32,6 @@ set $up k
 set $right l
 set $term ghostty
 
-# start a terminal
 floating_modifier $mod
 
 bindsym $mod+Return exec $term
@@ -126,7 +125,8 @@ bindsym $mod+Shift+0 move container to workspace $desktop10
 ### Output configuration
 #
 # Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
-output * bg ~/.walls/4.jpg fill
+output * bg ~/.walls/1.jpg fill
+output * adaptive_sync on
 
 bindswitch --reload --locked lid:on output eDP-1 disable
 bindswitch --reload --locked lid:off output eDP-1 enable
@@ -170,7 +170,7 @@ workspace $desktop10 output eDP-1
     floating_modifier $mod normal
 
     # Reload the configuration file
-    bindsym $mod+Shift+r reload
+    bindsym $mod+Shift+r exec "swaymsg reload && notify-send.sh -t 2000 'Sway configuration reloaded'"
 
     # Exit sway (logs you out of your Wayland session)
     bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'
@@ -211,32 +211,9 @@ mode "resize" {
         bindsym Return mode "default"
         bindsym Escape mode "default"
 }
-mode "volume" {
-        bindsym Up exec ~/.bin/volUp.sh
-        bindsym Down exec ~/.bin/volDown.sh
-        bindsym space exec ~/.bin/volToggle.sh
-
-        bindsym Return exec $term -e pulsemixer; mode "default"
-        bindsym $mod+v exec $term -e pulsemixer; mode "default"
-        bindsym Escape mode "default"
-}
-mode "mocp" {
-        bindsym     Shift+f exec ~/.bin/PrevMOCP.sh
-        bindsym           f exec ~/.bin/NextMOCP.sh
-        bindsym           h exec ~/.bin/reverseMOCP.sh
-        bindsym           l exec ~/.bin/forwardMOCP.sh
-        bindsym       space exec ~/.bin/PPMOCP.sh
-        bindsym Shift+slash exec ~/.bin/sayMOCPSong.sh && sleep 1 && ~/.bin/sayMOCP.sh
-
-        bindsym Return exec $term --title "MOCP - Music Player" mocp && i3-msg workspace back_and_forth; mode "default"
-        bindsym Escape mode "default"
-}
-
 
 bindsym $mod+r mode "resize"
 bindsym $mod+t mode "container"
-bindsym $mod+m mode "mocp"
-bindsym $mod+v mode "volume"
 bindsym $mod+Tab workspace back_and_forth
 
 # Keyboard brightness control
@@ -259,7 +236,7 @@ bindsym XF86AudioForward exec playerctl next
 bindsym Shift+XF86AudioRewind exec playerctl position -5
 bindsym Shift+XF86AudioForward exec playerctl position +5
 
-# Brightness Control
+# (Keyboard)Brightness Control
 bindsym XF86MonBrightnessUp exec ~/.bin/bright.sh backlight +5
 bindsym XF86MonBrightnessDown exec  ~/.bin/bright.sh backlight -5
 bindsym Shift+XF86MonBrightnessUp exec ~/.bin/bright.sh keyboard +10
@@ -274,7 +251,7 @@ bindsym $mod+Shift+s exec ~/.bin/screenshot.sh --clipboard
 
 # Notification center
 bindsym $mod+Escape exec makoctl dismiss -a
-bindsym $mod+Ctrl+q exec swaylock -f && sleep 2 && systemctl suspend
+bindsym $mod+Ctrl+q exec gtklock
 
 bar {
     colors {
@@ -294,12 +271,13 @@ gaps inner 10
 
 client.focused #000000 #AF875F #000000 #936343
 
+exec sway-audio-idle-inhibit
 exec_always killall kanshi; kanshi
 exec_always killall mako; mako
 exec_always killall swayidle; swayidle -w \
-         timeout 300 'swaylock -f --grace 5' \
+         timeout 300 'pgrep gktlock || gtklock --daemonize' \
          timeout 330 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"' \
-         before-sleep 'swaylock -f'
+         before-sleep 'pgrep gktlock || gtklock --daemonize'
 
 for_window {
   [app_id="firefox" title="Picture-in-Picture"] floating enable, sticky enable, border pixel 1
