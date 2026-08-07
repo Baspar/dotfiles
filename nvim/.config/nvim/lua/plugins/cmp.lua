@@ -8,6 +8,7 @@ cmp.setup({
     ['<C-l>'] = { 'select_and_accept', 'fallback' },
   },
   completion = {
+    list = { selection = { preselect = false, auto_insert = true } },
     menu = {
       draw = {
         components = {
