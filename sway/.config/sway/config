@@ -284,8 +284,8 @@ for_window {
 
   [app_id="firefox"] move workspace $desktop1
 
-  [app_id="signal"               ] move workspace $desktop7
-  [app_id="org.telegram.desktop" ] move workspace $desktop7
+  [app_id="signal"               ] move workspace $desktop7; layout tabbed
+  [app_id="org.telegram.desktop" ] move workspace $desktop7; layout tabbed
 }
 
 input type:touchpad {
