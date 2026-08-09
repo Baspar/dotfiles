@@ -11,17 +11,16 @@ profile laptop_only {
 
 # Framework 13 Pro
 profile multiscreen_framework {
-  output HDMI-A-2 mode 1920x1080 position 0,0 scale 0.75
-  output eDP-1 mode 2880x1920 position 1920,0 scale 1.5
+  output DP-1  mode 2560x1440@144Hz position 0,0 scale 1
+  output eDP-1 mode 2880x1920@120Hz position 2560,65 scale 1.5
 }
 
 profile laptop_only_framework {
   output eDP-1 mode 2880x1920@120Hz position 0,0 scale 1.5
 }
 
-
 # Other
 profile output_only {
   output eDP-1 disable
-  output HDMI-A-2 mode 1920x1080 scale 0.75
+  output DP-1  mode 2560x1440@144Hz position 0,0 scale 1
 }
