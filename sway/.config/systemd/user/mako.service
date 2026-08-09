@@ -1,0 +1,11 @@
+[Unit]
+Description=
+Documentation=man:mako(1)
+BindsTo=sway-session.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/mako
+
+[Install]
+WantedBy=sway-session.target

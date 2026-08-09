@@ -122,27 +122,30 @@ bindsym $mod+Shift+8 move container to workspace $desktop8
 bindsym $mod+Shift+9 move container to workspace $desktop9
 bindsym $mod+Shift+0 move container to workspace $desktop10
 
-### Output configuration
-#
-# Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
 output * bg ~/.walls/1.jpg fill
-output * adaptive_sync on
 
 bindswitch --reload --locked lid:on output eDP-1 disable
 bindswitch --reload --locked lid:off output eDP-1 enable
 
 workspace $desktop1 output HDMI-A-2
+workspace $desktop1 output DP-1
 workspace $desktop2 output HDMI-A-2
+workspace $desktop2 output DP-1
 workspace $desktop3 output HDMI-A-2
+workspace $desktop3 output DP-1
 workspace $desktop4 output HDMI-A-2
+workspace $desktop4 output DP-1
 workspace $desktop5 output HDMI-A-2
+workspace $desktop5 output DP-1
 workspace $desktop6 output HDMI-A-2
+workspace $desktop6 output DP-1
 workspace $desktop7 output HDMI-A-2
+workspace $desktop7 output DP-1
 workspace $desktop8 output HDMI-A-2
+workspace $desktop8 output DP-1
 workspace $desktop9 output HDMI-A-2
+workspace $desktop9 output DP-1
 workspace $desktop10 output eDP-1
-
-# You can get the names of your outputs by running: swaymsg -t get_outputs
 
 ### Input configuration
 #
@@ -271,13 +274,7 @@ gaps inner 10
 
 client.focused #000000 #AF875F #000000 #936343
 
-exec sway-audio-idle-inhibit
-exec_always killall kanshi; kanshi
-exec_always killall mako; mako
-exec_always killall swayidle; swayidle -w \
-         timeout 300 'pgrep gktlock || gtklock --daemonize' \
-         timeout 330 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"' \
-         before-sleep 'pgrep gktlock || gtklock --daemonize'
+exec_always systemctl --user restart sway-session.target
 
 for_window {
   [app_id="firefox" title="Picture-in-Picture"] floating enable, sticky enable, border pixel 1
