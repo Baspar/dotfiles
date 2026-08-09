@@ -1,28 +1,39 @@
 #!/bin/bash
 operation=$1
 sink_id=$2
-file_prefix=~/.bin/pid/volume
+pid_file_prefix=~/.bin/pid/volume
+selected_sink_file="${pid_file_prefix}-selected"
+
+selected_sink_index=$(cat "$selected_sink_file" || echo 0)
+
+sink_indexes=$(pactl -f json list sinks | jq -r 'map(select(.ports | any(.type != "Line")))[] | .name')
+selected_sink_name=$(echo "$sink_indexes" | sed -n "$((selected_sink_index+1))p")
+nb_sinks=$(echo "$sink_indexes" | wc -l)
+
+case "$operation" in
+    next)
+        selected_sink_index=$((selected_sink_index+1))
+        ;;
+    previous)
+        selected_sink_index=$((selected_sink_index-1))
+        ;;
+    default)
+        pactl set-default-sink $selected_sink_name
+        ;;
+    toggle)
+        pactl set-sink-mute $selected_sink_name toggle
+        ;;
+    *)
+        pactl set-sink-volume $selected_sink_name ${operation}%
+        ;;
+esac
+
+selected_sink_index=$(((selected_sink_index+nb_sinks) % nb_sinks))
+echo -n "$selected_sink_index" > "$selected_sink_file"
+
 default_sink_name=$(pactl get-default-sink)
-sinks=$(pactl -f json list sinks | jq -r '.[] | [
-    .name,
-    .description,
-    .index,
-    .mute,
-    ([
-      (.volume["front-left"].value_percent | rtrimstr("%") | tonumber),
-      (.volume["front-right"].value_percent | rtrimstr("%") | tonumber)
-    ] | max)
-] |join("|")')
 
-SINK_ID=$(echo "$sinks" | sed -n "${sink_id:=1}p" | cut -d\| -f3)
-
-if [ "$operation" = "toggle" ]; then
-    pactl set-sink-mute $SINK_ID toggle
-else
-    pactl set-sink-volume $SINK_ID ${operation}%
-fi
-
-sinks=$(pactl -f json list sinks | jq -r '.[] | [
+sinks=$(pactl -f json list sinks | jq -r 'map(select(.ports | any(.type != "Line")))[] | [
     .name,
     .description,
     .index,
@@ -42,11 +53,11 @@ while read sink; do
     volume=$(echo "$sink" | cut -d' ' -f2- | cut -d\| -f5)
 
     icon=" "
-    if [ "$name" = "$default_sink_name" ] && [ "$id" -eq "${sink_id:=1}" ]; then
+    if [ "$name" = "$default_sink_name" ] && [ "$id" -eq "$((selected_sink_index + 1))" ]; then
         icon="◉"
     elif [ "$name" = "$default_sink_name" ]; then
         icon="○"
-    elif [ "$id" -eq "${sink_id:=1}" ]; then
+    elif [ "$id" -eq "$((selected_sink_index + 1))" ]; then
         icon="•"
     else
         icon=" "
@@ -58,7 +69,7 @@ while read sink; do
         CATEGORY="UNMUTED"
     fi
 
-    PID=$(cat "$file_prefix-$index")
+    PID=$(cat "$pid_file_prefix-$id")
     [ "$PID" ] || {
         PID=$RANDOM
     }
@@ -72,5 +83,5 @@ while read sink; do
         --hint=int:value:$volume \
         "$icon $description ($volume%)"
     )
-    echo "$PID" > "$file_prefix-$index"
+    echo "$PID" > "$pid_file_prefix-$id"
 done < <(echo "$sinks" | nl -w1 -s' ' | tac)

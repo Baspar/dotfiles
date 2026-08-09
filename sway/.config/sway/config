@@ -221,12 +221,12 @@ bindsym XF86KbdBrightnessDown exec ~/.bin/keyboardBrightDown.sh
 bindsym XF86KbdBrightnessUp exec ~/.bin/keyboardBrightUp.sh
 
 # Volume control
-bindsym XF86AudioRaiseVolume exec ~/.bin/vol.sh +5 1
-bindsym XF86AudioLowerVolume exec ~/.bin/vol.sh -5 1
-bindsym XF86AudioMute exec ~/.bin/vol.sh toggle 1
-bindsym Shift+XF86AudioRaiseVolume exec ~/.bin/vol.sh +5 2
-bindsym Shift+XF86AudioLowerVolume exec ~/.bin/vol.sh -5 2
-bindsym Shift+XF86AudioMute exec ~/.bin/vol.sh toggle 2
+bindsym XF86AudioRaiseVolume exec ~/.bin/vol.sh +5
+bindsym XF86AudioLowerVolume exec ~/.bin/vol.sh -5
+bindsym XF86AudioMute exec ~/.bin/vol.sh toggle
+bindsym Shift+XF86AudioRaiseVolume exec ~/.bin/vol.sh next
+bindsym Shift+XF86AudioLowerVolume exec ~/.bin/vol.sh previous
+bindsym Shift+XF86AudioMute exec ~/.bin/vol.sh default
 
 # Media
 bindsym XF86AudioPlay exec playerctl play-pause; notify-send.sh $(playerctl metadata --format '{{ artist }} - {{ title }}' ) -i $(playerctl metadata --format '{{mpris:artUrl}}')
