@@ -7,6 +7,7 @@ set -Ux FZF_DEFAULT_COMMAND 'rg -l .'
 set -Ux VIRTUAL_ENV_DISABLE_PROMPT 'true'
 set -Ux fish_greeting
 set -x GPG_TTY (tty)
+set -Ux QT_QPA_PLATFORMTHEME xdgdesktopportal
 
 set -Ux QT_WAYLAND_FORCE_DPI 144
 set -Ux fish_term24bit 1

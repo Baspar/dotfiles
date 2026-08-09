@@ -60,6 +60,8 @@ export RIGHT_SEPARATOR="▒"
 export LEFT_SUB_SEPARATOR="▒"
 export RIGHT_SUB_SEPARATOR="▒"
 
+export QT_QPA_PLATFORMTHEME=xdgdesktopportal
+
 source "$HOME/.cargo/env"
 [ -e "$HOME/.env.vandebron" ] && source ~/.env.vandebron
 
