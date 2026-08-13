@@ -173,7 +173,7 @@ workspace $desktop10 output eDP-1
     floating_modifier $mod normal
 
     # Reload the configuration file
-    bindsym $mod+Shift+r exec "swaymsg reload && notify-send.sh -t 2000 'Sway configuration reloaded'"
+    bindsym $mod+Shift+r exec "swaymsg reload && notify-send.sh -R ~/.notif-pid/sway-reload -t 2000 'Sway configuration reloaded'"
 
     # Exit sway (logs you out of your Wayland session)
     bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'
@@ -232,7 +232,7 @@ bindsym Shift+XF86AudioLowerVolume exec ~/.bin/vol.sh previous
 bindsym Shift+XF86AudioMute exec ~/.bin/vol.sh default
 
 # Media
-bindsym XF86AudioPlay exec playerctl play-pause; notify-send.sh $(playerctl metadata --format '{{ artist }} - {{ title }}' ) -i $(playerctl metadata --format '{{mpris:artUrl}}')
+bindsym XF86AudioPlay exec playerctl play-pause; exec notify-send.sh -t 1000 -R ~/.notif-pid/media-info "$(playerctl metadata --format '{{ artist }} - {{ title }}' )"
 bindsym XF86AudioStop exec playerctl stop
 bindsym XF86AudioRewind exec playerctl previous
 bindsym XF86AudioForward exec playerctl next

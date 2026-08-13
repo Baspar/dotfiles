@@ -8,12 +8,6 @@ if [ "$type" != "keyboard" ] && [ "$type" != "backlight" ]; then
     exit 1
 fi
 
-FILE=~/.bin/pid/$type
-PID=$(cat $FILE)
-[ "$PID" ] || {
-    PID=$RANDOM
-}
-
 hostname=$(uname -n)
 case $type in
   keyboard)
@@ -43,13 +37,9 @@ NEW_PERCENTAGE=$(( $PERCENTAGE + $delta ))
 
 echo $(expr $NEW_PERCENTAGE \* $MAX / 100) > /sys/class/$t/$dev/brightness
 
-PID=$(notify-send.sh \
-    -r $PID \
+notify-send.sh \
+    -R ~/.notif-pid/bright-$type \
     -t 1000 \
-    -p \
     --app-name=BRIGHTNESS \
     --hint=int:value:$NEW_PERCENTAGE \
     "$type ($NEW_PERCENTAGE%)"
-)
-
-echo "$PID" > "$FILE"

@@ -1,9 +1,8 @@
 #!/bin/bash
 operation=$1
 sink_id=$2
-pid_file_prefix=~/.bin/pid/volume
-selected_sink_file="${pid_file_prefix}-selected"
 
+selected_sink_file=~/.bin/pid/volume-selected
 selected_sink_index=$(cat "$selected_sink_file" || echo 0)
 
 sink_indexes=$(pactl -f json list sinks | jq -r 'map(select(.ports | any(.type != "Line")))[] | .name')
@@ -69,19 +68,11 @@ while read sink; do
         CATEGORY="UNMUTED"
     fi
 
-    PID=$(cat "$pid_file_prefix-$id")
-    [ "$PID" ] || {
-        PID=$RANDOM
-    }
-
-    PID=$(notify-send.sh \
+    notify-send.sh \
         -t 1000 \
-        -r $PID \
-        -p \
+        -R ~/.notif-pid/vol-$id \
         --app-name=VOLUME \
         --category=$CATEGORY \
         --hint=int:value:$volume \
         "$icon $description ($volume%)"
-    )
-    echo "$PID" > "$pid_file_prefix-$id"
 done < <(echo "$sinks" | nl -w1 -s' ' | tac)
