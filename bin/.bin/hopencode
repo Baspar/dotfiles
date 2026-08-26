@@ -11,14 +11,16 @@ usage() {
 
     echo "Usage:"
     echo ""
-    echo "$0 [--db-path] [--help]"
+    echo "$0 [--db-path] [--help] [--last]"
     echo " --db-path|-p : SQLite path"
+    echo " --last|-1    : Select last opencode session"
     echo " --help|-h    : Display this help"
 
     exit "$exit_code"
 }
 
 db_path="$HOME/.local/share/opencode/opencode.db"
+focus_last_session=""
 
 while (($#)); do
     case "$1" in
@@ -29,6 +31,9 @@ while (($#)); do
         -h|--help)
             usage
             ;;
+        -1|--last)
+            focus_last_session="true"
+            ;;
         *)
             usage 5 "Unknown flag or argument: '$1'"
             ;;
@@ -38,15 +43,24 @@ done
 
 mtd_cost=$(sqlite3 "$db_path" "SELECT printf('%.2f$', SUM(coalesce(json_extract(m.data, '\$.cost'), 0))) FROM message m WHERE m.time_created >= (strftime('%s','now','start of month') * 1000)")
 
-session=$({
+if [ "$focus_last_session" = "true" ]; then
+    session=$(sqlite3 -json "$db_path" "
+        SELECT s.id, s.title, s.directory, s.time_created, s.time_updated, printf('%.2f$', s.cost) as cost, s.model, COUNT(m.id) as message_count
+        FROM session s
+        LEFT JOIN message m ON m.session_id = s.id
+        GROUP BY s.id
+        ORDER BY s.time_updated DESC
+        LIMIT 1;" | jq -r '.[0]')
+else
+    session=$({
     # Compute total MTD cost for the FZF prompt header
 
     echo "json|Title|Path|Created at|Updated at|Cost|Model|#msg"
-    sqlite3 -header -json "$db_path" 'SELECT s.id, s.title, s.directory, s.time_created, s.time_updated, printf("%.2f$", s.cost) as cost, s.model, COUNT(m.id) as message_count
+    sqlite3 -header -json "$db_path" "SELECT s.id, s.title, s.directory, s.time_created, s.time_updated, printf('%.2f$', s.cost) as cost, s.model, COUNT(m.id) as message_count
     FROM session s
     LEFT JOIN message m ON m.session_id = s.id
     GROUP BY s.id
-    ORDER BY s.time_updated DESC' \
+    ORDER BY s.time_updated DESC" \
       | jq -r --arg HOME "$HOME" '.[]
         | (.title | if length > 40 then (.[:37] + "...") else . end)  as $title
         | (try (.model | fromjson | .id) catch "") as $model
@@ -59,11 +73,12 @@ session=$({
             $model,
             .message_count ]
         | join("|")'
-} \
-    | column -s\| -t \
-    | fzf --with-nth 2.. --nth 1 --header-lines 1 --reverse --height 10 --prompt "[$mtd_cost] Session> " \
-    | cut -d' '  -f1 \
-    | base64 -d)
+    } \
+        | column -s\| -t \
+        | fzf --with-nth 2.. --nth 1 --header-lines 1 --reverse --height 10 --prompt "[$mtd_cost] Session> " \
+        | cut -d' '  -f1 \
+        | base64 -d)
+fi
 
 [ "$session" ] && {
     directory=$(echo "$session" | jq -r ".directory")
