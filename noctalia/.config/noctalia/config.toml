@@ -1,0 +1,84 @@
+[audio]
+enable_sounds = false
+
+[bar.default]
+auto_hide = true
+center = [ "date", "spacer_2", "clock" ]
+end = [ "wallpaper", "tray", "network", "bluetooth", "volume", "brightness", "battery", "session" ]
+reserve_space = true
+start = [ "launcher", "workspaces" ]
+
+[desktop_widgets]
+enabled = false
+
+[idle]
+behavior_order = [ "lock", "screen-off", "lock-and-suspend" ]
+
+    [idle.behavior.lock]
+    action = "lock"
+    enabled = true
+    timeout = 600.0
+
+    [idle.behavior.lock-and-suspend]
+    action = "lock_and_suspend"
+    enabled = true
+    timeout = 900.0
+
+    [idle.behavior.screen-off]
+    action = "screen_off"
+    enabled = true
+    timeout = 660.0
+
+[location]
+auto_locate = true
+
+[lockscreen]
+transition = [ "honeycomb" ]
+suspend_on_escape = true
+
+[notification]
+enable_daemon = false
+
+[osd.kinds]
+brightness = false
+keyboard_backlight = false
+volume = false
+
+[shell]
+password_style = "random"
+polkit_agent = true
+settings_show_advanced = false
+
+    [shell.panel]
+    polkit_placement = "attached"
+
+    [[shell.session.actions]]
+    action = "logout"
+
+    [[shell.session.actions]]
+    action = "lock_and_suspend"
+    lockscreen_shortcut = "Escape"
+
+    [[shell.session.actions]]
+    action = "reboot"
+
+    [[shell.session.actions]]
+    action = "shutdown"
+    variant = "destructive"
+    countdown_seconds = 5
+
+[theme]
+builtin = "Gruvbox"
+community_palette = "Kemuri Susu"
+mode = "auto"
+source = "wallpaper"
+wallpaper_scheme = "muted"
+
+[wallpaper]
+directory = "/home/baspar/.walls"
+
+    [wallpaper.default]
+    path = "/home/baspar/.walls/1.jpg"
+
+[widget.spacer_2]
+type = "spacer"

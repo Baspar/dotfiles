@@ -190,9 +190,6 @@ workspace $desktop10 output eDP-1
 # Resizing containers:
 #
 
-
-bindsym $mod+Shift+b bar mode toggle
-
 mode "container" {
         bindsym q layout toggle split
         bindsym w layout stacking
@@ -218,6 +215,7 @@ mode "resize" {
 bindsym $mod+r mode "resize"
 bindsym $mod+t mode "container"
 bindsym $mod+Tab workspace back_and_forth
+# bindsym $mod+Tab exec noctalia msg window-switcher hold
 
 # Keyboard brightness control
 bindsym XF86KbdBrightnessDown exec ~/.bin/keyboardBrightDown.sh
@@ -254,20 +252,7 @@ bindsym $mod+Shift+s exec ~/.bin/screenshot.sh --clipboard
 
 # Notification center
 bindsym $mod+Escape exec makoctl dismiss -a
-bindsym $mod+Ctrl+q exec gtklock
-
-bar {
-    colors {
-        background #202020
-        focused_workspace #000000 #202020 #DFAF8F
-        active_workspace #000000 #202020 #998774
-        inactive_workspace #000000 #202020 #998774
-        urgent_workspace #000000 #DFAF8F #000000
-    }
-    mode hide
-
-    status_command i3blocks
-}
+bindsym $mod+Ctrl+q exec loginctl lock-session
 
 gaps outer 10
 gaps inner 10
@@ -275,6 +260,7 @@ gaps inner 10
 client.focused #000000 #AF875F #000000 #936343
 
 exec_always systemctl --user restart sway-session.target
+exec noctalia
 
 for_window {
   [app_id="firefox" title="Picture-in-Picture"] floating enable, sticky enable, border pixel 1
